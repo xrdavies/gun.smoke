@@ -36,7 +36,7 @@ function writeRgbaPng(name, width, height, readPixel) {
 function writePatternTable() {
   const bytes = nes.ppu.vramMem;
   const palette = [0, 76, 166, 255];
-  writeRgbaPng("pattern-table.png", 128, 128, (x, y) => {
+  const pixel = (x, y) => {
     const tileX = Math.floor(x / 8);
     const tileY = Math.floor(y / 8);
     const tile = tileY * 16 + tileX;
@@ -47,7 +47,9 @@ function writePatternTable() {
     const value = ((high >> column) & 1) * 2 + ((low >> column) & 1);
     const color = palette[value] ?? 0;
     return [color, color, color, 255];
-  });
+  };
+  writeRgbaPng("pattern-table.png", 128, 128, pixel);
+  writeRgbaPng("pattern-table-full.png", 256, 128, (x, y) => pixel(x, y));
 }
 
 function writeScene(name) {
@@ -73,7 +75,7 @@ fs.writeFileSync(path.join(output, "sprite-oam.bin"), Buffer.from(nes.ppu.sprite
 fs.writeFileSync(path.join(output, "manifest.json"), JSON.stringify({
   source: filename,
   sourceSha256: crypto.createHash("sha256").update(romData).digest("hex"),
-  outputFiles: ["title.png", "intro.png", "scene.png", "pattern-table.png", "vram.bin", "sprite-oam.bin"],
+  outputFiles: ["title.png", "intro.png", "scene.png", "pattern-table.png", "pattern-table-full.png", "vram.bin", "sprite-oam.bin"],
   note: "Local analysis output. Do not redistribute or commit extracted assets.",
 }, null, 2));
 console.log(`Extracted local reference assets to ${output}`);

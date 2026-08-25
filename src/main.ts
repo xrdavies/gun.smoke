@@ -50,6 +50,7 @@ interface Unit {
   fired: boolean;
   turnRate: number;
   maxAge: number;
+  invulnerableUntil: number;
   animation?: SpriteAnimationBinding;
 }
 
@@ -497,8 +498,10 @@ class GunSmokeGame {
         if (target.kind === "enemy") this.defeatTarget(target);
         else target.hp = 0;
       } else if (target.kind === "boss" && target.hp > 0) {
+        const previousHp = target.hp;
         target.hp -= 4;
         if (target.hp <= 0) this.defeatTarget(target);
+        else this.handleBossDamage(target, previousHp);
       }
     }
     this.beep(75, 0.35);
@@ -720,7 +723,7 @@ class GunSmokeGame {
       vy: isBoss || isPickup || kind === "barrel" ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : small ? 7 : 19,
       value: isBoss ? 5_000 : kind === "coin" ? 200 : kind === "ammo" || kind === "item" ? 0 : kind === "barrel" ? 50 : kind === "wanted" ? 1_000 : 100,
-      age: 0, phase: this.nextRandom() * Math.PI * 2, damage: 1, fired: false, turnRate: 0, maxAge: 18,
+      age: 0, phase: this.nextRandom() * Math.PI * 2, damage: 1, fired: false, turnRate: 0, maxAge: 18, invulnerableUntil: 0,
     };
     this.units.push(unit);
     return unit;
@@ -795,7 +798,12 @@ class GunSmokeGame {
     } else if (unit.kind === "boss") {
       unit.x += unit.vx * delta;
       if (unit.x < 380 || unit.x > 580) unit.vx *= -1;
-      unit.y = this.scroll + 92 + Math.sin(unit.age * 2) * 18;
+      if (this.stage === 3) unit.y = this.scroll + 92 + Math.abs(Math.sin(unit.age * 2.1)) * 145;
+      else if (this.stage === 4) unit.y = this.scroll + 92 + Math.abs(Math.sin(unit.age * 3)) * 55;
+      else if (this.stage === 5) unit.y = this.scroll + 92 + Math.abs(Math.sin(unit.age * 3.6)) * 32;
+      else if (this.stage === 6) unit.y = this.scroll + 92 + Math.min(unit.age * 110, 170);
+      else unit.y = this.scroll + 92 + Math.sin(unit.age * 2) * 18;
+      unit.sprite.visible = unit.age >= unit.invulnerableUntil;
     } else if (unit.kind === "coin" || unit.kind === "item" || unit.kind === "ammo" || unit.kind === "wanted") {
       unit.y += 40 * delta;
       unit.x += Math.sin(unit.age * 4 + unit.phase) * 14 * delta;
@@ -839,8 +847,12 @@ class GunSmokeGame {
       if (!target) continue;
       if (!this.isBossVulnerable(target)) continue;
       bullet.hp = 0;
+      const previousHp = target.hp;
       target.hp -= bullet.damage;
-      if (target.hp > 0) continue;
+      if (target.hp > 0) {
+        this.handleBossDamage(target, previousHp);
+        continue;
+      }
       this.defeatTarget(target);
     }
     for (const unit of this.units.filter((candidate) => candidate.hp > 0)) {
@@ -902,9 +914,18 @@ class GunSmokeGame {
 
   private isBossVulnerable(unit: Unit): boolean {
     if (unit.kind !== "boss") return true;
+    if (unit.age < unit.invulnerableUntil) return false;
     if (this.stage === 1) return unit.age % 3.2 < 2.2;
     if (this.stage === 2 || this.stage === 3 || this.stage === 5) return unit.fired;
     return true;
+  }
+
+  private handleBossDamage(unit: Unit, previousHp: number): void {
+    if (unit.kind !== "boss" || this.stage !== 4) return;
+    if (Math.ceil(previousHp / 4) === Math.ceil(unit.hp / 4)) return;
+    unit.invulnerableUntil = unit.age + 0.45;
+    unit.x = clamp(unit.x + (this.nextRandom() - 0.5) * 220, 300, 660);
+    this.showMessage("NINJA SMOKE");
   }
 
   private collectItem(item: ItemType): void {
@@ -920,8 +941,10 @@ class GunSmokeGame {
       for (const target of [...this.units]) {
         if (target.kind === "enemy" && target.hp > 0) this.defeatTarget(target);
         else if (target.kind === "boss" && target.hp > 0) {
+          const previousHp = target.hp;
           target.hp -= 4;
           if (target.hp <= 0) this.defeatTarget(target);
+          else this.handleBossDamage(target, previousHp);
         }
       }
     } else if (item === "skull") {

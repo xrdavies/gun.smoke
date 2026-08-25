@@ -76,6 +76,7 @@ const shopMessage = requireElement<HTMLElement>("#shop-message");
 const shopClose = requireElement<HTMLButtonElement>("#shop-close");
 const shopItems = [...shop.querySelectorAll<HTMLButtonElement>("[data-shop-item]")];
 canvas.tabIndex = 0;
+startButton.disabled = true;
 
 const transparent: Rgba = [0, 0, 0, 0];
 
@@ -711,4 +712,10 @@ startButton.addEventListener("click", () => void game?.start());
 restartButton.addEventListener("click", () => window.location.reload());
 shopClose.addEventListener("click", () => game?.closeShop());
 for (const item of shopItems) item.addEventListener("click", () => game?.buyShopItem(item.dataset.shopItem ?? ""));
-game = await GunSmokeGame.create();
+try {
+  game = await GunSmokeGame.create();
+  startButton.disabled = false;
+} catch (error) {
+  const reason = error instanceof Error ? error.message : String(error);
+  messageLabel.textContent = `WEBGPU UNAVAILABLE: ${reason}`;
+}

@@ -11,7 +11,7 @@
     "test:browser": "playwright test"
   },
   "dependencies": {
-    "@xrdavies/2d-engine": "file:../engine"
+    "@xrdavies/2d-engine": "git+ssh://git@github.com/xrdavies/2d-engine.git#7a931139cb4213784f30124af7b25d3ebe5d51df"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",

@@ -53,3 +53,14 @@ test("runs a locally supplied reference ROM through the engine", async ({ page }
   expect(crypto.createHash("sha256").update(first).digest("hex")).not.toBe(crypto.createHash("sha256").update(second).digest("hex"));
   expect(pageErrors).toEqual([]);
 });
+
+test("rejects non-iNES reference files", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#reference-rom").setInputFiles({
+    name: "not-a-rom.nes",
+    mimeType: "application/octet-stream",
+    buffer: Buffer.from("not an iNES file"),
+  });
+  await expect(page.locator("#rom-status")).toContainText("Could not load ROM");
+  await expect(page.locator("#title-screen")).toBeVisible();
+});

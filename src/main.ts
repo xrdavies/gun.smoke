@@ -858,19 +858,22 @@ class ReferenceRomGame {
   readonly nes: import("jsnes").NES;
   readonly buttons: typeof import("jsnes").Controller;
   readonly audio: ReferenceAudio;
+  readonly metadata: { mapper: number; prgBytes: number; chrBytes: number };
   private readonly frameRef: { value: Uint32Array | undefined };
   private readonly rgba = new Uint8Array(256 * 240 * 4);
   private accumulator = 0;
+  private frameCount = 0;
   private readonly held = new Set<number>();
   private readonly onKeyDownBound = (event: KeyboardEvent): void => this.onKey(event, true);
   private readonly onKeyUpBound = (event: KeyboardEvent): void => this.onKey(event, false);
 
-  private constructor(engine: Engine, nes: import("jsnes").NES, buttons: typeof import("jsnes").Controller, frameRef: { value: Uint32Array | undefined }, audio: ReferenceAudio) {
+  private constructor(engine: Engine, nes: import("jsnes").NES, buttons: typeof import("jsnes").Controller, frameRef: { value: Uint32Array | undefined }, audio: ReferenceAudio, metadata: { mapper: number; prgBytes: number; chrBytes: number }) {
     this.engine = engine;
     this.nes = nes;
     this.buttons = buttons;
     this.frameRef = frameRef;
     this.audio = audio;
+    this.metadata = metadata;
     this.renderer = new Renderer2D(engine.gpu, { clearColor: { r: 0, g: 0, b: 0, a: 1 } });
     this.sampler = engine.gpu.device.createSampler({ magFilter: "nearest", minFilter: "nearest" });
     this.texture = engine.gpu.device.createTexture({
@@ -888,6 +891,16 @@ class ReferenceRomGame {
   static async create(data: ArrayBuffer): Promise<ReferenceRomGame> {
     const { Controller, NES } = await import("jsnes");
     const bytes = new Uint8Array(data);
+    if (bytes.length < 16 || bytes[0] !== 0x4e || bytes[1] !== 0x45 || bytes[2] !== 0x53 || bytes[3] !== 0x1a) {
+      throw new Error("Expected an iNES .NES file");
+    }
+    const flags6 = bytes[6] ?? 0;
+    const flags7 = bytes[7] ?? 0;
+    const metadata = {
+      mapper: (flags6 >> 4) | (flags7 & 0xf0),
+      prgBytes: (bytes[4] ?? 0) * 16 * 1024,
+      chrBytes: (bytes[5] ?? 0) * 8 * 1024,
+    };
     let binary = "";
     for (let offset = 0; offset < bytes.length; offset += 0x8000) {
       binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
@@ -897,11 +910,12 @@ class ReferenceRomGame {
     const nes = new NES({ onFrame: (nextFrame) => { frame.value = nextFrame; }, onAudioSample: (left, right) => audio.push(left, right) });
     nes.loadROM(binary);
     const engine = await Engine.create({ canvas, autoStart: false, input: false });
-    return new ReferenceRomGame(engine, nes, Controller, frame, audio);
+    return new ReferenceRomGame(engine, nes, Controller, frame, audio, metadata);
   }
 
   start(): void {
     this.audio.resume();
+    canvas.focus();
     this.engine.start();
   }
 
@@ -912,7 +926,9 @@ class ReferenceRomGame {
   private update(delta: number): void {
     this.accumulator += Math.min(delta, 0.25);
     while (this.accumulator >= 1 / 60) {
+      this.pollGamepad();
       this.nes.frame();
+      this.frameCount += 1;
       this.accumulator -= 1 / 60;
     }
     const frame = this.frameRef.value;
@@ -944,6 +960,28 @@ class ReferenceRomGame {
       this.held.delete(button);
       this.nes.buttonUp(1, button);
     }
+  }
+
+  private pollGamepad(): void {
+    const pad = navigator.getGamepads?.()[0];
+    if (!pad) return;
+    const pressed = (button: ButtonKey, active: boolean): void => {
+      if (active && !this.held.has(button)) {
+        this.held.add(button);
+        this.nes.buttonDown(1, button);
+      } else if (!active && this.held.has(button)) {
+        this.held.delete(button);
+        this.nes.buttonUp(1, button);
+      }
+    };
+    pressed(this.buttons.BUTTON_UP, (pad.axes[1] ?? 0) < -0.45 || Boolean(pad.buttons[this.buttons.BUTTON_UP]?.pressed));
+    pressed(this.buttons.BUTTON_DOWN, (pad.axes[1] ?? 0) > 0.45 || Boolean(pad.buttons[this.buttons.BUTTON_DOWN]?.pressed));
+    pressed(this.buttons.BUTTON_LEFT, (pad.axes[0] ?? 0) < -0.45 || Boolean(pad.buttons[this.buttons.BUTTON_LEFT]?.pressed));
+    pressed(this.buttons.BUTTON_RIGHT, (pad.axes[0] ?? 0) > 0.45 || Boolean(pad.buttons[this.buttons.BUTTON_RIGHT]?.pressed));
+    pressed(this.buttons.BUTTON_A, Boolean(pad.buttons[0]?.pressed));
+    pressed(this.buttons.BUTTON_B, Boolean(pad.buttons[1]?.pressed));
+    pressed(this.buttons.BUTTON_START, Boolean(pad.buttons[9]?.pressed));
+    pressed(this.buttons.BUTTON_SELECT, Boolean(pad.buttons[8]?.pressed));
   }
 
   private keyButton(code: string): ButtonKey | undefined {
@@ -1010,7 +1048,7 @@ async function loadReferenceRom(): Promise<void> {
     hud.hidden = true;
     shop.hidden = true;
     referenceGame.start();
-    romStatus.textContent = `Reference ROM active: ${file.name}`;
+    romStatus.textContent = `Reference ROM active: ${file.name} / Mapper ${referenceGame.metadata.mapper} / ${referenceGame.metadata.prgBytes / 1024} KiB PRG`;
   } catch (error) {
     const reason = error instanceof Error ? error.message : String(error);
     romStatus.textContent = `Could not load ROM: ${reason}`;

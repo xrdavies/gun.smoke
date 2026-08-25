@@ -23,7 +23,8 @@ type GameAction =
   | "fireLeft"
   | "fireCenter"
   | "fireRight"
-  | "smartBomb";
+  | "smartBomb"
+  | "inventory";
 type GameMode = "title" | "intro" | "playing" | "paused" | "gameover" | "ending";
 type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "coin" | "ammo" | "barrel" | "item" | "wanted";
 type TextureName = "player" | "enemy" | "boss" | "bullet" | "coin" | "powerup" | "ammo" | "barrel" | "wanted" | "terrain" | "road" | "landmark";
@@ -56,10 +57,10 @@ actions
   .bind("right", { type: "key", code: "ArrowRight" }, { type: "key", code: "KeyD" }, { type: "gamepad-axis", axis: 0, direction: 1 })
   .bind("up", { type: "key", code: "ArrowUp" }, { type: "key", code: "KeyW" }, { type: "gamepad-axis", axis: 1, direction: -1 })
   .bind("down", { type: "key", code: "ArrowDown" }, { type: "key", code: "KeyS" }, { type: "gamepad-axis", axis: 1, direction: 1 })
-  .bind("fireLeft", { type: "key", code: "KeyZ" }, { type: "gamepad-button", button: 0 })
-  .bind("fireCenter", { type: "key", code: "KeyX" }, { type: "key", code: "Space" }, { type: "gamepad-button", button: 2 })
-  .bind("fireRight", { type: "key", code: "KeyC" }, { type: "gamepad-button", button: 1 })
-  .bind("smartBomb", { type: "key", code: "KeyV" }, { type: "gamepad-button", button: 3 });
+  .bind("fireLeft", { type: "key", code: "KeyZ" }, { type: "gamepad-button", button: 1 })
+  .bind("fireRight", { type: "key", code: "KeyX" }, { type: "gamepad-button", button: 0 })
+  .bind("smartBomb", { type: "key", code: "KeyV" }, { type: "gamepad-button", button: 3 })
+  .bind("inventory", { type: "gamepad-button", button: 8 });
 
 function requireElement<T extends Element>(selector: string): T {
   const element = document.querySelector<T>(selector);
@@ -73,12 +74,16 @@ const introScreen = requireElement<HTMLElement>("#intro-screen");
 const gameOver = requireElement<HTMLElement>("#game-over");
 const endingScreen = requireElement<HTMLElement>("#ending-screen");
 const pauseScreen = requireElement<HTMLElement>("#pause-screen");
+const inventoryScreen = requireElement<HTMLElement>("#inventory-screen");
 const hud = requireElement<HTMLElement>("#hud");
 const startButton = requireElement<HTMLButtonElement>("#start-button");
 const continueButton = requireElement<HTMLButtonElement>("#continue-button");
 const restartButton = requireElement<HTMLButtonElement>("#restart-button");
 const endingButton = requireElement<HTMLButtonElement>("#ending-button");
 const resumeButton = requireElement<HTMLButtonElement>("#resume-button");
+const inventoryClose = requireElement<HTMLButtonElement>("#inventory-close");
+const inventoryWeapons = requireElement<HTMLElement>("#inventory-weapons");
+const inventoryItems = requireElement<HTMLElement>("#inventory-items");
 const referenceRomInput = requireElement<HTMLInputElement>("#reference-rom");
 const romStatus = requireElement<HTMLElement>("#rom-status");
 const finalScore = requireElement<HTMLElement>("#final-score");
@@ -168,6 +173,8 @@ class GunSmokeGame {
   spawnClock = 0.6;
   fireClock = 0;
   bombLatch = false;
+  inventoryLatch = false;
+  inventoryOpen = false;
   enemyFireClock = 1.2;
   bossFireClock = 1;
   invulnerable = 0;
@@ -266,7 +273,13 @@ class GunSmokeGame {
     ]), true));
     this.world.addTransform(this.player.entity);
     this.buildBackground();
-    this.engine.input?.onInput((event) => this.actions.handle(event));
+    this.engine.input?.onInput((event) => {
+      this.actions.handle(event);
+      if (event.kind === "keyboard" && (event.code === "Tab" || event.code === "ShiftLeft" || event.code === "ShiftRight")) {
+        event.preventDefault();
+        if (event.type === "keydown" && !event.repeat) this.toggleInventory();
+      }
+    });
     this.audio = this.createAudio();
     this.engine.addSystem({ update: (delta) => this.update(delta), render: () => this.render(), dispose: () => this.dispose() });
     this.engine.on("resize", ({ width, height }) => this.camera.setViewport(width, height));
@@ -286,6 +299,7 @@ class GunSmokeGame {
     gameOver.hidden = true;
     endingScreen.hidden = true;
     pauseScreen.hidden = true;
+    inventoryScreen.hidden = true;
     hud.hidden = true;
     canvas.focus();
     void this.audio?.unlock();
@@ -310,14 +324,24 @@ class GunSmokeGame {
     } else if (this.mode === "paused") {
       this.mode = "playing";
       pauseScreen.hidden = true;
+      canvas.focus();
       this.engine.resume();
     }
   }
 
+  toggleInventory(): void {
+    if (this.mode !== "playing") return;
+    this.inventoryOpen = !this.inventoryOpen;
+    inventoryScreen.hidden = !this.inventoryOpen;
+    if (this.inventoryOpen) this.updateInventory();
+    else canvas.focus();
+  }
+
   private update(delta: number): void {
     if (this.mode !== "playing") return;
-    if (this.shopOpen) return;
     this.engine.input?.pollGamepads();
+    this.updateInventoryInput();
+    if (this.inventoryOpen || this.shopOpen) return;
     this.time += delta;
     if (this.stageClearClock > 0) {
       this.stageClearClock -= delta;
@@ -346,6 +370,22 @@ class GunSmokeGame {
     this.resolveCollisions();
     this.units.splice(0, this.units.length, ...this.units.filter((unit) => unit.age < unit.maxAge && unit.hp > 0 && unit.y > this.scroll - 340 && unit.y < this.scroll + 760));
     this.updateHud();
+  }
+
+  private updateInventoryInput(): void {
+    const active = this.actions.active("inventory");
+    if (!active) {
+      this.inventoryLatch = false;
+      return;
+    }
+    if (this.inventoryLatch) return;
+    this.inventoryLatch = true;
+    this.toggleInventory();
+  }
+
+  private updateInventory(): void {
+    inventoryWeapons.textContent = `PISTOL UNLIMITED / SHOTGUN ${this.weapon === "shotgun" ? this.ammo : 0} / MACHINE GUN ${this.weapon === "machinegun" ? this.ammo : 0} / MAGNUM ${this.weapon === "magnum" ? this.ammo : 0} / SMART BOMB ${this.smartBombs}`;
+    inventoryItems.textContent = `BOOTS ${this.powerups.boots} / RIFLE ${this.powerups.rifle} / HORSE ${this.horseHealth} / WANTED ${this.hasWanted ? "YES" : "NO"}`;
   }
 
   private updatePlayerFire(delta: number): void {
@@ -576,6 +616,7 @@ class GunSmokeGame {
   closeShop(): void {
     this.shopOpen = false;
     shop.hidden = true;
+    canvas.focus();
     this.showMessage("RIDE ON");
   }
 
@@ -884,6 +925,7 @@ class GunSmokeGame {
     this.engine.stop();
     hud.hidden = true;
     pauseScreen.hidden = true;
+    inventoryScreen.hidden = true;
     if (won) {
       this.mode = "ending";
       endingScreen.hidden = false;
@@ -1159,9 +1201,8 @@ class ReferenceRomGame {
       ArrowDown: this.buttons.BUTTON_DOWN,
       ArrowLeft: this.buttons.BUTTON_LEFT,
       ArrowRight: this.buttons.BUTTON_RIGHT,
-      KeyZ: this.buttons.BUTTON_A,
-      KeyX: this.buttons.BUTTON_B,
-      Space: this.buttons.BUTTON_A,
+      KeyZ: this.buttons.BUTTON_B,
+      KeyX: this.buttons.BUTTON_A,
       Enter: this.buttons.BUTTON_START,
       NumpadEnter: this.buttons.BUTTON_START,
       ShiftLeft: this.buttons.BUTTON_SELECT,
@@ -1185,6 +1226,7 @@ continueButton.addEventListener("click", () => game?.continueFromIntro());
 restartButton.addEventListener("click", () => window.location.reload());
 endingButton.addEventListener("click", () => window.location.reload());
 resumeButton.addEventListener("click", () => game?.togglePause());
+inventoryClose.addEventListener("click", () => game?.toggleInventory());
 shopClose.addEventListener("click", () => game?.closeShop());
 for (const item of shopItems) item.addEventListener("click", () => game?.buyShopItem(item.dataset.shopItem ?? ""));
 referenceRomInput.addEventListener("change", () => void loadReferenceRom());
@@ -1221,6 +1263,7 @@ async function loadReferenceRom(): Promise<void> {
     gameOver.hidden = true;
     endingScreen.hidden = true;
     pauseScreen.hidden = true;
+    inventoryScreen.hidden = true;
     hud.hidden = true;
     shop.hidden = true;
     referenceGame.start();

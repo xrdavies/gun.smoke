@@ -17,6 +17,11 @@ test("starts the WebGPU stage and renders gameplay", async ({ page }) => {
   await expect(page.locator("#pause-screen")).toBeVisible();
   await page.locator("#resume-button").click();
   await expect(page.locator("#pause-screen")).toBeHidden();
+  await page.keyboard.press("Shift");
+  await expect(page.locator("#inventory-screen")).toBeVisible();
+  await expect(page.locator("#inventory-weapons")).toContainText("PISTOL UNLIMITED");
+  await page.locator("#inventory-close").click();
+  await expect(page.locator("#inventory-screen")).toBeHidden();
   await page.keyboard.down("x");
   await page.waitForTimeout(2_500);
   await page.keyboard.up("x");

@@ -27,7 +27,7 @@
           <h1>GUN.SMOKE</h1>
           <p class="subtitle">Three guns. One trail. No safe town.</p>
           <button id="start-button" type="button">Ride out</button>
-          <p class="note">Arrow keys move. Z / X / C fire left, center, right. V uses Smart Bomb.</p>
+          <p class="note">Arrow keys move. Z fires left, X fires right, Z+X fires ahead. Shift shows inventory.</p>
           <label class="rom-loader">
             <span>Load a legally obtained NES ROM</span>
             <input id="reference-rom" type="file" accept=".nes,.NES" />
@@ -58,6 +58,13 @@
           <p class="eyebrow">RIDE PAUSED</p>
           <h2>PAUSED</h2>
           <button id="resume-button" type="button">Resume</button>
+        </section>
+        <section id="inventory-screen" hidden>
+          <p class="eyebrow">INVENTORY / AMMO</p>
+          <h2>SUPPLIES</h2>
+          <p id="inventory-weapons"></p>
+          <p id="inventory-items"></p>
+          <button id="inventory-close" type="button">Return</button>
         </section>
         <section id="shop" hidden aria-label="Trading post">
           <p class="eyebrow">TRADING POST</p>

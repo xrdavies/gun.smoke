@@ -23,7 +23,7 @@ type GameAction =
   | "fireLeft"
   | "fireCenter"
   | "fireRight";
-type GameMode = "title" | "intro" | "playing" | "gameover";
+type GameMode = "title" | "intro" | "playing" | "gameover" | "ending";
 type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "coin" | "powerup" | "ammo" | "wanted";
 type EnemyType = "gunman" | "rifleman" | "bomber" | "sniper" | "backstabber" | "ninja" | "hatchet" | "firebreather" | "shotgunner";
 type TextureName = "player" | "enemy" | "boss" | "bullet" | "coin" | "powerup" | "ammo" | "wanted" | "terrain" | "road" | "landmark";
@@ -67,10 +67,12 @@ const canvas = requireElement<HTMLCanvasElement>("#game-canvas");
 const titleScreen = requireElement<HTMLElement>("#title-screen");
 const introScreen = requireElement<HTMLElement>("#intro-screen");
 const gameOver = requireElement<HTMLElement>("#game-over");
+const endingScreen = requireElement<HTMLElement>("#ending-screen");
 const hud = requireElement<HTMLElement>("#hud");
 const startButton = requireElement<HTMLButtonElement>("#start-button");
 const continueButton = requireElement<HTMLButtonElement>("#continue-button");
 const restartButton = requireElement<HTMLButtonElement>("#restart-button");
+const endingButton = requireElement<HTMLButtonElement>("#ending-button");
 const referenceRomInput = requireElement<HTMLInputElement>("#reference-rom");
 const romStatus = requireElement<HTMLElement>("#rom-status");
 const finalScore = requireElement<HTMLElement>("#final-score");
@@ -261,6 +263,7 @@ class GunSmokeGame {
     titleScreen.hidden = true;
     introScreen.hidden = false;
     gameOver.hidden = true;
+    endingScreen.hidden = true;
     hud.hidden = true;
     canvas.focus();
     void this.audio?.unlock();
@@ -696,13 +699,20 @@ class GunSmokeGame {
   }
 
   private finish(won: boolean): void {
-    this.mode = "gameover";
     this.stopMusic();
     this.engine.stop();
     hud.hidden = true;
-    gameOver.hidden = false;
-    gameOver.querySelector("h2")!.textContent = won ? "TRAIL COMPLETE" : "WANTED: ALIVE";
-    finalScore.textContent = `SCORE ${String(this.score).padStart(6, "0")}  MONEY $${String(this.money).padStart(3, "0")}`;
+    if (won) {
+      this.mode = "ending";
+      endingScreen.hidden = false;
+      gameOver.hidden = true;
+    } else {
+      this.mode = "gameover";
+      gameOver.hidden = false;
+      endingScreen.hidden = true;
+      gameOver.querySelector("h2")!.textContent = "WANTED: ALIVE";
+      finalScore.textContent = `SCORE ${String(this.score).padStart(6, "0")}  MONEY $${String(this.money).padStart(3, "0")}`;
+    }
   }
 
   private updateHud(): void {
@@ -985,6 +995,7 @@ let referenceGame: ReferenceRomGame | undefined;
 startButton.addEventListener("click", () => void game?.start());
 continueButton.addEventListener("click", () => game?.continueFromIntro());
 restartButton.addEventListener("click", () => window.location.reload());
+endingButton.addEventListener("click", () => window.location.reload());
 shopClose.addEventListener("click", () => game?.closeShop());
 for (const item of shopItems) item.addEventListener("click", () => game?.buyShopItem(item.dataset.shopItem ?? ""));
 referenceRomInput.addEventListener("change", () => void loadReferenceRom());
@@ -992,7 +1003,7 @@ window.addEventListener("keydown", (event) => {
   if (event.code !== "Enter" && event.code !== "NumpadEnter") return;
   if (game?.mode === "title") game.start();
   else if (game?.mode === "intro") game.continueFromIntro();
-  else if (game?.mode === "gameover") window.location.reload();
+  else if (game?.mode === "gameover" || game?.mode === "ending") window.location.reload();
 });
 try {
   game = await GunSmokeGame.create();
@@ -1015,6 +1026,7 @@ async function loadReferenceRom(): Promise<void> {
     titleScreen.hidden = true;
     introScreen.hidden = true;
     gameOver.hidden = true;
+    endingScreen.hidden = true;
     hud.hidden = true;
     shop.hidden = true;
     referenceGame.start();

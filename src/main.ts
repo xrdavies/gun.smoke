@@ -22,7 +22,8 @@ type GameAction =
   | "down"
   | "fireLeft"
   | "fireCenter"
-  | "fireRight";
+  | "fireRight"
+  | "smartBomb";
 type GameMode = "title" | "intro" | "playing" | "paused" | "gameover" | "ending";
 type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "coin" | "ammo" | "barrel" | "item" | "wanted";
 type TextureName = "player" | "enemy" | "boss" | "bullet" | "coin" | "powerup" | "ammo" | "barrel" | "wanted" | "terrain" | "road" | "landmark";
@@ -57,7 +58,8 @@ actions
   .bind("down", { type: "key", code: "ArrowDown" }, { type: "key", code: "KeyS" }, { type: "gamepad-axis", axis: 1, direction: 1 })
   .bind("fireLeft", { type: "key", code: "KeyZ" }, { type: "gamepad-button", button: 0 })
   .bind("fireCenter", { type: "key", code: "KeyX" }, { type: "key", code: "Space" }, { type: "gamepad-button", button: 2 })
-  .bind("fireRight", { type: "key", code: "KeyC" }, { type: "gamepad-button", button: 1 });
+  .bind("fireRight", { type: "key", code: "KeyC" }, { type: "gamepad-button", button: 1 })
+  .bind("smartBomb", { type: "key", code: "KeyV" }, { type: "gamepad-button", button: 3 });
 
 function requireElement<T extends Element>(selector: string): T {
   const element = document.querySelector<T>(selector);
@@ -160,10 +162,12 @@ class GunSmokeGame {
   money = 0;
   lives = 3;
   ammo = 0;
+  smartBombs = 0;
   powerups = { boots: 0, rifle: 0 };
   time = 0;
   spawnClock = 0.6;
   fireClock = 0;
+  bombLatch = false;
   enemyFireClock = 1.2;
   bossFireClock = 1;
   invulnerable = 0;
@@ -334,6 +338,7 @@ class GunSmokeGame {
     this.playerAnimation?.update(delta);
     this.player.sprite.visible = this.invulnerable <= 0 || Math.floor(this.time * 14) % 2 === 0;
     this.updatePlayerFire(delta);
+    this.updateSmartBomb();
     this.updateSpawns(delta);
     this.updateEnemyFire(delta);
     for (const unit of this.units) this.updateUnit(unit, delta);
@@ -370,6 +375,29 @@ class GunSmokeGame {
     }
     this.fireClock = weapon.interval;
     this.beep(740, 0.025);
+  }
+
+  private updateSmartBomb(): void {
+    const active = this.actions.active("smartBomb");
+    if (!active) {
+      this.bombLatch = false;
+      return;
+    }
+    if (this.bombLatch || this.smartBombs <= 0) return;
+    this.bombLatch = true;
+    this.smartBombs -= 1;
+    for (const target of [...this.units]) {
+      if ((target.kind === "enemy" || target.kind === "enemyBullet") && target.hp > 0) {
+        if (target.kind === "enemy") this.defeatTarget(target);
+        else target.hp = 0;
+      } else if (target.kind === "boss" && target.hp > 0) {
+        target.hp -= 4;
+        if (target.hp <= 0) this.defeatTarget(target);
+      }
+    }
+    this.beep(75, 0.35);
+    this.showMessage("SMART BOMB");
+    this.updateHud();
   }
 
   private updateSpawns(delta: number): void {
@@ -503,15 +531,15 @@ class GunSmokeGame {
 
   private refreshShopButtons(): void {
     for (const item of shopItems) {
-      const key = item.dataset.shopItem as WeaponName | "horse" | "ammo" | "wanted" | undefined;
-      const cost = key === "horse" ? 60 : key === "ammo" ? 20 : key === "wanted" ? WANTED_COSTS[this.stage - 1] ?? 800 : key ? WEAPONS[key].cost : 0;
-      item.disabled = key === "horse" ? this.hasHorse || this.money < cost : key === "ammo" ? this.weapon === "pistol" || this.ammo >= WEAPONS[this.weapon].maxAmmo || this.money < cost : key === "wanted" ? this.shopIndex < 2 || this.hasWanted || this.money < cost : key === this.weapon || this.money < cost;
+      const key = item.dataset.shopItem as WeaponName | "horse" | "ammo" | "wanted" | "smartBomb" | undefined;
+      const cost = key === "horse" ? 60 : key === "ammo" ? 20 : key === "smartBomb" ? 100 : key === "wanted" ? WANTED_COSTS[this.stage - 1] ?? 800 : key ? WEAPONS[key].cost : 0;
+      item.disabled = key === "horse" ? this.hasHorse || this.money < cost : key === "ammo" ? this.weapon === "pistol" || this.ammo >= WEAPONS[this.weapon].maxAmmo || this.money < cost : key === "wanted" ? this.shopIndex < 2 || this.hasWanted || this.money < cost : key === "smartBomb" ? this.smartBombs >= 5 || this.money < cost : key === this.weapon || this.money < cost;
     }
   }
 
   buyShopItem(item: string): void {
-    const key = item as WeaponName | "horse" | "ammo" | "wanted";
-    const cost = key === "horse" ? 60 : key === "ammo" ? 20 : key === "wanted" ? WANTED_COSTS[this.stage - 1] ?? 800 : WEAPONS[key]?.cost;
+    const key = item as WeaponName | "horse" | "ammo" | "wanted" | "smartBomb";
+    const cost = key === "horse" ? 60 : key === "ammo" ? 20 : key === "smartBomb" ? 100 : key === "wanted" ? WANTED_COSTS[this.stage - 1] ?? 800 : WEAPONS[key]?.cost;
     if (cost === undefined || (key === "horse" && this.hasHorse) || this.money < cost) {
       shopMessage.textContent = "NOT ENOUGH MONEY";
       return;
@@ -523,6 +551,7 @@ class GunSmokeGame {
     }
     else if (key === "ammo") this.ammo = Math.min(WEAPONS[this.weapon].maxAmmo, this.ammo + 20);
     else if (key === "wanted") this.hasWanted = true;
+    else if (key === "smartBomb") this.smartBombs = Math.min(5, this.smartBombs + 1);
     else {
       this.weapon = key;
       this.ammo = WEAPONS[key].maxAmmo;
@@ -860,7 +889,7 @@ class GunSmokeGame {
     moneyLabel.textContent = `$${String(this.money).padStart(3, "0")}`;
     livesLabel.textContent = `LIVES ${this.lives}`;
     const ammo = Number.isFinite(WEAPONS[this.weapon].maxAmmo) ? ` ${this.ammo}` : "";
-    weaponLabel.textContent = `${this.weapon.toUpperCase()}${ammo} / BOOTS ${this.powerups.boots} / RIFLE ${this.powerups.rifle}${this.hasHorse ? ` / HORSE ${this.horseHealth}` : ""} / WANTED ${this.hasWanted ? "YES" : "NO"}`;
+    weaponLabel.textContent = `${this.weapon.toUpperCase()}${ammo} / BOMB ${this.smartBombs} / BOOTS ${this.powerups.boots} / RIFLE ${this.powerups.rifle}${this.hasHorse ? ` / HORSE ${this.horseHealth}` : ""} / WANTED ${this.hasWanted ? "YES" : "NO"}`;
   }
 
   private showMessage(text: string): void {

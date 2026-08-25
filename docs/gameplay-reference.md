@@ -26,7 +26,7 @@ owned, scrolling stops at the Boss arena.
 
 The web build also models the resource loop with money pickups, round-specific
 trading-post checkpoints, Shotgun, Machine Gun, Magnum, finite ammunition,
-Wanted poster purchases and Horse upgrades. Weapon costs,
+Smart Bomb inventory, Wanted poster purchases and Horse upgrades. Weapon costs,
 enemy placement, terrain art, audio and exact frame timing are intentionally
 parameters rather than claims of byte-identical reproduction.
 

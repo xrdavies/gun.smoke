@@ -20,7 +20,7 @@ type GameAction =
   | "fireRight";
 type GameMode = "title" | "intro" | "playing" | "gameover";
 type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "coin" | "powerup" | "wanted";
-type EnemyType = "gunman" | "rifleman" | "bomber" | "sniper" | "backstabber" | "ninja" | "hatchet" | "firebreather";
+type EnemyType = "gunman" | "rifleman" | "bomber" | "sniper" | "backstabber" | "ninja" | "hatchet" | "firebreather" | "shotgunner";
 type TextureName = "player" | "enemy" | "boss" | "bullet" | "coin" | "powerup" | "wanted" | "terrain" | "road";
 type Rgba = [number, number, number, number];
 
@@ -389,14 +389,14 @@ class GunSmokeGame {
     const types: readonly EnemyType[] = this.stage === 1
       ? ["gunman", "bomber"]
       : this.stage === 2
-        ? ["rifleman", "backstabber"]
+        ? ["rifleman", "backstabber", "shotgunner"]
         : this.stage === 3
           ? ["sniper", "hatchet", "firebreather"]
           : this.stage === 4
-            ? ["ninja", "gunman", "sniper"]
+            ? ["ninja", "gunman", "sniper", "shotgunner"]
             : this.stage === 5
               ? ["rifleman", "bomber", "backstabber"]
-              : ["sniper", "ninja", "backstabber"];
+              : ["sniper", "ninja", "backstabber", "shotgunner"];
     for (const offset of offsets) {
       const enemyType = types[Math.floor(this.nextRandom() * types.length)] ?? "gunman";
       const entryY = enemyType === "backstabber" ? this.scroll + 520 : y - Math.abs(offset) * 22;
@@ -468,7 +468,7 @@ class GunSmokeGame {
     const small = kind === "bullet" || kind === "enemyBullet";
     const colors: Record<EnemyType, [number, number, number, number]> = {
       gunman: [1, 0.82, 0.82, 1], rifleman: [0.82, 0.9, 1, 1], bomber: [1, 0.9, 0.65, 1], sniper: [0.78, 1, 0.88, 1],
-      backstabber: [1, 0.72, 0.88, 1], ninja: [0.82, 0.78, 1, 1], hatchet: [1, 0.82, 0.68, 1], firebreather: [1, 0.62, 0.42, 1],
+      backstabber: [1, 0.72, 0.88, 1], ninja: [0.82, 0.78, 1, 1], hatchet: [1, 0.82, 0.68, 1], firebreather: [1, 0.62, 0.42, 1], shotgunner: [1, 0.48, 0.3, 1],
     };
     const bossColors: readonly [number, number, number, number][] = [[1, 0.55, 0.42, 1], [0.55, 0.75, 1, 1], [1, 0.72, 0.34, 1], [0.78, 0.58, 1, 1], [1, 0.82, 0.42, 1], [1, 0.96, 0.72, 1]];
     const color: [number, number, number, number] = isBoss ? bossColors[this.stage - 1] ?? bossColors[0]! : kind === "enemy" && enemyType ? colors[enemyType] : [1, 1, 1, 1];
@@ -514,6 +514,18 @@ class GunSmokeGame {
           const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y + 12, 1);
           projectile.vx = (this.player.x - unit.x) * 0.35;
           projectile.vy = 115;
+        }
+      } else if (unit.enemyType === "shotgunner") {
+        unit.x += unit.vx * delta;
+        unit.y += unit.vy * 0.65 * delta;
+        if (!unit.fired && unit.age > 0.8) {
+          unit.fired = true;
+          const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
+          for (const spread of [-0.2, 0, 0.2]) {
+            const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y + 12, 1);
+            projectile.vx = Math.cos(angle + spread) * 145;
+            projectile.vy = Math.sin(angle + spread) * 145;
+          }
         }
       } else if (unit.enemyType === "firebreather") {
         unit.x += Math.sin(unit.age * 4 + unit.phase) * 55 * delta;

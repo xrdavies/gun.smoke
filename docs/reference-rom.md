@@ -35,6 +35,10 @@ samples title, opening, and the first Round at 60-frame intervals until the
 first-life trace ends. It records frame hashes, PPU scroll state and active OAM
 sprite counts for encounter-timing comparisons.
 
+The corrected Round 1 trace shows the PPU vertical position advancing 20 pixels
+per 60 frames. The 540-high procedural world therefore uses 45 world pixels per
+second (`20 * 540 / 240`) for its automatic scroll.
+
 The web title page can also load the same local ROM into Reference ROM mode.
 This provides a legal exact-runtime comparison path without distributing the
 ROM; the regular web game remains the original procedural recreation. The

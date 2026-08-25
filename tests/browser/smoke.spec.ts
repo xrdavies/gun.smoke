@@ -38,7 +38,7 @@ test("reaches the first trading post", async ({ page }) => {
   await page.goto("/");
   await page.locator("#start-button").click();
   await page.locator("#continue-button").click();
-  await page.waitForTimeout(7_800);
+  await page.waitForTimeout(12_800);
   await expect(page.locator("#shop")).toBeVisible();
   await expect(page.locator("#shop-title")).toContainText("ROUND 1");
   await expect(page.locator('[data-shop-item="magnum"]')).toBeDisabled();

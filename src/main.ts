@@ -10,7 +10,7 @@ import {
   SpriteFrameClip,
   World,
 } from "@xrdavies/2d-engine";
-import type { PcmStream } from "@xrdavies/2d-engine";
+import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
 import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, SHOP_CHECKPOINTS, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, type WeaponName } from "./game-constants";
@@ -817,8 +817,6 @@ class ReferenceRomGame {
   private accumulator = 0;
   private frameCount = 0;
   private readonly held = new Set<number>();
-  private readonly onKeyDownBound = (event: KeyboardEvent): void => this.onKey(event, true);
-  private readonly onKeyUpBound = (event: KeyboardEvent): void => this.onKey(event, false);
 
   private constructor(engine: Engine, nes: import("jsnes").NES, buttons: typeof import("jsnes").Controller, frameRef: { value: Uint32Array | undefined }, audio: AudioManager | undefined, pcm: PcmStream | undefined, metadata: { mapper: number; prgBytes: number; chrBytes: number }) {
     this.engine = engine;
@@ -837,8 +835,7 @@ class ReferenceRomGame {
       usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
     });
     this.sprite = new Sprite({ texture: this.texture, sampler: this.sampler, position: { x: 128, y: 120 }, size: { x: 256, y: 240 }, anchor: { x: 0.5, y: 0.5 }, layer: 0 });
-    window.addEventListener("keydown", this.onKeyDownBound);
-    window.addEventListener("keyup", this.onKeyUpBound);
+    this.engine.input?.onInput((event) => this.onInput(event));
     this.engine.addSystem({ update: (delta) => this.update(delta), render: () => this.render(), dispose: () => this.dispose() });
   }
 
@@ -869,7 +866,7 @@ class ReferenceRomGame {
     const pcm = audio?.createPcmStream({ bus: "music" });
     const nes = new NES({ onFrame: (nextFrame) => { frame.value = nextFrame; }, onAudioSample: (left, right) => pcm?.push(left, right) });
     nes.loadROM(binary);
-    const engine = await Engine.create({ canvas, autoStart: false, input: false });
+    const engine = await Engine.create({ canvas, autoStart: false, input: true });
     return new ReferenceRomGame(engine, nes, Controller, frame, audio, pcm, metadata);
   }
 
@@ -908,10 +905,12 @@ class ReferenceRomGame {
     this.renderer.render([this.sprite], this.camera);
   }
 
-  private onKey(event: KeyboardEvent, pressed: boolean): void {
+  private onInput(event: NormalizedInputEvent): void {
+    if (event.kind !== "keyboard") return;
     const button = this.keyButton(event.code);
     if (button === undefined) return;
     event.preventDefault();
+    const pressed = event.type === "keydown";
     if (pressed) {
       if (this.held.has(button)) return;
       this.held.add(button);
@@ -962,8 +961,6 @@ class ReferenceRomGame {
   }
 
   private dispose(): void {
-    window.removeEventListener("keydown", this.onKeyDownBound);
-    window.removeEventListener("keyup", this.onKeyUpBound);
     this.held.clear();
     this.texture.destroy();
     this.pcm?.stop();

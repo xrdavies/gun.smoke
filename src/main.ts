@@ -10,6 +10,7 @@ import {
   SpriteFrameClip,
   World,
 } from "@xrdavies/2d-engine";
+import type { PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
 import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, SHOP_CHECKPOINTS, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, type WeaponName } from "./game-constants";
@@ -799,55 +800,6 @@ class GunSmokeGame {
   }
 }
 
-class ReferenceAudio {
-  readonly context: AudioContext | undefined;
-  private readonly processor: ScriptProcessorNode | undefined;
-  private readonly left = new Float32Array(65_536);
-  private readonly right = new Float32Array(65_536);
-  private readIndex = 0;
-  private writeIndex = 0;
-  private count = 0;
-
-  constructor() {
-    try {
-      this.context = new AudioContext();
-      this.processor = this.context.createScriptProcessor(2_048, 0, 2);
-      this.processor.onaudioprocess = (event) => {
-        const left = event.outputBuffer.getChannelData(0);
-        const right = event.outputBuffer.getChannelData(1);
-        for (let index = 0; index < left.length; index += 1) {
-          left[index] = this.count > 0 ? this.left[this.readIndex] ?? 0 : 0;
-          right[index] = this.count > 0 ? this.right[this.readIndex] ?? 0 : 0;
-          if (this.count > 0) {
-            this.readIndex = (this.readIndex + 1) % this.left.length;
-            this.count -= 1;
-          }
-        }
-      };
-      this.processor.connect(this.context.destination);
-    } catch {
-      this.context = undefined;
-    }
-  }
-
-  push(left: number, right: number): void {
-    if (!this.context || this.count >= this.left.length - 1) return;
-    this.left[this.writeIndex] = left;
-    this.right[this.writeIndex] = right;
-    this.writeIndex = (this.writeIndex + 1) % this.left.length;
-    this.count += 1;
-  }
-
-  resume(): void {
-    void this.context?.resume();
-  }
-
-  dispose(): void {
-    this.processor?.disconnect();
-    void this.context?.close();
-  }
-}
-
 class ReferenceRomGame {
   readonly engine: Engine;
   readonly renderer: Renderer2D;
@@ -857,7 +809,8 @@ class ReferenceRomGame {
   readonly sprite: Sprite;
   readonly nes: import("jsnes").NES;
   readonly buttons: typeof import("jsnes").Controller;
-  readonly audio: ReferenceAudio;
+  readonly audio: AudioManager | undefined;
+  readonly pcm: PcmStream | undefined;
   readonly metadata: { mapper: number; prgBytes: number; chrBytes: number };
   private readonly frameRef: { value: Uint32Array | undefined };
   private readonly rgba = new Uint8Array(256 * 240 * 4);
@@ -867,12 +820,13 @@ class ReferenceRomGame {
   private readonly onKeyDownBound = (event: KeyboardEvent): void => this.onKey(event, true);
   private readonly onKeyUpBound = (event: KeyboardEvent): void => this.onKey(event, false);
 
-  private constructor(engine: Engine, nes: import("jsnes").NES, buttons: typeof import("jsnes").Controller, frameRef: { value: Uint32Array | undefined }, audio: ReferenceAudio, metadata: { mapper: number; prgBytes: number; chrBytes: number }) {
+  private constructor(engine: Engine, nes: import("jsnes").NES, buttons: typeof import("jsnes").Controller, frameRef: { value: Uint32Array | undefined }, audio: AudioManager | undefined, pcm: PcmStream | undefined, metadata: { mapper: number; prgBytes: number; chrBytes: number }) {
     this.engine = engine;
     this.nes = nes;
     this.buttons = buttons;
     this.frameRef = frameRef;
     this.audio = audio;
+    this.pcm = pcm;
     this.metadata = metadata;
     this.renderer = new Renderer2D(engine.gpu, { clearColor: { r: 0, g: 0, b: 0, a: 1 } });
     this.sampler = engine.gpu.device.createSampler({ magFilter: "nearest", minFilter: "nearest" });
@@ -906,15 +860,21 @@ class ReferenceRomGame {
       binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
     }
     const frame: { value: Uint32Array | undefined } = { value: undefined };
-    const audio = new ReferenceAudio();
-    const nes = new NES({ onFrame: (nextFrame) => { frame.value = nextFrame; }, onAudioSample: (left, right) => audio.push(left, right) });
+    let audio: AudioManager | undefined;
+    try {
+      audio = new AudioManager();
+    } catch {
+      audio = undefined;
+    }
+    const pcm = audio?.createPcmStream({ bus: "music" });
+    const nes = new NES({ onFrame: (nextFrame) => { frame.value = nextFrame; }, onAudioSample: (left, right) => pcm?.push(left, right) });
     nes.loadROM(binary);
     const engine = await Engine.create({ canvas, autoStart: false, input: false });
-    return new ReferenceRomGame(engine, nes, Controller, frame, audio, metadata);
+    return new ReferenceRomGame(engine, nes, Controller, frame, audio, pcm, metadata);
   }
 
   start(): void {
-    this.audio.resume();
+    void this.audio?.unlock();
     canvas.focus();
     this.engine.start();
   }
@@ -1006,7 +966,8 @@ class ReferenceRomGame {
     window.removeEventListener("keyup", this.onKeyUpBound);
     this.held.clear();
     this.texture.destroy();
-    this.audio.dispose();
+    this.pcm?.stop();
+    this.audio?.dispose();
   }
 }
 

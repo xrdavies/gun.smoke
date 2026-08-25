@@ -14,12 +14,12 @@
     "test:browser": "playwright test"
   },
   "dependencies": {
-    "@xrdavies/2d-engine": "git+ssh://git@github.com/xrdavies/2d-engine.git#v0.1.0",
+    "@xrdavies/2d-engine": "github:xrdavies/2d-engine#v0.1.1",
     "jsnes": "^2.1.0"
   },
   "devDependencies": {
-    "@types/node": "^24.0.0",
     "@playwright/test": "^1.62.1",
+    "@types/node": "^24.0.0",
     "@webgpu/types": "^0.1.72",
     "pngjs": "^7.0.0",
     "typescript": "^5.8.3",

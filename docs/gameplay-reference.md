@@ -26,6 +26,10 @@ Wanted poster purchases and Horse upgrades. Weapon costs,
 enemy placement, terrain art, audio and exact frame timing are intentionally
 parameters rather than claims of byte-identical reproduction.
 
+The Horse is a three-hit shield rather than a speed bonus. Score awards an
+extra life at 30,000, again at 100,000, and at each later 100,000-point
+threshold.
+
 The runtime now exercises the engine's animation binding for player/enemy/Boss
 sprites, WebGPU `Renderer2D` batches, `AudioManager` buses, `ActionMap` keyboard
 and Gamepad input, deterministic seeded randomness, and per-round terrain/road

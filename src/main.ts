@@ -154,6 +154,7 @@ class GunSmokeGame {
   scroll = 0;
   stage = 1;
   score = 0;
+  nextLifeScore = 30_000;
   money = 0;
   lives = 3;
   ammo = 0;
@@ -170,6 +171,7 @@ class GunSmokeGame {
   wingatePhase = 0;
   weapon: WeaponName = "pistol";
   hasHorse = false;
+  horseHealth = 0;
   shopOpen = false;
   shopIndex = 0;
   musicTimer: number | undefined;
@@ -320,7 +322,7 @@ class GunSmokeGame {
     if (this.shopOpen) return;
     this.camera.position.y = this.scroll + 270;
     this.invulnerable = Math.max(0, this.invulnerable - delta);
-    const movement = this.hasHorse ? 300 : 235;
+    const movement = 235;
     const halfRoad = (ROAD_WIDTHS[this.stage - 1] ?? 520) / 2;
     this.player.x = clamp(this.player.x + (this.actions.value("right") - this.actions.value("left")) * movement * delta, 480 - halfRoad + 22, 480 + halfRoad - 22);
     this.player.y = clamp(this.player.y + (this.actions.value("down") - this.actions.value("up")) * movement * delta, this.scroll + 285, this.scroll + 500);
@@ -507,7 +509,10 @@ class GunSmokeGame {
       return;
     }
     this.money -= cost;
-    if (key === "horse") this.hasHorse = true;
+    if (key === "horse") {
+      this.hasHorse = true;
+      this.horseHealth = 3;
+    }
     else if (key === "ammo") this.ammo = Math.min(WEAPONS[this.weapon].maxAmmo, this.ammo + 20);
     else if (key === "wanted") this.hasWanted = true;
     else {
@@ -654,6 +659,7 @@ class GunSmokeGame {
       target.hp -= bullet.damage;
       if (target.hp > 0) continue;
       this.score += target.value;
+      this.awardScoreLife();
       this.money += target.kind === "boss" ? 50 : 2;
       if (target.kind === "barrel") {
         this.spawnUnit("wanted", target.x, target.y, 1);
@@ -684,6 +690,7 @@ class GunSmokeGame {
         if (distance(unit, this.player) <= unit.radius + 22) {
           unit.hp = 0;
           this.score += unit.value;
+          this.awardScoreLife();
           if (unit.kind === "coin") this.money += 10;
           else if (unit.kind === "powerup") this.lives = Math.min(5, this.lives + 1);
           else if (unit.kind === "ammo") this.ammo = Math.min(WEAPONS[this.weapon].maxAmmo, this.ammo + 10);
@@ -708,12 +715,30 @@ class GunSmokeGame {
   }
 
   private takeHit(): void {
+    if (this.horseHealth > 0) {
+      this.horseHealth -= 1;
+      this.hasHorse = this.horseHealth > 0;
+      this.invulnerable = 1;
+      this.beep(170, 0.12);
+      this.showMessage(this.hasHorse ? `HORSE ${this.horseHealth}` : "HORSE DOWN");
+      for (const unit of this.units) if (unit.kind === "enemyBullet") unit.hp = 0;
+      this.updateHud();
+      return;
+    }
     this.lives -= 1;
     this.invulnerable = 2;
     this.beep(120, 0.16);
     this.showMessage(this.lives > 0 ? "HIT!" : "OUT OF LIVES");
     for (const unit of this.units) if (unit.kind === "enemyBullet") unit.hp = 0;
     if (this.lives <= 0) this.finish(false);
+  }
+
+  private awardScoreLife(): void {
+    while (this.score >= this.nextLifeScore) {
+      this.lives = Math.min(9, this.lives + 1);
+      this.showMessage("EXTRA LIFE");
+      this.nextLifeScore = this.nextLifeScore === 30_000 ? 100_000 : this.nextLifeScore + 100_000;
+    }
   }
 
   private beginNextStage(): void {
@@ -763,7 +788,7 @@ class GunSmokeGame {
     moneyLabel.textContent = `$${String(this.money).padStart(3, "0")}`;
     livesLabel.textContent = `LIVES ${this.lives}`;
     const ammo = Number.isFinite(WEAPONS[this.weapon].maxAmmo) ? ` ${this.ammo}` : "";
-    weaponLabel.textContent = `${this.weapon.toUpperCase()}${ammo}${this.hasHorse ? " + HORSE" : ""} / WANTED ${this.hasWanted ? "YES" : "NO"}`;
+    weaponLabel.textContent = `${this.weapon.toUpperCase()}${ammo}${this.hasHorse ? ` + HORSE ${this.horseHealth}` : ""} / WANTED ${this.hasWanted ? "YES" : "NO"}`;
   }
 
   private showMessage(text: string): void {

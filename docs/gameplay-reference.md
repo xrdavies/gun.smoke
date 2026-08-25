@@ -36,6 +36,11 @@ standing window, while Cutter, Devil Hawk and Fatman Joe become vulnerable only
 after their opening attack; Cutter's boomerangs also curve in opposite
 directions.
 
+The procedural enemy roster is data-driven per Round: early town stages include
+gunmen, bombers, snipers and back-stabbers; Rocky Pass adds riflemen; Native
+Village adds hatchet throwers and firebreathers; Cliff Valley adds ninjas and
+shotgunners; the final rounds return to gunmen, riflemen, bombers and snipers.
+
 After the second Wingate encounter the web recreation enters a separate ending
 and credits state instead of treating the win as Game Over.
 

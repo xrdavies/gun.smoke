@@ -15,8 +15,9 @@ names are cross-checked against the public NES walkthrough on
 
 The NES version's stage rule is important: the wanted poster for the round's
 outlaw must be collected before the boss gate can resolve. The web build uses
-an original procedural poster pickup at the boss approach and keeps that gate
-in the gameplay state machine.
+an original procedural poster pickup at a round-specific horizontal position,
+and keeps that gate in the gameplay state machine. Later trading posts provide
+the alternate purchase route described by the NES walkthrough.
 
 The web build also models the resource loop with money pickups, round-specific
 trading-post checkpoints, Shotgun, Machine Gun, Magnum, finite ammunition,

@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { AMMO_GAIN, BOSS_TRIGGER, MAX_STAGE, NES_SCROLL_SPEED, ROAD_WIDTHS, ROUND_ENEMY_TYPES, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, SHOP_CHECKPOINTS, STAGE_LENGTH, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_SCROLL_SPEED, clamp, distance, nextExtraLifeScore, scoreExtraLives, shouldLoopStage } from "../src/game-constants";
+import { AMMO_GAIN, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, MAX_STAGE, NES_PLAYER_SPEED, NES_SCROLL_SPEED, ROAD_WIDTHS, ROUND_ENEMY_TYPES, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, SHOP_CHECKPOINTS, STAGE_LENGTH, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, clamp, distance, nextExtraLifeScore, scoreExtraLives, shouldLoopStage } from "../src/game-constants";
 
 describe("Gun.Smoke vertical slice", () => {
   it("keeps the NES-inspired stage constants stable", () => {
     expect({ nesScrollSpeed: NES_SCROLL_SPEED, scrollSpeed: WORLD_SCROLL_SPEED, fireInterval: 0.16, bossTrigger: BOSS_TRIGGER, stageLength: STAGE_LENGTH, rounds: MAX_STAGE }).toEqual({ nesScrollSpeed: 20, scrollSpeed: 45, fireInterval: 0.16, bossTrigger: 1820, stageLength: 2200, rounds: 6 });
+    expect({ nesPlayerSpeed: NES_PLAYER_SPEED, playerSpeed: WORLD_PLAYER_SPEED, bootsMultiplier: BOOTS_SPEED_MULTIPLIER }).toEqual({ nesPlayerSpeed: 75, playerSpeed: 168.75, bootsMultiplier: 1.2 });
   });
 
   it("keeps collision helpers bounded and Euclidean", () => {

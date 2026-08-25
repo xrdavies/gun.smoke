@@ -30,7 +30,8 @@ tables,
 VRAM, sprite OAM and selected 256x240 frames. The output is ignored by Git and
 is intended only for private inspection against the supplied reference file.
 
-`npm run trace:rom:timeline` starts a real game with the NES Start button and
+`npm run trace:rom:timeline` presses Start before the attract timer begins,
+starts a real game,
 samples title, opening, and the first Round at 60-frame intervals until the
 first-life trace ends. It records frame hashes, PPU scroll state and active OAM
 sprite counts for encounter-timing comparisons.
@@ -38,6 +39,11 @@ sprite counts for encounter-timing comparisons.
 The corrected Round 1 trace shows the PPU vertical position advancing 20 pixels
 per 60 frames. The 540-high procedural world therefore uses 45 world pixels per
 second (`20 * 540 / 240`) for its automatic scroll.
+
+Holding Left in the real player state moves Billy about 75 NES pixels per
+second. The procedural world therefore uses 168.75 world pixels per second;
+the Boots speed increase remains an explicit multiplier pending a verified ROM
+measurement.
 
 The web title page can also load the same local ROM into Reference ROM mode.
 This provides a legal exact-runtime comparison path without distributing the

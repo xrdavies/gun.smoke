@@ -21,6 +21,9 @@ export const BOSS_TRIGGER = 1_820;
 export const MAX_STAGE = STAGES.length;
 export const NES_SCROLL_SPEED = 20;
 export const WORLD_SCROLL_SPEED = NES_SCROLL_SPEED * (540 / 240);
+export const NES_PLAYER_SPEED = 75;
+export const WORLD_PLAYER_SPEED = NES_PLAYER_SPEED * (540 / 240);
+export const BOOTS_SPEED_MULTIPLIER = 1.2;
 
 export const SHOP_CHECKPOINTS: readonly (readonly number[])[] = [
   [560, 1_180],

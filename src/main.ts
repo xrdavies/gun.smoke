@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, shouldLoopStage, SHOP_CHECKPOINTS, scoreExtraLives, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, shouldLoopStage, SHOP_CHECKPOINTS, scoreExtraLives, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -355,7 +355,7 @@ class GunSmokeGame {
     if (this.shopOpen) return;
     this.camera.position.y = this.scroll + 270;
     this.invulnerable = Math.max(0, this.invulnerable - delta);
-    const movement = this.powerups.boots > 0 ? 285 : 235;
+    const movement = WORLD_PLAYER_SPEED * (this.powerups.boots > 0 ? BOOTS_SPEED_MULTIPLIER : 1);
     const halfRoad = (ROAD_WIDTHS[this.stage - 1] ?? 520) / 2;
     this.player.x = clamp(this.player.x + (this.actions.value("right") - this.actions.value("left")) * movement * delta, 480 - halfRoad + 22, 480 + halfRoad - 22);
     this.player.y = clamp(this.player.y + (this.actions.value("down") - this.actions.value("up")) * movement * delta, this.scroll + 285, this.scroll + 500);

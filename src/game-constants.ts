@@ -4,6 +4,8 @@ export interface StageDefinition {
   bossHp: number;
 }
 
+export type EnemyType = "gunman" | "rifleman" | "bomber" | "sniper" | "backstabber" | "ninja" | "hatchet" | "firebreather" | "shotgunner";
+
 export const STAGES: readonly StageDefinition[] = [
   { name: "HICKSVILLE", boss: "BANDIT BILL", bossHp: 4 },
   { name: "ROCKY PASS", boss: "CUTTER", bossHp: 4 },
@@ -29,6 +31,15 @@ export const SHOP_CHECKPOINTS: readonly (readonly number[])[] = [
 export const ROAD_WIDTHS = [520, 450, 430, 500, 650, 540] as const;
 export const WANTED_COSTS = [200, 240, 500, 500, 600, 800] as const;
 export const WANTED_X_OFFSETS = [-220, 160, -150, 180, -200, 0] as const;
+
+export const ROUND_ENEMY_TYPES: readonly (readonly EnemyType[])[] = [
+  ["gunman", "bomber", "sniper", "backstabber"],
+  ["gunman", "backstabber", "rifleman"],
+  ["gunman", "hatchet", "sniper", "firebreather"],
+  ["ninja", "gunman", "sniper", "shotgunner"],
+  ["gunman", "rifleman", "bomber", "backstabber"],
+  ["gunman", "sniper", "bomber", "backstabber"],
+];
 
 export type WeaponName = "pistol" | "shotgun" | "machinegun" | "magnum";
 

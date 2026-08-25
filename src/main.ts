@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, SHOP_CHECKPOINTS, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, type WeaponName } from "./game-constants";
+import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, ROUND_ENEMY_TYPES, SHOP_CHECKPOINTS, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, type EnemyType, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -25,7 +25,6 @@ type GameAction =
   | "fireRight";
 type GameMode = "title" | "intro" | "playing" | "gameover" | "ending";
 type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "coin" | "powerup" | "ammo" | "barrel" | "wanted";
-type EnemyType = "gunman" | "rifleman" | "bomber" | "sniper" | "backstabber" | "ninja" | "hatchet" | "firebreather" | "shotgunner";
 type TextureName = "player" | "enemy" | "boss" | "bullet" | "coin" | "powerup" | "ammo" | "barrel" | "wanted" | "terrain" | "road" | "landmark";
 type Rgba = [number, number, number, number];
 
@@ -440,17 +439,7 @@ class GunSmokeGame {
     const y = this.scroll + 55;
     const pattern = (this.stage + Math.floor(this.scroll / 420)) % 3;
     const offsets = pattern === 0 ? [-1, 0, 1] : pattern === 1 ? [-2, -1, 1, 2] : [-2, 0, 2];
-    const types: readonly EnemyType[] = this.stage === 1
-      ? ["gunman", "bomber"]
-      : this.stage === 2
-        ? ["rifleman", "backstabber", "shotgunner"]
-        : this.stage === 3
-          ? ["sniper", "hatchet", "firebreather"]
-          : this.stage === 4
-            ? ["ninja", "gunman", "sniper", "shotgunner"]
-            : this.stage === 5
-              ? ["rifleman", "bomber", "backstabber"]
-              : ["sniper", "ninja", "backstabber", "shotgunner"];
+    const types = ROUND_ENEMY_TYPES[this.stage - 1] ?? ROUND_ENEMY_TYPES[0]!;
     for (const offset of offsets) {
       const enemyType = types[Math.floor(this.nextRandom() * types.length)] ?? "gunman";
       const entryY = enemyType === "backstabber" ? this.scroll + 520 : y - Math.abs(offset) * 22;

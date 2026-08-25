@@ -17,6 +17,15 @@ export const STAGE_LENGTH = 2_200;
 export const BOSS_TRIGGER = 1_820;
 export const MAX_STAGE = STAGES.length;
 
+export const SHOP_CHECKPOINTS: readonly (readonly number[])[] = [
+  [560, 1_180],
+  [500, 1_120],
+  [420, 860, 1_300],
+  [560, 1_180],
+  [420, 1_160],
+  [420, 860, 1_300],
+];
+
 export type WeaponName = "pistol" | "shotgun" | "machinegun" | "magnum";
 
 export const WEAPONS: Record<WeaponName, { cost: number; interval: number; damage: number; spread: number }> = {

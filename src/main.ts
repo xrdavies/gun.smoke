@@ -8,7 +8,7 @@ import {
   World,
 } from "@xrdavies/2d-engine";
 import "./style.css";
-import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, STAGE_LENGTH, STAGES, WEAPONS, type WeaponName } from "./game-constants";
+import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, SHOP_CHECKPOINTS, STAGE_LENGTH, STAGES, WEAPONS, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -399,7 +399,11 @@ class GunSmokeGame {
   }
 
   private maybeOpenShop(): void {
-    const checkpoint = this.scroll >= 560 ? 1 : this.scroll >= 1_180 ? 2 : 0;
+    const checkpoints = SHOP_CHECKPOINTS[this.stage - 1] ?? [];
+    let checkpoint = 0;
+    for (let index = 0; index < checkpoints.length; index += 1) {
+      if (this.scroll >= (checkpoints[index] ?? Number.POSITIVE_INFINITY)) checkpoint = index + 1;
+    }
     if (checkpoint === 0 || checkpoint <= this.shopIndex) return;
     this.shopIndex = checkpoint;
     this.shopOpen = true;

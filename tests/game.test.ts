@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { BOSS_TRIGGER, MAX_STAGE, STAGE_LENGTH, clamp, distance } from "../src/game-constants";
+import { BOSS_TRIGGER, MAX_STAGE, SHOP_CHECKPOINTS, STAGE_LENGTH, clamp, distance } from "../src/game-constants";
 
 describe("Gun.Smoke vertical slice", () => {
   it("keeps the NES-inspired stage constants stable", () => {
@@ -10,5 +10,11 @@ describe("Gun.Smoke vertical slice", () => {
     expect(clamp(12, 0, 10)).toBe(10);
     expect(clamp(-2, 0, 10)).toBe(0);
     expect(distance({ x: 0, y: 0 }, { x: 3, y: 4 })).toBe(5);
+  });
+
+  it("keeps the round shop cadence explicit", () => {
+    expect(SHOP_CHECKPOINTS).toHaveLength(MAX_STAGE);
+    expect(SHOP_CHECKPOINTS[2]).toHaveLength(3);
+    expect(SHOP_CHECKPOINTS[5]).toHaveLength(3);
   });
 });

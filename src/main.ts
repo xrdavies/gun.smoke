@@ -8,6 +8,7 @@ import {
   World,
 } from "@xrdavies/2d-engine";
 import "./style.css";
+import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, STAGE_LENGTH, STAGES, type StageDefinition } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -18,8 +19,8 @@ type GameAction =
   | "fireCenter"
   | "fireRight";
 type GameMode = "title" | "playing" | "gameover";
-type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "coin" | "powerup";
-type TextureName = "player" | "enemy" | "boss" | "bullet" | "coin" | "powerup" | "terrain" | "road";
+type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "coin" | "powerup" | "wanted";
+type TextureName = "player" | "enemy" | "boss" | "bullet" | "coin" | "powerup" | "wanted" | "terrain" | "road";
 type Rgba = [number, number, number, number];
 
 interface Unit {
@@ -36,9 +37,6 @@ interface Unit {
   phase: number;
 }
 
-const STAGE_LENGTH = 2_200;
-const BOSS_TRIGGER = 1_820;
-const MAX_STAGE = 5;
 const actions = new ActionMap<GameAction>();
 actions
   .bind("left", { type: "key", code: "ArrowLeft" }, { type: "key", code: "KeyA" })
@@ -66,6 +64,7 @@ const stageLabel = requireElement<HTMLElement>("#stage-label");
 const scoreLabel = requireElement<HTMLElement>("#score-label");
 const moneyLabel = requireElement<HTMLElement>("#money-label");
 const livesLabel = requireElement<HTMLElement>("#lives-label");
+const weaponLabel = requireElement<HTMLElement>("#weapon-label");
 const messageLabel = requireElement<HTMLElement>("#message-label");
 canvas.tabIndex = 0;
 
@@ -103,14 +102,6 @@ function proceduralRows(width: number, height: number, seed: number, values: rea
   );
 }
 
-function clamp(value: number, minimum: number, maximum: number): number {
-  return Math.max(minimum, Math.min(maximum, value));
-}
-
-function distance(a: { x: number; y: number }, b: { x: number; y: number }): number {
-  return Math.hypot(a.x - b.x, a.y - b.y);
-}
-
 class GunSmokeGame {
   readonly world = new World();
   readonly actions = actions;
@@ -135,6 +126,8 @@ class GunSmokeGame {
   invulnerable = 0;
   bossSpawned = false;
   stageClearClock = 0;
+  hasWanted = false;
+  wingatePhase = 0;
   player = { entity: 0, x: 480, y: 410, sprite: undefined as unknown as Sprite };
 
   private constructor(engine: Engine) {
@@ -175,6 +168,7 @@ class GunSmokeGame {
       bullet: pixelTexture(engine, [".o.", ".o.", ".o.", ".o.", ".o.", ".o."], palette),
       coin: pixelTexture(engine, [".ooo.", "ookoo", "okkoo", "ookoo", ".ooo."], palette),
       powerup: pixelTexture(engine, [".gggg.", "gkkkkg", "gkookg", "gkkkkg", ".gggg.", "..gg.."], palette),
+      wanted: pixelTexture(engine, ["wwwwww", "wkkkkw", "wkrrkw", "wkkkkw", "wkookw", "wwwwww"], palette),
       terrain: pixelTexture(engine, proceduralRows(64, 64, this.stage, ["d", "d", "d", "p", "d", "p"]), palette),
       road: pixelTexture(engine, proceduralRows(64, 64, this.stage + 3, ["t", "t", "s", "t", "s", "t"]), palette),
     };
@@ -247,7 +241,11 @@ class GunSmokeGame {
 
   private updateSpawns(delta: number): void {
     this.spawnClock -= delta;
-    if (this.scroll >= BOSS_TRIGGER && !this.bossSpawned) this.spawnBoss();
+    if (this.scroll >= BOSS_TRIGGER && !this.hasWanted && !this.units.some((unit) => unit.kind === "wanted")) {
+      this.spawnUnit("wanted", 480, this.scroll + 170, 1);
+      this.showMessage("GET THE WANTED POSTER");
+    }
+    if (this.scroll >= BOSS_TRIGGER && this.hasWanted && !this.bossSpawned) this.spawnBoss();
     if (this.spawnClock <= 0 && !this.bossSpawned) {
       this.spawnFormation();
       this.spawnClock = Math.max(0.58, 1.15 - this.stage * 0.08);
@@ -300,15 +298,16 @@ class GunSmokeGame {
 
   private spawnBoss(): void {
     this.bossSpawned = true;
-    this.spawnUnit("boss", 480, this.scroll + 90, 12 + this.stage * 4);
-    this.showMessage(`WANTED: BOSS ${this.stage}`);
+    const definition = STAGES[this.stage - 1] ?? STAGES[0]!;
+    this.spawnUnit("boss", 480, this.scroll + 90, definition.bossHp * 4);
+    this.showMessage(`WANTED: ${definition.boss}`);
     this.beep(180, 0.18);
   }
 
   private spawnUnit(kind: UnitKind, x: number, y: number, hp: number): Unit {
-    const textureName: TextureName = kind === "enemyBullet" ? "bullet" : kind === "boss" || kind === "enemy" || kind === "bullet" || kind === "coin" || kind === "powerup" ? kind : "enemy";
+    const textureName: TextureName = kind === "enemyBullet" ? "bullet" : kind === "boss" || kind === "enemy" || kind === "bullet" || kind === "coin" || kind === "powerup" || kind === "wanted" ? kind : "enemy";
     const isBoss = kind === "boss";
-    const isPickup = kind === "coin" || kind === "powerup";
+    const isPickup = kind === "coin" || kind === "powerup" || kind === "wanted";
     const small = kind === "bullet" || kind === "enemyBullet";
     const sprite = new Sprite({ texture: this.textures[textureName], sampler: this.sampler, position: { x, y }, size: { x: isBoss ? 110 : isPickup ? 28 : small ? 9 : 34, y: isBoss ? 68 : isPickup ? 28 : small ? 25 : 34 }, anchor: { x: 0.5, y: 0.5 }, layer: isBoss ? 15 : small ? 12 : isPickup ? 11 : 10 });
     const unit: Unit = {
@@ -316,7 +315,7 @@ class GunSmokeGame {
       vx: isBoss ? 42 : (Math.random() - 0.5) * 70,
       vy: isBoss || isPickup ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : small ? 7 : 19,
-      value: isBoss ? 5_000 : kind === "coin" ? 50 : kind === "powerup" ? 250 : 100,
+      value: isBoss ? 5_000 : kind === "coin" ? 50 : kind === "powerup" ? 250 : kind === "wanted" ? 1_000 : 100,
       age: 0, phase: Math.random() * Math.PI * 2,
     };
     this.units.push(unit);
@@ -340,7 +339,7 @@ class GunSmokeGame {
       unit.x += unit.vx * delta;
       if (unit.x < 380 || unit.x > 580) unit.vx *= -1;
       unit.y = this.scroll + 92 + Math.sin(unit.age * 2) * 18;
-    } else if (unit.kind === "coin" || unit.kind === "powerup") {
+    } else if (unit.kind === "coin" || unit.kind === "powerup" || unit.kind === "wanted") {
       unit.y += 40 * delta;
       unit.x += Math.sin(unit.age * 4 + unit.phase) * 14 * delta;
     } else {
@@ -363,6 +362,12 @@ class GunSmokeGame {
       this.money += target.kind === "boss" ? 50 : 2;
       if (target.kind === "enemy" && Math.random() < 0.3) this.spawnUnit(Math.random() < 0.72 ? "coin" : "powerup", target.x, target.y, 1);
       if (target.kind === "boss") {
+        if (this.stage === MAX_STAGE && this.wingatePhase === 0) {
+          this.wingatePhase = 1;
+          this.spawnUnit("boss", 480, this.scroll + 90, (STAGES[MAX_STAGE - 1]?.bossHp ?? 6) * 4);
+          this.showMessage("THE REAL WINGATE");
+          continue;
+        }
         this.bossSpawned = false;
         this.stageClearClock = 1.5;
         this.showMessage(this.stage === MAX_STAGE ? "TRAIL COMPLETE" : "BOSS DOWN");
@@ -370,13 +375,17 @@ class GunSmokeGame {
       }
     }
     for (const unit of this.units.filter((candidate) => candidate.hp > 0)) {
-      if (unit.kind === "coin" || unit.kind === "powerup") {
+      if (unit.kind === "coin" || unit.kind === "powerup" || unit.kind === "wanted") {
         if (distance(unit, this.player) <= unit.radius + 22) {
           unit.hp = 0;
           this.score += unit.value;
           if (unit.kind === "coin") this.money += 10;
-          else this.lives = Math.min(5, this.lives + 1);
-          this.beep(unit.kind === "coin" ? 980 : 620, 0.08);
+          else if (unit.kind === "powerup") this.lives = Math.min(5, this.lives + 1);
+          else {
+            this.hasWanted = true;
+            this.showMessage("WANTED POSTER FOUND");
+          }
+          this.beep(unit.kind === "coin" ? 980 : unit.kind === "wanted" ? 520 : 620, 0.08);
         }
       } else if ((unit.kind === "enemy" || unit.kind === "boss" || unit.kind === "enemyBullet") && this.invulnerable <= 0 && distance(unit, this.player) <= unit.radius + 20) {
         this.takeHit();
@@ -404,6 +413,8 @@ class GunSmokeGame {
     this.spawnClock = 0.8;
     this.enemyFireClock = 1.2;
     this.bossSpawned = false;
+    this.hasWanted = false;
+    this.wingatePhase = 0;
     this.units.length = 0;
     this.buildBackground();
     this.player.x = 480;
@@ -421,10 +432,12 @@ class GunSmokeGame {
   }
 
   private updateHud(): void {
-    stageLabel.textContent = `STAGE ${this.stage}`;
+    const definition = STAGES[this.stage - 1] ?? STAGES[0]!;
+    stageLabel.textContent = `ROUND ${this.stage} ${definition.name}`;
     scoreLabel.textContent = `SCORE ${String(this.score).padStart(6, "0")}`;
     moneyLabel.textContent = `$${String(this.money).padStart(3, "0")}`;
     livesLabel.textContent = `LIVES ${this.lives}`;
+    weaponLabel.textContent = this.hasWanted ? "WANTED YES" : "WANTED NO";
   }
 
   private showMessage(text: string): void {
@@ -461,5 +474,3 @@ let game: GunSmokeGame | undefined;
 startButton.addEventListener("click", () => void game?.start());
 restartButton.addEventListener("click", () => window.location.reload());
 game = await GunSmokeGame.create();
-
-export { BOSS_TRIGGER, MAX_STAGE, STAGE_LENGTH, clamp, distance };

@@ -2,10 +2,11 @@
 
 NES/FC-oriented Gun.Smoke recreation built on `@xrdavies/2d-engine`.
 
-The repository contains a playable five-stage loop: title screen, automatic
+The repository contains a playable six-round loop: title screen, automatic
 vertical scrolling, eight-way movement, three-direction shooting, enemy
 formations and projectiles, coins, life pickups, stage bosses, score, money,
-damage recovery, game over and a completion state.
+damage recovery, wanted-poster gates, two final Wingate encounters, game over
+and a completion state.
 
 The current assets are procedural development sprites. No commercial ROM,
 copyrighted extracted assets, or original Capcom source code is included.

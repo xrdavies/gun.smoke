@@ -26,6 +26,7 @@ body { margin: 0; min-width: 320px; min-height: 100vh; background: #080d18; }
 #hud { position: absolute; inset: 0; pointer-events: none; padding: 18px 22px; text-shadow: 2px 2px #080d18; }
 .hud-row { display: flex; justify-content: space-between; gap: 12px; color: #f8d982; font-size: clamp(11px, 1.4vw, 15px); }
 #message-label { margin-top: 8px; color: #fff2c2; text-align: center; min-height: 1em; }
+.hud-status { margin-top: 5px; font-size: 11px; color: #d9764b; }
 
 #title-screen, #game-over {
   position: absolute;

@@ -781,6 +781,12 @@ continueButton.addEventListener("click", () => game?.continueFromIntro());
 restartButton.addEventListener("click", () => window.location.reload());
 shopClose.addEventListener("click", () => game?.closeShop());
 for (const item of shopItems) item.addEventListener("click", () => game?.buyShopItem(item.dataset.shopItem ?? ""));
+window.addEventListener("keydown", (event) => {
+  if (event.code !== "Enter" && event.code !== "NumpadEnter") return;
+  if (game?.mode === "title") game.start();
+  else if (game?.mode === "intro") game.continueFromIntro();
+  else if (game?.mode === "gameover") window.location.reload();
+});
 try {
   game = await GunSmokeGame.create();
   startButton.disabled = false;

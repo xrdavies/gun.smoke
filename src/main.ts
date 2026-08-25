@@ -121,6 +121,8 @@ class GunSmokeGame {
   readonly sampler: GPUSampler;
   readonly camera = new Camera2D({ position: { x: 480, y: 270 }, viewportWidth: 960, viewportHeight: 540 });
   readonly textures: Record<TextureName, GPUTexture>;
+  readonly terrainTextures: GPUTexture[] = [];
+  readonly roadTextures: GPUTexture[] = [];
   audio: AudioManager | undefined;
   mode: GameMode = "title";
   scroll = 0;
@@ -188,6 +190,26 @@ class GunSmokeGame {
       terrain: pixelTexture(engine, proceduralRows(64, 64, this.stage, ["d", "d", "d", "p", "d", "p"]), palette),
       road: pixelTexture(engine, proceduralRows(64, 64, this.stage + 3, ["t", "t", "s", "t", "s", "t"]), palette),
     };
+    const terrainPatterns: readonly (readonly string[])[] = [
+      ["d", "d", "d", "p", "d", "p"],
+      ["b", "d", "b", "d", "d", "b"],
+      ["g", "d", "g", "d", "g", "d"],
+      ["s", "d", "s", "d", "p", "d"],
+      ["g", "g", "d", "g", "d", "g"],
+      ["d", "p", "d", "s", "d", "p"],
+    ];
+    const roadPatterns: readonly (readonly string[])[] = [
+      ["t", "t", "s", "t", "s", "t"],
+      ["b", "s", "b", "s", "b", "s"],
+      ["t", "g", "t", "g", "t", "g"],
+      ["s", "t", "s", "t", "s", "t"],
+      ["t", "g", "s", "t", "g", "s"],
+      ["p", "t", "p", "s", "t", "p"],
+    ];
+    for (let index = 0; index < STAGES.length; index += 1) {
+      this.terrainTextures.push(pixelTexture(engine, proceduralRows(64, 64, index + 1, terrainPatterns[index] ?? terrainPatterns[0]!), palette));
+      this.roadTextures.push(pixelTexture(engine, proceduralRows(64, 64, index + 4, roadPatterns[index] ?? roadPatterns[0]!), palette));
+    }
     this.player.entity = this.world.createEntity();
     this.player.sprite = new Sprite({ texture: this.textures.player, sampler: this.sampler, position: { x: 480, y: 410 }, size: { x: 45, y: 54 }, anchor: { x: 0.5, y: 0.5 }, layer: 20 });
     this.world.addTransform(this.player.entity);
@@ -329,9 +351,13 @@ class GunSmokeGame {
     this.backgrounds.length = 0;
     const themes: Rgba[] = [[1, 1, 1, 1], [0.92, 0.98, 1, 1], [1, 0.93, 0.84, 1], [0.9, 0.96, 0.9, 1], [1, 0.86, 0.75, 1]];
     const tint = themes[(this.stage - 1) % themes.length] ?? [1, 1, 1, 1];
+    const terrain = this.terrainTextures[this.stage - 1] ?? this.textures.terrain;
+    const road = this.roadTextures[this.stage - 1] ?? this.textures.road;
+    const roadWidths = [520, 450, 430, 500, 650, 540];
+    const roadWidth = roadWidths[this.stage - 1] ?? 520;
     for (let y = -360; y < STAGE_LENGTH + 650; y += 180) {
-      this.backgrounds.push(new Sprite({ texture: this.textures.terrain, sampler: this.sampler, position: { x: 480, y: y + 90 }, size: { x: 960, y: 180 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -20 }));
-      this.backgrounds.push(new Sprite({ texture: this.textures.road, sampler: this.sampler, position: { x: 480, y: y + 90 }, size: { x: 520, y: 180 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -19 }));
+      this.backgrounds.push(new Sprite({ texture: terrain, sampler: this.sampler, position: { x: 480, y: y + 90 }, size: { x: 960, y: 180 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -20 }));
+      this.backgrounds.push(new Sprite({ texture: road, sampler: this.sampler, position: { x: 480, y: y + 90 }, size: { x: roadWidth, y: 180 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -19 }));
     }
   }
 

@@ -31,4 +31,7 @@ is intended only for private inspection against the supplied reference file.
 
 The web title page can also load the same local ROM into Reference ROM mode.
 This provides a legal exact-runtime comparison path without distributing the
-ROM; the regular web game remains the original procedural recreation.
+ROM; the regular web game remains the original procedural recreation. The
+runtime validates the iNES header, reports Mapper/PRG metadata, maps keyboard
+and Gamepad input to controller 1, advances at 60 Hz and forwards JSNES APU
+samples to a browser audio stream.

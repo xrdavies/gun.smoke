@@ -44,6 +44,7 @@ interface Unit {
   phase: number;
   damage: number;
   fired: boolean;
+  turnRate: number;
   animation?: SpriteAnimationBinding;
 }
 
@@ -378,13 +379,13 @@ class GunSmokeGame {
 
   private fireBoss(boss: Unit): void {
     const angle = Math.atan2(this.player.y - boss.y, this.player.x - boss.x);
-    const patterns: Record<number, { count: number; spread: number; speed: number; cooldown: number }> = {
-      1: { count: 1, spread: 0, speed: 125, cooldown: 1.1 },
-      2: { count: 2, spread: 0.24, speed: 150, cooldown: 1.25 },
-      3: { count: 5, spread: 0.18, speed: 118, cooldown: 1.4 },
-      4: { count: 3, spread: 0.3, speed: 168, cooldown: 0.95 },
-      5: { count: 1, spread: 0, speed: 100, cooldown: 0.8 },
-      6: { count: this.wingatePhase ? 5 : 3, spread: 0.1, speed: 190, cooldown: this.wingatePhase ? 0.42 : 0.7 },
+    const patterns: Record<number, { count: number; spread: number; speed: number; cooldown: number; turnRate: number }> = {
+      1: { count: 1, spread: 0, speed: 125, cooldown: 1.1, turnRate: 0 },
+      2: { count: 2, spread: 0.24, speed: 150, cooldown: 1.25, turnRate: 1.1 },
+      3: { count: 5, spread: 0.18, speed: 118, cooldown: 1.4, turnRate: 0 },
+      4: { count: 3, spread: 0.3, speed: 168, cooldown: 0.95, turnRate: 0 },
+      5: { count: 1, spread: 0, speed: 100, cooldown: 0.8, turnRate: 0 },
+      6: { count: this.wingatePhase ? 5 : 3, spread: 0.1, speed: 190, cooldown: this.wingatePhase ? 0.42 : 0.7, turnRate: 0 },
     };
     const pattern = patterns[this.stage] ?? patterns[1]!;
     const center = (pattern.count - 1) / 2;
@@ -393,6 +394,7 @@ class GunSmokeGame {
       const shotAngle = angle + (index - center) * pattern.spread;
       projectile.vx = Math.cos(shotAngle) * pattern.speed;
       projectile.vy = Math.sin(shotAngle) * pattern.speed;
+      projectile.turnRate = pattern.turnRate * (index === 0 ? -1 : 1);
       projectile.radius = 7;
     }
     this.bossFireClock = pattern.cooldown;
@@ -536,7 +538,7 @@ class GunSmokeGame {
       vy: isBoss || isPickup ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : small ? 7 : 19,
       value: isBoss ? 5_000 : kind === "coin" ? 50 : kind === "powerup" ? 250 : kind === "ammo" ? 0 : kind === "wanted" ? 1_000 : 100,
-      age: 0, phase: this.nextRandom() * Math.PI * 2, damage: 1, fired: false,
+      age: 0, phase: this.nextRandom() * Math.PI * 2, damage: 1, fired: false, turnRate: 0,
     };
     this.units.push(unit);
     return unit;
@@ -611,6 +613,12 @@ class GunSmokeGame {
       unit.y += 40 * delta;
       unit.x += Math.sin(unit.age * 4 + unit.phase) * 14 * delta;
     } else {
+      if (unit.kind === "enemyBullet" && unit.turnRate !== 0) {
+        const speed = Math.hypot(unit.vx, unit.vy);
+        const angle = Math.atan2(unit.vy, unit.vx) + unit.turnRate * delta;
+        unit.vx = Math.cos(angle) * speed;
+        unit.vy = Math.sin(angle) * speed;
+      }
       unit.x += unit.vx * delta;
       unit.y += unit.vy * delta;
     }

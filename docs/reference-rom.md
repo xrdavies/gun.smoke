@@ -30,9 +30,10 @@ tables,
 VRAM, sprite OAM and selected 256x240 frames. The output is ignored by Git and
 is intended only for private inspection against the supplied reference file.
 
-`npm run trace:rom:timeline` samples one minute of execution at 60-frame
-intervals and records frame hashes, PPU scroll state and active OAM sprite
-counts for encounter-timing comparisons.
+`npm run trace:rom:timeline` starts a real game with the NES Start button and
+samples title, opening, and the first Round at 60-frame intervals until the
+first-life trace ends. It records frame hashes, PPU scroll state and active OAM
+sprite counts for encounter-timing comparisons.
 
 The web title page can also load the same local ROM into Reference ROM mode.
 This provides a legal exact-runtime comparison path without distributing the

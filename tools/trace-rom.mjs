@@ -50,9 +50,9 @@ const checkpoint = (label) => {
 };
 
 if (timeline) {
-  for (let frame = 0; frame < 3_600; frame += 1) {
-    if (frame === 180 || frame === 1_380) nes.buttonDown(1, Controller.BUTTON_A);
-    if (frame === 185 || frame === 1_385) nes.buttonUp(1, Controller.BUTTON_A);
+  for (let frame = 0; frame < 2_880; frame += 1) {
+    if (frame === 360) nes.buttonDown(1, Controller.BUTTON_START);
+    if (frame === 365) nes.buttonUp(1, Controller.BUTTON_START);
     nes.frame();
     if (frame % 60 === 59) checkpoint(`timeline-${frame + 1}`);
   }
@@ -60,17 +60,16 @@ if (timeline) {
   process.exit(0);
 }
 
-for (let frame = 0; frame < 180; frame += 1) nes.frame();
-checkpoint("title");
-nes.buttonDown(1, Controller.BUTTON_A);
-for (let frame = 0; frame < 600; frame += 1) nes.frame();
-nes.buttonUp(1, Controller.BUTTON_A);
-checkpoint("intro-after-A");
-for (let frame = 0; frame < 600; frame += 1) nes.frame();
-checkpoint("intro-text");
-nes.buttonDown(1, Controller.BUTTON_A);
-for (let frame = 0; frame < 5; frame += 1) nes.frame();
-nes.buttonUp(1, Controller.BUTTON_A);
 for (let frame = 0; frame < 300; frame += 1) nes.frame();
-checkpoint("round-1-entry");
+checkpoint("title");
+for (let frame = 0; frame < 60; frame += 1) nes.frame();
+nes.buttonDown(1, Controller.BUTTON_START);
+for (let frame = 0; frame < 5; frame += 1) nes.frame();
+nes.buttonUp(1, Controller.BUTTON_START);
+for (let frame = 0; frame < 355; frame += 1) nes.frame();
+checkpoint("opening");
+for (let frame = 0; frame < 720; frame += 1) nes.frame();
+checkpoint("opening-text");
+for (let frame = 0; frame < 1_080; frame += 1) nes.frame();
+checkpoint("round-1-active");
 console.log(JSON.stringify(checkpoints, null, 2));

@@ -30,11 +30,11 @@ export const ROAD_WIDTHS = [520, 450, 430, 500, 650, 540] as const;
 
 export type WeaponName = "pistol" | "shotgun" | "machinegun" | "magnum";
 
-export const WEAPONS: Record<WeaponName, { cost: number; interval: number; damage: number; spread: number }> = {
-  pistol: { cost: 0, interval: 0.16, damage: 1, spread: 0 },
-  shotgun: { cost: 40, interval: 0.2, damage: 1, spread: 0.28 },
-  machinegun: { cost: 80, interval: 0.08, damage: 1, spread: 0 },
-  magnum: { cost: 120, interval: 0.24, damage: 3, spread: 0 },
+export const WEAPONS: Record<WeaponName, { cost: number; interval: number; damage: number; spread: number; maxAmmo: number }> = {
+  pistol: { cost: 0, interval: 0.16, damage: 1, spread: 0, maxAmmo: Number.POSITIVE_INFINITY },
+  shotgun: { cost: 40, interval: 0.2, damage: 1, spread: 0.28, maxAmmo: 30 },
+  machinegun: { cost: 80, interval: 0.08, damage: 1, spread: 0, maxAmmo: 80 },
+  magnum: { cost: 120, interval: 0.24, damage: 3, spread: 0, maxAmmo: 24 },
 };
 
 export function clamp(value: number, minimum: number, maximum: number): number {

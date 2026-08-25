@@ -13,6 +13,10 @@ test("starts the WebGPU stage and renders gameplay", async ({ page }) => {
   await page.locator("#continue-button").click();
   await expect(page.locator("#hud")).toBeVisible();
   await expect(page.locator("#stage-label")).toHaveText("ROUND 1 HICKSVILLE");
+  await page.keyboard.press("p");
+  await expect(page.locator("#pause-screen")).toBeVisible();
+  await page.locator("#resume-button").click();
+  await expect(page.locator("#pause-screen")).toBeHidden();
   await page.keyboard.down("x");
   await page.waitForTimeout(2_500);
   await page.keyboard.up("x");

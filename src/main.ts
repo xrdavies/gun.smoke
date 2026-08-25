@@ -23,7 +23,7 @@ type GameAction =
   | "fireLeft"
   | "fireCenter"
   | "fireRight";
-type GameMode = "title" | "intro" | "playing" | "gameover" | "ending";
+type GameMode = "title" | "intro" | "playing" | "paused" | "gameover" | "ending";
 type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "coin" | "powerup" | "ammo" | "barrel" | "wanted";
 type TextureName = "player" | "enemy" | "boss" | "bullet" | "coin" | "powerup" | "ammo" | "barrel" | "wanted" | "terrain" | "road" | "landmark";
 type Rgba = [number, number, number, number];
@@ -68,11 +68,13 @@ const titleScreen = requireElement<HTMLElement>("#title-screen");
 const introScreen = requireElement<HTMLElement>("#intro-screen");
 const gameOver = requireElement<HTMLElement>("#game-over");
 const endingScreen = requireElement<HTMLElement>("#ending-screen");
+const pauseScreen = requireElement<HTMLElement>("#pause-screen");
 const hud = requireElement<HTMLElement>("#hud");
 const startButton = requireElement<HTMLButtonElement>("#start-button");
 const continueButton = requireElement<HTMLButtonElement>("#continue-button");
 const restartButton = requireElement<HTMLButtonElement>("#restart-button");
 const endingButton = requireElement<HTMLButtonElement>("#ending-button");
+const resumeButton = requireElement<HTMLButtonElement>("#resume-button");
 const referenceRomInput = requireElement<HTMLInputElement>("#reference-rom");
 const romStatus = requireElement<HTMLElement>("#rom-status");
 const finalScore = requireElement<HTMLElement>("#final-score");
@@ -273,6 +275,7 @@ class GunSmokeGame {
     introScreen.hidden = false;
     gameOver.hidden = true;
     endingScreen.hidden = true;
+    pauseScreen.hidden = true;
     hud.hidden = true;
     canvas.focus();
     void this.audio?.unlock();
@@ -287,6 +290,18 @@ class GunSmokeGame {
     this.startMusic();
     this.showMessage("RIDE OUT");
     this.engine.start();
+  }
+
+  togglePause(): void {
+    if (this.mode === "playing") {
+      this.mode = "paused";
+      this.engine.pause();
+      pauseScreen.hidden = false;
+    } else if (this.mode === "paused") {
+      this.mode = "playing";
+      pauseScreen.hidden = true;
+      this.engine.resume();
+    }
   }
 
   private update(delta: number): void {
@@ -727,6 +742,7 @@ class GunSmokeGame {
     this.stopMusic();
     this.engine.stop();
     hud.hidden = true;
+    pauseScreen.hidden = true;
     if (won) {
       this.mode = "ending";
       endingScreen.hidden = false;
@@ -1027,10 +1043,15 @@ startButton.addEventListener("click", () => void game?.start());
 continueButton.addEventListener("click", () => game?.continueFromIntro());
 restartButton.addEventListener("click", () => window.location.reload());
 endingButton.addEventListener("click", () => window.location.reload());
+resumeButton.addEventListener("click", () => game?.togglePause());
 shopClose.addEventListener("click", () => game?.closeShop());
 for (const item of shopItems) item.addEventListener("click", () => game?.buyShopItem(item.dataset.shopItem ?? ""));
 referenceRomInput.addEventListener("change", () => void loadReferenceRom());
 window.addEventListener("keydown", (event) => {
+  if (event.code === "KeyP" || event.code === "Escape") {
+    game?.togglePause();
+    return;
+  }
   if (event.code !== "Enter" && event.code !== "NumpadEnter") return;
   if (game?.mode === "title") game.start();
   else if (game?.mode === "intro") game.continueFromIntro();
@@ -1058,6 +1079,7 @@ async function loadReferenceRom(): Promise<void> {
     introScreen.hidden = true;
     gameOver.hidden = true;
     endingScreen.hidden = true;
+    pauseScreen.hidden = true;
     hud.hidden = true;
     shop.hidden = true;
     referenceGame.start();

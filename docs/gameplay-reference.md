@@ -48,6 +48,10 @@ single random cadence and provides a stable target for ROM trace comparison.
 After the second Wingate encounter the web recreation enters a separate ending
 and credits state instead of treating the win as Game Over.
 
+The programmatic mode also supports pausing through the engine's
+`Engine.pause()`/`resume()` lifecycle, with `P`, `Escape`, and a visible Resume
+control.
+
 ## Known Approximation Boundary
 
 - The repository does not contain extracted ROM graphics, music, or Capcom

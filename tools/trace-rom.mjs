@@ -23,12 +23,13 @@ const activeSprites = () => {
   }
   return count;
 };
-const checkpoint = (label) => {
+const checkpoint = (label, gameFrame) => {
   const frameHash = lastFrame
     ? crypto.createHash("sha256").update(Buffer.from(lastFrame.buffer)).digest("hex").slice(0, 16)
     : undefined;
   checkpoints.push({
     label,
+    gameFrame,
     pc: `$${nes.cpu.REG_PC.toString(16).padStart(4, "0")}`,
     state: nes.cpu.mem[0x68],
     substate: nes.cpu.mem[0x69],
@@ -54,21 +55,21 @@ if (timeline) {
     if (frame === 180) nes.buttonDown(1, Controller.BUTTON_START);
     if (frame === 185) nes.buttonUp(1, Controller.BUTTON_START);
     nes.frame();
-    if (frame % 60 === 59) checkpoint(`timeline-${frame + 1}`);
+    if (frame % 60 === 59) checkpoint(`timeline-${frame + 1}`, Math.max(0, frame + 1 - 825));
   }
   console.log(JSON.stringify(checkpoints, null, 2));
   process.exit(0);
 }
 
 for (let frame = 0; frame < 180; frame += 1) nes.frame();
-checkpoint("title");
+checkpoint("title", 0);
 nes.buttonDown(1, Controller.BUTTON_START);
 for (let frame = 0; frame < 5; frame += 1) nes.frame();
 nes.buttonUp(1, Controller.BUTTON_START);
 for (let frame = 0; frame < 415; frame += 1) nes.frame();
-checkpoint("wanted-screen");
+checkpoint("wanted-screen", 0);
 for (let frame = 0; frame < 240; frame += 1) nes.frame();
-checkpoint("round-1-entry");
+checkpoint("round-1-entry", 15);
 for (let frame = 0; frame < 360; frame += 1) nes.frame();
-checkpoint("round-1-active");
+checkpoint("round-1-active", 375);
 console.log(JSON.stringify(checkpoints, null, 2));

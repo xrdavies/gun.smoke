@@ -35,6 +35,9 @@ starts a real game,
 samples title, opening, and the first Round at 60-frame intervals until the
 first-life trace ends. It records frame hashes, PPU scroll state and active OAM
 sprite counts for encounter-timing comparisons.
+Each sample also includes `gameFrame`, measured from the verified Round 1 entry
+at ROM frame 825, so timeline samples can be mapped directly onto procedural
+world coordinates.
 
 The corrected Round 1 trace shows the PPU vertical position advancing 20 pixels
 per 60 frames. The 540-high procedural world therefore uses 45 world pixels per

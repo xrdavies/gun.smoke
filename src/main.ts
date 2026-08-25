@@ -370,7 +370,7 @@ class GunSmokeGame {
 
   private buildBackground(): void {
     this.backgrounds.length = 0;
-    const themes: Rgba[] = [[1, 1, 1, 1], [0.92, 0.98, 1, 1], [1, 0.93, 0.84, 1], [0.9, 0.96, 0.9, 1], [1, 0.86, 0.75, 1]];
+    const themes: Rgba[] = [[1, 1, 1, 1], [0.92, 0.98, 1, 1], [1, 0.93, 0.84, 1], [0.9, 0.96, 0.9, 1], [1, 0.86, 0.75, 1], [0.88, 0.9, 1, 1]];
     const tint = themes[(this.stage - 1) % themes.length] ?? [1, 1, 1, 1];
     const terrain = this.terrainTextures[this.stage - 1] ?? this.textures.terrain;
     const road = this.roadTextures[this.stage - 1] ?? this.textures.road;

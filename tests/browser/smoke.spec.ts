@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -46,6 +47,9 @@ test("runs a locally supplied reference ROM through the engine", async ({ page }
   await page.locator("#reference-rom").setInputFiles(romPath);
   await expect(page.locator("#rom-status")).toContainText("Reference ROM active", { timeout: 5_000 });
   await expect(page.locator("#title-screen")).toBeHidden();
+  const first = await page.locator("#game-canvas").screenshot();
   await page.waitForTimeout(300);
+  const second = await page.locator("#game-canvas").screenshot();
+  expect(crypto.createHash("sha256").update(first).digest("hex")).not.toBe(crypto.createHash("sha256").update(second).digest("hex"));
   expect(pageErrors).toEqual([]);
 });

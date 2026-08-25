@@ -66,6 +66,10 @@ gunmen, bombers, snipers and back-stabbers; Rocky Pass adds riflemen; Native
 Village adds hatchet throwers and firebreathers; Cliff Valley adds ninjas and
 shotgunners; the final rounds return to gunmen, riflemen, bombers and snipers.
 
+Round 1 Bomber dynamite has explicit flight, landed, defusable, and delayed
+explosion phases. Boss and enemy projectiles are typed separately as bullets,
+boomerangs, fireballs, shuriken, or dynamite.
+
 Encounter timing is also represented as four deterministic segments per Round,
 with explicit formation shape and interval data; this replaces the earlier
 single random cadence and provides a stable target for ROM trace comparison.

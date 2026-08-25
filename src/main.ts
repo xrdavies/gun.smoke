@@ -27,6 +27,7 @@ type GameAction =
   | "inventory";
 type GameMode = "title" | "intro" | "playing" | "paused" | "gameover" | "ending";
 type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "coin" | "ammo" | "barrel" | "item" | "wanted";
+type ProjectileType = "bullet" | "dynamite" | "boomerang" | "fireball" | "shuriken";
 type TextureName = "player" | "enemy" | "boss" | "bullet" | "coin" | "powerup" | "ammo" | "barrel" | "wanted" | "terrain" | "road" | "landmark";
 type Rgba = [number, number, number, number];
 
@@ -34,6 +35,7 @@ interface Unit {
   kind: UnitKind;
   enemyType?: EnemyType;
   itemType?: ItemType;
+  projectileType?: ProjectileType;
   sprite: Sprite;
   x: number;
   y: number;
@@ -543,6 +545,7 @@ class GunSmokeGame {
     if (shooter) {
       const angle = Math.atan2(this.player.y - shooter.y, this.player.x - shooter.x);
       const projectile = this.spawnUnit("enemyBullet", shooter.x, shooter.y + 12, 1);
+      projectile.projectileType = "bullet";
       projectile.vx = Math.cos(angle) * (90 + this.stage * 7);
       projectile.vy = Math.sin(angle) * (90 + this.stage * 7);
       projectile.radius = 7;
@@ -564,6 +567,7 @@ class GunSmokeGame {
     const center = (pattern.count - 1) / 2;
     for (let index = 0; index < pattern.count; index += 1) {
       const projectile = this.spawnUnit("enemyBullet", boss.x, boss.y + 24, 1);
+      projectile.projectileType = this.stage === 2 ? "boomerang" : this.stage === 3 ? "fireball" : this.stage === 4 ? "shuriken" : "bullet";
       const shotAngle = angle + (index - center) * pattern.spread;
       projectile.vx = Math.cos(shotAngle) * pattern.speed;
       projectile.vy = Math.sin(shotAngle) * pattern.speed;
@@ -711,7 +715,7 @@ class GunSmokeGame {
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: 0.14 },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, itemType, sprite, x, y, animation,
+      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation,
       vx: isBoss ? 42 : kind === "barrel" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : small ? 7 : 19,
@@ -751,8 +755,10 @@ class GunSmokeGame {
         if (!unit.fired && unit.age > 0.9) {
           unit.fired = true;
           const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y + 12, 1);
+          projectile.projectileType = "dynamite";
           projectile.vx = (this.player.x - unit.x) * 0.35;
           projectile.vy = 115;
+          projectile.maxAge = 2.5;
         }
       } else if (unit.enemyType === "shotgunner") {
         unit.x += unit.vx * delta;
@@ -762,6 +768,7 @@ class GunSmokeGame {
           const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
           for (const spread of [-0.2, 0, 0.2]) {
             const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y + 12, 1);
+            projectile.projectileType = "bullet";
             projectile.vx = Math.cos(angle + spread) * 145;
             projectile.vy = Math.sin(angle + spread) * 145;
           }
@@ -774,6 +781,7 @@ class GunSmokeGame {
           const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
           for (const spread of [-0.22, 0, 0.22]) {
             const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y + 12, 1);
+            projectile.projectileType = "fireball";
             projectile.vx = Math.cos(angle + spread) * 115;
             projectile.vy = Math.sin(angle + spread) * 115;
           }
@@ -792,6 +800,17 @@ class GunSmokeGame {
       unit.y += 40 * delta;
       unit.x += Math.sin(unit.age * 4 + unit.phase) * 14 * delta;
     } else {
+      if (unit.kind === "enemyBullet" && unit.projectileType === "dynamite") {
+        if (unit.age >= 0.75) {
+          unit.vx = 0;
+          unit.vy = 0;
+        }
+        if (unit.age >= 2.2) {
+          if (distance(unit, this.player) <= 85 && this.invulnerable <= 0) this.takeHit();
+          unit.hp = 0;
+          this.beep(95, 0.14);
+        }
+      }
       if (unit.kind === "enemyBullet" && unit.turnRate !== 0) {
         const speed = Math.hypot(unit.vx, unit.vy);
         const angle = Math.atan2(unit.vy, unit.vx) + unit.turnRate * delta;
@@ -839,6 +858,9 @@ class GunSmokeGame {
           }
           this.beep(unit.kind === "coin" ? 980 : unit.kind === "wanted" ? 520 : 620, 0.08);
         }
+      } else if (unit.kind === "enemyBullet" && unit.projectileType === "dynamite" && unit.age >= 0.75 && unit.age < 2.2 && distance(unit, this.player) <= unit.radius + 20) {
+        unit.hp = 0;
+        this.showMessage("DYNAMITE DEFUSED");
       } else if ((unit.kind === "enemy" || unit.kind === "enemyBullet") && this.invulnerable > 0 && distance(unit, this.player) <= unit.radius + 20) {
         unit.hp = 0;
       } else if ((unit.kind === "enemy" || unit.kind === "boss" || unit.kind === "enemyBullet") && this.invulnerable <= 0 && distance(unit, this.player) <= unit.radius + 20) {

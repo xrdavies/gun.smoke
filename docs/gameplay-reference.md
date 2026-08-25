@@ -29,6 +29,11 @@ sprites, WebGPU `Renderer2D` batches, `AudioManager` buses, `ActionMap` keyboard
 and Gamepad input, deterministic seeded randomness, and per-round terrain/road
 data.
 
+Boss encounters include phase gating: Bandit Bill alternates a vulnerable
+standing window, while Cutter, Devil Hawk and Fatman Joe become vulnerable only
+after their opening attack; Cutter's boomerangs also curve in opposite
+directions.
+
 After the second Wingate encounter the web recreation enters a separate ending
 and credits state instead of treating the win as Game Over.
 

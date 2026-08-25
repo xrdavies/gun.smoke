@@ -2,6 +2,10 @@
 
 NES/FC-oriented Gun.Smoke recreation built on `@xrdavies/2d-engine`.
 
+The engine dependency is pinned to a Git commit from the engine repository;
+the engine package builds its `dist` output during `npm install`. This keeps a
+fresh clone independent of a sibling `../engine` directory.
+
 The repository contains a playable six-round loop: title screen, automatic
 vertical scrolling, eight-way movement, three-direction shooting, enemy
 formations and projectiles, coins, life pickups, stage bosses, score, money,

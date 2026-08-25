@@ -45,6 +45,12 @@ second. The procedural world therefore uses 168.75 world pixels per second;
 the Boots speed increase remains an explicit multiplier pending a verified ROM
 measurement.
 
+OAM projectile traces show straight A+B pistol shots moving 6 pixels per frame,
+and single-button diagonal shots moving about 2.5 horizontal / 5 vertical
+pixels per frame. Normal pistol shots persist for roughly 15 frames. These map
+to 810 straight, 337.5/675 diagonal world pixels per second and a 0.25-second
+base lifetime in the procedural world.
+
 The web title page can also load the same local ROM into Reference ROM mode.
 This provides a legal exact-runtime comparison path without distributing the
 ROM; the regular web game remains the original procedural recreation. The

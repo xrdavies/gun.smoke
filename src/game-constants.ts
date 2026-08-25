@@ -24,6 +24,14 @@ export const WORLD_SCROLL_SPEED = NES_SCROLL_SPEED * (540 / 240);
 export const NES_PLAYER_SPEED = 75;
 export const WORLD_PLAYER_SPEED = NES_PLAYER_SPEED * (540 / 240);
 export const BOOTS_SPEED_MULTIPLIER = 1.2;
+export const NES_BULLET_SPEED = 360;
+export const WORLD_BULLET_SPEED = NES_BULLET_SPEED * (540 / 240);
+export const NES_DIAGONAL_BULLET_X = 150;
+export const NES_DIAGONAL_BULLET_Y = 300;
+export const WORLD_DIAGONAL_BULLET_X = NES_DIAGONAL_BULLET_X * (540 / 240);
+export const WORLD_DIAGONAL_BULLET_Y = NES_DIAGONAL_BULLET_Y * (540 / 240);
+export const PISTOL_BULLET_LIFETIME = 0.25;
+export const RIFLE_RANGE_MULTIPLIER = 1.6;
 
 export const SHOP_CHECKPOINTS: readonly (readonly number[])[] = [
   [560, 1_180],

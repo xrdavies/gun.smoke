@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, shouldLoopStage, SHOP_CHECKPOINTS, scoreExtraLives, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, MAX_STAGE, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, shouldLoopStage, SHOP_CHECKPOINTS, scoreExtraLives, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -172,6 +172,7 @@ class GunSmokeGame {
   time = 0;
   spawnClock = 0.6;
   fireClock = 0;
+  fireMask = 0;
   bombLatch = false;
   inventoryLatch = false;
   inventoryOpen = false;
@@ -391,29 +392,24 @@ class GunSmokeGame {
   private updatePlayerFire(delta: number): void {
     let weapon = WEAPONS[this.weapon];
     this.fireClock -= delta;
-    if (this.fireClock > 0) return;
-    const directions: number[] = [];
     const left = this.actions.active("fireLeft");
-    const center = this.actions.active("fireCenter");
     const right = this.actions.active("fireRight");
-    if (left && right && !center) directions.push(0);
-    else {
-      if (left) directions.push(-1);
-      if (center) directions.push(0);
-      if (right) directions.push(1);
-    }
-    if (directions.length === 0) return;
+    const mask = Number(left) | (Number(right) << 1);
+    const newlyPressed = mask & ~this.fireMask;
+    this.fireMask = mask;
+    if (mask === 0) return;
+    if (this.weapon === "pistol" && newlyPressed === 0) return;
+    if (this.weapon !== "pistol" && this.fireClock > 0) return;
     if (this.weapon !== "pistol" && this.ammo <= 0) {
       this.weapon = "pistol";
       weapon = WEAPONS.pistol;
       this.showMessage("OUT OF AMMO");
     }
-    const ammoCost = this.weapon === "shotgun" ? directions.length * 3 : directions.length;
+    const direction = left && right ? 0 : left ? -1 : 1;
+    const ammoCost = this.weapon === "shotgun" ? 3 : 1;
     if (this.weapon !== "pistol") this.ammo = Math.max(0, this.ammo - ammoCost);
-    for (const direction of directions) {
-      if (weapon.spread === 0) this.spawnBullet(direction, weapon.damage);
-      else for (const spread of [-weapon.spread, 0, weapon.spread]) this.spawnBullet(direction + spread, weapon.damage);
-    }
+    if (weapon.spread === 0) this.spawnBullet(direction, weapon.damage);
+    else for (const spread of [-weapon.spread, 0, weapon.spread]) this.spawnBullet(direction + spread, weapon.damage);
     this.fireClock = weapon.interval;
     this.beep(740, 0.025);
   }
@@ -660,10 +656,10 @@ class GunSmokeGame {
 
   private spawnBullet(direction: number, damage: number): void {
     const unit = this.spawnUnit("bullet", this.player.x + direction * 10, this.player.y - 32, 1);
-    unit.vx = direction * 170;
-    unit.vy = -520;
+    unit.vx = direction * WORLD_DIAGONAL_BULLET_X;
+    unit.vy = Math.abs(direction) < 0.01 ? -WORLD_BULLET_SPEED : -WORLD_DIAGONAL_BULLET_Y;
     unit.damage = damage;
-    unit.maxAge = this.weapon === "pistol" && this.powerups.rifle > 0 ? 1.4 : 0.85;
+    unit.maxAge = this.weapon === "pistol" ? PISTOL_BULLET_LIFETIME * (this.powerups.rifle > 0 ? RIFLE_RANGE_MULTIPLIER : 1) : 0.55;
   }
 
   private updateUnit(unit: Unit, delta: number): void {

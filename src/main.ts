@@ -129,6 +129,7 @@ class GunSmokeGame {
   spawnClock = 0.6;
   fireClock = 0;
   enemyFireClock = 1.2;
+  bossFireClock = 1;
   invulnerable = 0;
   bossSpawned = false;
   stageClearClock = 0;
@@ -270,8 +271,14 @@ class GunSmokeGame {
   }
 
   private updateEnemyFire(delta: number): void {
+    const boss = this.units.find((unit) => unit.kind === "boss" && unit.hp > 0);
+    if (boss) {
+      this.bossFireClock -= delta;
+      if (this.bossFireClock <= 0) this.fireBoss(boss);
+      return;
+    }
     this.enemyFireClock -= delta;
-    if (this.enemyFireClock > 0 || (this.bossSpawned && !this.units.some((unit) => unit.kind === "boss" && unit.hp > 0))) return;
+    if (this.enemyFireClock > 0) return;
     const shooters = this.units.filter((unit) => unit.kind === "enemy" && unit.hp > 0 && unit.y < this.player.y);
     const shooter = shooters[Math.floor(Math.random() * shooters.length)];
     if (shooter) {
@@ -282,6 +289,29 @@ class GunSmokeGame {
       projectile.radius = 7;
     }
     this.enemyFireClock = Math.max(0.6, 1.75 - this.stage * 0.18);
+  }
+
+  private fireBoss(boss: Unit): void {
+    const angle = Math.atan2(this.player.y - boss.y, this.player.x - boss.x);
+    const patterns: Record<number, { count: number; spread: number; speed: number; cooldown: number }> = {
+      1: { count: 1, spread: 0, speed: 125, cooldown: 1.1 },
+      2: { count: 2, spread: 0.24, speed: 150, cooldown: 1.25 },
+      3: { count: 5, spread: 0.18, speed: 118, cooldown: 1.4 },
+      4: { count: 3, spread: 0.3, speed: 168, cooldown: 0.95 },
+      5: { count: 1, spread: 0, speed: 100, cooldown: 0.8 },
+      6: { count: this.wingatePhase ? 5 : 3, spread: 0.1, speed: 190, cooldown: this.wingatePhase ? 0.42 : 0.7 },
+    };
+    const pattern = patterns[this.stage] ?? patterns[1]!;
+    const center = (pattern.count - 1) / 2;
+    for (let index = 0; index < pattern.count; index += 1) {
+      const projectile = this.spawnUnit("enemyBullet", boss.x, boss.y + 24, 1);
+      const shotAngle = angle + (index - center) * pattern.spread;
+      projectile.vx = Math.cos(shotAngle) * pattern.speed;
+      projectile.vy = Math.sin(shotAngle) * pattern.speed;
+      projectile.radius = 7;
+    }
+    this.bossFireClock = pattern.cooldown;
+    this.beep(150 + this.stage * 18, 0.045);
   }
 
   private render(): void {
@@ -355,6 +385,7 @@ class GunSmokeGame {
 
   private spawnBoss(): void {
     this.bossSpawned = true;
+    this.bossFireClock = 0.6;
     const definition = STAGES[this.stage - 1] ?? STAGES[0]!;
     this.spawnUnit("boss", 480, this.scroll + 90, definition.bossHp * 4);
     this.showMessage(`WANTED: ${definition.boss}`);
@@ -422,6 +453,7 @@ class GunSmokeGame {
       if (target.kind === "boss") {
         if (this.stage === MAX_STAGE && this.wingatePhase === 0) {
           this.wingatePhase = 1;
+          this.bossFireClock = 0.35;
           this.spawnUnit("boss", 480, this.scroll + 90, (STAGES[MAX_STAGE - 1]?.bossHp ?? 6) * 4);
           this.showMessage("THE REAL WINGATE");
           continue;
@@ -470,6 +502,7 @@ class GunSmokeGame {
     this.scroll = 0;
     this.spawnClock = 0.8;
     this.enemyFireClock = 1.2;
+    this.bossFireClock = 1;
     this.bossSpawned = false;
     this.hasWanted = false;
     this.wingatePhase = 0;

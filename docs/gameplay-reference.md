@@ -64,6 +64,10 @@ Encounter timing is also represented as four deterministic segments per Round,
 with explicit formation shape and interval data; this replaces the earlier
 single random cadence and provides a stable target for ROM trace comparison.
 
+Important barrel contents are represented as ordered world events per Round,
+so the notable boots, rifle, POW, Yashichi, Skull and Horse sequence is stable;
+enemy drops remain a separate randomized supplement.
+
 After the second Wingate encounter the web recreation enters a separate ending
 and credits state instead of treating the win as Game Over.
 

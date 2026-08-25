@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, shouldLoopStage, SHOP_CHECKPOINTS, scoreExtraLives, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, type EnemyType, type Formation, type ItemType, type WeaponName } from "./game-constants";
+import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, shouldLoopStage, SHOP_CHECKPOINTS, scoreExtraLives, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, type EnemyType, type Formation, type ItemType, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -175,6 +175,7 @@ class GunSmokeGame {
   stageClearClock = 0;
   hasWanted = false;
   posterPropSpawned = false;
+  itemEventCursor = 0;
   wingatePhase = 0;
   weapon: WeaponName = "pistol";
   hasHorse = false;
@@ -402,6 +403,7 @@ class GunSmokeGame {
 
   private updateSpawns(delta: number): void {
     this.spawnClock -= delta;
+    this.spawnRoundItemEvents();
     if (this.scroll >= BOSS_TRIGGER && !this.hasWanted && !this.posterPropSpawned) {
       const wantedX = clamp(480 + (WANTED_X_OFFSETS[this.stage - 1] ?? 0), 70, 890);
       this.posterPropSpawned = true;
@@ -411,6 +413,16 @@ class GunSmokeGame {
     if (this.scroll >= BOSS_TRIGGER && this.hasWanted && !this.bossSpawned) this.spawnBoss();
     if (this.spawnClock <= 0 && !this.bossSpawned) {
       this.spawnFormation();
+    }
+  }
+
+  private spawnRoundItemEvents(): void {
+    const events = ROUND_ITEM_EVENTS[this.stage - 1] ?? [];
+    while (this.itemEventCursor < events.length) {
+      const event = events[this.itemEventCursor];
+      if (!event || this.scroll + 560 < event.at) break;
+      this.spawnUnit("barrel", clamp(480 + event.xOffset, 60, 900), event.at, 1, undefined, event.item);
+      this.itemEventCursor += 1;
     }
   }
 
@@ -844,6 +856,7 @@ class GunSmokeGame {
     this.hasWanted = false;
     this.wingatePhase = 0;
     this.posterPropSpawned = false;
+    this.itemEventCursor = 0;
     this.shopIndex = 0;
     this.units.length = 0;
     this.buildBackground();
@@ -858,6 +871,7 @@ class GunSmokeGame {
     this.player.y = 410;
     this.player.sprite.position = { x: this.player.x, y: this.player.y };
     this.posterPropSpawned = false;
+    this.itemEventCursor = 0;
     this.shopIndex = 0;
     this.spawnClock = 0.8;
     this.enemyFireClock = 1.2;

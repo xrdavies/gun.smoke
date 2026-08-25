@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { BOSS_TRIGGER, MAX_STAGE, ROAD_WIDTHS, ROUND_ENEMY_TYPES, ROUND_ITEM_TYPES, ROUND_SEGMENTS, SHOP_CHECKPOINTS, STAGE_LENGTH, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, clamp, distance, nextExtraLifeScore, scoreExtraLives, shouldLoopStage } from "../src/game-constants";
+import { BOSS_TRIGGER, MAX_STAGE, ROAD_WIDTHS, ROUND_ENEMY_TYPES, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, SHOP_CHECKPOINTS, STAGE_LENGTH, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, clamp, distance, nextExtraLifeScore, scoreExtraLives, shouldLoopStage } from "../src/game-constants";
 
 describe("Gun.Smoke vertical slice", () => {
   it("keeps the NES-inspired stage constants stable", () => {
@@ -41,5 +41,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROUND_ITEM_TYPES).toHaveLength(MAX_STAGE);
     expect(ROUND_ITEM_TYPES[0]).toContain("horse");
     expect(ROUND_ITEM_TYPES[1]).toContain("skull");
+    expect(ROUND_ITEM_EVENTS).toHaveLength(MAX_STAGE);
+    expect(ROUND_ITEM_EVENTS.every((events) => events.every((event, index) => index === 0 || event.at > (events[index - 1]?.at ?? -1)))).toBe(true);
   });
 });

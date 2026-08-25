@@ -51,6 +51,12 @@ export interface RoundSegment {
   interval: number;
 }
 
+export interface RoundItemEvent {
+  at: number;
+  xOffset: number;
+  item: ItemType;
+}
+
 export const ROUND_SEGMENTS: readonly (readonly RoundSegment[])[] = [
   [{ at: 0, formation: "line", enemyTypes: ["gunman", "bomber"], interval: 1.1 }, { at: 420, formation: "wedge", enemyTypes: ["sniper", "backstabber"], interval: 1 }, { at: 980, formation: "line", enemyTypes: ["gunman", "bomber"], interval: 0.9 }, { at: 1_500, formation: "cross", enemyTypes: ["gunman", "sniper"], interval: 0.8 }],
   [{ at: 0, formation: "wedge", enemyTypes: ["gunman", "rifleman"], interval: 1 }, { at: 500, formation: "line", enemyTypes: ["backstabber", "rifleman"], interval: 0.9 }, { at: 1_050, formation: "cross", enemyTypes: ["gunman", "shotgunner"], interval: 0.8 }, { at: 1_500, formation: "wedge", enemyTypes: ["rifleman", "backstabber"], interval: 0.75 }],
@@ -67,6 +73,15 @@ export const ROUND_ITEM_TYPES: readonly (readonly ItemType[])[] = [
   ["blueYashichi", "redYashichi", "pow", "ammo", "horse"],
   ["blueYashichi", "redYashichi", "pow", "skull", "horse", "ammo"],
   ["pow", "blueYashichi", "redYashichi", "horse", "ammo", "money"],
+];
+
+export const ROUND_ITEM_EVENTS: readonly (readonly RoundItemEvent[])[] = [
+  [{ at: 220, xOffset: 170, item: "rifle" }, { at: 360, xOffset: -150, item: "money" }, { at: 720, xOffset: 0, item: "boots" }, { at: 1_180, xOffset: 170, item: "horse" }, { at: 1_480, xOffset: -170, item: "pow" }],
+  [{ at: 260, xOffset: 140, item: "skull" }, { at: 520, xOffset: -140, item: "blueYashichi" }, { at: 780, xOffset: 160, item: "redYashichi" }, { at: 1_160, xOffset: -120, item: "horse" }, { at: 1_520, xOffset: 0, item: "pow" }],
+  [{ at: 240, xOffset: -150, item: "pow" }, { at: 480, xOffset: 150, item: "redYashichi" }, { at: 820, xOffset: -120, item: "blueYashichi" }, { at: 1_220, xOffset: 130, item: "skull" }, { at: 1_520, xOffset: 0, item: "horse" }],
+  [{ at: 300, xOffset: -160, item: "blueYashichi" }, { at: 680, xOffset: 150, item: "redYashichi" }, { at: 1_040, xOffset: -120, item: "pow" }, { at: 1_440, xOffset: 120, item: "redYashichi" }],
+  [{ at: 240, xOffset: -150, item: "blueYashichi" }, { at: 700, xOffset: 140, item: "redYashichi" }, { at: 1_020, xOffset: -100, item: "pow" }, { at: 1_440, xOffset: 120, item: "skull" }],
+  [{ at: 260, xOffset: 0, item: "pow" }, { at: 620, xOffset: -150, item: "blueYashichi" }, { at: 1_000, xOffset: 140, item: "redYashichi" }, { at: 1_420, xOffset: 0, item: "pow" }],
 ];
 
 export type WeaponName = "pistol" | "shotgun" | "machinegun" | "magnum";

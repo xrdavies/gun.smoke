@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, ROUND_ENEMY_TYPES, SHOP_CHECKPOINTS, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, type EnemyType, type WeaponName } from "./game-constants";
+import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, ROUND_SEGMENTS, SHOP_CHECKPOINTS, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, type EnemyType, type Formation, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -122,6 +122,13 @@ function proceduralRows(width: number, height: number, seed: number, values: rea
   return Array.from({ length: height }, (_, y) =>
     Array.from({ length: width }, (_, x) => values[(x * 17 + y * 31 + seed + (x ^ y)) % values.length] ?? values[0] ?? ".").join(""),
   );
+}
+
+function formationOffsets(formation: Formation): readonly number[] {
+  if (formation === "wedge") return [-2, -1, 1, 2];
+  if (formation === "cross") return [-2, 0, 2];
+  if (formation === "rear") return [-1, 0, 1];
+  return [-1, 0, 1];
 }
 
 function atlasRows(rows: readonly string[]): string[] {
@@ -355,7 +362,6 @@ class GunSmokeGame {
     if (this.scroll >= BOSS_TRIGGER && this.hasWanted && !this.bossSpawned) this.spawnBoss();
     if (this.spawnClock <= 0 && !this.bossSpawned) {
       this.spawnFormation();
-      this.spawnClock = Math.max(0.58, 1.15 - this.stage * 0.08);
     }
   }
 
@@ -437,19 +443,22 @@ class GunSmokeGame {
     const roadHalf = (ROAD_WIDTHS[this.stage - 1] ?? 520) / 2;
     const center = clamp(480 + (this.nextRandom() - 0.5) * (roadHalf * 1.5), 80, 880);
     const y = this.scroll + 55;
-    const pattern = (this.stage + Math.floor(this.scroll / 420)) % 3;
-    const offsets = pattern === 0 ? [-1, 0, 1] : pattern === 1 ? [-2, -1, 1, 2] : [-2, 0, 2];
-    const types = ROUND_ENEMY_TYPES[this.stage - 1] ?? ROUND_ENEMY_TYPES[0]!;
+    const segments = ROUND_SEGMENTS[this.stage - 1] ?? ROUND_SEGMENTS[0]!;
+    let segment = segments[0]!;
+    for (const candidate of segments) if (this.scroll >= candidate.at) segment = candidate;
+    const offsets = formationOffsets(segment.formation);
+    const types = segment.enemyTypes;
     for (const offset of offsets) {
       const enemyType = types[Math.floor(this.nextRandom() * types.length)] ?? "gunman";
       const entryY = enemyType === "backstabber" ? this.scroll + 520 : y - Math.abs(offset) * 22;
       const enemy = this.spawnUnit("enemy", clamp(center + offset * 66, 54, 906), entryY, 1 + Number(this.stage >= 4), enemyType);
-      enemy.vx = pattern === 2 ? offset * 32 : (this.nextRandom() - 0.5) * (55 + this.stage * 8);
+      enemy.vx = segment.formation === "cross" ? offset * 32 : (this.nextRandom() - 0.5) * (55 + this.stage * 8);
       enemy.vy = enemyType === "backstabber" ? -100 : 24 + this.stage * 6;
     }
     if (this.nextRandom() < 0.28) this.spawnUnit("coin", clamp(center + (this.nextRandom() - 0.5) * 260, 60, 900), y + 55, 1);
     if (this.nextRandom() < 0.1) this.spawnUnit("powerup", clamp(center + (this.nextRandom() - 0.5) * 300, 60, 900), y + 90, 1);
     if (this.weapon !== "pistol" && this.nextRandom() < 0.18) this.spawnUnit("ammo", clamp(center + (this.nextRandom() - 0.5) * 220, 60, 900), y + 120, 1);
+    this.spawnClock = segment.interval;
   }
 
   private maybeOpenShop(): void {

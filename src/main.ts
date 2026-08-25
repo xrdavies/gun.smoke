@@ -24,7 +24,7 @@ type GameAction =
 type GameMode = "title" | "intro" | "playing" | "gameover";
 type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "coin" | "powerup" | "ammo" | "wanted";
 type EnemyType = "gunman" | "rifleman" | "bomber" | "sniper" | "backstabber" | "ninja" | "hatchet" | "firebreather" | "shotgunner";
-type TextureName = "player" | "enemy" | "boss" | "bullet" | "coin" | "powerup" | "ammo" | "wanted" | "terrain" | "road";
+type TextureName = "player" | "enemy" | "boss" | "bullet" | "coin" | "powerup" | "ammo" | "wanted" | "terrain" | "road" | "landmark";
 type Rgba = [number, number, number, number];
 
 interface Unit {
@@ -204,6 +204,12 @@ class GunSmokeGame {
       wanted: pixelTexture(engine, ["wwwwww", "wkkkkw", "wkrrkw", "wkkkkw", "wkookw", "wwwwww"], palette),
       terrain: pixelTexture(engine, proceduralRows(64, 64, this.stage, ["d", "d", "d", "p", "d", "p"]), palette),
       road: pixelTexture(engine, proceduralRows(64, 64, this.stage + 3, ["t", "t", "s", "t", "s", "t"]), palette),
+      landmark: pixelTexture(engine, [
+        "pppppppppppppppp", "pbbbbbbbbbbbbbbp", "pbppppppppppppbp", "pbpwwwwwwwwwwpbp",
+        "pbpwkkkkkkwwpbp", "pbpwwwwwwwwwwpbp", "pbppppppppppppbp", "pbbbbbbbbbbbbbbp",
+        "pppppppppppppppp", "pddddddddddddddp", "pdppddddddppdddp", "pddddddddddddddp",
+        "pddddddddddddddp", "pddddddddddddddp", "pddddddddddddddp", "pppppppppppppppp",
+      ], palette),
     };
     const terrainPatterns: readonly (readonly string[])[] = [
       ["d", "d", "d", "p", "d", "p"],
@@ -398,9 +404,19 @@ class GunSmokeGame {
     const terrain = this.terrainTextures[this.stage - 1] ?? this.textures.terrain;
     const road = this.roadTextures[this.stage - 1] ?? this.textures.road;
     const roadWidth = ROAD_WIDTHS[this.stage - 1] ?? 520;
+    const edge = (960 - roadWidth) / 2;
     for (let y = -360; y < STAGE_LENGTH + 650; y += 180) {
       this.backgrounds.push(new Sprite({ texture: terrain, sampler: this.sampler, position: { x: 480, y: y + 90 }, size: { x: 960, y: 180 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -20 }));
       this.backgrounds.push(new Sprite({ texture: road, sampler: this.sampler, position: { x: 480, y: y + 90 }, size: { x: roadWidth, y: 180 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -19 }));
+      if (this.stage === 1 || this.stage === 6) {
+        for (const x of [edge - 48, 960 - edge + 48]) this.backgrounds.push(new Sprite({ texture: this.textures.landmark, sampler: this.sampler, position: { x, y: y + 90 }, size: { x: 86, y: 130 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -18 }));
+      } else if (this.stage === 2 || this.stage === 4) {
+        for (const x of [edge - 30, 960 - edge + 30]) this.backgrounds.push(new Sprite({ texture: this.textures.landmark, sampler: this.sampler, position: { x, y: y + 90 }, size: { x: 52, y: 170 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -18 }));
+      } else if (this.stage === 3) {
+        for (const x of [edge - 36, 960 - edge + 36]) this.backgrounds.push(new Sprite({ texture: this.textures.landmark, sampler: this.sampler, position: { x, y: y + 90 }, size: { x: 68, y: 92 }, anchor: { x: 0.5, y: 0.5 }, color: [1, 0.78, 0.6, 1], layer: -18 }));
+      } else if (this.stage === 5 && Math.floor(y / 180) % 3 === 1) {
+        this.backgrounds.push(new Sprite({ texture: this.textures.landmark, sampler: this.sampler, position: { x: 480, y: y + 90 }, size: { x: roadWidth, y: 26 }, anchor: { x: 0.5, y: 0.5 }, color: [0.75, 0.5, 0.28, 1], layer: -18 }));
+      }
     }
   }
 

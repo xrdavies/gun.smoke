@@ -142,6 +142,8 @@ class GunSmokeGame {
   hasHorse = false;
   shopOpen = false;
   shopIndex = 0;
+  musicTimer: number | undefined;
+  musicStep = 0;
   player = { entity: 0, x: 480, y: 410, sprite: undefined as unknown as Sprite };
 
   private constructor(engine: Engine) {
@@ -192,7 +194,7 @@ class GunSmokeGame {
     this.buildBackground();
     this.engine.input?.onInput((event) => this.actions.handle(event));
     this.audio = this.createAudio();
-    this.engine.addSystem({ update: (delta) => this.update(delta), render: () => this.render(), dispose: () => this.audio?.dispose() });
+    this.engine.addSystem({ update: (delta) => this.update(delta), render: () => this.render(), dispose: () => this.dispose() });
     this.engine.on("resize", ({ width, height }) => this.camera.setViewport(width, height));
   }
 
@@ -209,6 +211,7 @@ class GunSmokeGame {
     hud.hidden = false;
     canvas.focus();
     void this.audio?.unlock();
+    this.startMusic();
     this.beep(440, 0.08);
     this.showMessage("RIDE OUT");
     this.engine.start();
@@ -570,6 +573,7 @@ class GunSmokeGame {
 
   private finish(won: boolean): void {
     this.mode = "gameover";
+    this.stopMusic();
     this.engine.stop();
     hud.hidden = true;
     gameOver.hidden = false;
@@ -605,6 +609,48 @@ class GunSmokeGame {
     gain.connect(this.audio.getBus("sfx")?.gain ?? this.audio.context.destination);
     oscillator.start();
     oscillator.stop(this.audio.context.currentTime + duration);
+  }
+
+  private startMusic(): void {
+    if (this.musicTimer !== undefined || !this.audio) return;
+    this.musicTimer = window.setInterval(() => this.playMusicStep(), 180);
+  }
+
+  private playMusicStep(): void {
+    if (!this.audio || this.audio.context.state !== "running") return;
+    const roundPatterns: readonly number[][] = [
+      [262, 330, 392, 330, 294, 349, 440, 349],
+      [196, 247, 294, 247, 220, 277, 330, 277],
+      [220, 277, 330, 277, 247, 311, 370, 311],
+      [175, 220, 262, 220, 196, 247, 294, 247],
+      [233, 294, 349, 294, 262, 330, 392, 330],
+      [147, 185, 220, 185, 165, 208, 247, 208],
+    ];
+    const pattern = roundPatterns[(this.stage - 1) % roundPatterns.length] ?? roundPatterns[0]!;
+    const oscillator = this.audio.context.createOscillator();
+    const gain = this.audio.context.createGain();
+    oscillator.type = this.bossSpawned ? "sawtooth" : "square";
+    oscillator.frequency.value = pattern[this.musicStep % pattern.length] ?? 220;
+    const now = this.audio.context.currentTime;
+    gain.gain.setValueAtTime(0.018, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
+    oscillator.connect(gain);
+    gain.connect(this.audio.getBus("music")?.gain ?? this.audio.context.destination);
+    oscillator.start(now);
+    oscillator.stop(now + 0.15);
+    this.musicStep += 1;
+  }
+
+  private stopMusic(): void {
+    if (this.musicTimer !== undefined) {
+      window.clearInterval(this.musicTimer);
+      this.musicTimer = undefined;
+    }
+  }
+
+  private dispose(): void {
+    this.stopMusic();
+    this.audio?.dispose();
   }
 
   private createAudio(): AudioManager | undefined {

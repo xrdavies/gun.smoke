@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, MAX_STAGE, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, shouldLoopStage, SHOP_CHECKPOINTS, scoreExtraLives, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, MAX_STAGE, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, shouldLoopStage, SHOP_CHECKPOINTS, SHOP_COSTS, scoreExtraLives, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -84,6 +84,7 @@ const resumeButton = requireElement<HTMLButtonElement>("#resume-button");
 const inventoryClose = requireElement<HTMLButtonElement>("#inventory-close");
 const inventoryWeapons = requireElement<HTMLElement>("#inventory-weapons");
 const inventoryItems = requireElement<HTMLElement>("#inventory-items");
+const inventoryWeaponButtons = [...inventoryScreen.querySelectorAll<HTMLButtonElement>("[data-inventory-weapon]")];
 const referenceRomInput = requireElement<HTMLInputElement>("#reference-rom");
 const romStatus = requireElement<HTMLElement>("#rom-status");
 const finalScore = requireElement<HTMLElement>("#final-score");
@@ -166,7 +167,8 @@ class GunSmokeGame {
   nextLifeScore = 30_000;
   money = 0;
   lives = 3;
-  ammo = 0;
+  weaponAmmo: Record<WeaponName, number> = { pistol: Number.POSITIVE_INFINITY, shotgun: 0, machinegun: 0, magnum: 0 };
+  ownedWeapons = new Set<WeaponName>(["pistol"]);
   smartBombs = 0;
   powerups = { boots: 0, rifle: 0 };
   time = 0;
@@ -188,6 +190,14 @@ class GunSmokeGame {
   weapon: WeaponName = "pistol";
   hasHorse = false;
   horseHealth = 0;
+
+  get ammo(): number {
+    return this.weaponAmmo[this.weapon];
+  }
+
+  set ammo(value: number) {
+    this.weaponAmmo[this.weapon] = value;
+  }
   shopOpen = false;
   shopIndex = 0;
   musicTimer: number | undefined;
@@ -385,8 +395,39 @@ class GunSmokeGame {
   }
 
   private updateInventory(): void {
-    inventoryWeapons.textContent = `PISTOL UNLIMITED / SHOTGUN ${this.weapon === "shotgun" ? this.ammo : 0} / MACHINE GUN ${this.weapon === "machinegun" ? this.ammo : 0} / MAGNUM ${this.weapon === "magnum" ? this.ammo : 0} / SMART BOMB ${this.smartBombs}`;
+    inventoryWeapons.textContent = `PISTOL UNLIMITED / SHOTGUN ${this.weaponAmmo.shotgun} / MACHINE GUN ${this.weaponAmmo.machinegun} / MAGNUM ${this.weaponAmmo.magnum} / SMART BOMB ${this.smartBombs}`;
     inventoryItems.textContent = `BOOTS ${this.powerups.boots} / RIFLE ${this.powerups.rifle} / HORSE ${this.horseHealth} / WANTED ${this.hasWanted ? "YES" : "NO"}`;
+    for (const button of inventoryWeaponButtons) {
+      const weapon = button.dataset.inventoryWeapon as WeaponName | undefined;
+      if (!weapon) continue;
+      button.disabled = !this.ownedWeapons.has(weapon) || (weapon !== "pistol" && this.weaponAmmo[weapon] <= 0);
+      button.setAttribute("aria-pressed", String(weapon === this.weapon));
+    }
+  }
+
+  equipWeapon(weapon: WeaponName): void {
+    if (!this.ownedWeapons.has(weapon) || (weapon !== "pistol" && this.weaponAmmo[weapon] <= 0)) return;
+    this.weapon = weapon;
+    this.updateInventory();
+    this.updateHud();
+  }
+
+  private canRefillAmmo(): boolean {
+    return (["shotgun", "machinegun", "magnum"] as const).some((weapon) =>
+      this.ownedWeapons.has(weapon) && this.weaponAmmo[weapon] < WEAPONS[weapon].maxAmmo,
+    );
+  }
+
+  private refillAmmo(multiplier: number): void {
+    for (const weapon of ["shotgun", "machinegun", "magnum"] as const) {
+      if (!this.ownedWeapons.has(weapon)) continue;
+      this.weaponAmmo[weapon] = Math.min(
+        WEAPONS[weapon].maxAmmo,
+        this.weaponAmmo[weapon] + AMMO_GAIN[weapon] * multiplier,
+      );
+    }
+    this.updateInventory();
+    this.updateHud();
   }
 
   private updatePlayerFire(delta: number): void {
@@ -558,7 +599,7 @@ class GunSmokeGame {
       const itemType = itemTypes[Math.floor(this.nextRandom() * itemTypes.length)] ?? "money";
       this.spawnUnit("barrel", clamp(center + (this.nextRandom() - 0.5) * 300, 60, 900), y + 90, 1, undefined, itemType);
     }
-    if (this.weapon !== "pistol" && this.nextRandom() < 0.18) this.spawnUnit("ammo", clamp(center + (this.nextRandom() - 0.5) * 220, 60, 900), y + 120, 1);
+    if (this.ownedWeapons.size > 1 && this.nextRandom() < 0.18) this.spawnUnit("ammo", clamp(center + (this.nextRandom() - 0.5) * 220, 60, 900), y + 120, 1);
     this.spawnClock = segment.interval;
   }
 
@@ -580,14 +621,14 @@ class GunSmokeGame {
   private refreshShopButtons(): void {
     for (const item of shopItems) {
       const key = item.dataset.shopItem as WeaponName | "horse" | "ammo" | "wanted" | "smartBomb" | undefined;
-      const cost = key === "horse" ? 60 : key === "ammo" ? 20 : key === "smartBomb" ? 100 : key === "wanted" ? WANTED_COSTS[this.stage - 1] ?? 800 : key ? WEAPONS[key].cost : 0;
-      item.disabled = key === "horse" ? this.hasHorse || this.money < cost : key === "ammo" ? this.weapon === "pistol" || this.ammo >= WEAPONS[this.weapon].maxAmmo || this.money < cost : key === "wanted" ? this.shopIndex < 2 || this.hasWanted || this.money < cost : key === "smartBomb" ? this.smartBombs >= 5 || this.money < cost : key === this.weapon || this.money < cost;
+      const cost = key === "horse" ? SHOP_COSTS.horse : key === "ammo" ? SHOP_COSTS.ammo : key === "smartBomb" ? SHOP_COSTS.smartBomb : key === "wanted" ? WANTED_COSTS[this.stage - 1] ?? 50_000 : key ? WEAPONS[key].cost : 0;
+      item.disabled = key === "horse" ? this.hasHorse || this.money < cost : key === "ammo" ? !this.canRefillAmmo() || this.money < cost : key === "wanted" ? this.shopIndex < 2 || this.hasWanted || this.money < cost : key === "smartBomb" ? this.smartBombs >= 5 || this.money < cost : key ? this.ownedWeapons.has(key) || this.money < cost : true;
     }
   }
 
   buyShopItem(item: string): void {
     const key = item as WeaponName | "horse" | "ammo" | "wanted" | "smartBomb";
-    const cost = key === "horse" ? 60 : key === "ammo" ? 20 : key === "smartBomb" ? 100 : key === "wanted" ? WANTED_COSTS[this.stage - 1] ?? 800 : WEAPONS[key]?.cost;
+    const cost = key === "horse" ? SHOP_COSTS.horse : key === "ammo" ? SHOP_COSTS.ammo : key === "smartBomb" ? SHOP_COSTS.smartBomb : key === "wanted" ? WANTED_COSTS[this.stage - 1] ?? 50_000 : WEAPONS[key]?.cost;
     if (cost === undefined || (key === "horse" && this.hasHorse) || this.money < cost) {
       shopMessage.textContent = "NOT ENOUGH MONEY";
       return;
@@ -597,12 +638,13 @@ class GunSmokeGame {
       this.hasHorse = true;
       this.horseHealth = 3;
     }
-    else if (key === "ammo") this.ammo = Math.min(WEAPONS[this.weapon].maxAmmo, this.ammo + AMMO_GAIN[this.weapon] * 2);
+    else if (key === "ammo") this.refillAmmo(2);
     else if (key === "wanted") this.hasWanted = true;
     else if (key === "smartBomb") this.smartBombs = Math.min(5, this.smartBombs + 1);
     else {
+      this.ownedWeapons.add(key);
       this.weapon = key;
-      this.ammo = WEAPONS[key].maxAmmo;
+      this.weaponAmmo[key] = WEAPONS[key].maxAmmo;
     }
     shopMessage.textContent = `${key.toUpperCase()} READY`;
     this.updateHud();
@@ -764,7 +806,7 @@ class GunSmokeGame {
           this.awardScoreLife();
           if (unit.kind === "coin") this.money += unit.value;
           else if (unit.kind === "item" && unit.itemType) this.collectItem(unit.itemType);
-          else if (unit.kind === "ammo") this.ammo = Math.min(WEAPONS[this.weapon].maxAmmo, this.ammo + AMMO_GAIN[this.weapon]);
+          else if (unit.kind === "ammo") this.refillAmmo(1);
           else {
             this.hasWanted = true;
             this.showMessage("WANTED POSTER FOUND");
@@ -794,7 +836,7 @@ class GunSmokeGame {
     } else if (target.kind === "enemy") {
       const drop = this.nextRandom();
       if (drop < 0.22) this.spawnUnit("coin", target.x, target.y, 1);
-      else if (this.weapon !== "pistol" && drop < 0.38) this.spawnUnit("ammo", target.x, target.y, 1);
+      else if (this.ownedWeapons.size > 1 && drop < 0.38) this.spawnUnit("ammo", target.x, target.y, 1);
     } else if (target.kind === "boss") {
       if (this.stage === MAX_STAGE && this.wingatePhase === 0) {
         this.wingatePhase = 1;
@@ -821,7 +863,7 @@ class GunSmokeGame {
     if (item === "boots" || item === "rifle") {
       this.powerups[item] = Math.min(5, this.powerups[item] + 1);
     } else if (item === "ammo") {
-      this.ammo = Math.min(WEAPONS[this.weapon].maxAmmo, this.ammo + AMMO_GAIN[this.weapon]);
+      this.refillAmmo(1);
     } else if (item === "money") {
       this.score += 200;
       this.money += 200;
@@ -1223,6 +1265,9 @@ restartButton.addEventListener("click", () => window.location.reload());
 endingButton.addEventListener("click", () => window.location.reload());
 resumeButton.addEventListener("click", () => game?.togglePause());
 inventoryClose.addEventListener("click", () => game?.toggleInventory());
+for (const button of inventoryWeaponButtons) {
+  button.addEventListener("click", () => game?.equipWeapon(button.dataset.inventoryWeapon as WeaponName));
+}
 shopClose.addEventListener("click", () => game?.closeShop());
 for (const item of shopItems) item.addEventListener("click", () => game?.buyShopItem(item.dataset.shopItem ?? ""));
 referenceRomInput.addEventListener("change", () => void loadReferenceRom());

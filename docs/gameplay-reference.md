@@ -47,7 +47,9 @@ destroy enemy projectiles.
 
 Rifle range applies only to the unlimited pistols. Bullet pickups use
 weapon-specific refill amounts, with Machine Gun receiving more rounds per
-pickup than Magnum.
+pickup than Magnum. Purchased special weapons and their ammo persist
+independently; Select opens the inventory to equip any owned weapon, and a
+Bullet pickup refills every owned special weapon by its own amount.
 
 The runtime now exercises the engine's animation binding for player/enemy/Boss
 sprites, WebGPU `Renderer2D` batches, `AudioManager` buses, `ActionMap` keyboard

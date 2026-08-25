@@ -64,6 +64,7 @@ body { margin: 0; min-width: 320px; min-height: 100vh; background: #080d18; }
 #shop h2 { margin: 0; color: #efbd58; font-size: clamp(18px, 3vw, 30px); }
 #shop-message { margin: 0; color: #fff2c2; }
 .shop-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: min(480px, 100%); }
+.inventory-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: min(480px, 100%); }
 .shop-grid button { padding: 10px 8px; font-size: 12px; }
 button:disabled { cursor: not-allowed; opacity: .42; }
 

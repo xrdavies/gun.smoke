@@ -99,11 +99,20 @@ export const ROUND_ITEM_EVENTS: readonly (readonly RoundItemEvent[])[] = [
 
 export type WeaponName = "pistol" | "shotgun" | "machinegun" | "magnum";
 
+export const SHOP_COSTS = {
+  shotgun: 4_000,
+  machinegun: 8_000,
+  magnum: 12_000,
+  horse: 6_000,
+  ammo: 2_000,
+  smartBomb: 10_000,
+} as const;
+
 export const WEAPONS: Record<WeaponName, { cost: number; interval: number; damage: number; spread: number; maxAmmo: number }> = {
   pistol: { cost: 0, interval: 0.16, damage: 1, spread: 0, maxAmmo: Number.POSITIVE_INFINITY },
-  shotgun: { cost: 40, interval: 0.2, damage: 1, spread: 0.28, maxAmmo: 30 },
-  machinegun: { cost: 80, interval: 0.08, damage: 1, spread: 0, maxAmmo: 80 },
-  magnum: { cost: 120, interval: 0.24, damage: 3, spread: 0, maxAmmo: 24 },
+  shotgun: { cost: SHOP_COSTS.shotgun, interval: 0.2, damage: 1, spread: 0.28, maxAmmo: 30 },
+  machinegun: { cost: SHOP_COSTS.machinegun, interval: 0.08, damage: 1, spread: 0, maxAmmo: 80 },
+  magnum: { cost: SHOP_COSTS.magnum, interval: 0.24, damage: 3, spread: 0, maxAmmo: 24 },
 };
 
 export const AMMO_GAIN: Record<WeaponName, number> = {

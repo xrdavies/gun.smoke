@@ -20,6 +20,8 @@ test("starts the WebGPU stage and renders gameplay", async ({ page }) => {
   await page.keyboard.press("Shift");
   await expect(page.locator("#inventory-screen")).toBeVisible();
   await expect(page.locator("#inventory-weapons")).toContainText("PISTOL UNLIMITED");
+  await expect(page.locator('[data-inventory-weapon="pistol"]')).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator('[data-inventory-weapon="shotgun"]')).toBeDisabled();
   await page.locator("#inventory-close").click();
   await expect(page.locator("#inventory-screen")).toBeHidden();
   await page.keyboard.down("x");

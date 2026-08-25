@@ -2,9 +2,10 @@
 
 NES/FC-oriented Gun.Smoke recreation built on `@xrdavies/2d-engine`.
 
-The repository starts with a playable vertical slice: title screen, automatic
-vertical scrolling, eight-way movement, three-direction shooting, formations,
-coins, stage progression, a boss encounter, score, money and lives.
+The repository contains a playable five-stage loop: title screen, automatic
+vertical scrolling, eight-way movement, three-direction shooting, enemy
+formations and projectiles, coins, life pickups, stage bosses, score, money,
+damage recovery, game over and a completion state.
 
 The current assets are procedural development sprites. No commercial ROM,
 copyrighted extracted assets, or original Capcom source code is included.
@@ -14,4 +15,10 @@ fixed revision/hash for comparison.
 ```sh
 npm install
 npm run dev
+```
+
+The WebGPU smoke test runs with Chromium and SwiftShader:
+
+```sh
+npm run test:browser
 ```

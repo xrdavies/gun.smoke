@@ -11,7 +11,7 @@ Verified metadata:
 - PRG: 8 x 16 KiB (128 KiB)
 - CHR ROM: 0 KiB (the cartridge uses CHR RAM)
 - Mapper: 2 / UxROM
-- Header flags: four-screen mirroring flag set
+- Header flags: Mapper 2 bits set; four-screen mirroring flag clear
 
 The ROM is used only as a local behavioral and technical reference. The game
 repository contains original procedural development textures and code, not

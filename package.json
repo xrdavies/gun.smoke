@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
+    "inspect:rom": "node tools/inspect-rom.mjs",
+    "trace:rom": "node tools/trace-rom.mjs",
     "check": "tsc --noEmit",
     "test": "vitest run",
     "test:browser": "playwright test"
@@ -17,6 +19,7 @@
     "@types/node": "^24.0.0",
     "@playwright/test": "^1.62.1",
     "@webgpu/types": "^0.1.72",
+    "jsnes": "^2.1.0",
     "typescript": "^5.8.3",
     "vite": "^7.0.0",
     "vitest": "^3.2.4"

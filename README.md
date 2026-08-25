@@ -33,3 +33,11 @@ The WebGPU smoke test runs with Chromium and SwiftShader:
 ```sh
 npm run test:browser
 ```
+
+When the local reference ROM is present, the non-distributable analysis tools
+can be run with:
+
+```sh
+npm run inspect:rom
+npm run trace:rom
+```

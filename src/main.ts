@@ -452,7 +452,7 @@ class GunSmokeGame {
     for (const item of shopItems) {
       const key = item.dataset.shopItem as WeaponName | "horse" | "ammo" | undefined;
       const cost = key === "horse" ? 60 : key === "ammo" ? 20 : key ? WEAPONS[key].cost : 0;
-      item.disabled = key === "horse" ? this.hasHorse || this.money < cost : key === "ammo" ? this.weapon === "pistol" || this.money < cost : key === this.weapon || this.money < cost;
+      item.disabled = key === "horse" ? this.hasHorse || this.money < cost : key === "ammo" ? this.weapon === "pistol" || this.ammo >= WEAPONS[this.weapon].maxAmmo || this.money < cost : key === this.weapon || this.money < cost;
     }
   }
 

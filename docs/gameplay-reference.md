@@ -29,6 +29,9 @@ sprites, WebGPU `Renderer2D` batches, `AudioManager` buses, `ActionMap` keyboard
 and Gamepad input, deterministic seeded randomness, and per-round terrain/road
 data.
 
+After the second Wingate encounter the web recreation enters a separate ending
+and credits state instead of treating the win as Game Over.
+
 ## Known Approximation Boundary
 
 - The repository does not contain extracted ROM graphics, music, or Capcom

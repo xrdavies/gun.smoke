@@ -41,6 +41,10 @@ gunmen, bombers, snipers and back-stabbers; Rocky Pass adds riflemen; Native
 Village adds hatchet throwers and firebreathers; Cliff Valley adds ninjas and
 shotgunners; the final rounds return to gunmen, riflemen, bombers and snipers.
 
+Encounter timing is also represented as four deterministic segments per Round,
+with explicit formation shape and interval data; this replaces the earlier
+single random cadence and provides a stable target for ROM trace comparison.
+
 After the second Wingate encounter the web recreation enters a separate ending
 and credits state instead of treating the win as Game Over.
 

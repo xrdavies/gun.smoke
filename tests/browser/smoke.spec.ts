@@ -11,6 +11,9 @@ test("starts the WebGPU stage and renders gameplay", async ({ page }) => {
   await page.locator("#start-button").click();
   await expect(page.locator("#intro-screen")).toBeVisible();
   await page.locator("#continue-button").click();
+  await expect(page.locator("#briefing-screen")).toBeVisible();
+  await expect(page.locator("#briefing-boss")).toHaveText("BANDIT BILL");
+  await page.locator("#briefing-button").click();
   await expect(page.locator("#hud")).toBeVisible();
   await expect(page.locator("#stage-label")).toHaveText("ROUND 1 HICKSVILLE");
   await expect(page.locator("#boss-label")).toBeHidden();
@@ -41,6 +44,7 @@ test("reaches the first trading post", async ({ page }) => {
   await page.goto("/");
   await page.locator("#start-button").click();
   await page.locator("#continue-button").click();
+  await page.locator("#briefing-button").click();
   await page.waitForTimeout(12_800);
   await expect(page.locator("#shop")).toBeVisible();
   await expect(page.locator("#shop-title")).toContainText("ROUND 1");

@@ -29,7 +29,7 @@ body { margin: 0; min-width: 320px; min-height: 100vh; background: #080d18; }
 .hud-status { margin-top: 5px; font-size: 11px; color: #d9764b; }
 #boss-label { color: #fff2c2; }
 
-#title-screen, #intro-screen, #game-over, #ending-screen, #pause-screen, #inventory-screen {
+#title-screen, #intro-screen, #briefing-screen, #game-over, #ending-screen, #pause-screen, #inventory-screen {
   position: absolute;
   inset: 0;
   display: grid;
@@ -42,6 +42,8 @@ body { margin: 0; min-width: 320px; min-height: 100vh; background: #080d18; }
 
 #intro-screen h2 { margin: 0; color: #efbd58; font-size: clamp(30px, 7vw, 64px); }
 #intro-screen p:not(.eyebrow) { margin: 0; color: #d4c9ab; }
+#briefing-screen h2 { margin: 0; color: #efbd58; font-size: clamp(30px, 7vw, 64px); }
+#briefing-screen p:not(.eyebrow) { margin: 0; color: #fff2c2; font-size: clamp(18px, 3vw, 30px); }
 #ending-screen h2 { margin: 0; color: #efbd58; font-size: clamp(30px, 7vw, 64px); }
 #ending-screen p:not(.eyebrow) { margin: 0; color: #d4c9ab; }
 #pause-screen h2 { margin: 0; color: #efbd58; font-size: clamp(30px, 7vw, 64px); }

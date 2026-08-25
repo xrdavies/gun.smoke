@@ -25,7 +25,7 @@ type GameAction =
   | "fireRight"
   | "smartBomb"
   | "inventory";
-type GameMode = "title" | "intro" | "playing" | "paused" | "gameover" | "ending";
+type GameMode = "title" | "intro" | "briefing" | "playing" | "paused" | "gameover" | "ending";
 type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "coin" | "ammo" | "barrel" | "item" | "wanted";
 type ProjectileType = "bullet" | "dynamite" | "boomerang" | "fireball" | "shuriken";
 type TextureName = "player" | "enemy" | "boss" | "bullet" | "coin" | "powerup" | "ammo" | "barrel" | "wanted" | "terrain" | "road" | "landmark";
@@ -74,6 +74,7 @@ function requireElement<T extends Element>(selector: string): T {
 const canvas = requireElement<HTMLCanvasElement>("#game-canvas");
 const titleScreen = requireElement<HTMLElement>("#title-screen");
 const introScreen = requireElement<HTMLElement>("#intro-screen");
+const briefingScreen = requireElement<HTMLElement>("#briefing-screen");
 const gameOver = requireElement<HTMLElement>("#game-over");
 const endingScreen = requireElement<HTMLElement>("#ending-screen");
 const pauseScreen = requireElement<HTMLElement>("#pause-screen");
@@ -81,6 +82,9 @@ const inventoryScreen = requireElement<HTMLElement>("#inventory-screen");
 const hud = requireElement<HTMLElement>("#hud");
 const startButton = requireElement<HTMLButtonElement>("#start-button");
 const continueButton = requireElement<HTMLButtonElement>("#continue-button");
+const briefingButton = requireElement<HTMLButtonElement>("#briefing-button");
+const briefingRound = requireElement<HTMLElement>("#briefing-round");
+const briefingBoss = requireElement<HTMLElement>("#briefing-boss");
 const restartButton = requireElement<HTMLButtonElement>("#restart-button");
 const endingButton = requireElement<HTMLButtonElement>("#ending-button");
 const resumeButton = requireElement<HTMLButtonElement>("#resume-button");
@@ -313,6 +317,7 @@ class GunSmokeGame {
     this.randomState = 0x6d2b79f5;
     titleScreen.hidden = true;
     introScreen.hidden = false;
+    briefingScreen.hidden = true;
     gameOver.hidden = true;
     endingScreen.hidden = true;
     pauseScreen.hidden = true;
@@ -325,12 +330,30 @@ class GunSmokeGame {
 
   continueFromIntro(): void {
     if (this.mode !== "intro") return;
-    this.mode = "playing";
     introScreen.hidden = true;
+    this.showBriefing();
+  }
+
+  continueFromBriefing(): void {
+    if (this.mode !== "briefing") return;
+    this.mode = "playing";
+    briefingScreen.hidden = true;
     hud.hidden = false;
     this.startMusic();
     this.showMessage("RIDE OUT");
-    this.engine.start();
+    if (this.engine.status === "paused") this.engine.resume();
+    else this.engine.start();
+    canvas.focus();
+  }
+
+  private showBriefing(): void {
+    this.mode = "briefing";
+    const definition = STAGES[this.stage - 1] ?? STAGES[0]!;
+    briefingRound.textContent = `ROUND ${this.stage} / ${definition.name}`;
+    briefingBoss.textContent = definition.boss;
+    briefingScreen.hidden = false;
+    hud.hidden = true;
+    if (this.engine.status === "running") this.engine.pause();
   }
 
   togglePause(): void {
@@ -1014,6 +1037,7 @@ class GunSmokeGame {
     this.player.x = 480;
     this.player.y = 410;
     this.showMessage(`STAGE ${this.stage}`);
+    this.showBriefing();
   }
 
   private loopStage(): void {
@@ -1036,6 +1060,7 @@ class GunSmokeGame {
     hud.hidden = true;
     pauseScreen.hidden = true;
     inventoryScreen.hidden = true;
+    briefingScreen.hidden = true;
     if (won) {
       this.mode = "ending";
       endingScreen.hidden = false;
@@ -1340,6 +1365,7 @@ let game: GunSmokeGame | undefined;
 let referenceGame: ReferenceRomGame | undefined;
 startButton.addEventListener("click", () => void game?.start());
 continueButton.addEventListener("click", () => game?.continueFromIntro());
+briefingButton.addEventListener("click", () => game?.continueFromBriefing());
 restartButton.addEventListener("click", () => window.location.reload());
 endingButton.addEventListener("click", () => window.location.reload());
 resumeButton.addEventListener("click", () => game?.togglePause());
@@ -1358,6 +1384,7 @@ window.addEventListener("keydown", (event) => {
   if (event.code !== "Enter" && event.code !== "NumpadEnter") return;
   if (game?.mode === "title") game.start();
   else if (game?.mode === "intro") game.continueFromIntro();
+  else if (game?.mode === "briefing") game.continueFromBriefing();
   else if (game?.mode === "gameover" || game?.mode === "ending") window.location.reload();
 });
 try {
@@ -1380,6 +1407,7 @@ async function loadReferenceRom(): Promise<void> {
     referenceGame = await ReferenceRomGame.create(await file.arrayBuffer());
     titleScreen.hidden = true;
     introScreen.hidden = true;
+    briefingScreen.hidden = true;
     gameOver.hidden = true;
     endingScreen.hidden = true;
     pauseScreen.hidden = true;

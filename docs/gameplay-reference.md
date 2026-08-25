@@ -85,6 +85,10 @@ enemy drops remain a separate randomized supplement.
 After the second Wingate encounter the web recreation enters a separate ending
 and credits state instead of treating the win as Game Over.
 
+Each Round begins with a Wanted briefing for its named Boss. Later-Round
+briefings pause the engine loop until the player rides out, matching the
+separation between wanted screen and active gameplay in the verified ROM trace.
+
 The programmatic mode also supports pausing through the engine's
 `Engine.pause()`/`resume()` lifecycle, with `P`, `Escape`, and a visible Resume
 control.

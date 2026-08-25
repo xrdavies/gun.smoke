@@ -11,7 +11,7 @@ import {
   World,
 } from "@xrdavies/2d-engine";
 import "./style.css";
-import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, SHOP_CHECKPOINTS, STAGE_LENGTH, STAGES, WEAPONS, type WeaponName } from "./game-constants";
+import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, SHOP_CHECKPOINTS, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -466,15 +466,15 @@ class GunSmokeGame {
 
   private refreshShopButtons(): void {
     for (const item of shopItems) {
-      const key = item.dataset.shopItem as WeaponName | "horse" | "ammo" | undefined;
-      const cost = key === "horse" ? 60 : key === "ammo" ? 20 : key ? WEAPONS[key].cost : 0;
-      item.disabled = key === "horse" ? this.hasHorse || this.money < cost : key === "ammo" ? this.weapon === "pistol" || this.ammo >= WEAPONS[this.weapon].maxAmmo || this.money < cost : key === this.weapon || this.money < cost;
+      const key = item.dataset.shopItem as WeaponName | "horse" | "ammo" | "wanted" | undefined;
+      const cost = key === "horse" ? 60 : key === "ammo" ? 20 : key === "wanted" ? WANTED_COSTS[this.stage - 1] ?? 800 : key ? WEAPONS[key].cost : 0;
+      item.disabled = key === "horse" ? this.hasHorse || this.money < cost : key === "ammo" ? this.weapon === "pistol" || this.ammo >= WEAPONS[this.weapon].maxAmmo || this.money < cost : key === "wanted" ? this.hasWanted || this.money < cost : key === this.weapon || this.money < cost;
     }
   }
 
   buyShopItem(item: string): void {
-    const key = item as WeaponName | "horse" | "ammo";
-    const cost = key === "horse" ? 60 : key === "ammo" ? 20 : WEAPONS[key]?.cost;
+    const key = item as WeaponName | "horse" | "ammo" | "wanted";
+    const cost = key === "horse" ? 60 : key === "ammo" ? 20 : key === "wanted" ? WANTED_COSTS[this.stage - 1] ?? 800 : WEAPONS[key]?.cost;
     if (cost === undefined || (key === "horse" && this.hasHorse) || this.money < cost) {
       shopMessage.textContent = "NOT ENOUGH MONEY";
       return;
@@ -482,6 +482,7 @@ class GunSmokeGame {
     this.money -= cost;
     if (key === "horse") this.hasHorse = true;
     else if (key === "ammo") this.ammo = Math.min(WEAPONS[this.weapon].maxAmmo, this.ammo + 20);
+    else if (key === "wanted") this.hasWanted = true;
     else {
       this.weapon = key;
       this.ammo = WEAPONS[key].maxAmmo;

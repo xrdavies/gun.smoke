@@ -470,7 +470,9 @@ class GunSmokeGame {
       gunman: [1, 0.82, 0.82, 1], rifleman: [0.82, 0.9, 1, 1], bomber: [1, 0.9, 0.65, 1], sniper: [0.78, 1, 0.88, 1],
       backstabber: [1, 0.72, 0.88, 1], ninja: [0.82, 0.78, 1, 1], hatchet: [1, 0.82, 0.68, 1], firebreather: [1, 0.62, 0.42, 1],
     };
-    const sprite = new Sprite({ texture: this.textures[textureName], sampler: this.sampler, position: { x, y }, size: { x: isBoss ? 110 : isPickup ? 28 : small ? 9 : 34, y: isBoss ? 68 : isPickup ? 28 : small ? 25 : 34 }, anchor: { x: 0.5, y: 0.5 }, color: kind === "enemy" && enemyType ? colors[enemyType] : [1, 1, 1, 1], layer: isBoss ? 15 : small ? 12 : isPickup ? 11 : 10 });
+    const bossColors: readonly [number, number, number, number][] = [[1, 0.55, 0.42, 1], [0.55, 0.75, 1, 1], [1, 0.72, 0.34, 1], [0.78, 0.58, 1, 1], [1, 0.82, 0.42, 1], [1, 0.96, 0.72, 1]];
+    const color: [number, number, number, number] = isBoss ? bossColors[this.stage - 1] ?? bossColors[0]! : kind === "enemy" && enemyType ? colors[enemyType] : [1, 1, 1, 1];
+    const sprite = new Sprite({ texture: this.textures[textureName], sampler: this.sampler, position: { x, y }, size: { x: isBoss ? 110 : isPickup ? 28 : small ? 9 : 34, y: isBoss ? 68 : isPickup ? 28 : small ? 25 : 34 }, anchor: { x: 0.5, y: 0.5 }, color, layer: isBoss ? 15 : small ? 12 : isPickup ? 11 : 10 });
     const unit: Unit = {
       kind, enemyType, sprite, x, y,
       vx: isBoss ? 42 : (this.nextRandom() - 0.5) * 70,

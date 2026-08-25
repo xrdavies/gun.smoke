@@ -20,11 +20,13 @@ type GameAction =
   | "fireRight";
 type GameMode = "title" | "playing" | "gameover";
 type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "coin" | "powerup" | "wanted";
+type EnemyType = "gunman" | "rifleman" | "bomber" | "sniper" | "backstabber" | "ninja" | "hatchet" | "firebreather";
 type TextureName = "player" | "enemy" | "boss" | "bullet" | "coin" | "powerup" | "wanted" | "terrain" | "road";
 type Rgba = [number, number, number, number];
 
 interface Unit {
   kind: UnitKind;
+  enemyType?: EnemyType;
   sprite: Sprite;
   x: number;
   y: number;
@@ -36,6 +38,7 @@ interface Unit {
   age: number;
   phase: number;
   damage: number;
+  fired: boolean;
 }
 
 const actions = new ActionMap<GameAction>();
@@ -334,10 +337,23 @@ class GunSmokeGame {
     const y = this.scroll + 55;
     const pattern = (this.stage + Math.floor(this.scroll / 420)) % 3;
     const offsets = pattern === 0 ? [-1, 0, 1] : pattern === 1 ? [-2, -1, 1, 2] : [-2, 0, 2];
+    const types: readonly EnemyType[] = this.stage === 1
+      ? ["gunman", "bomber"]
+      : this.stage === 2
+        ? ["rifleman", "backstabber"]
+        : this.stage === 3
+          ? ["sniper", "hatchet", "firebreather"]
+          : this.stage === 4
+            ? ["ninja", "gunman", "sniper"]
+            : this.stage === 5
+              ? ["rifleman", "bomber", "backstabber"]
+              : ["sniper", "ninja", "backstabber"];
     for (const offset of offsets) {
-      const enemy = this.spawnUnit("enemy", clamp(center + offset * 66, 54, 906), y - Math.abs(offset) * 22, 1 + Number(this.stage >= 4));
+      const enemyType = types[Math.floor(Math.random() * types.length)] ?? "gunman";
+      const entryY = enemyType === "backstabber" ? this.scroll + 520 : y - Math.abs(offset) * 22;
+      const enemy = this.spawnUnit("enemy", clamp(center + offset * 66, 54, 906), entryY, 1 + Number(this.stage >= 4), enemyType);
       enemy.vx = pattern === 2 ? offset * 32 : (Math.random() - 0.5) * (55 + this.stage * 8);
-      enemy.vy = 24 + this.stage * 6;
+      enemy.vy = enemyType === "backstabber" ? -100 : 24 + this.stage * 6;
     }
     if (Math.random() < 0.28) this.spawnUnit("coin", clamp(center + (Math.random() - 0.5) * 260, 60, 900), y + 55, 1);
     if (Math.random() < 0.1) this.spawnUnit("powerup", clamp(center + (Math.random() - 0.5) * 300, 60, 900), y + 90, 1);
@@ -392,19 +408,23 @@ class GunSmokeGame {
     this.beep(180, 0.18);
   }
 
-  private spawnUnit(kind: UnitKind, x: number, y: number, hp: number): Unit {
+  private spawnUnit(kind: UnitKind, x: number, y: number, hp: number, enemyType?: EnemyType): Unit {
     const textureName: TextureName = kind === "enemyBullet" ? "bullet" : kind === "boss" || kind === "enemy" || kind === "bullet" || kind === "coin" || kind === "powerup" || kind === "wanted" ? kind : "enemy";
     const isBoss = kind === "boss";
     const isPickup = kind === "coin" || kind === "powerup" || kind === "wanted";
     const small = kind === "bullet" || kind === "enemyBullet";
-    const sprite = new Sprite({ texture: this.textures[textureName], sampler: this.sampler, position: { x, y }, size: { x: isBoss ? 110 : isPickup ? 28 : small ? 9 : 34, y: isBoss ? 68 : isPickup ? 28 : small ? 25 : 34 }, anchor: { x: 0.5, y: 0.5 }, layer: isBoss ? 15 : small ? 12 : isPickup ? 11 : 10 });
+    const colors: Record<EnemyType, [number, number, number, number]> = {
+      gunman: [1, 0.82, 0.82, 1], rifleman: [0.82, 0.9, 1, 1], bomber: [1, 0.9, 0.65, 1], sniper: [0.78, 1, 0.88, 1],
+      backstabber: [1, 0.72, 0.88, 1], ninja: [0.82, 0.78, 1, 1], hatchet: [1, 0.82, 0.68, 1], firebreather: [1, 0.62, 0.42, 1],
+    };
+    const sprite = new Sprite({ texture: this.textures[textureName], sampler: this.sampler, position: { x, y }, size: { x: isBoss ? 110 : isPickup ? 28 : small ? 9 : 34, y: isBoss ? 68 : isPickup ? 28 : small ? 25 : 34 }, anchor: { x: 0.5, y: 0.5 }, color: kind === "enemy" && enemyType ? colors[enemyType] : [1, 1, 1, 1], layer: isBoss ? 15 : small ? 12 : isPickup ? 11 : 10 });
     const unit: Unit = {
-      kind, sprite, x, y,
+      kind, enemyType, sprite, x, y,
       vx: isBoss ? 42 : (Math.random() - 0.5) * 70,
       vy: isBoss || isPickup ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : small ? 7 : 19,
       value: isBoss ? 5_000 : kind === "coin" ? 50 : kind === "powerup" ? 250 : kind === "wanted" ? 1_000 : 100,
-      age: 0, phase: Math.random() * Math.PI * 2, damage: 1,
+      age: 0, phase: Math.random() * Math.PI * 2, damage: 1, fired: false,
     };
     this.units.push(unit);
     return unit;
@@ -420,9 +440,43 @@ class GunSmokeGame {
   private updateUnit(unit: Unit, delta: number): void {
     unit.age += delta;
     if (unit.kind === "enemy") {
-      unit.x += unit.vx * delta;
-      unit.y += unit.vy * delta;
-      unit.x += Math.sin(unit.age * 3 + unit.phase) * 18 * delta;
+      if (unit.enemyType === "backstabber") {
+        unit.y += unit.vy * delta;
+        unit.x += Math.sin(unit.age * 7 + unit.phase) * 35 * delta;
+      } else if (unit.enemyType === "ninja") {
+        unit.x += (unit.vx + Math.sin(unit.age * 6 + unit.phase) * 90) * delta;
+        unit.y += unit.vy * 1.8 * delta;
+      } else if (unit.enemyType === "rifleman") {
+        unit.x += unit.vx * delta;
+        unit.y += (unit.age < 1.2 ? unit.vy : -unit.vy * 0.75) * delta;
+      } else if (unit.enemyType === "sniper") {
+        unit.y += unit.vy * 0.45 * delta;
+      } else if (unit.enemyType === "bomber") {
+        unit.x += unit.vx * delta;
+        unit.y += unit.vy * 0.7 * delta;
+        if (!unit.fired && unit.age > 0.9) {
+          unit.fired = true;
+          const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y + 12, 1);
+          projectile.vx = (this.player.x - unit.x) * 0.35;
+          projectile.vy = 115;
+        }
+      } else if (unit.enemyType === "firebreather") {
+        unit.x += Math.sin(unit.age * 4 + unit.phase) * 55 * delta;
+        unit.y += unit.vy * delta;
+        if (!unit.fired && unit.age > 0.7) {
+          unit.fired = true;
+          const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
+          for (const spread of [-0.22, 0, 0.22]) {
+            const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y + 12, 1);
+            projectile.vx = Math.cos(angle + spread) * 115;
+            projectile.vy = Math.sin(angle + spread) * 115;
+          }
+        }
+      } else {
+        unit.x += unit.vx * delta;
+        unit.y += unit.vy * delta;
+        unit.x += Math.sin(unit.age * 3 + unit.phase) * 18 * delta;
+      }
       if (unit.x < 32 || unit.x > 928) unit.vx *= -1;
     } else if (unit.kind === "boss") {
       unit.x += unit.vx * delta;

@@ -146,6 +146,7 @@ class GunSmokeGame {
   shopIndex = 0;
   musicTimer: number | undefined;
   musicStep = 0;
+  randomState = 0x6d2b79f5;
   player = { entity: 0, x: 480, y: 410, sprite: undefined as unknown as Sprite };
 
   private constructor(engine: Engine) {
@@ -228,6 +229,7 @@ class GunSmokeGame {
   start(): void {
     if (this.mode === "playing") return;
     this.mode = "playing";
+    this.randomState = 0x6d2b79f5;
     titleScreen.hidden = true;
     gameOver.hidden = true;
     hud.hidden = false;
@@ -308,7 +310,7 @@ class GunSmokeGame {
     this.enemyFireClock -= delta;
     if (this.enemyFireClock > 0) return;
     const shooters = this.units.filter((unit) => unit.kind === "enemy" && unit.hp > 0 && unit.y < this.player.y);
-    const shooter = shooters[Math.floor(Math.random() * shooters.length)];
+    const shooter = shooters[Math.floor(this.nextRandom() * shooters.length)];
     if (shooter) {
       const angle = Math.atan2(this.player.y - shooter.y, this.player.x - shooter.x);
       const projectile = this.spawnUnit("enemyBullet", shooter.x, shooter.y + 12, 1);
@@ -362,7 +364,7 @@ class GunSmokeGame {
   }
 
   private spawnFormation(): void {
-    const center = 140 + Math.random() * 680;
+    const center = 140 + this.nextRandom() * 680;
     const y = this.scroll + 55;
     const pattern = (this.stage + Math.floor(this.scroll / 420)) % 3;
     const offsets = pattern === 0 ? [-1, 0, 1] : pattern === 1 ? [-2, -1, 1, 2] : [-2, 0, 2];
@@ -378,14 +380,14 @@ class GunSmokeGame {
               ? ["rifleman", "bomber", "backstabber"]
               : ["sniper", "ninja", "backstabber"];
     for (const offset of offsets) {
-      const enemyType = types[Math.floor(Math.random() * types.length)] ?? "gunman";
+      const enemyType = types[Math.floor(this.nextRandom() * types.length)] ?? "gunman";
       const entryY = enemyType === "backstabber" ? this.scroll + 520 : y - Math.abs(offset) * 22;
       const enemy = this.spawnUnit("enemy", clamp(center + offset * 66, 54, 906), entryY, 1 + Number(this.stage >= 4), enemyType);
-      enemy.vx = pattern === 2 ? offset * 32 : (Math.random() - 0.5) * (55 + this.stage * 8);
+      enemy.vx = pattern === 2 ? offset * 32 : (this.nextRandom() - 0.5) * (55 + this.stage * 8);
       enemy.vy = enemyType === "backstabber" ? -100 : 24 + this.stage * 6;
     }
-    if (Math.random() < 0.28) this.spawnUnit("coin", clamp(center + (Math.random() - 0.5) * 260, 60, 900), y + 55, 1);
-    if (Math.random() < 0.1) this.spawnUnit("powerup", clamp(center + (Math.random() - 0.5) * 300, 60, 900), y + 90, 1);
+    if (this.nextRandom() < 0.28) this.spawnUnit("coin", clamp(center + (this.nextRandom() - 0.5) * 260, 60, 900), y + 55, 1);
+    if (this.nextRandom() < 0.1) this.spawnUnit("powerup", clamp(center + (this.nextRandom() - 0.5) * 300, 60, 900), y + 90, 1);
   }
 
   private maybeOpenShop(): void {
@@ -449,11 +451,11 @@ class GunSmokeGame {
     const sprite = new Sprite({ texture: this.textures[textureName], sampler: this.sampler, position: { x, y }, size: { x: isBoss ? 110 : isPickup ? 28 : small ? 9 : 34, y: isBoss ? 68 : isPickup ? 28 : small ? 25 : 34 }, anchor: { x: 0.5, y: 0.5 }, color: kind === "enemy" && enemyType ? colors[enemyType] : [1, 1, 1, 1], layer: isBoss ? 15 : small ? 12 : isPickup ? 11 : 10 });
     const unit: Unit = {
       kind, enemyType, sprite, x, y,
-      vx: isBoss ? 42 : (Math.random() - 0.5) * 70,
+      vx: isBoss ? 42 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : small ? 7 : 19,
       value: isBoss ? 5_000 : kind === "coin" ? 50 : kind === "powerup" ? 250 : kind === "wanted" ? 1_000 : 100,
-      age: 0, phase: Math.random() * Math.PI * 2, damage: 1, fired: false,
+      age: 0, phase: this.nextRandom() * Math.PI * 2, damage: 1, fired: false,
     };
     this.units.push(unit);
     return unit;
@@ -532,7 +534,7 @@ class GunSmokeGame {
       if (target.hp > 0) continue;
       this.score += target.value;
       this.money += target.kind === "boss" ? 50 : 2;
-      if (target.kind === "enemy" && Math.random() < 0.3) this.spawnUnit(Math.random() < 0.72 ? "coin" : "powerup", target.x, target.y, 1);
+      if (target.kind === "enemy" && this.nextRandom() < 0.3) this.spawnUnit(this.nextRandom() < 0.72 ? "coin" : "powerup", target.x, target.y, 1);
       if (target.kind === "boss") {
         if (this.stage === MAX_STAGE && this.wingatePhase === 0) {
           this.wingatePhase = 1;
@@ -672,6 +674,15 @@ class GunSmokeGame {
       window.clearInterval(this.musicTimer);
       this.musicTimer = undefined;
     }
+  }
+
+  private nextRandom(): number {
+    let state = this.randomState;
+    state ^= state << 13;
+    state ^= state >>> 17;
+    state ^= state << 5;
+    this.randomState = state >>> 0;
+    return this.randomState / 0x1_0000_0000;
   }
 
   private dispose(): void {

@@ -28,3 +28,7 @@ than an exact ROM conversion.
 `npm run extract:rom-assets` can locally dump the runtime CHR-RAM pattern table,
 VRAM, sprite OAM and selected 256x240 frames. The output is ignored by Git and
 is intended only for private inspection against the supplied reference file.
+
+The web title page can also load the same local ROM into Reference ROM mode.
+This provides a legal exact-runtime comparison path without distributing the
+ROM; the regular web game remains the original procedural recreation.

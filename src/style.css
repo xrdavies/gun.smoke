@@ -69,4 +69,6 @@ button:disabled { cursor: not-allowed; opacity: .42; }
 .note { margin: 4px 0 0; color: #8c98ac; font-size: 11px; }
 button { cursor: pointer; border: 1px solid #efbd58; padding: 12px 24px; color: #0b101c; background: #efbd58; font: inherit; font-weight: 700; text-transform: uppercase; }
 button:hover, button:focus-visible { background: #fff0b3; outline: 2px solid #fff0b3; outline-offset: 3px; }
+.rom-loader { display: grid; gap: 5px; color: #8c98ac; font-size: 11px; }
+.rom-loader input { max-width: 260px; color: #d4c9ab; font: inherit; }
 [hidden] { display: none !important; }

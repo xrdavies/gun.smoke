@@ -17,6 +17,11 @@ copyrighted extracted assets, or original Capcom source code is included.
 Exact ROM-level reproduction requires a legally obtained reference ROM and a
 fixed revision/hash for comparison.
 
+For local verification, the title screen also accepts a legally obtained `.NES`
+file. That Reference ROM mode runs the supplied ROM through JSNES while the
+current engine owns the WebGPU frame texture, Sprite, camera, engine loop,
+keyboard input bridge and PCM audio output. The ROM itself is never bundled.
+
 Reference ROM provenance and verified header metadata are recorded in
 [`docs/reference-rom.md`](docs/reference-rom.md).
 

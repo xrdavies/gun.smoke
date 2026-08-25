@@ -11,6 +11,7 @@ import {
   World,
 } from "@xrdavies/2d-engine";
 import "./style.css";
+import type { ButtonKey } from "jsnes";
 import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, SHOP_CHECKPOINTS, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, type WeaponName } from "./game-constants";
 
 type GameAction =
@@ -69,6 +70,8 @@ const hud = requireElement<HTMLElement>("#hud");
 const startButton = requireElement<HTMLButtonElement>("#start-button");
 const continueButton = requireElement<HTMLButtonElement>("#continue-button");
 const restartButton = requireElement<HTMLButtonElement>("#restart-button");
+const referenceRomInput = requireElement<HTMLInputElement>("#reference-rom");
+const romStatus = requireElement<HTMLElement>("#rom-status");
 const finalScore = requireElement<HTMLElement>("#final-score");
 const stageLabel = requireElement<HTMLElement>("#stage-label");
 const scoreLabel = requireElement<HTMLElement>("#score-label");
@@ -790,14 +793,193 @@ class GunSmokeGame {
       return undefined;
     }
   }
+
+  destroy(): void {
+    this.engine.destroy();
+  }
+}
+
+class ReferenceAudio {
+  readonly context: AudioContext | undefined;
+  private readonly processor: ScriptProcessorNode | undefined;
+  private readonly left = new Float32Array(65_536);
+  private readonly right = new Float32Array(65_536);
+  private readIndex = 0;
+  private writeIndex = 0;
+  private count = 0;
+
+  constructor() {
+    try {
+      this.context = new AudioContext();
+      this.processor = this.context.createScriptProcessor(2_048, 0, 2);
+      this.processor.onaudioprocess = (event) => {
+        const left = event.outputBuffer.getChannelData(0);
+        const right = event.outputBuffer.getChannelData(1);
+        for (let index = 0; index < left.length; index += 1) {
+          left[index] = this.count > 0 ? this.left[this.readIndex] ?? 0 : 0;
+          right[index] = this.count > 0 ? this.right[this.readIndex] ?? 0 : 0;
+          if (this.count > 0) {
+            this.readIndex = (this.readIndex + 1) % this.left.length;
+            this.count -= 1;
+          }
+        }
+      };
+      this.processor.connect(this.context.destination);
+    } catch {
+      this.context = undefined;
+    }
+  }
+
+  push(left: number, right: number): void {
+    if (!this.context || this.count >= this.left.length - 1) return;
+    this.left[this.writeIndex] = left;
+    this.right[this.writeIndex] = right;
+    this.writeIndex = (this.writeIndex + 1) % this.left.length;
+    this.count += 1;
+  }
+
+  resume(): void {
+    void this.context?.resume();
+  }
+
+  dispose(): void {
+    this.processor?.disconnect();
+    void this.context?.close();
+  }
+}
+
+class ReferenceRomGame {
+  readonly engine: Engine;
+  readonly renderer: Renderer2D;
+  readonly camera = new Camera2D({ position: { x: 128, y: 120 }, viewportWidth: 256, viewportHeight: 240 });
+  readonly texture: GPUTexture;
+  readonly sampler: GPUSampler;
+  readonly sprite: Sprite;
+  readonly nes: import("jsnes").NES;
+  readonly buttons: typeof import("jsnes").Controller;
+  readonly audio: ReferenceAudio;
+  private readonly frameRef: { value: Uint32Array | undefined };
+  private readonly rgba = new Uint8Array(256 * 240 * 4);
+  private accumulator = 0;
+  private readonly held = new Set<number>();
+  private readonly onKeyDownBound = (event: KeyboardEvent): void => this.onKey(event, true);
+  private readonly onKeyUpBound = (event: KeyboardEvent): void => this.onKey(event, false);
+
+  private constructor(engine: Engine, nes: import("jsnes").NES, buttons: typeof import("jsnes").Controller, frameRef: { value: Uint32Array | undefined }, audio: ReferenceAudio) {
+    this.engine = engine;
+    this.nes = nes;
+    this.buttons = buttons;
+    this.frameRef = frameRef;
+    this.audio = audio;
+    this.renderer = new Renderer2D(engine.gpu, { clearColor: { r: 0, g: 0, b: 0, a: 1 } });
+    this.sampler = engine.gpu.device.createSampler({ magFilter: "nearest", minFilter: "nearest" });
+    this.texture = engine.gpu.device.createTexture({
+      label: "gun-smoke-reference-frame",
+      size: { width: 256, height: 240, depthOrArrayLayers: 1 },
+      format: "rgba8unorm",
+      usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
+    });
+    this.sprite = new Sprite({ texture: this.texture, sampler: this.sampler, position: { x: 128, y: 120 }, size: { x: 256, y: 240 }, anchor: { x: 0.5, y: 0.5 }, layer: 0 });
+    window.addEventListener("keydown", this.onKeyDownBound);
+    window.addEventListener("keyup", this.onKeyUpBound);
+    this.engine.addSystem({ update: (delta) => this.update(delta), render: () => this.render(), dispose: () => this.dispose() });
+  }
+
+  static async create(data: ArrayBuffer): Promise<ReferenceRomGame> {
+    const { Controller, NES } = await import("jsnes");
+    const bytes = new Uint8Array(data);
+    let binary = "";
+    for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+      binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
+    }
+    const frame: { value: Uint32Array | undefined } = { value: undefined };
+    const audio = new ReferenceAudio();
+    const nes = new NES({ onFrame: (nextFrame) => { frame.value = nextFrame; }, onAudioSample: (left, right) => audio.push(left, right) });
+    nes.loadROM(binary);
+    const engine = await Engine.create({ canvas, autoStart: false, input: false });
+    return new ReferenceRomGame(engine, nes, Controller, frame, audio);
+  }
+
+  start(): void {
+    this.audio.resume();
+    this.engine.start();
+  }
+
+  destroy(): void {
+    if (this.engine.status !== "destroyed") this.engine.destroy();
+  }
+
+  private update(delta: number): void {
+    this.accumulator += Math.min(delta, 0.25);
+    while (this.accumulator >= 1 / 60) {
+      this.nes.frame();
+      this.accumulator -= 1 / 60;
+    }
+    const frame = this.frameRef.value;
+    if (!frame) return;
+    for (let index = 0; index < frame.length; index += 1) {
+      const value = frame[index] ?? 0;
+      const offset = index * 4;
+      this.rgba[offset] = (value >> 16) & 0xff;
+      this.rgba[offset + 1] = (value >> 8) & 0xff;
+      this.rgba[offset + 2] = value & 0xff;
+      this.rgba[offset + 3] = 255;
+    }
+    this.engine.gpu.device.queue.writeTexture({ texture: this.texture }, this.rgba, { bytesPerRow: 256 * 4 }, { width: 256, height: 240, depthOrArrayLayers: 1 });
+  }
+
+  private render(): void {
+    this.renderer.render([this.sprite], this.camera);
+  }
+
+  private onKey(event: KeyboardEvent, pressed: boolean): void {
+    const button = this.keyButton(event.code);
+    if (button === undefined) return;
+    event.preventDefault();
+    if (pressed) {
+      if (this.held.has(button)) return;
+      this.held.add(button);
+      this.nes.buttonDown(1, button);
+    } else {
+      this.held.delete(button);
+      this.nes.buttonUp(1, button);
+    }
+  }
+
+  private keyButton(code: string): ButtonKey | undefined {
+    const map: Record<string, ButtonKey> = {
+      ArrowUp: this.buttons.BUTTON_UP,
+      ArrowDown: this.buttons.BUTTON_DOWN,
+      ArrowLeft: this.buttons.BUTTON_LEFT,
+      ArrowRight: this.buttons.BUTTON_RIGHT,
+      KeyZ: this.buttons.BUTTON_A,
+      KeyX: this.buttons.BUTTON_B,
+      Space: this.buttons.BUTTON_A,
+      Enter: this.buttons.BUTTON_START,
+      NumpadEnter: this.buttons.BUTTON_START,
+      ShiftLeft: this.buttons.BUTTON_SELECT,
+      ShiftRight: this.buttons.BUTTON_SELECT,
+    };
+    return map[code];
+  }
+
+  private dispose(): void {
+    window.removeEventListener("keydown", this.onKeyDownBound);
+    window.removeEventListener("keyup", this.onKeyUpBound);
+    this.held.clear();
+    this.texture.destroy();
+    this.audio.dispose();
+  }
 }
 
 let game: GunSmokeGame | undefined;
+let referenceGame: ReferenceRomGame | undefined;
 startButton.addEventListener("click", () => void game?.start());
 continueButton.addEventListener("click", () => game?.continueFromIntro());
 restartButton.addEventListener("click", () => window.location.reload());
 shopClose.addEventListener("click", () => game?.closeShop());
 for (const item of shopItems) item.addEventListener("click", () => game?.buyShopItem(item.dataset.shopItem ?? ""));
+referenceRomInput.addEventListener("change", () => void loadReferenceRom());
 window.addEventListener("keydown", (event) => {
   if (event.code !== "Enter" && event.code !== "NumpadEnter") return;
   if (game?.mode === "title") game.start();
@@ -810,4 +992,28 @@ try {
 } catch (error) {
   const reason = error instanceof Error ? error.message : String(error);
   messageLabel.textContent = `WEBGPU UNAVAILABLE: ${reason}`;
+}
+
+async function loadReferenceRom(): Promise<void> {
+  const file = referenceRomInput.files?.[0];
+  if (!file) return;
+  referenceRomInput.disabled = true;
+  romStatus.textContent = `Loading ${file.name}...`;
+  try {
+    referenceGame?.destroy();
+    game?.destroy();
+    game = undefined;
+    referenceGame = await ReferenceRomGame.create(await file.arrayBuffer());
+    titleScreen.hidden = true;
+    introScreen.hidden = true;
+    gameOver.hidden = true;
+    hud.hidden = true;
+    shop.hidden = true;
+    referenceGame.start();
+    romStatus.textContent = `Reference ROM active: ${file.name}`;
+  } catch (error) {
+    const reason = error instanceof Error ? error.message : String(error);
+    romStatus.textContent = `Could not load ROM: ${reason}`;
+    referenceRomInput.disabled = false;
+  }
 }

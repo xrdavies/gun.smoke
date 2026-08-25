@@ -892,7 +892,13 @@ class ReferenceRomGame {
     } catch {
       audio = undefined;
     }
-    const pcm = audio?.createPcmStream({ bus: "music" });
+    let pcm: PcmStream | undefined;
+    try {
+      pcm = audio?.createPcmStream({ bus: "music" });
+    } catch {
+      audio?.dispose();
+      audio = undefined;
+    }
     const nes = new NES({ onFrame: (nextFrame) => { frame.value = nextFrame; }, onAudioSample: (left, right) => pcm?.push(left, right) });
     nes.loadROM(binary);
     const engine = await Engine.create({ canvas, autoStart: false, input: true });

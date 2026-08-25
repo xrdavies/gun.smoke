@@ -397,6 +397,7 @@ class GunSmokeGame {
       projectile.turnRate = pattern.turnRate * (index === 0 ? -1 : 1);
       projectile.radius = 7;
     }
+    boss.fired = true;
     this.bossFireClock = pattern.cooldown;
     this.beep(150 + this.stage * 18, 0.045);
   }
@@ -631,6 +632,7 @@ class GunSmokeGame {
     for (const bullet of bullets) {
       const target = targets.find((candidate) => distance(bullet, candidate) <= bullet.radius + candidate.radius);
       if (!target) continue;
+      if (!this.isBossVulnerable(target)) continue;
       bullet.hp = 0;
       target.hp -= bullet.damage;
       if (target.hp > 0) continue;
@@ -674,6 +676,13 @@ class GunSmokeGame {
         if (unit.kind !== "boss") unit.hp = 0;
       }
     }
+  }
+
+  private isBossVulnerable(unit: Unit): boolean {
+    if (unit.kind !== "boss") return true;
+    if (this.stage === 1) return unit.age % 3.2 < 2.2;
+    if (this.stage === 2 || this.stage === 3 || this.stage === 5) return unit.fired;
+    return true;
   }
 
   private takeHit(): void {

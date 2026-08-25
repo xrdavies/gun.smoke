@@ -18,10 +18,15 @@ outlaw must be collected before the boss gate can resolve. The web build uses
 an original procedural poster pickup at the boss approach and keeps that gate
 in the gameplay state machine.
 
-The web build also models the resource loop with money pickups, two trading
-posts per round, Shotgun, Machine Gun, Magnum and Horse upgrades. Weapon costs,
+The web build also models the resource loop with money pickups, round-specific
+trading-post checkpoints, Shotgun, Machine Gun, Magnum and Horse upgrades. Weapon costs,
 enemy placement, terrain art, audio and exact frame timing are intentionally
 parameters rather than claims of byte-identical reproduction.
+
+The runtime now exercises the engine's animation binding for player/enemy/Boss
+sprites, WebGPU `Renderer2D` batches, `AudioManager` buses, `ActionMap` keyboard
+and Gamepad input, deterministic seeded randomness, and per-round terrain/road
+data.
 
 ## Known Approximation Boundary
 

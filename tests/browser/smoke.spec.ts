@@ -47,6 +47,12 @@ test("runs a locally supplied reference ROM through the engine", async ({ page }
   await page.locator("#reference-rom").setInputFiles(romPath);
   await expect(page.locator("#rom-status")).toContainText("Reference ROM active", { timeout: 5_000 });
   await expect(page.locator("#title-screen")).toBeHidden();
+  const referenceViewport = await page.locator("#game-canvas").getAttribute("data-reference-viewport");
+  const viewportParts = (referenceViewport ?? "0x0").split("x").map(Number);
+  const referenceWidth = viewportParts[0] ?? 0;
+  const referenceHeight = viewportParts[1] ?? 0;
+  expect(referenceHeight).toBeCloseTo(240, 0);
+  expect(referenceWidth / referenceHeight).toBeCloseTo(958 / 538, 2);
   const first = await page.locator("#game-canvas").screenshot();
   await page.waitForTimeout(300);
   const second = await page.locator("#game-canvas").screenshot();

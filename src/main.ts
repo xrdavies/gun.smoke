@@ -836,6 +836,8 @@ class ReferenceRomGame {
     });
     this.sprite = new Sprite({ texture: this.texture, sampler: this.sampler, position: { x: 128, y: 120 }, size: { x: 256, y: 240 }, anchor: { x: 0.5, y: 0.5 }, layer: 0 });
     this.engine.input?.onInput((event) => this.onInput(event));
+    this.engine.on("resize", ({ width, height }) => this.fitViewport(width, height));
+    this.fitViewport(engine.viewport.width, engine.viewport.height);
     this.engine.addSystem({ update: (delta) => this.update(delta), render: () => this.render(), dispose: () => this.dispose() });
   }
 
@@ -903,6 +905,16 @@ class ReferenceRomGame {
 
   private render(): void {
     this.renderer.render([this.sprite], this.camera);
+  }
+
+  private fitViewport(width: number, height: number): void {
+    const scale = Math.min(width / 256, height / 240);
+    const worldWidth = width / scale;
+    const worldHeight = height / scale;
+    this.camera.setViewport(worldWidth, worldHeight);
+    this.camera.position = { x: worldWidth / 2, y: worldHeight / 2 };
+    this.sprite.position = { x: worldWidth / 2, y: worldHeight / 2 };
+    canvas.dataset.referenceViewport = `${worldWidth.toFixed(3)}x${worldHeight.toFixed(3)}`;
   }
 
   private onInput(event: NormalizedInputEvent): void {

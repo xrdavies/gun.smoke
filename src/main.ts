@@ -713,7 +713,7 @@ class GunSmokeGame {
           unit.hp = 0;
           this.score += unit.value;
           this.awardScoreLife();
-          if (unit.kind === "coin") this.money += 10;
+          if (unit.kind === "coin") this.money += unit.value;
           else if (unit.kind === "item" && unit.itemType) this.collectItem(unit.itemType);
           else if (unit.kind === "ammo") this.ammo = Math.min(WEAPONS[this.weapon].maxAmmo, this.ammo + 10);
           else {
@@ -735,7 +735,7 @@ class GunSmokeGame {
     target.hp = 0;
     this.score += target.value;
     this.awardScoreLife();
-    this.money += target.kind === "boss" ? 50 : 2;
+    this.money += target.value;
     if (target.kind === "barrel") {
       if (target.itemType) this.spawnUnit("item", target.x, target.y, 1, undefined, target.itemType);
       else {
@@ -775,7 +775,7 @@ class GunSmokeGame {
       this.ammo = Math.min(WEAPONS[this.weapon].maxAmmo, this.ammo + 10);
     } else if (item === "money") {
       this.score += 200;
-      this.money += 20;
+      this.money += 200;
       this.awardScoreLife();
     } else if (item === "pow") {
       for (const target of [...this.units]) {
@@ -887,7 +887,7 @@ class GunSmokeGame {
     const definition = STAGES[this.stage - 1] ?? STAGES[0]!;
     stageLabel.textContent = `ROUND ${this.stage} ${definition.name}`;
     scoreLabel.textContent = `SCORE ${String(this.score).padStart(6, "0")}`;
-    moneyLabel.textContent = `$${String(this.money).padStart(3, "0")}`;
+    moneyLabel.textContent = `$${String(this.money).padStart(5, "0")}`;
     livesLabel.textContent = `LIVES ${this.lives}`;
     const ammo = Number.isFinite(WEAPONS[this.weapon].maxAmmo) ? ` ${this.ammo}` : "";
     weaponLabel.textContent = `${this.weapon.toUpperCase()}${ammo} / BOMB ${this.smartBombs} / BOOTS ${this.powerups.boots} / RIFLE ${this.powerups.rifle}${this.hasHorse ? ` / HORSE ${this.horseHealth}` : ""} / WANTED ${this.hasWanted ? "YES" : "NO"}`;

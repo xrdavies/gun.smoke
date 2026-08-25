@@ -31,7 +31,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROAD_WIDTHS[2]).toBeLessThan(ROAD_WIDTHS[4]);
     expect(WEAPONS.shotgun.maxAmmo).toBe(30);
     expect(WEAPONS.magnum.damage).toBeGreaterThan(WEAPONS.pistol.damage);
-    expect(WANTED_COSTS[0]).toBeLessThan(WANTED_COSTS[5]);
+    expect(WANTED_COSTS.slice(0, 3)).toEqual([20_000, 24_000, 50_000]);
     expect(WANTED_X_OFFSETS).toHaveLength(MAX_STAGE);
     expect(ROUND_ENEMY_TYPES).toHaveLength(MAX_STAGE);
     expect(ROUND_ENEMY_TYPES[0]).toContain("backstabber");

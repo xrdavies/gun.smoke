@@ -20,6 +20,10 @@ shooting the barrel reveals the poster,
 and keeps that gate in the gameplay state machine. Later trading posts provide
 the alternate purchase route described by the NES walkthrough.
 
+If the player reaches the end without the poster, the Round loops to its first
+segment with shops and the hidden barrel available again. Once the poster is
+owned, scrolling stops at the Boss arena.
+
 The web build also models the resource loop with money pickups, round-specific
 trading-post checkpoints, Shotgun, Machine Gun, Magnum, finite ammunition,
 Wanted poster purchases and Horse upgrades. Weapon costs,

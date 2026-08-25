@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, SHOP_CHECKPOINTS, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, type EnemyType, type Formation, type ItemType, type WeaponName } from "./game-constants";
+import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, shouldLoopStage, SHOP_CHECKPOINTS, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, type EnemyType, type Formation, type ItemType, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -320,7 +320,8 @@ class GunSmokeGame {
       this.updateHud();
       return;
     }
-    this.scroll += 76 * delta;
+    if (!this.bossSpawned) this.scroll += 76 * delta;
+    if (shouldLoopStage(this.scroll, this.hasWanted)) this.loopStage();
     this.maybeOpenShop();
     if (this.shopOpen) return;
     this.camera.position.y = this.scroll + 270;
@@ -819,6 +820,19 @@ class GunSmokeGame {
     this.player.x = 480;
     this.player.y = 410;
     this.showMessage(`STAGE ${this.stage}`);
+  }
+
+  private loopStage(): void {
+    this.scroll = 0;
+    this.camera.position.y = 270;
+    this.player.y = 410;
+    this.player.sprite.position = { x: this.player.x, y: this.player.y };
+    this.posterPropSpawned = false;
+    this.shopIndex = 0;
+    this.spawnClock = 0.8;
+    this.enemyFireClock = 1.2;
+    this.units.length = 0;
+    this.showMessage("SEARCH AGAIN");
   }
 
   private finish(won: boolean): void {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { BOSS_TRIGGER, MAX_STAGE, ROAD_WIDTHS, ROUND_ENEMY_TYPES, ROUND_ITEM_TYPES, ROUND_SEGMENTS, SHOP_CHECKPOINTS, STAGE_LENGTH, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, clamp, distance } from "../src/game-constants";
+import { BOSS_TRIGGER, MAX_STAGE, ROAD_WIDTHS, ROUND_ENEMY_TYPES, ROUND_ITEM_TYPES, ROUND_SEGMENTS, SHOP_CHECKPOINTS, STAGE_LENGTH, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, clamp, distance, shouldLoopStage } from "../src/game-constants";
 
 describe("Gun.Smoke vertical slice", () => {
   it("keeps the NES-inspired stage constants stable", () => {
@@ -10,6 +10,11 @@ describe("Gun.Smoke vertical slice", () => {
     expect(clamp(12, 0, 10)).toBe(10);
     expect(clamp(-2, 0, 10)).toBe(0);
     expect(distance({ x: 0, y: 0 }, { x: 3, y: 4 })).toBe(5);
+  });
+
+  it("loops a stage only when the wanted poster is missing", () => {
+    expect(shouldLoopStage(STAGE_LENGTH, false)).toBe(true);
+    expect(shouldLoopStage(STAGE_LENGTH, true)).toBe(false);
   });
 
   it("keeps the round shop cadence explicit", () => {

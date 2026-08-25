@@ -93,6 +93,13 @@ export const WEAPONS: Record<WeaponName, { cost: number; interval: number; damag
   magnum: { cost: 120, interval: 0.24, damage: 3, spread: 0, maxAmmo: 24 },
 };
 
+export const AMMO_GAIN: Record<WeaponName, number> = {
+  pistol: 0,
+  shotgun: 5,
+  machinegun: 10,
+  magnum: 3,
+};
+
 export function clamp(value: number, minimum: number, maximum: number): number {
   return Math.max(minimum, Math.min(maximum, value));
 }

@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, shouldLoopStage, SHOP_CHECKPOINTS, scoreExtraLives, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, type EnemyType, type Formation, type ItemType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, shouldLoopStage, SHOP_CHECKPOINTS, scoreExtraLives, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, type EnemyType, type Formation, type ItemType, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -601,7 +601,7 @@ class GunSmokeGame {
       this.hasHorse = true;
       this.horseHealth = 3;
     }
-    else if (key === "ammo") this.ammo = Math.min(WEAPONS[this.weapon].maxAmmo, this.ammo + 20);
+    else if (key === "ammo") this.ammo = Math.min(WEAPONS[this.weapon].maxAmmo, this.ammo + AMMO_GAIN[this.weapon] * 2);
     else if (key === "wanted") this.hasWanted = true;
     else if (key === "smartBomb") this.smartBombs = Math.min(5, this.smartBombs + 1);
     else {
@@ -663,7 +663,7 @@ class GunSmokeGame {
     unit.vx = direction * 170;
     unit.vy = -520;
     unit.damage = damage;
-    unit.maxAge = this.powerups.rifle > 0 ? 1.4 : 0.85;
+    unit.maxAge = this.weapon === "pistol" && this.powerups.rifle > 0 ? 1.4 : 0.85;
   }
 
   private updateUnit(unit: Unit, delta: number): void {
@@ -768,7 +768,7 @@ class GunSmokeGame {
           this.awardScoreLife();
           if (unit.kind === "coin") this.money += unit.value;
           else if (unit.kind === "item" && unit.itemType) this.collectItem(unit.itemType);
-          else if (unit.kind === "ammo") this.ammo = Math.min(WEAPONS[this.weapon].maxAmmo, this.ammo + 10);
+          else if (unit.kind === "ammo") this.ammo = Math.min(WEAPONS[this.weapon].maxAmmo, this.ammo + AMMO_GAIN[this.weapon]);
           else {
             this.hasWanted = true;
             this.showMessage("WANTED POSTER FOUND");
@@ -825,7 +825,7 @@ class GunSmokeGame {
     if (item === "boots" || item === "rifle") {
       this.powerups[item] = Math.min(5, this.powerups[item] + 1);
     } else if (item === "ammo") {
-      this.ammo = Math.min(WEAPONS[this.weapon].maxAmmo, this.ammo + 10);
+      this.ammo = Math.min(WEAPONS[this.weapon].maxAmmo, this.ammo + AMMO_GAIN[this.weapon]);
     } else if (item === "money") {
       this.score += 200;
       this.money += 200;

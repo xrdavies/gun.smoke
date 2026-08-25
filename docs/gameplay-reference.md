@@ -45,6 +45,10 @@ Boots/Rifle are capped at five and each loses one stock on death; Blue Yashichi
 grants contact damage and temporary invulnerability, while Magnum bullets can
 destroy enemy projectiles.
 
+Rifle range applies only to the unlimited pistols. Bullet pickups use
+weapon-specific refill amounts, with Machine Gun receiving more rounds per
+pickup than Magnum.
+
 The runtime now exercises the engine's animation binding for player/enemy/Boss
 sprites, WebGPU `Renderer2D` batches, `AudioManager` buses, `ActionMap` keyboard
 and Gamepad input, deterministic seeded randomness, and per-round terrain/road

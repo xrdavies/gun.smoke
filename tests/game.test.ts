@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { BOSS_TRIGGER, MAX_STAGE, ROAD_WIDTHS, ROUND_ENEMY_TYPES, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, SHOP_CHECKPOINTS, STAGE_LENGTH, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, clamp, distance, nextExtraLifeScore, scoreExtraLives, shouldLoopStage } from "../src/game-constants";
+import { AMMO_GAIN, BOSS_TRIGGER, MAX_STAGE, ROAD_WIDTHS, ROUND_ENEMY_TYPES, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, SHOP_CHECKPOINTS, STAGE_LENGTH, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, clamp, distance, nextExtraLifeScore, scoreExtraLives, shouldLoopStage } from "../src/game-constants";
 
 describe("Gun.Smoke vertical slice", () => {
   it("keeps the NES-inspired stage constants stable", () => {
@@ -31,6 +31,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROAD_WIDTHS[2]).toBeLessThan(ROAD_WIDTHS[4]);
     expect(WEAPONS.shotgun.maxAmmo).toBe(30);
     expect(WEAPONS.magnum.damage).toBeGreaterThan(WEAPONS.pistol.damage);
+    expect(AMMO_GAIN.pistol).toBe(0);
+    expect(AMMO_GAIN.magnum).toBeLessThan(AMMO_GAIN.machinegun);
     expect(WANTED_COSTS.slice(0, 3)).toEqual([20_000, 24_000, 50_000]);
     expect(WANTED_X_OFFSETS).toHaveLength(MAX_STAGE);
     expect(ROUND_ENEMY_TYPES).toHaveLength(MAX_STAGE);

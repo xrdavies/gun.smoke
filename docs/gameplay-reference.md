@@ -75,6 +75,11 @@ The programmatic mode also supports pausing through the engine's
 `Engine.pause()`/`resume()` lifecycle, with `P`, `Escape`, and a visible Resume
 control.
 
+Controls follow the NES table: Z/B fires left, X/A fires right, holding both
+fires straight ahead, Start pauses, and Select (Shift/Tab or Gamepad Select)
+opens the inventory/ammo screen. Overlay exits restore focus to the engine
+canvas so keyboard control continues after DOM interaction.
+
 ## Known Approximation Boundary
 
 - The repository does not contain extracted ROM graphics, music, or Capcom

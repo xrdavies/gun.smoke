@@ -2,7 +2,7 @@
 
 NES/FC-oriented Gun.Smoke recreation built on `@xrdavies/2d-engine`.
 
-The engine dependency is pinned to a Git commit from the engine repository;
+The engine dependency is pinned to the `v0.1.0` release tag from the engine repository;
 the engine package builds its `dist` output during `npm install`. This keeps a
 fresh clone independent of a sibling `../engine` directory.
 

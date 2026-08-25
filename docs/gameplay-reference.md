@@ -34,6 +34,11 @@ The Horse is a three-hit shield rather than a speed bonus. Score awards an
 extra life at 30,000, again at 100,000, and at each later 100,000-point
 threshold.
 
+Shop funds now use the NES point scale: Money Bags are 200 points and the
+verified Wanted poster prices are 20,000 (Round 1), 24,000 (Round 2), and
+50,000 from Round 3 onward. Weapon and utility prices remain explicit tuning
+parameters until a reliable shop-table decode is confirmed.
+
 Barrels can reveal the NES item set: stored Boots and Rifle power-ups, special
 weapon ammo, money, POW, Cattle Skull, Horse, and Blue/Red Yashichi. Stored
 Boots/Rifle are capped at five and each loses one stock on death; Blue Yashichi

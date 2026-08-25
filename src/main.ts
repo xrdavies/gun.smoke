@@ -1,10 +1,13 @@
 import {
   ActionMap,
+  AnimationPlayer,
   AudioManager,
   Camera2D,
   Engine,
   Renderer2D,
   Sprite,
+  SpriteAnimationBinding,
+  SpriteFrameClip,
   World,
 } from "@xrdavies/2d-engine";
 import "./style.css";
@@ -39,6 +42,7 @@ interface Unit {
   phase: number;
   damage: number;
   fired: boolean;
+  animation?: SpriteAnimationBinding;
 }
 
 const actions = new ActionMap<GameAction>();
@@ -114,6 +118,10 @@ function proceduralRows(width: number, height: number, seed: number, values: rea
   );
 }
 
+function atlasRows(rows: readonly string[]): string[] {
+  return rows.map((row) => row + row.split("").reverse().join(""));
+}
+
 class GunSmokeGame {
   readonly world = new World();
   readonly actions = actions;
@@ -151,6 +159,7 @@ class GunSmokeGame {
   musicStep = 0;
   randomState = 0x6d2b79f5;
   player = { entity: 0, x: 480, y: 410, sprite: undefined as unknown as Sprite };
+  playerAnimation: SpriteAnimationBinding | undefined;
 
   private constructor(engine: Engine) {
     this.engine = engine;
@@ -170,23 +179,23 @@ class GunSmokeGame {
       ".": transparent,
     };
     this.textures = {
-      player: pixelTexture(engine, [
+      player: pixelTexture(engine, atlasRows([
         ".....wwww.....", "...wwkkkkww...", "..wkkwwkkkwk..", ".wkkkkkkkkkkw.",
         ".wkkkwwwwkkkw.", "..wkkkkkkkkw..", "...wkkkkkkw...", "....wkkkkw....",
         "...wwkkkkww...", "..wkkrrrrkkw..", ".wkkrrrrrrkkw.", ".wkkkkkkkkkkw.",
         "..wkkwwwwkkw..", "..wkkwwwwkkw..", "...wkkkkkkw...", "....wwwwww....",
-      ], palette),
-      enemy: pixelTexture(engine, [
+      ]), palette),
+      enemy: pixelTexture(engine, atlasRows([
         "....rrrr....", "..rrkkkkrr..", ".rrkkkkkkrr.", "rrkkrrrrkkrr", "rrkrrrrrrkrr",
         "rrkkkkkkkkrr", ".rrkkkkkkrr.", "..rrkkkkrr..", "...rrrrrr...", "...rkkkkr...",
         "..rrkkkkrr..", ".rrkkkkkkrr.", "rrkkkkkkkkrr", "..rrkkkkrr..", "...rrrrrr...",
-      ], palette),
-      boss: pixelTexture(engine, [
+      ]), palette),
+      boss: pixelTexture(engine, atlasRows([
         "....oooooo....", "..oookkkkkkooo..", ".ookkkkkkkkkkoo.", "ookkrrrrrrrrkkoo",
         "okkrrrrrrrrrrkko", "okkrrrwwwwrrrkko", "okrrrrrrrrrrrrrko", "okkkkkkkkkkkkkko",
         "okkrrrrrrrrrrkko", "okkrrrrrrrrrrkko", ".okkkkkkkkkkkko.", "..ookkkkkkkkoo..",
         "...oooooooooo...", "....oooooooo....",
-      ], palette),
+      ]), palette),
       bullet: pixelTexture(engine, [".o.", ".o.", ".o.", ".o.", ".o.", ".o."], palette),
       coin: pixelTexture(engine, [".ooo.", "ookoo", "okkoo", "ookoo", ".ooo."], palette),
       powerup: pixelTexture(engine, [".gggg.", "gkkkkg", "gkookg", "gkkkkg", ".gggg.", "..gg.."], palette),
@@ -215,7 +224,11 @@ class GunSmokeGame {
       this.roadTextures.push(pixelTexture(engine, proceduralRows(64, 64, index + 4, roadPatterns[index] ?? roadPatterns[0]!), palette));
     }
     this.player.entity = this.world.createEntity();
-    this.player.sprite = new Sprite({ texture: this.textures.player, sampler: this.sampler, position: { x: 480, y: 410 }, size: { x: 45, y: 54 }, anchor: { x: 0.5, y: 0.5 }, layer: 20 });
+    this.player.sprite = new Sprite({ texture: this.textures.player, sampler: this.sampler, frame: { x: 0, y: 0, width: 0.5, height: 1 }, position: { x: 480, y: 410 }, size: { x: 45, y: 54 }, anchor: { x: 0.5, y: 0.5 }, layer: 20 });
+    this.playerAnimation = new SpriteAnimationBinding(this.player.sprite, new AnimationPlayer().play(new SpriteFrameClip([
+      { x: 0, y: 0, width: 0.5, height: 1, duration: 0.12 },
+      { x: 0.5, y: 0, width: 0.5, height: 1, duration: 0.12 },
+    ]), true));
     this.world.addTransform(this.player.entity);
     this.buildBackground();
     this.engine.input?.onInput((event) => this.actions.handle(event));
@@ -273,6 +286,7 @@ class GunSmokeGame {
     this.player.x = clamp(this.player.x + (this.actions.value("right") - this.actions.value("left")) * movement * delta, 480 - halfRoad + 22, 480 + halfRoad - 22);
     this.player.y = clamp(this.player.y + (this.actions.value("down") - this.actions.value("up")) * movement * delta, this.scroll + 285, this.scroll + 500);
     this.player.sprite.position = { x: this.player.x, y: this.player.y };
+    this.playerAnimation?.update(delta);
     this.player.sprite.visible = this.invulnerable <= 0 || Math.floor(this.time * 14) % 2 === 0;
     this.updatePlayerFire(delta);
     this.updateSpawns(delta);
@@ -473,9 +487,13 @@ class GunSmokeGame {
     };
     const bossColors: readonly [number, number, number, number][] = [[1, 0.55, 0.42, 1], [0.55, 0.75, 1, 1], [1, 0.72, 0.34, 1], [0.78, 0.58, 1, 1], [1, 0.82, 0.42, 1], [1, 0.96, 0.72, 1]];
     const color: [number, number, number, number] = isBoss ? bossColors[this.stage - 1] ?? bossColors[0]! : kind === "enemy" && enemyType ? colors[enemyType] : [1, 1, 1, 1];
-    const sprite = new Sprite({ texture: this.textures[textureName], sampler: this.sampler, position: { x, y }, size: { x: isBoss ? 110 : isPickup ? 28 : small ? 9 : 34, y: isBoss ? 68 : isPickup ? 28 : small ? 25 : 34 }, anchor: { x: 0.5, y: 0.5 }, color, layer: isBoss ? 15 : small ? 12 : isPickup ? 11 : 10 });
+    const sprite = new Sprite({ texture: this.textures[textureName], sampler: this.sampler, frame: kind === "enemy" || isBoss ? { x: 0, y: 0, width: 0.5, height: 1 } : undefined, position: { x, y }, size: { x: isBoss ? 110 : isPickup ? 28 : small ? 9 : 34, y: isBoss ? 68 : isPickup ? 28 : small ? 25 : 34 }, anchor: { x: 0.5, y: 0.5 }, color, layer: isBoss ? 15 : small ? 12 : isPickup ? 11 : 10 });
+    const animation = kind === "enemy" || isBoss ? new SpriteAnimationBinding(sprite, new AnimationPlayer().play(new SpriteFrameClip([
+      { x: 0, y: 0, width: 0.5, height: 1, duration: 0.14 },
+      { x: 0.5, y: 0, width: 0.5, height: 1, duration: 0.14 },
+    ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, sprite, x, y,
+      kind, enemyType, sprite, x, y, animation,
       vx: isBoss ? 42 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : small ? 7 : 19,
@@ -495,6 +513,7 @@ class GunSmokeGame {
 
   private updateUnit(unit: Unit, delta: number): void {
     unit.age += delta;
+    unit.animation?.update(delta);
     if (unit.kind === "enemy") {
       if (unit.enemyType === "backstabber") {
         unit.y += unit.vy * delta;

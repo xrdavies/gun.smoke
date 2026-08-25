@@ -40,4 +40,9 @@ can be run with:
 ```sh
 npm run inspect:rom
 npm run trace:rom
+npm run extract:rom-assets
 ```
+
+The extractor writes only to the ignored `.rom-assets/` directory. Those files
+are for local inspection and comparison and must not be committed or
+redistributed.

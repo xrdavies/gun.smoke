@@ -24,3 +24,7 @@ rules, stage layouts, enemy timing, and asset identity require frame-by-frame
 comparison against the same ROM revision. Until that comparison is complete,
 the web build labels its stages and assets as an original approximation rather
 than an exact ROM conversion.
+
+`npm run extract:rom-assets` can locally dump the runtime CHR-RAM pattern table,
+VRAM, sprite OAM and selected 256x240 frames. The output is ignored by Git and
+is intended only for private inspection against the supplied reference file.

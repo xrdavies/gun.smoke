@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, SHOP_CHECKPOINTS, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, type WeaponName } from "./game-constants";
+import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, SHOP_CHECKPOINTS, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -346,7 +346,8 @@ class GunSmokeGame {
   private updateSpawns(delta: number): void {
     this.spawnClock -= delta;
     if (this.scroll >= BOSS_TRIGGER && !this.hasWanted && !this.units.some((unit) => unit.kind === "wanted")) {
-      this.spawnUnit("wanted", 480, this.scroll + 170, 1);
+      const wantedX = clamp(480 + (WANTED_X_OFFSETS[this.stage - 1] ?? 0), 70, 890);
+      this.spawnUnit("wanted", wantedX, this.scroll + 170, 1);
       this.showMessage("GET THE WANTED POSTER");
     }
     if (this.scroll >= BOSS_TRIGGER && this.hasWanted && !this.bossSpawned) this.spawnBoss();

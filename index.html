@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#080d18" />
+    <title>Gun.Smoke - WebGPU Western Shooter</title>
+  </head>
+  <body>
+    <main id="app">
+      <section id="game-shell" aria-label="Gun.Smoke game">
+        <canvas id="game-canvas" width="960" height="540"></canvas>
+        <div id="hud" hidden>
+          <div class="hud-row">
+            <span id="stage-label">STAGE 1</span>
+            <span id="score-label">SCORE 000000</span>
+            <span id="money-label">$000</span>
+            <span id="lives-label">LIVES 3</span>
+          </div>
+          <div id="message-label" aria-live="polite"></div>
+        </div>
+        <section id="title-screen">
+          <p class="eyebrow">CAPCOM-STYLE WESTERN SHOOTER</p>
+          <h1>GUN.SMOKE</h1>
+          <p class="subtitle">Three guns. One trail. No safe town.</p>
+          <button id="start-button" type="button">Ride out</button>
+          <p class="note">Arrow keys move. Z / X / C fire left, center, right.</p>
+        </section>
+        <section id="game-over" hidden>
+          <p class="eyebrow">THE TRAIL ENDS HERE</p>
+          <h2>WANTED: ALIVE</h2>
+          <p id="final-score"></p>
+          <button id="restart-button" type="button">Try again</button>
+        </section>
+      </section>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

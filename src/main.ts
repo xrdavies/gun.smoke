@@ -43,13 +43,13 @@ interface Unit {
 
 const actions = new ActionMap<GameAction>();
 actions
-  .bind("left", { type: "key", code: "ArrowLeft" }, { type: "key", code: "KeyA" })
-  .bind("right", { type: "key", code: "ArrowRight" }, { type: "key", code: "KeyD" })
-  .bind("up", { type: "key", code: "ArrowUp" }, { type: "key", code: "KeyW" })
-  .bind("down", { type: "key", code: "ArrowDown" }, { type: "key", code: "KeyS" })
-  .bind("fireLeft", { type: "key", code: "KeyZ" })
-  .bind("fireCenter", { type: "key", code: "KeyX" }, { type: "key", code: "Space" })
-  .bind("fireRight", { type: "key", code: "KeyC" });
+  .bind("left", { type: "key", code: "ArrowLeft" }, { type: "key", code: "KeyA" }, { type: "gamepad-axis", axis: 0, direction: -1 })
+  .bind("right", { type: "key", code: "ArrowRight" }, { type: "key", code: "KeyD" }, { type: "gamepad-axis", axis: 0, direction: 1 })
+  .bind("up", { type: "key", code: "ArrowUp" }, { type: "key", code: "KeyW" }, { type: "gamepad-axis", axis: 1, direction: -1 })
+  .bind("down", { type: "key", code: "ArrowDown" }, { type: "key", code: "KeyS" }, { type: "gamepad-axis", axis: 1, direction: 1 })
+  .bind("fireLeft", { type: "key", code: "KeyZ" }, { type: "gamepad-button", button: 0 })
+  .bind("fireCenter", { type: "key", code: "KeyX" }, { type: "key", code: "Space" }, { type: "gamepad-button", button: 2 })
+  .bind("fireRight", { type: "key", code: "KeyC" }, { type: "gamepad-button", button: 1 });
 
 function requireElement<T extends Element>(selector: string): T {
   const element = document.querySelector<T>(selector);
@@ -244,6 +244,7 @@ class GunSmokeGame {
   private update(delta: number): void {
     if (this.mode !== "playing") return;
     if (this.shopOpen) return;
+    this.engine.input?.pollGamepads();
     this.time += delta;
     if (this.stageClearClock > 0) {
       this.stageClearClock -= delta;
@@ -275,9 +276,15 @@ class GunSmokeGame {
     this.fireClock -= delta;
     if (this.fireClock > 0) return;
     const directions: number[] = [];
-    if (this.actions.active("fireLeft")) directions.push(-1);
-    if (this.actions.active("fireCenter")) directions.push(0);
-    if (this.actions.active("fireRight")) directions.push(1);
+    const left = this.actions.active("fireLeft");
+    const center = this.actions.active("fireCenter");
+    const right = this.actions.active("fireRight");
+    if (left && right && !center) directions.push(0);
+    else {
+      if (left) directions.push(-1);
+      if (center) directions.push(0);
+      if (right) directions.push(1);
+    }
     if (directions.length === 0) return;
     for (const direction of directions) {
       if (weapon.spread === 0) this.spawnBullet(direction, weapon.damage);

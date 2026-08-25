@@ -565,7 +565,7 @@ class GunSmokeGame {
     ]), true)) : undefined;
     const unit: Unit = {
       kind, enemyType, itemType, sprite, x, y, animation,
-      vx: isBoss ? 42 : (this.nextRandom() - 0.5) * 70,
+      vx: isBoss ? 42 : kind === "barrel" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : small ? 7 : 19,
       value: isBoss ? 5_000 : kind === "coin" ? 200 : kind === "ammo" || kind === "item" ? 0 : kind === "barrel" ? 50 : kind === "wanted" ? 1_000 : 100,
@@ -669,41 +669,13 @@ class GunSmokeGame {
           continue;
         }
       }
-      const target = targets.find((candidate) => distance(bullet, candidate) <= bullet.radius + candidate.radius);
+      const target = targets.find((candidate) => candidate.hp > 0 && distance(bullet, candidate) <= bullet.radius + candidate.radius);
       if (!target) continue;
       if (!this.isBossVulnerable(target)) continue;
       bullet.hp = 0;
       target.hp -= bullet.damage;
       if (target.hp > 0) continue;
-      this.score += target.value;
-      this.awardScoreLife();
-      this.money += target.kind === "boss" ? 50 : 2;
-      if (target.kind === "barrel") {
-        if (target.itemType) this.spawnUnit("item", target.x, target.y, 1, undefined, target.itemType);
-        else {
-          this.spawnUnit("wanted", target.x, target.y, 1);
-          this.showMessage("WANTED POSTER FOUND");
-        }
-        continue;
-      }
-      if (target.kind === "enemy") {
-        const drop = this.nextRandom();
-        if (drop < 0.22) this.spawnUnit("coin", target.x, target.y, 1);
-        else if (this.weapon !== "pistol" && drop < 0.38) this.spawnUnit("ammo", target.x, target.y, 1);
-      }
-      if (target.kind === "boss") {
-        if (this.stage === MAX_STAGE && this.wingatePhase === 0) {
-          this.wingatePhase = 1;
-          this.bossFireClock = 0.35;
-          this.spawnUnit("boss", 480, this.scroll + 90, (STAGES[MAX_STAGE - 1]?.bossHp ?? 6) * 4);
-          this.showMessage("THE REAL WINGATE");
-          continue;
-        }
-        this.bossSpawned = false;
-        this.stageClearClock = 1.5;
-        this.showMessage(this.stage === MAX_STAGE ? "TRAIL COMPLETE" : "BOSS DOWN");
-        this.beep(110, 0.3);
-      }
+      this.defeatTarget(target);
     }
     for (const unit of this.units.filter((candidate) => candidate.hp > 0)) {
       if (unit.kind === "coin" || unit.kind === "item" || unit.kind === "ammo" || unit.kind === "wanted") {
@@ -729,6 +701,36 @@ class GunSmokeGame {
     }
   }
 
+  private defeatTarget(target: Unit): void {
+    target.hp = 0;
+    this.score += target.value;
+    this.awardScoreLife();
+    this.money += target.kind === "boss" ? 50 : 2;
+    if (target.kind === "barrel") {
+      if (target.itemType) this.spawnUnit("item", target.x, target.y, 1, undefined, target.itemType);
+      else {
+        this.spawnUnit("wanted", target.x, target.y, 1);
+        this.showMessage("WANTED POSTER FOUND");
+      }
+    } else if (target.kind === "enemy") {
+      const drop = this.nextRandom();
+      if (drop < 0.22) this.spawnUnit("coin", target.x, target.y, 1);
+      else if (this.weapon !== "pistol" && drop < 0.38) this.spawnUnit("ammo", target.x, target.y, 1);
+    } else if (target.kind === "boss") {
+      if (this.stage === MAX_STAGE && this.wingatePhase === 0) {
+        this.wingatePhase = 1;
+        this.bossFireClock = 0.35;
+        this.spawnUnit("boss", 480, this.scroll + 90, (STAGES[MAX_STAGE - 1]?.bossHp ?? 6) * 4);
+        this.showMessage("THE REAL WINGATE");
+        return;
+      }
+      this.bossSpawned = false;
+      this.stageClearClock = 1.5;
+      this.showMessage(this.stage === MAX_STAGE ? "TRAIL COMPLETE" : "BOSS DOWN");
+      this.beep(110, 0.3);
+    }
+  }
+
   private isBossVulnerable(unit: Unit): boolean {
     if (unit.kind !== "boss") return true;
     if (this.stage === 1) return unit.age % 3.2 < 2.2;
@@ -746,9 +748,12 @@ class GunSmokeGame {
       this.money += 20;
       this.awardScoreLife();
     } else if (item === "pow") {
-      for (const target of this.units) {
-        if (target.kind === "enemy") target.hp = 0;
-        else if (target.kind === "boss") target.hp = Math.max(1, target.hp - 4);
+      for (const target of [...this.units]) {
+        if (target.kind === "enemy" && target.hp > 0) this.defeatTarget(target);
+        else if (target.kind === "boss" && target.hp > 0) {
+          target.hp -= 4;
+          if (target.hp <= 0) this.defeatTarget(target);
+        }
       }
     } else if (item === "skull") {
       this.powerups.boots = Math.max(0, this.powerups.boots - 1);

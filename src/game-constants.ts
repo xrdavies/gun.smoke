@@ -26,6 +26,8 @@ export const SHOP_CHECKPOINTS: readonly (readonly number[])[] = [
   [420, 860, 1_300],
 ];
 
+export const ROAD_WIDTHS = [520, 450, 430, 500, 650, 540] as const;
+
 export type WeaponName = "pistol" | "shotgun" | "machinegun" | "magnum";
 
 export const WEAPONS: Record<WeaponName, { cost: number; interval: number; damage: number; spread: number }> = {

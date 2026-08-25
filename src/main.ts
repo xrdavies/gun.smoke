@@ -8,7 +8,7 @@ import {
   World,
 } from "@xrdavies/2d-engine";
 import "./style.css";
-import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, SHOP_CHECKPOINTS, STAGE_LENGTH, STAGES, WEAPONS, type WeaponName } from "./game-constants";
+import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, SHOP_CHECKPOINTS, STAGE_LENGTH, STAGES, WEAPONS, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -269,7 +269,8 @@ class GunSmokeGame {
     this.camera.position.y = this.scroll + 270;
     this.invulnerable = Math.max(0, this.invulnerable - delta);
     const movement = this.hasHorse ? 300 : 235;
-    this.player.x = clamp(this.player.x + (this.actions.value("right") - this.actions.value("left")) * movement * delta, 70, 890);
+    const halfRoad = (ROAD_WIDTHS[this.stage - 1] ?? 520) / 2;
+    this.player.x = clamp(this.player.x + (this.actions.value("right") - this.actions.value("left")) * movement * delta, 480 - halfRoad + 22, 480 + halfRoad - 22);
     this.player.y = clamp(this.player.y + (this.actions.value("down") - this.actions.value("up")) * movement * delta, this.scroll + 285, this.scroll + 500);
     this.player.sprite.position = { x: this.player.x, y: this.player.y };
     this.player.sprite.visible = this.invulnerable <= 0 || Math.floor(this.time * 14) % 2 === 0;
@@ -373,8 +374,7 @@ class GunSmokeGame {
     const tint = themes[(this.stage - 1) % themes.length] ?? [1, 1, 1, 1];
     const terrain = this.terrainTextures[this.stage - 1] ?? this.textures.terrain;
     const road = this.roadTextures[this.stage - 1] ?? this.textures.road;
-    const roadWidths = [520, 450, 430, 500, 650, 540];
-    const roadWidth = roadWidths[this.stage - 1] ?? 520;
+    const roadWidth = ROAD_WIDTHS[this.stage - 1] ?? 520;
     for (let y = -360; y < STAGE_LENGTH + 650; y += 180) {
       this.backgrounds.push(new Sprite({ texture: terrain, sampler: this.sampler, position: { x: 480, y: y + 90 }, size: { x: 960, y: 180 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -20 }));
       this.backgrounds.push(new Sprite({ texture: road, sampler: this.sampler, position: { x: 480, y: y + 90 }, size: { x: roadWidth, y: 180 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -19 }));
@@ -382,7 +382,8 @@ class GunSmokeGame {
   }
 
   private spawnFormation(): void {
-    const center = 140 + this.nextRandom() * 680;
+    const roadHalf = (ROAD_WIDTHS[this.stage - 1] ?? 520) / 2;
+    const center = clamp(480 + (this.nextRandom() - 0.5) * (roadHalf * 1.5), 80, 880);
     const y = this.scroll + 55;
     const pattern = (this.stage + Math.floor(this.scroll / 420)) % 3;
     const offsets = pattern === 0 ? [-1, 0, 1] : pattern === 1 ? [-2, -1, 1, 2] : [-2, 0, 2];

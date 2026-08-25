@@ -8,7 +8,7 @@ import {
   World,
 } from "@xrdavies/2d-engine";
 import "./style.css";
-import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, STAGE_LENGTH, STAGES, type StageDefinition } from "./game-constants";
+import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, STAGE_LENGTH, STAGES, WEAPONS, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -35,6 +35,7 @@ interface Unit {
   value: number;
   age: number;
   phase: number;
+  damage: number;
 }
 
 const actions = new ActionMap<GameAction>();
@@ -66,6 +67,11 @@ const moneyLabel = requireElement<HTMLElement>("#money-label");
 const livesLabel = requireElement<HTMLElement>("#lives-label");
 const weaponLabel = requireElement<HTMLElement>("#weapon-label");
 const messageLabel = requireElement<HTMLElement>("#message-label");
+const shop = requireElement<HTMLElement>("#shop");
+const shopTitle = requireElement<HTMLElement>("#shop-title");
+const shopMessage = requireElement<HTMLElement>("#shop-message");
+const shopClose = requireElement<HTMLButtonElement>("#shop-close");
+const shopItems = [...shop.querySelectorAll<HTMLButtonElement>("[data-shop-item]")];
 canvas.tabIndex = 0;
 
 const transparent: Rgba = [0, 0, 0, 0];
@@ -128,6 +134,10 @@ class GunSmokeGame {
   stageClearClock = 0;
   hasWanted = false;
   wingatePhase = 0;
+  weapon: WeaponName = "pistol";
+  hasHorse = false;
+  shopOpen = false;
+  shopIndex = 0;
   player = { entity: 0, x: 480, y: 410, sprite: undefined as unknown as Sprite };
 
   private constructor(engine: Engine) {
@@ -202,6 +212,7 @@ class GunSmokeGame {
 
   private update(delta: number): void {
     if (this.mode !== "playing") return;
+    if (this.shopOpen) return;
     this.time += delta;
     if (this.stageClearClock > 0) {
       this.stageClearClock -= delta;
@@ -210,9 +221,11 @@ class GunSmokeGame {
       return;
     }
     this.scroll += 76 * delta;
+    this.maybeOpenShop();
+    if (this.shopOpen) return;
     this.camera.position.y = this.scroll + 270;
     this.invulnerable = Math.max(0, this.invulnerable - delta);
-    const movement = 235;
+    const movement = this.hasHorse ? 300 : 235;
     this.player.x = clamp(this.player.x + (this.actions.value("right") - this.actions.value("left")) * movement * delta, 70, 890);
     this.player.y = clamp(this.player.y + (this.actions.value("down") - this.actions.value("up")) * movement * delta, this.scroll + 285, this.scroll + 500);
     this.player.sprite.position = { x: this.player.x, y: this.player.y };
@@ -227,6 +240,7 @@ class GunSmokeGame {
   }
 
   private updatePlayerFire(delta: number): void {
+    const weapon = WEAPONS[this.weapon];
     this.fireClock -= delta;
     if (this.fireClock > 0) return;
     const directions: number[] = [];
@@ -234,8 +248,11 @@ class GunSmokeGame {
     if (this.actions.active("fireCenter")) directions.push(0);
     if (this.actions.active("fireRight")) directions.push(1);
     if (directions.length === 0) return;
-    for (const direction of directions) this.spawnBullet(direction);
-    this.fireClock = 0.16;
+    for (const direction of directions) {
+      if (weapon.spread === 0) this.spawnBullet(direction, weapon.damage);
+      else for (const spread of [-weapon.spread, 0, weapon.spread]) this.spawnBullet(direction + spread, weapon.damage);
+    }
+    this.fireClock = weapon.interval;
     this.beep(740, 0.025);
   }
 
@@ -296,6 +313,46 @@ class GunSmokeGame {
     if (Math.random() < 0.1) this.spawnUnit("powerup", clamp(center + (Math.random() - 0.5) * 300, 60, 900), y + 90, 1);
   }
 
+  private maybeOpenShop(): void {
+    const checkpoint = this.scroll >= 560 ? 1 : this.scroll >= 1_180 ? 2 : 0;
+    if (checkpoint === 0 || checkpoint <= this.shopIndex) return;
+    this.shopIndex = checkpoint;
+    this.shopOpen = true;
+    shop.hidden = false;
+    shopTitle.textContent = `TRADING POST / ROUND ${this.stage}`;
+    shopMessage.textContent = `MONEY $${String(this.money).padStart(3, "0")}`;
+    this.refreshShopButtons();
+  }
+
+  private refreshShopButtons(): void {
+    for (const item of shopItems) {
+      const key = item.dataset.shopItem as WeaponName | "horse" | undefined;
+      const cost = key === "horse" ? 60 : key ? WEAPONS[key].cost : 0;
+      item.disabled = key === "horse" ? this.hasHorse || this.money < cost : key === this.weapon || this.money < cost;
+    }
+  }
+
+  buyShopItem(item: string): void {
+    const key = item as WeaponName | "horse";
+    const cost = key === "horse" ? 60 : WEAPONS[key]?.cost;
+    if (cost === undefined || (key === "horse" && this.hasHorse) || this.money < cost) {
+      shopMessage.textContent = "NOT ENOUGH MONEY";
+      return;
+    }
+    this.money -= cost;
+    if (key === "horse") this.hasHorse = true;
+    else this.weapon = key;
+    shopMessage.textContent = `${key.toUpperCase()} READY`;
+    this.updateHud();
+    this.refreshShopButtons();
+  }
+
+  closeShop(): void {
+    this.shopOpen = false;
+    shop.hidden = true;
+    this.showMessage("RIDE ON");
+  }
+
   private spawnBoss(): void {
     this.bossSpawned = true;
     const definition = STAGES[this.stage - 1] ?? STAGES[0]!;
@@ -316,16 +373,17 @@ class GunSmokeGame {
       vy: isBoss || isPickup ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : small ? 7 : 19,
       value: isBoss ? 5_000 : kind === "coin" ? 50 : kind === "powerup" ? 250 : kind === "wanted" ? 1_000 : 100,
-      age: 0, phase: Math.random() * Math.PI * 2,
+      age: 0, phase: Math.random() * Math.PI * 2, damage: 1,
     };
     this.units.push(unit);
     return unit;
   }
 
-  private spawnBullet(direction: number): void {
+  private spawnBullet(direction: number, damage: number): void {
     const unit = this.spawnUnit("bullet", this.player.x + direction * 10, this.player.y - 32, 1);
     unit.vx = direction * 170;
     unit.vy = -520;
+    unit.damage = damage;
   }
 
   private updateUnit(unit: Unit, delta: number): void {
@@ -356,7 +414,7 @@ class GunSmokeGame {
       const target = targets.find((candidate) => distance(bullet, candidate) <= bullet.radius + candidate.radius);
       if (!target) continue;
       bullet.hp = 0;
-      target.hp -= 1;
+      target.hp -= bullet.damage;
       if (target.hp > 0) continue;
       this.score += target.value;
       this.money += target.kind === "boss" ? 50 : 2;
@@ -415,6 +473,7 @@ class GunSmokeGame {
     this.bossSpawned = false;
     this.hasWanted = false;
     this.wingatePhase = 0;
+    this.shopIndex = 0;
     this.units.length = 0;
     this.buildBackground();
     this.player.x = 480;
@@ -437,7 +496,7 @@ class GunSmokeGame {
     scoreLabel.textContent = `SCORE ${String(this.score).padStart(6, "0")}`;
     moneyLabel.textContent = `$${String(this.money).padStart(3, "0")}`;
     livesLabel.textContent = `LIVES ${this.lives}`;
-    weaponLabel.textContent = this.hasWanted ? "WANTED YES" : "WANTED NO";
+    weaponLabel.textContent = `${this.weapon.toUpperCase()}${this.hasHorse ? " + HORSE" : ""} / WANTED ${this.hasWanted ? "YES" : "NO"}`;
   }
 
   private showMessage(text: string): void {
@@ -473,4 +532,6 @@ class GunSmokeGame {
 let game: GunSmokeGame | undefined;
 startButton.addEventListener("click", () => void game?.start());
 restartButton.addEventListener("click", () => window.location.reload());
+shopClose.addEventListener("click", () => game?.closeShop());
+for (const item of shopItems) item.addEventListener("click", () => game?.buyShopItem(item.dataset.shopItem ?? ""));
 game = await GunSmokeGame.create();

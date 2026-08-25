@@ -17,6 +17,15 @@ export const STAGE_LENGTH = 2_200;
 export const BOSS_TRIGGER = 1_820;
 export const MAX_STAGE = STAGES.length;
 
+export type WeaponName = "pistol" | "shotgun" | "machinegun" | "magnum";
+
+export const WEAPONS: Record<WeaponName, { cost: number; interval: number; damage: number; spread: number }> = {
+  pistol: { cost: 0, interval: 0.16, damage: 1, spread: 0 },
+  shotgun: { cost: 40, interval: 0.2, damage: 1, spread: 0.28 },
+  machinegun: { cost: 80, interval: 0.08, damage: 1, spread: 0 },
+  magnum: { cost: 120, interval: 0.24, damage: 3, spread: 0 },
+};
+
 export function clamp(value: number, minimum: number, maximum: number): number {
   return Math.max(minimum, Math.min(maximum, value));
 }

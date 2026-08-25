@@ -97,6 +97,12 @@ function pixelTexture(engine: Engine, rows: readonly string[], palette: Record<s
   return texture;
 }
 
+function proceduralRows(width: number, height: number, seed: number, values: readonly string[]): string[] {
+  return Array.from({ length: height }, (_, y) =>
+    Array.from({ length: width }, (_, x) => values[(x * 17 + y * 31 + seed + (x ^ y)) % values.length] ?? values[0] ?? ".").join(""),
+  );
+}
+
 function clamp(value: number, minimum: number, maximum: number): number {
   return Math.max(minimum, Math.min(maximum, value));
 }
@@ -112,6 +118,7 @@ class GunSmokeGame {
   readonly backgrounds: Sprite[] = [];
   readonly engine: Engine;
   readonly renderer: Renderer2D;
+  readonly sampler: GPUSampler;
   readonly camera = new Camera2D({ position: { x: 480, y: 270 }, viewportWidth: 960, viewportHeight: 540 });
   readonly textures: Record<TextureName, GPUTexture>;
   audio: AudioManager | undefined;
@@ -133,6 +140,7 @@ class GunSmokeGame {
   private constructor(engine: Engine) {
     this.engine = engine;
     this.renderer = new Renderer2D(engine.gpu, { clearColor: { r: 0.03, g: 0.04, b: 0.06, a: 1 } });
+    this.sampler = engine.gpu.device.createSampler({ magFilter: "nearest", minFilter: "nearest" });
     const palette = {
       k: [25, 30, 43, 255] as Rgba,
       w: [220, 226, 233, 255] as Rgba,
@@ -167,11 +175,11 @@ class GunSmokeGame {
       bullet: pixelTexture(engine, [".o.", ".o.", ".o.", ".o.", ".o.", ".o."], palette),
       coin: pixelTexture(engine, [".ooo.", "ookoo", "okkoo", "ookoo", ".ooo."], palette),
       powerup: pixelTexture(engine, [".gggg.", "gkkkkg", "gkookg", "gkkkkg", ".gggg.", "..gg.."], palette),
-      terrain: pixelTexture(engine, ["ddppddpp", "dpddppdd", "ppddppdd", "ddppddpp", "dppddpdd", "ppddppdd", "ddppddpp", "dpddppdd"], palette),
-      road: pixelTexture(engine, ["ttssttts", "stttssst", "ttssttts", "stttssst", "ttssttts", "stttssst", "ttssttts", "stttssst"], palette),
+      terrain: pixelTexture(engine, proceduralRows(64, 64, this.stage, ["d", "d", "d", "p", "d", "p"]), palette),
+      road: pixelTexture(engine, proceduralRows(64, 64, this.stage + 3, ["t", "t", "s", "t", "s", "t"]), palette),
     };
     this.player.entity = this.world.createEntity();
-    this.player.sprite = new Sprite({ texture: this.textures.player, position: { x: 480, y: 410 }, size: { x: 45, y: 54 }, anchor: { x: 0.5, y: 0.5 }, layer: 20 });
+    this.player.sprite = new Sprite({ texture: this.textures.player, sampler: this.sampler, position: { x: 480, y: 410 }, size: { x: 45, y: 54 }, anchor: { x: 0.5, y: 0.5 }, layer: 20 });
     this.world.addTransform(this.player.entity);
     this.buildBackground();
     this.engine.input?.onInput((event) => this.actions.handle(event));
@@ -271,8 +279,8 @@ class GunSmokeGame {
     const themes: Rgba[] = [[1, 1, 1, 1], [0.92, 0.98, 1, 1], [1, 0.93, 0.84, 1], [0.9, 0.96, 0.9, 1], [1, 0.86, 0.75, 1]];
     const tint = themes[(this.stage - 1) % themes.length] ?? [1, 1, 1, 1];
     for (let y = -360; y < STAGE_LENGTH + 650; y += 180) {
-      this.backgrounds.push(new Sprite({ texture: this.textures.terrain, position: { x: 480, y: y + 90 }, size: { x: 960, y: 180 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -20 }));
-      this.backgrounds.push(new Sprite({ texture: this.textures.road, position: { x: 480, y: y + 90 }, size: { x: 520, y: 180 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -19 }));
+      this.backgrounds.push(new Sprite({ texture: this.textures.terrain, sampler: this.sampler, position: { x: 480, y: y + 90 }, size: { x: 960, y: 180 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -20 }));
+      this.backgrounds.push(new Sprite({ texture: this.textures.road, sampler: this.sampler, position: { x: 480, y: y + 90 }, size: { x: 520, y: 180 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -19 }));
     }
   }
 
@@ -302,7 +310,7 @@ class GunSmokeGame {
     const isBoss = kind === "boss";
     const isPickup = kind === "coin" || kind === "powerup";
     const small = kind === "bullet" || kind === "enemyBullet";
-    const sprite = new Sprite({ texture: this.textures[textureName], position: { x, y }, size: { x: isBoss ? 110 : isPickup ? 28 : small ? 9 : 34, y: isBoss ? 68 : isPickup ? 28 : small ? 25 : 34 }, anchor: { x: 0.5, y: 0.5 }, layer: isBoss ? 15 : small ? 12 : isPickup ? 11 : 10 });
+    const sprite = new Sprite({ texture: this.textures[textureName], sampler: this.sampler, position: { x, y }, size: { x: isBoss ? 110 : isPickup ? 28 : small ? 9 : 34, y: isBoss ? 68 : isPickup ? 28 : small ? 25 : 34 }, anchor: { x: 0.5, y: 0.5 }, layer: isBoss ? 15 : small ? 12 : isPickup ? 11 : 10 });
     const unit: Unit = {
       kind, sprite, x, y,
       vx: isBoss ? 42 : (Math.random() - 0.5) * 70,

@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, ROUND_SEGMENTS, SHOP_CHECKPOINTS, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, type EnemyType, type Formation, type WeaponName } from "./game-constants";
+import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, SHOP_CHECKPOINTS, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, type EnemyType, type Formation, type ItemType, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -24,13 +24,14 @@ type GameAction =
   | "fireCenter"
   | "fireRight";
 type GameMode = "title" | "intro" | "playing" | "paused" | "gameover" | "ending";
-type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "coin" | "powerup" | "ammo" | "barrel" | "wanted";
+type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "coin" | "ammo" | "barrel" | "item" | "wanted";
 type TextureName = "player" | "enemy" | "boss" | "bullet" | "coin" | "powerup" | "ammo" | "barrel" | "wanted" | "terrain" | "road" | "landmark";
 type Rgba = [number, number, number, number];
 
 interface Unit {
   kind: UnitKind;
   enemyType?: EnemyType;
+  itemType?: ItemType;
   sprite: Sprite;
   x: number;
   y: number;
@@ -44,6 +45,7 @@ interface Unit {
   damage: number;
   fired: boolean;
   turnRate: number;
+  maxAge: number;
   animation?: SpriteAnimationBinding;
 }
 
@@ -158,6 +160,7 @@ class GunSmokeGame {
   money = 0;
   lives = 3;
   ammo = 0;
+  powerups = { boots: 0, rifle: 0 };
   time = 0;
   spawnClock = 0.6;
   fireClock = 0;
@@ -322,7 +325,7 @@ class GunSmokeGame {
     if (this.shopOpen) return;
     this.camera.position.y = this.scroll + 270;
     this.invulnerable = Math.max(0, this.invulnerable - delta);
-    const movement = 235;
+    const movement = this.powerups.boots > 0 ? 285 : 235;
     const halfRoad = (ROAD_WIDTHS[this.stage - 1] ?? 520) / 2;
     this.player.x = clamp(this.player.x + (this.actions.value("right") - this.actions.value("left")) * movement * delta, 480 - halfRoad + 22, 480 + halfRoad - 22);
     this.player.y = clamp(this.player.y + (this.actions.value("down") - this.actions.value("up")) * movement * delta, this.scroll + 285, this.scroll + 500);
@@ -334,7 +337,7 @@ class GunSmokeGame {
     this.updateEnemyFire(delta);
     for (const unit of this.units) this.updateUnit(unit, delta);
     this.resolveCollisions();
-    this.units.splice(0, this.units.length, ...this.units.filter((unit) => unit.age < 18 && unit.hp > 0 && unit.y > this.scroll - 340 && unit.y < this.scroll + 760));
+    this.units.splice(0, this.units.length, ...this.units.filter((unit) => unit.age < unit.maxAge && unit.hp > 0 && unit.y > this.scroll - 340 && unit.y < this.scroll + 760));
     this.updateHud();
   }
 
@@ -473,7 +476,11 @@ class GunSmokeGame {
       enemy.vy = enemyType === "backstabber" ? -100 : 24 + this.stage * 6;
     }
     if (this.nextRandom() < 0.28) this.spawnUnit("coin", clamp(center + (this.nextRandom() - 0.5) * 260, 60, 900), y + 55, 1);
-    if (this.nextRandom() < 0.1) this.spawnUnit("powerup", clamp(center + (this.nextRandom() - 0.5) * 300, 60, 900), y + 90, 1);
+    if (this.nextRandom() < 0.1) {
+      const itemTypes = ROUND_ITEM_TYPES[this.stage - 1] ?? ROUND_ITEM_TYPES[0]!;
+      const itemType = itemTypes[Math.floor(this.nextRandom() * itemTypes.length)] ?? "money";
+      this.spawnUnit("barrel", clamp(center + (this.nextRandom() - 0.5) * 300, 60, 900), y + 90, 1, undefined, itemType);
+    }
     if (this.weapon !== "pistol" && this.nextRandom() < 0.18) this.spawnUnit("ammo", clamp(center + (this.nextRandom() - 0.5) * 220, 60, 900), y + 120, 1);
     this.spawnClock = segment.interval;
   }
@@ -539,29 +546,30 @@ class GunSmokeGame {
     this.beep(180, 0.18);
   }
 
-  private spawnUnit(kind: UnitKind, x: number, y: number, hp: number, enemyType?: EnemyType): Unit {
-    const textureName: TextureName = kind === "enemyBullet" ? "bullet" : kind === "boss" || kind === "enemy" || kind === "bullet" || kind === "coin" || kind === "powerup" || kind === "ammo" || kind === "barrel" || kind === "wanted" ? kind : "enemy";
+  private spawnUnit(kind: UnitKind, x: number, y: number, hp: number, enemyType?: EnemyType, itemType?: ItemType): Unit {
+    const textureName: TextureName = kind === "enemyBullet" ? "bullet" : kind === "item" ? "powerup" : kind === "boss" || kind === "enemy" || kind === "bullet" || kind === "coin" || kind === "ammo" || kind === "barrel" || kind === "wanted" ? kind : "enemy";
     const isBoss = kind === "boss";
-    const isPickup = kind === "coin" || kind === "powerup" || kind === "ammo" || kind === "wanted";
+    const isPickup = kind === "coin" || kind === "ammo" || kind === "item" || kind === "wanted";
     const small = kind === "bullet" || kind === "enemyBullet";
     const colors: Record<EnemyType, [number, number, number, number]> = {
       gunman: [1, 0.82, 0.82, 1], rifleman: [0.82, 0.9, 1, 1], bomber: [1, 0.9, 0.65, 1], sniper: [0.78, 1, 0.88, 1],
       backstabber: [1, 0.72, 0.88, 1], ninja: [0.82, 0.78, 1, 1], hatchet: [1, 0.82, 0.68, 1], firebreather: [1, 0.62, 0.42, 1], shotgunner: [1, 0.48, 0.3, 1],
     };
     const bossColors: readonly [number, number, number, number][] = [[1, 0.55, 0.42, 1], [0.55, 0.75, 1, 1], [1, 0.72, 0.34, 1], [0.78, 0.58, 1, 1], [1, 0.82, 0.42, 1], [1, 0.96, 0.72, 1]];
-    const color: [number, number, number, number] = isBoss ? bossColors[this.stage - 1] ?? bossColors[0]! : kind === "enemy" && enemyType ? colors[enemyType] : [1, 1, 1, 1];
+    const itemColors: Record<ItemType, [number, number, number, number]> = { boots: [0.45, 0.8, 1, 1], rifle: [0.7, 0.9, 0.5, 1], ammo: [0.5, 0.7, 1, 1], money: [1, 0.85, 0.35, 1], pow: [1, 0.35, 0.35, 1], skull: [0.75, 0.75, 0.75, 1], horse: [0.8, 0.55, 0.3, 1], blueYashichi: [0.35, 0.65, 1, 1], redYashichi: [1, 0.3, 0.35, 1] };
+    const color: [number, number, number, number] = isBoss ? bossColors[this.stage - 1] ?? bossColors[0]! : kind === "enemy" && enemyType ? colors[enemyType] : kind === "item" && itemType ? itemColors[itemType] : [1, 1, 1, 1];
     const sprite = new Sprite({ texture: this.textures[textureName], sampler: this.sampler, frame: kind === "enemy" || isBoss ? { x: 0, y: 0, width: 0.5, height: 1 } : undefined, position: { x, y }, size: { x: isBoss ? 110 : isPickup ? 28 : small ? 9 : 34, y: isBoss ? 68 : isPickup ? 28 : small ? 25 : 34 }, anchor: { x: 0.5, y: 0.5 }, color, layer: isBoss ? 15 : small ? 12 : isPickup ? 11 : 10 });
     const animation = kind === "enemy" || isBoss ? new SpriteAnimationBinding(sprite, new AnimationPlayer().play(new SpriteFrameClip([
       { x: 0, y: 0, width: 0.5, height: 1, duration: 0.14 },
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: 0.14 },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, sprite, x, y, animation,
+      kind, enemyType, itemType, sprite, x, y, animation,
       vx: isBoss ? 42 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : small ? 7 : 19,
-      value: isBoss ? 5_000 : kind === "coin" ? 50 : kind === "powerup" ? 250 : kind === "ammo" ? 0 : kind === "barrel" ? 50 : kind === "wanted" ? 1_000 : 100,
-      age: 0, phase: this.nextRandom() * Math.PI * 2, damage: 1, fired: false, turnRate: 0,
+      value: isBoss ? 5_000 : kind === "coin" ? 200 : kind === "ammo" || kind === "item" ? 0 : kind === "barrel" ? 50 : kind === "wanted" ? 1_000 : 100,
+      age: 0, phase: this.nextRandom() * Math.PI * 2, damage: 1, fired: false, turnRate: 0, maxAge: 18,
     };
     this.units.push(unit);
     return unit;
@@ -572,6 +580,7 @@ class GunSmokeGame {
     unit.vx = direction * 170;
     unit.vy = -520;
     unit.damage = damage;
+    unit.maxAge = this.powerups.rifle > 0 ? 1.4 : 0.85;
   }
 
   private updateUnit(unit: Unit, delta: number): void {
@@ -632,7 +641,7 @@ class GunSmokeGame {
       unit.x += unit.vx * delta;
       if (unit.x < 380 || unit.x > 580) unit.vx *= -1;
       unit.y = this.scroll + 92 + Math.sin(unit.age * 2) * 18;
-    } else if (unit.kind === "coin" || unit.kind === "powerup" || unit.kind === "ammo" || unit.kind === "wanted") {
+    } else if (unit.kind === "coin" || unit.kind === "item" || unit.kind === "ammo" || unit.kind === "wanted") {
       unit.y += 40 * delta;
       unit.x += Math.sin(unit.age * 4 + unit.phase) * 14 * delta;
     } else {
@@ -652,6 +661,14 @@ class GunSmokeGame {
     const bullets = this.units.filter((unit) => unit.kind === "bullet" && unit.hp > 0);
     const targets = this.units.filter((unit) => (unit.kind === "enemy" || unit.kind === "boss" || unit.kind === "barrel") && unit.hp > 0);
     for (const bullet of bullets) {
+      if (this.weapon === "magnum") {
+        const projectile = this.units.find((candidate) => candidate.kind === "enemyBullet" && candidate.hp > 0 && distance(bullet, candidate) <= bullet.radius + candidate.radius);
+        if (projectile) {
+          bullet.hp = 0;
+          projectile.hp = 0;
+          continue;
+        }
+      }
       const target = targets.find((candidate) => distance(bullet, candidate) <= bullet.radius + candidate.radius);
       if (!target) continue;
       if (!this.isBossVulnerable(target)) continue;
@@ -662,13 +679,16 @@ class GunSmokeGame {
       this.awardScoreLife();
       this.money += target.kind === "boss" ? 50 : 2;
       if (target.kind === "barrel") {
-        this.spawnUnit("wanted", target.x, target.y, 1);
-        this.showMessage("WANTED POSTER FOUND");
+        if (target.itemType) this.spawnUnit("item", target.x, target.y, 1, undefined, target.itemType);
+        else {
+          this.spawnUnit("wanted", target.x, target.y, 1);
+          this.showMessage("WANTED POSTER FOUND");
+        }
         continue;
       }
       if (target.kind === "enemy") {
         const drop = this.nextRandom();
-        if (drop < 0.22) this.spawnUnit(this.nextRandom() < 0.72 ? "coin" : "powerup", target.x, target.y, 1);
+        if (drop < 0.22) this.spawnUnit("coin", target.x, target.y, 1);
         else if (this.weapon !== "pistol" && drop < 0.38) this.spawnUnit("ammo", target.x, target.y, 1);
       }
       if (target.kind === "boss") {
@@ -686,13 +706,13 @@ class GunSmokeGame {
       }
     }
     for (const unit of this.units.filter((candidate) => candidate.hp > 0)) {
-      if (unit.kind === "coin" || unit.kind === "powerup" || unit.kind === "ammo" || unit.kind === "wanted") {
+      if (unit.kind === "coin" || unit.kind === "item" || unit.kind === "ammo" || unit.kind === "wanted") {
         if (distance(unit, this.player) <= unit.radius + 22) {
           unit.hp = 0;
           this.score += unit.value;
           this.awardScoreLife();
           if (unit.kind === "coin") this.money += 10;
-          else if (unit.kind === "powerup") this.lives = Math.min(5, this.lives + 1);
+          else if (unit.kind === "item" && unit.itemType) this.collectItem(unit.itemType);
           else if (unit.kind === "ammo") this.ammo = Math.min(WEAPONS[this.weapon].maxAmmo, this.ammo + 10);
           else {
             this.hasWanted = true;
@@ -700,6 +720,8 @@ class GunSmokeGame {
           }
           this.beep(unit.kind === "coin" ? 980 : unit.kind === "wanted" ? 520 : 620, 0.08);
         }
+      } else if ((unit.kind === "enemy" || unit.kind === "enemyBullet") && this.invulnerable > 0 && distance(unit, this.player) <= unit.radius + 20) {
+        unit.hp = 0;
       } else if ((unit.kind === "enemy" || unit.kind === "boss" || unit.kind === "enemyBullet") && this.invulnerable <= 0 && distance(unit, this.player) <= unit.radius + 20) {
         this.takeHit();
         if (unit.kind !== "boss") unit.hp = 0;
@@ -714,6 +736,35 @@ class GunSmokeGame {
     return true;
   }
 
+  private collectItem(item: ItemType): void {
+    if (item === "boots" || item === "rifle") {
+      this.powerups[item] = Math.min(5, this.powerups[item] + 1);
+    } else if (item === "ammo") {
+      this.ammo = Math.min(WEAPONS[this.weapon].maxAmmo, this.ammo + 10);
+    } else if (item === "money") {
+      this.score += 200;
+      this.money += 20;
+      this.awardScoreLife();
+    } else if (item === "pow") {
+      for (const target of this.units) {
+        if (target.kind === "enemy") target.hp = 0;
+        else if (target.kind === "boss") target.hp = Math.max(1, target.hp - 4);
+      }
+    } else if (item === "skull") {
+      this.powerups.boots = Math.max(0, this.powerups.boots - 1);
+      this.powerups.rifle = Math.max(0, this.powerups.rifle - 1);
+    } else if (item === "horse") {
+      this.hasHorse = true;
+      this.horseHealth = 3;
+    } else if (item === "blueYashichi") {
+      this.invulnerable = Math.max(this.invulnerable, 8);
+    } else if (item === "redYashichi") {
+      this.lives = Math.min(9, this.lives + 1);
+    }
+    this.showMessage(item.replace(/([A-Z])/g, " $1").toUpperCase());
+    this.updateHud();
+  }
+
   private takeHit(): void {
     if (this.horseHealth > 0) {
       this.horseHealth -= 1;
@@ -726,6 +777,8 @@ class GunSmokeGame {
       return;
     }
     this.lives -= 1;
+    this.powerups.boots = Math.max(0, this.powerups.boots - 1);
+    this.powerups.rifle = Math.max(0, this.powerups.rifle - 1);
     this.invulnerable = 2;
     this.beep(120, 0.16);
     this.showMessage(this.lives > 0 ? "HIT!" : "OUT OF LIVES");
@@ -788,7 +841,7 @@ class GunSmokeGame {
     moneyLabel.textContent = `$${String(this.money).padStart(3, "0")}`;
     livesLabel.textContent = `LIVES ${this.lives}`;
     const ammo = Number.isFinite(WEAPONS[this.weapon].maxAmmo) ? ` ${this.ammo}` : "";
-    weaponLabel.textContent = `${this.weapon.toUpperCase()}${ammo}${this.hasHorse ? ` + HORSE ${this.horseHealth}` : ""} / WANTED ${this.hasWanted ? "YES" : "NO"}`;
+    weaponLabel.textContent = `${this.weapon.toUpperCase()}${ammo} / BOOTS ${this.powerups.boots} / RIFLE ${this.powerups.rifle}${this.hasHorse ? ` / HORSE ${this.horseHealth}` : ""} / WANTED ${this.hasWanted ? "YES" : "NO"}`;
   }
 
   private showMessage(text: string): void {

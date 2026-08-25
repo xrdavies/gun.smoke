@@ -5,6 +5,7 @@ export interface StageDefinition {
 }
 
 export type EnemyType = "gunman" | "rifleman" | "bomber" | "sniper" | "backstabber" | "ninja" | "hatchet" | "firebreather" | "shotgunner";
+export type ItemType = "boots" | "rifle" | "ammo" | "money" | "pow" | "skull" | "horse" | "blueYashichi" | "redYashichi";
 
 export const STAGES: readonly StageDefinition[] = [
   { name: "HICKSVILLE", boss: "BANDIT BILL", bossHp: 4 },
@@ -57,6 +58,15 @@ export const ROUND_SEGMENTS: readonly (readonly RoundSegment[])[] = [
   [{ at: 0, formation: "rear", enemyTypes: ["gunman", "ninja"], interval: 1 }, { at: 480, formation: "wedge", enemyTypes: ["ninja", "shotgunner"], interval: 0.86 }, { at: 1_020, formation: "cross", enemyTypes: ["sniper", "gunman"], interval: 0.78 }, { at: 1_520, formation: "rear", enemyTypes: ["gunman", "shotgunner"], interval: 0.7 }],
   [{ at: 0, formation: "line", enemyTypes: ["gunman", "rifleman"], interval: 1 }, { at: 420, formation: "wedge", enemyTypes: ["bomber", "backstabber"], interval: 0.9 }, { at: 980, formation: "line", enemyTypes: ["rifleman", "bomber"], interval: 0.78 }, { at: 1_480, formation: "cross", enemyTypes: ["gunman", "backstabber"], interval: 0.68 }],
   [{ at: 0, formation: "cross", enemyTypes: ["gunman", "sniper"], interval: 1 }, { at: 420, formation: "rear", enemyTypes: ["bomber", "backstabber"], interval: 0.86 }, { at: 980, formation: "wedge", enemyTypes: ["sniper", "gunman"], interval: 0.74 }, { at: 1_500, formation: "cross", enemyTypes: ["bomber", "backstabber"], interval: 0.64 }],
+];
+
+export const ROUND_ITEM_TYPES: readonly (readonly ItemType[])[] = [
+  ["rifle", "money", "boots", "pow", "horse", "blueYashichi", "redYashichi"],
+  ["money", "skull", "blueYashichi", "redYashichi", "horse", "pow"],
+  ["pow", "redYashichi", "skull", "blueYashichi", "horse", "ammo"],
+  ["blueYashichi", "redYashichi", "pow", "ammo", "horse"],
+  ["blueYashichi", "redYashichi", "pow", "skull", "horse", "ammo"],
+  ["pow", "blueYashichi", "redYashichi", "horse", "ammo", "money"],
 ];
 
 export type WeaponName = "pistol" | "shotgun" | "machinegun" | "magnum";

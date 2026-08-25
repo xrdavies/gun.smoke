@@ -30,6 +30,12 @@ The Horse is a three-hit shield rather than a speed bonus. Score awards an
 extra life at 30,000, again at 100,000, and at each later 100,000-point
 threshold.
 
+Barrels can reveal the NES item set: stored Boots and Rifle power-ups, special
+weapon ammo, money, POW, Cattle Skull, Horse, and Blue/Red Yashichi. Stored
+Boots/Rifle are capped at five and each loses one stock on death; Blue Yashichi
+grants contact damage and temporary invulnerability, while Magnum bullets can
+destroy enemy projectiles.
+
 The runtime now exercises the engine's animation binding for player/enemy/Boss
 sprites, WebGPU `Renderer2D` batches, `AudioManager` buses, `ActionMap` keyboard
 and Gamepad input, deterministic seeded randomness, and per-round terrain/road

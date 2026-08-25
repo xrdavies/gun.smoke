@@ -12,6 +12,9 @@ copyrighted extracted assets, or original Capcom source code is included.
 Exact ROM-level reproduction requires a legally obtained reference ROM and a
 fixed revision/hash for comparison.
 
+Reference ROM provenance and verified header metadata are recorded in
+[`docs/reference-rom.md`](docs/reference-rom.md).
+
 ```sh
 npm install
 npm run dev

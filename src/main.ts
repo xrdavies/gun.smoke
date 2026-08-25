@@ -178,6 +178,8 @@ class GunSmokeGame {
   bombLatch = false;
   inventoryLatch = false;
   inventoryOpen = false;
+  inventoryWeaponIndex = 0;
+  inventoryDirectionLatch = 0;
   enemyFireClock = 1.2;
   bossFireClock = 1;
   invulnerable = 0;
@@ -352,7 +354,11 @@ class GunSmokeGame {
     if (this.mode !== "playing") return;
     this.engine.input?.pollGamepads();
     this.updateInventoryInput();
-    if (this.inventoryOpen || this.shopOpen) return;
+    if (this.inventoryOpen) {
+      this.updateInventorySelection();
+      return;
+    }
+    if (this.shopOpen) return;
     this.time += delta;
     if (this.stageClearClock > 0) {
       this.stageClearClock -= delta;
@@ -394,6 +400,25 @@ class GunSmokeGame {
     this.toggleInventory();
   }
 
+  private updateInventorySelection(): void {
+    const direction = this.actions.active("right") || this.actions.active("down") ? 1 : this.actions.active("left") || this.actions.active("up") ? -1 : 0;
+    if (direction === 0) {
+      this.inventoryDirectionLatch = 0;
+      return;
+    }
+    if (this.inventoryDirectionLatch !== 0) return;
+    this.inventoryDirectionLatch = direction;
+    const weapons: readonly WeaponName[] = ["pistol", "shotgun", "machinegun", "magnum"];
+    for (let count = 0; count < weapons.length; count += 1) {
+      this.inventoryWeaponIndex = (this.inventoryWeaponIndex + direction + weapons.length) % weapons.length;
+      const weapon = weapons[this.inventoryWeaponIndex] ?? "pistol";
+      if (this.ownedWeapons.has(weapon) && (weapon === "pistol" || this.weaponAmmo[weapon] > 0)) {
+        this.equipWeapon(weapon);
+        break;
+      }
+    }
+  }
+
   private updateInventory(): void {
     inventoryWeapons.textContent = `PISTOL UNLIMITED / SHOTGUN ${this.weaponAmmo.shotgun} / MACHINE GUN ${this.weaponAmmo.machinegun} / MAGNUM ${this.weaponAmmo.magnum} / SMART BOMB ${this.smartBombs}`;
     inventoryItems.textContent = `BOOTS ${this.powerups.boots} / RIFLE ${this.powerups.rifle} / HORSE ${this.horseHealth} / WANTED ${this.hasWanted ? "YES" : "NO"}`;
@@ -408,6 +433,7 @@ class GunSmokeGame {
   equipWeapon(weapon: WeaponName): void {
     if (!this.ownedWeapons.has(weapon) || (weapon !== "pistol" && this.weaponAmmo[weapon] <= 0)) return;
     this.weapon = weapon;
+    this.inventoryWeaponIndex = (["pistol", "shotgun", "machinegun", "magnum"] as const).indexOf(weapon);
     this.updateInventory();
     this.updateHud();
   }

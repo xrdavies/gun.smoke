@@ -96,6 +96,7 @@ const scoreLabel = requireElement<HTMLElement>("#score-label");
 const moneyLabel = requireElement<HTMLElement>("#money-label");
 const livesLabel = requireElement<HTMLElement>("#lives-label");
 const weaponLabel = requireElement<HTMLElement>("#weapon-label");
+const bossLabel = requireElement<HTMLElement>("#boss-label");
 const messageLabel = requireElement<HTMLElement>("#message-label");
 const shop = requireElement<HTMLElement>("#shop");
 const shopTitle = requireElement<HTMLElement>("#shop-title");
@@ -1056,6 +1057,13 @@ class GunSmokeGame {
     livesLabel.textContent = `LIVES ${this.lives}`;
     const ammo = Number.isFinite(WEAPONS[this.weapon].maxAmmo) ? ` ${this.ammo}` : "";
     weaponLabel.textContent = `${this.weapon.toUpperCase()}${ammo} / BOMB ${this.smartBombs} / BOOTS ${this.powerups.boots} / RIFLE ${this.powerups.rifle}${this.hasHorse ? ` / HORSE ${this.horseHealth}` : ""} / WANTED ${this.hasWanted ? "YES" : "NO"}`;
+    const boss = this.units.find((unit) => unit.kind === "boss" && unit.hp > 0);
+    bossLabel.hidden = !boss;
+    if (boss) {
+      const name = this.stage === MAX_STAGE && this.wingatePhase > 0 ? "WINGATE II" : definition.boss;
+      const bars = Math.max(1, Math.ceil(boss.hp / 4));
+      bossLabel.textContent = `${name} ${"|".repeat(bars)}`;
+    }
   }
 
   private showMessage(text: string): void {

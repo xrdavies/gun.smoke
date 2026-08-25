@@ -26,6 +26,15 @@ const checkpoint = (label) => {
     stage: nes.cpu.mem[0x62],
     scorePage: nes.cpu.mem[0x4c],
     scoreLow: nes.cpu.mem[0x4f],
+    ppu: {
+      vramAddress: nes.ppu.vramAddress,
+      coarseX: nes.ppu.regHT,
+      coarseY: nes.ppu.regVT,
+      fineX: nes.ppu.regFH,
+      fineY: nes.ppu.regFV,
+      nametable: nes.ppu.curNt,
+    },
+    spriteOam: Array.from(nes.ppu.spriteMem.slice(0, 32)),
     frameHash,
   });
 };

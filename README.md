@@ -16,6 +16,9 @@ fixed revision/hash for comparison.
 Reference ROM provenance and verified header metadata are recorded in
 [`docs/reference-rom.md`](docs/reference-rom.md).
 
+The gameplay target and approximation boundary are recorded in
+[`docs/gameplay-reference.md`](docs/gameplay-reference.md).
+
 ```sh
 npm install
 npm run dev

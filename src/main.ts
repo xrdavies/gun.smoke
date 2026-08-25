@@ -18,7 +18,7 @@ type GameAction =
   | "fireLeft"
   | "fireCenter"
   | "fireRight";
-type GameMode = "title" | "playing" | "gameover";
+type GameMode = "title" | "intro" | "playing" | "gameover";
 type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "coin" | "powerup" | "wanted";
 type EnemyType = "gunman" | "rifleman" | "bomber" | "sniper" | "backstabber" | "ninja" | "hatchet" | "firebreather";
 type TextureName = "player" | "enemy" | "boss" | "bullet" | "coin" | "powerup" | "wanted" | "terrain" | "road";
@@ -59,9 +59,11 @@ function requireElement<T extends Element>(selector: string): T {
 
 const canvas = requireElement<HTMLCanvasElement>("#game-canvas");
 const titleScreen = requireElement<HTMLElement>("#title-screen");
+const introScreen = requireElement<HTMLElement>("#intro-screen");
 const gameOver = requireElement<HTMLElement>("#game-over");
 const hud = requireElement<HTMLElement>("#hud");
 const startButton = requireElement<HTMLButtonElement>("#start-button");
+const continueButton = requireElement<HTMLButtonElement>("#continue-button");
 const restartButton = requireElement<HTMLButtonElement>("#restart-button");
 const finalScore = requireElement<HTMLElement>("#final-score");
 const stageLabel = requireElement<HTMLElement>("#stage-label");
@@ -229,15 +231,23 @@ class GunSmokeGame {
 
   start(): void {
     if (this.mode === "playing") return;
-    this.mode = "playing";
+    this.mode = "intro";
     this.randomState = 0x6d2b79f5;
     titleScreen.hidden = true;
+    introScreen.hidden = false;
     gameOver.hidden = true;
-    hud.hidden = false;
+    hud.hidden = true;
     canvas.focus();
     void this.audio?.unlock();
-    this.startMusic();
     this.beep(440, 0.08);
+  }
+
+  continueFromIntro(): void {
+    if (this.mode !== "intro") return;
+    this.mode = "playing";
+    introScreen.hidden = true;
+    hud.hidden = false;
+    this.startMusic();
     this.showMessage("RIDE OUT");
     this.engine.start();
   }
@@ -713,6 +723,7 @@ class GunSmokeGame {
 
 let game: GunSmokeGame | undefined;
 startButton.addEventListener("click", () => void game?.start());
+continueButton.addEventListener("click", () => game?.continueFromIntro());
 restartButton.addEventListener("click", () => window.location.reload());
 shopClose.addEventListener("click", () => game?.closeShop());
 for (const item of shopItems) item.addEventListener("click", () => game?.buyShopItem(item.dataset.shopItem ?? ""));

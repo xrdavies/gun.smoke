@@ -2,5 +2,6 @@ node_modules/
 dist/
 test-results/
 .rom-assets/
+.rom-traces/
 *.NES
 *.nes

@@ -45,6 +45,7 @@ can be run with:
 ```sh
 npm run inspect:rom
 npm run trace:rom
+npm run trace:rom:timeline
 npm run extract:rom-assets
 ```
 

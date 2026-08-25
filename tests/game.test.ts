@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { BOSS_TRIGGER, MAX_STAGE, ROAD_WIDTHS, ROUND_ENEMY_TYPES, ROUND_ITEM_TYPES, ROUND_SEGMENTS, SHOP_CHECKPOINTS, STAGE_LENGTH, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, clamp, distance, shouldLoopStage } from "../src/game-constants";
+import { BOSS_TRIGGER, MAX_STAGE, ROAD_WIDTHS, ROUND_ENEMY_TYPES, ROUND_ITEM_TYPES, ROUND_SEGMENTS, SHOP_CHECKPOINTS, STAGE_LENGTH, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, clamp, distance, nextExtraLifeScore, scoreExtraLives, shouldLoopStage } from "../src/game-constants";
 
 describe("Gun.Smoke vertical slice", () => {
   it("keeps the NES-inspired stage constants stable", () => {
@@ -15,6 +15,12 @@ describe("Gun.Smoke vertical slice", () => {
   it("loops a stage only when the wanted poster is missing", () => {
     expect(shouldLoopStage(STAGE_LENGTH, false)).toBe(true);
     expect(shouldLoopStage(STAGE_LENGTH, true)).toBe(false);
+  });
+
+  it("matches the NES score-life thresholds", () => {
+    expect(nextExtraLifeScore(30_000)).toBe(100_000);
+    expect(nextExtraLifeScore(100_000)).toBe(200_000);
+    expect(scoreExtraLives(230_000, 30_000)).toEqual({ lives: 3, nextThreshold: 300_000 });
   });
 
   it("keeps the round shop cadence explicit", () => {

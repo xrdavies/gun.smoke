@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, shouldLoopStage, SHOP_CHECKPOINTS, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, type EnemyType, type Formation, type ItemType, type WeaponName } from "./game-constants";
+import { BOSS_TRIGGER, clamp, distance, MAX_STAGE, ROAD_WIDTHS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, shouldLoopStage, SHOP_CHECKPOINTS, scoreExtraLives, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, type EnemyType, type Formation, type ItemType, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -822,11 +822,12 @@ class GunSmokeGame {
   }
 
   private awardScoreLife(): void {
-    while (this.score >= this.nextLifeScore) {
+    const reward = scoreExtraLives(this.score, this.nextLifeScore);
+    for (let index = 0; index < reward.lives; index += 1) {
       this.lives = Math.min(9, this.lives + 1);
       this.showMessage("EXTRA LIFE");
-      this.nextLifeScore = this.nextLifeScore === 30_000 ? 100_000 : this.nextLifeScore + 100_000;
     }
+    this.nextLifeScore = reward.nextThreshold;
   }
 
   private beginNextStage(): void {

@@ -89,3 +89,17 @@ export function distance(a: { x: number; y: number }, b: { x: number; y: number 
 export function shouldLoopStage(scroll: number, hasWanted: boolean): boolean {
   return scroll >= STAGE_LENGTH && !hasWanted;
 }
+
+export function nextExtraLifeScore(currentThreshold: number): number {
+  return currentThreshold === 30_000 ? 100_000 : currentThreshold + 100_000;
+}
+
+export function scoreExtraLives(score: number, threshold: number): { lives: number; nextThreshold: number } {
+  let lives = 0;
+  let nextThreshold = threshold;
+  while (score >= nextThreshold) {
+    lives += 1;
+    nextThreshold = nextExtraLifeScore(nextThreshold);
+  }
+  return { lives, nextThreshold };
+}

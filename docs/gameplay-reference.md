@@ -142,7 +142,8 @@ also draw grouped center gravestones between the side buildings.
 Important barrel contents are represented as ordered world events per Round,
 so every Boots, Rifle, POW, Yashichi, Skull and Horse barrel is stable rather
 than supplemented by random barrels. Each event is authored in world-space and
-is spawned when the scrolling camera reaches that coordinate; enemy Money Bag
+is spawned when that coordinate enters the 540-unit viewport from the bottom;
+enemy Money Bag
 and ammunition drops remain randomized.
 
 After the second Wingate encounter the web recreation enters a separate ending

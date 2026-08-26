@@ -21,6 +21,7 @@ export const BOSS_TRIGGER = 1_820;
 export const WANTED_REVEAL_AT = [1_320, 800, 1_450, 1_500, 1_450, 1_500] as const;
 export const MAX_STAGE = STAGES.length;
 export const NES_FRAME_RATE = 60.098;
+export const WORLD_VIEWPORT_HEIGHT = 540;
 export const NES_SCROLL_SPEED = 20 * (NES_FRAME_RATE / 60);
 export const WORLD_SCROLL_SPEED = NES_SCROLL_SPEED * (540 / 240);
 export const NES_PLAYER_SPEED = 75 * (NES_FRAME_RATE / 60);
@@ -196,6 +197,10 @@ export function shouldRevealWanted(scroll: number, round: number, hasWanted: boo
 
 export function segmentDelay(scroll: number, at: number, speed: number): number {
   return Math.max(0, (at - scroll) / speed);
+}
+
+export function worldEventEnteredView(scroll: number, at: number, viewportHeight = WORLD_VIEWPORT_HEIGHT): boolean {
+  return at <= scroll + viewportHeight;
 }
 
 export function obstacleBlocks(obstacle: RoundObstacle, x: number, y: number, radius = 18): boolean {

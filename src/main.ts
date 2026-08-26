@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, bossReward, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, shouldLoopStage, shouldRevealWanted, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, scoreExtraLives, spendPoints, STAGE_LENGTH, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, bossReward, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, shouldLoopStage, shouldRevealWanted, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, scoreExtraLives, spendPoints, STAGE_LENGTH, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, worldEventEnteredView, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -651,7 +651,7 @@ class GunSmokeGame {
     const events = ROUND_ITEM_EVENTS[this.stage - 1] ?? [];
     while (this.itemEventCursor < events.length) {
       const event = events[this.itemEventCursor];
-      if (!event || this.scroll < event.at) break;
+      if (!event || !worldEventEnteredView(this.scroll, event.at)) break;
       if (event.loopOnly && this.stageLoopCount === 0) {
         this.itemEventCursor += 1;
         continue;

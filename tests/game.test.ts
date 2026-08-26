@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { AMMO_GAIN, bossReward, BOSS_REWARDS, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_BULLET_SPEED, NES_DIAGONAL_BULLET_X, NES_DIAGONAL_BULLET_Y, NES_FRAME_RATE, NES_PLAYER_SPEED, NES_SCROLL_SPEED, obstacleBlocks, PISTOL_BULLET_LIFETIME, ROAD_WIDTHS, ROUND_ENEMY_TYPES, ROUND_ITEM_EVENTS, ROUND_OBSTACLES, ROUND_SEGMENTS, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, segmentDelay, spendPoints, STAGE_LENGTH, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_REVEAL_AT, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, nextExtraLifeScore, scoreExtraLives, shouldLoopStage, shouldRevealWanted } from "../src/game-constants";
+import { AMMO_GAIN, bossReward, BOSS_REWARDS, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_BULLET_SPEED, NES_DIAGONAL_BULLET_X, NES_DIAGONAL_BULLET_Y, NES_FRAME_RATE, NES_PLAYER_SPEED, NES_SCROLL_SPEED, obstacleBlocks, PISTOL_BULLET_LIFETIME, ROAD_WIDTHS, ROUND_ENEMY_TYPES, ROUND_ITEM_EVENTS, ROUND_OBSTACLES, ROUND_SEGMENTS, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, segmentDelay, spendPoints, STAGE_LENGTH, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_REVEAL_AT, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, worldEventEnteredView, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, nextExtraLifeScore, scoreExtraLives, shouldLoopStage, shouldRevealWanted } from "../src/game-constants";
 
 describe("Gun.Smoke vertical slice", () => {
   it("keeps the NES-inspired stage constants stable", () => {
@@ -84,6 +84,9 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROUND_ITEM_EVENTS).toHaveLength(MAX_STAGE);
     expect(ROUND_ITEM_EVENTS.every((events) => events.every((event, index) => index === 0 || event.at > (events[index - 1]?.at ?? -1)))).toBe(true);
     expect(ROUND_ITEM_EVENTS[0]?.[0]?.at).toBeGreaterThan(0);
+    expect(worldEventEnteredView(0, 220)).toBe(true);
+    expect(worldEventEnteredView(0, 600)).toBe(false);
+    expect(worldEventEnteredView(60, 600)).toBe(true);
     expect(ROUND_ITEM_EVENTS[0]?.map((event) => event.item)).toContain("blueYashichi");
     expect(ROUND_ITEM_EVENTS[2]?.map((event) => event.item)).toContain("skull");
     expect(ROUND_ITEM_EVENTS[1]?.filter((event) => event.loopOnly)).toEqual([{ at: 300, xOffset: -170, item: "horse", loopOnly: true }]);

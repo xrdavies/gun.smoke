@@ -83,8 +83,9 @@ teleports after each lost health bar.
 
 The procedural enemy roster is data-driven per Round: early town stages include
 gunmen, bombers, snipers and back-stabbers; Rocky Pass adds riflemen; Native
-Village adds spear throwers and firebreathers; Cliff Valley adds ninjas and
-shotgunners; the final rounds return to gunmen, riflemen, bombers and snipers.
+Village adds spear throwers, firebreathers and Hatchet Throwers; Cliff Valley
+adds ninjas and shotgunners; the final rounds return to gunmen, riflemen,
+bombers and snipers.
 Snipers are edge-mounted static shooters that aim once and retreat into their
 window/tee-pee cover instead of walking with field enemies. Riflemen advance,
 fire a two-shot burst, and retreat toward the top of the playfield.

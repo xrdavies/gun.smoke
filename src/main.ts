@@ -14,6 +14,7 @@ import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
 import { AMMO_GAIN, bossReward, BOOTS_SPEED_MULTIPLIER, clamp, distance, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_BOSS_TRIGGERS, ROUND_ITEM_EVENTS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, shouldLoopStage, shouldRevealWanted, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, worldEventEnteredView, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
+import { roundCollisionBlocks } from "./round-collision";
 
 type GameAction =
   | "left"
@@ -782,7 +783,8 @@ class GunSmokeGame {
   }
 
   private isPlayerBlocked(x: number, y: number): boolean {
-    return (ROUND_OBSTACLES[this.stage - 1] ?? []).some((obstacle) => obstacleBlocks(obstacle, x, y));
+    return roundCollisionBlocks(this.stage, this.scroll, x, y) ||
+      (ROUND_OBSTACLES[this.stage - 1] ?? []).some((obstacle) => obstacleBlocks(obstacle, x, y));
   }
 
   private spawnFormation(bossEncounter = false): void {

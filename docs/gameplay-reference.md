@@ -146,12 +146,12 @@ single random cadence and provides a stable target for ROM trace comparison.
 Each segment also carries a landmark type (`town`, `rock`, `village`, `cliff`,
 `forest`, `cemetery`, or `open`) so side geometry changes with the event script.
 
-Rocky Pass, Cliff Valley, Forest, and Wingate Town also have authored gameplay
-blockers rather than decoration-only scenery. Boulder, tree, and grave zones
-are tested against the player's world-space position and support axis sliding,
-so a diagonal input can follow a narrow path around an obstacle. The blocker
-coordinates remain explicit approximation data until each stage has a matching
-ROM trace. Forest segments additionally alternate blue water with brown bridge
+The six decoded ROM collision rings now provide the base 16-pixel terrain mask.
+The player lookup follows the verified `$5A-$5D` map pointer/page/fine-scroll
+formula and keeps axis sliding, so diagonal input can follow a blocked edge.
+Rocky Pass, Cliff Valley, Forest, and Wingate Town retain their authored
+boulder, tree, and grave zones as additional procedural scenery blockers.
+Forest segments additionally alternate blue water with brown bridge
 crossings to match the Round 5 traversal cue; water remains passable in this
 first approximation, while trees are the blocking geometry. Cemetery segments
 also draw grouped center gravestones between the side buildings.

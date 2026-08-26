@@ -158,6 +158,7 @@ export function devilHawkOpeningY(age: number): number {
   return Math.max(0, Math.min(1, age / DEVIL_HAWK_ENTRY_DURATION)) * DEVIL_HAWK_ENTRY_END_Y;
 }
 const DEVIL_HAWK_COMBAT_PATH_NES = [[0, 96], [27, 96], [52, 48], [77, 48], [87, 46], [113, 46], [146, 67], [180, 70], [217, 77], [234, 77]] as const;
+const DEVIL_HAWK_COMBAT_X_NES = [[0, 208], [113, 208], [146, 157], [180, 157], [217, 137], [432, 137], [477, 155]] as const;
 export const DEVIL_HAWK_JUMP_PERIOD = 121;
 
 export function devilHawkCombatY(age: number): number {
@@ -175,6 +176,20 @@ export function devilHawkCombatY(age: number): number {
   if (cycle < 11) return (77 - (23 * cycle) / 11) * NES_WORLD_Y_SCALE;
   if (cycle < 24) return (54 + (23 * (cycle - 11)) / 13) * NES_WORLD_Y_SCALE;
   return 77 * NES_WORLD_Y_SCALE;
+}
+
+export function devilHawkCombatX(age: number, entryX = 208 * NES_WORLD_X_SCALE): number {
+  const frame = Math.max(0, age * NES_FRAME_RATE - DEVIL_HAWK_ENTRY_DURATION * NES_FRAME_RATE);
+  const laneOffset = entryX / NES_WORLD_X_SCALE - 208;
+  const first = DEVIL_HAWK_COMBAT_X_NES[0]!;
+  if (frame <= first[0]) return (first[1] + laneOffset) * NES_WORLD_X_SCALE;
+  const last = DEVIL_HAWK_COMBAT_X_NES.at(-1)!;
+  if (frame >= last[0]) return (last[1] + laneOffset) * NES_WORLD_X_SCALE;
+  const nextIndex = DEVIL_HAWK_COMBAT_X_NES.findIndex(([at]) => at >= frame);
+  const previous = DEVIL_HAWK_COMBAT_X_NES[nextIndex - 1]!;
+  const next = DEVIL_HAWK_COMBAT_X_NES[nextIndex]!;
+  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  return (previous[1] + (next[1] - previous[1]) * amount + laneOffset) * NES_WORLD_X_SCALE;
 }
 export const NINJA_BOSS_ENTRY_X_NES = [176, 192] as const;
 export const NINJA_BOSS_ENTRY_X_LANES = NINJA_BOSS_ENTRY_X_NES.map((value) => value * NES_WORLD_X_SCALE);

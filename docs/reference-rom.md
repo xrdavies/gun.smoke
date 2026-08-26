@@ -183,7 +183,8 @@ Devil Hawk as dispatch `0x9a`, variant `0x61`, entering from the top edge
 (`y=0`). Controlled traces observe NES horizontal entry lanes near
 `x=128/168/208`; the opening holds that lane and reaches approximately `y=96`
 after 143 frames, then holds the lane for another 113 frames before the first
-lateral jump. At frame 174 it creates five simultaneous `0xa2` fireballs,
+lateral jump; the measured path then moves through NES `x=157/137/155`. At frame
+174 it creates five simultaneous `0xa2` fireballs,
 with later position-dependent attacks using three; a common repeat interval is
 125 frames. The center shot moves 3 NES pixels per frame. The runtime preserves
 this measured opening, 5/3 fan, timing, and speed. The first post-entry jump

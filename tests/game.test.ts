@@ -129,6 +129,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROUND_ROM_ENEMY_EVENT_COUNTS).toEqual([128, 137, 275, 299, 185, 313]);
     expect(ROM_BEHAVIOR_ENEMY_TYPES).toHaveLength(12);
     expect(ROM_BEHAVIOR_ENEMY_TYPES[1]).toBe("shotgunner");
+    expect(ROM_BEHAVIOR_ENEMY_TYPES[3]).toBe("backstabber");
     expect(ROM_ENEMY_SLOT_CAPACITY).toBe(7);
     expect(ROM_OBJECT_SLOT_CAPACITY).toBe(6);
     expect(ROM_NON_ENEMY_OBJECT_BEHAVIORS).toEqual([5]);

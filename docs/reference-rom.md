@@ -83,6 +83,10 @@ Behavior routine `$B0E5` allocates three projectile slots at `$B24B-$B281`
 and emits adjacent direction values, identifying it as the Shotgunner spread
 attack used by the runtime behavior map. An isolated instance fires at age 108
 and 159 frames, then exits at age 228; the runtime preserves both volleys.
+Round 1 uses exactly five behavior routines: `$B080`, `$B0E5`, `$B501`,
+`$B284` and `$B46E`. After the first four are identified as Sniper,
+Shotgunner, Bomber and Gunman, the remaining `$B46E` routine is the verified
+Backstabber mapping for that Round.
 The extractor labels no-behavior `dispatch 30/31` records as `stateControl`,
 the flag `0x40` record as `wantedTrigger`, and other no-behavior records as
 `sceneObject`; these labels are research semantics, not copied ROM code.

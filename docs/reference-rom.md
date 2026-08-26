@@ -125,6 +125,9 @@ its 16-frame cadence.
 An isolated `$B671` Ninja emits one dispatch `0x31` Shuriken at age 103
 frames. Its measured path is diagonal toward Billy; the runtime uses the
 same one-shot timing and a 300-world-pixel/s self-generated projectile.
+An isolated `$B8F4` Hatchet Thrower emits its dispatch `0x32` projectile at age
+78 frames and aims it toward Billy at roughly 230 world pixels/s. The runtime
+uses that measured delay and speed.
 
 Current behavior map:
 
@@ -139,7 +142,7 @@ Current behavior map:
 | `$B671` | Ninja | isolated dispatch/OAM timing trace |
 | `$B775` | Rifleman | isolated state/OAM timing trace |
 | `$B82F` | Backstabber | Round 5 roster elimination |
-| `$B8F4` | Hatchet Thrower | Native Village roster elimination |
+| `$B8F4` | Hatchet Thrower | isolated dispatch/OAM timing trace |
 | `$BA51` | Spear Thrower | Native Village roster elimination |
 | `$BB29` | Firebreather | Native Village roster elimination |
 

@@ -64,6 +64,8 @@ export const ROCK_WORLD_SPEED_X = 230;
 export const ROCK_WORLD_SPEED_Y = 236;
 export const ROCK_IMPACT_DELAY = 24 / NES_FRAME_RATE;
 export const ROCK_LIFETIME = 49 / NES_FRAME_RATE;
+export const HATCHET_FIRST_SHOT_DELAY = 78 / NES_FRAME_RATE;
+export const HATCHET_PROJECTILE_SPEED = 230;
 
 export const SHOP_CHECKPOINTS: readonly (readonly number[])[] = [
   [560, 1_180],

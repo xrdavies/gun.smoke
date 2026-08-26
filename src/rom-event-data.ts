@@ -40,7 +40,7 @@ const decodeStream = (encoded: string): readonly RomEnemyEvent[] => {
 
 export const ROUND_ROM_ENEMY_EVENTS: readonly (readonly RomEnemyEvent[])[] = ROUND_EVENT_STREAMS.map(decodeStream);
 export const ROUND_ROM_ENEMY_EVENT_COUNTS = ROUND_ROM_ENEMY_EVENTS.map((events) => events.length);
-export type RomObjectEvent = { at: number; x: number; y: number; entityCode: number; dispatchType: number; flags: number; pool: "enemy" | "object"; semantic: "sceneObject" | "wantedTrigger" | "stateControl" };
+export type RomObjectEvent = { at: number; x: number; y: number; entityCode: number; dispatchType: number; flags: number; pool: "enemy" | "object"; semantic: "sceneObject" | "supplyShop" | "weaponShop" };
 const decodeObjectStream = (encoded: string): readonly RomObjectEvent[] => {
   const bytes = Uint8Array.from(atob(encoded), (character) => character.charCodeAt(0));
   const events: RomObjectEvent[] = [];
@@ -53,7 +53,7 @@ const decodeObjectStream = (encoded: string): readonly RomObjectEvent[] => {
       dispatchType: bytes[offset + 5] ?? 0,
       flags: bytes[offset + 6] ?? 0,
       pool: (bytes[offset + 7] ?? 0) & 0x80 ? "object" : "enemy",
-      semantic: ((bytes[offset + 7] ?? 0) & 0x7f) === 1 ? "wantedTrigger" : ((bytes[offset + 7] ?? 0) & 0x7f) === 2 ? "stateControl" : "sceneObject",
+      semantic: ((bytes[offset + 7] ?? 0) & 0x7f) === 1 ? "supplyShop" : ((bytes[offset + 7] ?? 0) & 0x7f) === 2 ? "weaponShop" : "sceneObject",
     });
   }
   return events;

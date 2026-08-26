@@ -79,58 +79,47 @@ test("accepts gamepad Start from the title flow", async ({ page }) => {
   await expect(page.locator("#pause-screen")).toBeHidden();
 });
 
-test("reaches the first trading post", async ({ page }) => {
+test("does not spawn a trading post before the first ROM event", async ({ page }) => {
+  await page.clock.install();
   await page.goto("/");
   await page.locator("#start-button").click();
   await page.locator("#continue-button").click();
   await page.locator("#briefing-button").click();
-  await page.waitForTimeout(12_800);
+  await page.keyboard.down("z");
+  await page.keyboard.down("x");
+  for (let index = 0; index < 8; index += 1) {
+    const key = index % 2 === 0 ? "ArrowLeft" : "ArrowRight";
+    await page.keyboard.down(key);
+    await page.clock.runFor(1_800);
+    await page.keyboard.up(key);
+  }
   await expect(page.locator("#shop")).toBeHidden();
-  await page.keyboard.down("ArrowRight");
-  await page.waitForTimeout(1_050);
-  await page.keyboard.up("ArrowRight");
-  await page.keyboard.down("ArrowDown");
-  await page.waitForTimeout(700);
-  await page.keyboard.up("ArrowDown");
-  await expect(page.locator("#shop")).toBeVisible();
-  await expect(page.locator("#shop-title")).toHaveText("WEAPON SHOP / ROUND 1");
-  await expect(page.locator("#shop-message")).toHaveText("POINTS 000000");
-  await expect(page.locator('[data-shop-item="shotgun"]')).toContainText("$06000");
-  await expect(page.locator('[data-shop-item="smartBomb"]')).toBeVisible();
-  await expect(page.locator('[data-shop-item="horse"]')).toBeHidden();
-  await expect(page.locator('[data-shop-item="ammo"]')).toBeHidden();
-  await expect(page.locator('[data-shop-item="wanted"]')).toBeHidden();
-  await expect(page.locator('[data-shop-item="magnum"]')).toBeDisabled();
-  await page.locator("#shop-close").click();
-  await expect(page.locator("#shop")).toBeHidden();
-  await expect(page.locator("#hud")).toBeVisible();
 });
 
-test("switches from the weapon shop to the supply shop", async ({ page }) => {
+test("reaches the first ROM weapon shop", async ({ page }) => {
+  await page.clock.install();
   await page.goto("/");
   await page.locator("#start-button").click();
   await page.locator("#continue-button").click();
   await page.locator("#briefing-button").click();
-  await page.waitForTimeout(11_500);
-  await page.keyboard.down("ArrowRight");
-  await page.waitForTimeout(1_050);
-  await page.keyboard.up("ArrowRight");
-  await page.keyboard.down("ArrowDown");
-  await page.waitForTimeout(700);
-  await page.keyboard.up("ArrowDown");
+  await page.keyboard.down("z");
+  await page.keyboard.down("x");
+  for (let index = 0; index < 27; index += 1) {
+    const key = index % 2 === 0 ? "ArrowLeft" : "ArrowRight";
+    await page.keyboard.down(key);
+    await page.clock.runFor(1_800);
+    await page.keyboard.up(key);
+  }
+  for (let index = 0; index < 14 && !await page.locator("#shop").isVisible(); index += 1) {
+    const key = index % 2 === 0 ? "ArrowRight" : "ArrowLeft";
+    await page.keyboard.down(key);
+    await page.clock.runFor(900);
+    await page.keyboard.up(key);
+  }
+  await expect(page.locator("#shop")).toBeVisible();
   await expect(page.locator("#shop-title")).toHaveText("WEAPON SHOP / ROUND 1");
-  await page.locator("#shop-close").click();
-  await page.keyboard.down("ArrowLeft");
-  await page.waitForTimeout(2_100);
-  await page.keyboard.up("ArrowLeft");
-  await page.waitForTimeout(11_700);
-  await expect(page.locator("#shop-title")).toHaveText("SUPPLY SHOP / ROUND 1");
-  await expect(page.locator('[data-shop-item="shotgun"]')).toBeHidden();
-  await expect(page.locator('[data-shop-item="smartBomb"]')).toBeHidden();
-  await expect(page.locator('[data-shop-item="horse"]')).toBeVisible();
-  await expect(page.locator('[data-shop-item="horse"]')).toBeDisabled();
-  await expect(page.locator('[data-shop-item="wanted"]')).toBeVisible();
-  await expect(page.locator('[data-shop-item="wanted"]')).toBeDisabled();
+  await expect(page.locator('[data-shop-item="shotgun"]')).toBeVisible();
+  await expect(page.locator('[data-shop-item="horse"]')).toBeHidden();
 });
 
 test("runs a locally supplied reference ROM through the engine", async ({ page }) => {

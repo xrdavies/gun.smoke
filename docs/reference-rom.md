@@ -80,11 +80,10 @@ bit 5 selects the six-slot object pool at `$0402-$0407`; clear bit 5 selects
 the seven-slot enemy pool at `$0410-$0416`. Both pools remain in the runtime
 event stream with separate capacities.
 The generated `ROUND_ROM_OBJECT_EVENTS` stream retains no-behavior object
-records. The runtime consumes the single `wantedTrigger` per Round to place
-the poster barrel, renders dispatch `0x08` scene props, and preserves dispatch
-`0x07` breakable-container variants. Decoded `0x07` objects descend at the
-measured one NES pixel every three frames; only `stateControl` records remain
-deferred for later scene-system work.
+records. The runtime consumes dispatch `30/31` weapon and supply-shop triggers,
+renders dispatch `0x08` scene props, and preserves dispatch `0x07`
+breakable-container variants. Decoded shop and `0x07` objects descend at the
+measured one NES pixel every three frames.
 Round 4's 44 `$B5BF` records all select the object pool. Isolated contact
 verification identifies them as falling rock hazards: they travel toward the
 road center for about 24 frames, remain at the impact point for another 25
@@ -119,9 +118,12 @@ Round 1 uses exactly five behavior routines: `$B080`, `$B0E5`, `$B501`,
 `$B284` and `$B46E`. After the first four are identified as Sniper,
 Shotgunner, Bomber and Gunman, the remaining `$B46E` routine is the verified
 Backstabber mapping for that Round.
-The extractor labels no-behavior `dispatch 30/31` records as `stateControl`,
-the flag `0x40` record as `wantedTrigger`, and other no-behavior records as
-`sceneObject`; these labels are research semantics, not copied ROM code.
+Contact with dispatch `30/31` reaches `$CC51`, which stores the dispatch in
+`$A7`, stores the entity flags plus one in `$A5`, clears projectiles, and enters
+the `$BD4E` menu. `$A5=1` selects its four-item weapon branch; flag `0x40`
+produces `$A5=0x41` and selects the three-item supply branch. The extractor
+therefore labels them `weaponShop` and `supplyShop`; other no-behavior records
+remain `sceneObject`. These labels are research semantics, not copied ROM code.
 An isolated `$B501` actor first creates its `0x72`/dispatch `0x2F` dynamite
 after 198 frames and repeats after 106 frames. The projectile remains airborne
 for 212 frames, changes to landed dispatch `0x3E` for 53 frames, then clears;
@@ -254,12 +256,11 @@ The elimination entries remain behavior approximations until their complete
 state machines are traced; the runtime stores the original routine and entity
 codes alongside each spawned unit for comparison.
 
-The one record per Round carrying entity flag `0x40` occurs before the Boss
-gate and feeds the `$CBDA-$CBDF` interaction path that sets `$49`; its decoded
-NES X positions are `[200,64,216,216,72,216]`, and these are the current
-byte-level Wanted-trigger positions used by the web runtime. The web barrel
-keeps that flag and its enemy-pool identity while descending, then converts to
-the Wanted pickup when destroyed.
+The one supply-shop record per Round carries entity flag `0x40`; its decoded
+NES X positions are `[200,64,216,216,72,216]`. Unflagged weapon-shop counts are
+`[1,1,2,1,1,2]`, matching the extra weapon visits in Rounds 3 and 6. The web
+runtime preserves their exact script order, coordinates, flags, and enemy-pool
+identity.
 
 Pattern-table previews remain grayscale for bitplane inspection; nametable
 previews apply each tile's expanded attribute and the live NES background

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { AMMO_GAIN, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, BOMBER_FIRST_THROW_DELAY, BOMBER_THROW_INTERVAL, bossReward, BOSS_REWARDS, BOOTS_SPEED_MULTIPLIER, clamp, distance, DYNAMITE_AIRBORNE_DURATION, DYNAMITE_LANDED_DURATION, DYNAMITE_LIFETIME, DYNAMITE_WORLD_SPEED, FIREBREATHER_FIRST_SHOT_DELAY, FIREBREATHER_PROJECTILE_SPEED, formationEntryY, HATCHET_FIRST_SHOT_DELAY, HATCHET_PROJECTILE_SPEED, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_BULLET_SPEED, NES_DIAGONAL_BULLET_X, NES_DIAGONAL_BULLET_Y, NES_FRAME_RATE, NES_PLAYER_SPEED, NES_SCROLL_SPEED, NINJA_FIRST_SHOT_DELAY, NINJA_PROJECTILE_SPEED, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_BULLET_SPEED, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_LIFETIME, ROCK_WORLD_SPEED_X, ROCK_WORLD_SPEED_Y, ROM_OBJECT_DROP_SPEED, ROAD_WIDTHS, ROUND_BOSS_GATE_SCROLL_NES, ROUND_BOSS_TRIGGERS, ROUND_ENEMY_TYPES, ROUND_LENGTHS, ROUND_LOOP_SCROLL_NES, ROUND_OBSTACLES, ROUND_SEGMENTS, ROUND_WANTED_SCROLL_NES, ROUND_WANTED_X_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_VOLLEY_INTERVAL, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, SPEAR_FIRST_SHOT_DELAY, SPEAR_PROJECTILE_SPEED, segmentDelay, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_REVEAL_AT, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, nextExtraLifeScore, scoreExtraLives, shouldLoopStage, shouldRevealWanted } from "../src/game-constants";
+import { AMMO_GAIN, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, BOMBER_FIRST_THROW_DELAY, BOMBER_THROW_INTERVAL, bossReward, BOSS_REWARDS, BOOTS_SPEED_MULTIPLIER, clamp, distance, DYNAMITE_AIRBORNE_DURATION, DYNAMITE_LANDED_DURATION, DYNAMITE_LIFETIME, DYNAMITE_WORLD_SPEED, FIREBREATHER_FIRST_SHOT_DELAY, FIREBREATHER_PROJECTILE_SPEED, formationEntryY, HATCHET_FIRST_SHOT_DELAY, HATCHET_PROJECTILE_SPEED, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_BULLET_SPEED, NES_DIAGONAL_BULLET_X, NES_DIAGONAL_BULLET_Y, NES_FRAME_RATE, NES_PLAYER_SPEED, NES_SCROLL_SPEED, NINJA_FIRST_SHOT_DELAY, NINJA_PROJECTILE_SPEED, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_BULLET_SPEED, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_LIFETIME, ROCK_WORLD_SPEED_X, ROCK_WORLD_SPEED_Y, ROM_OBJECT_DROP_SPEED, ROAD_WIDTHS, ROUND_BOSS_GATE_SCROLL_NES, ROUND_BOSS_TRIGGERS, ROUND_ENEMY_TYPES, ROUND_LENGTHS, ROUND_LOOP_SCROLL_NES, ROUND_OBSTACLES, ROUND_SEGMENTS, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_VOLLEY_INTERVAL, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, SPEAR_FIRST_SHOT_DELAY, SPEAR_PROJECTILE_SPEED, segmentDelay, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, nextExtraLifeScore, scoreExtraLives, shouldLoopStage } from "../src/game-constants";
 import { GUNMAN_BULLET_SPEED, GUNMAN_FIRST_SHOT_DELAY, GUNMAN_LIFETIME } from "../src/game-constants";
 import { BANDIT_BILL_BULLET_SPEED, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_ENTRY_END_Y, BANDIT_BILL_ENTRY_SPEED_Y, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_X_NES, BANDIT_BILL_ENTRY_Y, BANDIT_BILL_ENTRY_Y_NES, BANDIT_BILL_FIRST_VOLLEY_DELAY, BANDIT_BILL_SHOT_INTERVAL, BANDIT_BILL_SHOTS_PER_VOLLEY, BANDIT_BILL_VOLLEY_GAP, banditBillCombatX, banditBillCombatY, banditBillOpeningY, CUTTER_ENTRY_DURATION, CUTTER_ENTRY_END_Y, CUTTER_ENTRY_END_Y_NES, CUTTER_ENTRY_SPEED_Y, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_X_NES, CUTTER_ENTRY_Y, CUTTER_ENTRY_Y_NES, cutterCombatY, cutterOpeningY, DEVIL_HAWK_ENTRY_DURATION, DEVIL_HAWK_ENTRY_END_Y, DEVIL_HAWK_ENTRY_END_Y_NES, DEVIL_HAWK_ENTRY_SPEED_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_X_NES, DEVIL_HAWK_ENTRY_Y, DEVIL_HAWK_ENTRY_Y_NES, DEVIL_HAWK_POST_ENTRY_X_HOLD, devilHawkCombatX, devilHawkOpeningY, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_END_Y, FATMAN_JOE_ENTRY_END_Y_NES, FATMAN_JOE_ENTRY_X, FATMAN_JOE_ENTRY_X_NES, FATMAN_JOE_ENTRY_Y, FATMAN_JOE_ENTRY_Y_NES, fatmanJoeCombatY, fatmanJoeOpeningY, NINJA_BOSS_ENTRY_X_LANES, NINJA_BOSS_ENTRY_X_NES, NINJA_BOSS_ENTRY_Y_LANES, NINJA_BOSS_ENTRY_Y_NES, NES_WORLD_X_SCALE, WINGATE_ENTRY_DURATION, WINGATE_ENTRY_END_Y, WINGATE_ENTRY_END_Y_NES, WINGATE_ENTRY_X, WINGATE_ENTRY_X_NES, WINGATE_ENTRY_Y, WINGATE_ENTRY_Y_NES, WINGATE_SECOND_ENTRY_X, WINGATE_SECOND_ENTRY_X_NES, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_ENTRY_Y_NES, WINGATE_SECOND_SPAWN_DELAY, wingateOpeningY } from "../src/game-constants";
 import { banditBillCooldown } from "../src/game-constants";
@@ -15,7 +15,7 @@ import { DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_JU
 import { devilHawkCombatY } from "../src/game-constants";
 import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_ATTACK_DELAY, NINJA_BOSS_SHURIKEN_COUNT, NINJA_BOSS_SHURIKEN_SPEED, ninjaBossCombatY } from "../src/game-constants";
 import { roundCollisionBlocks, ROUND_COLLISION_ROW_COUNTS } from "../src/round-collision";
-import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_ENEMY_SLOT_CAPACITY, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_OBJECT_SLOT_CAPACITY, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_ENEMY_EVENT_COUNTS, ROUND_ROM_OBJECT_EVENTS, ROUND_ROM_OBJECT_EVENT_COUNTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY } from "../src/rom-event-data";
+import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_ENEMY_SLOT_CAPACITY, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_OBJECT_SLOT_CAPACITY, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_ENEMY_EVENT_COUNTS, ROUND_ROM_OBJECT_EVENTS, ROUND_ROM_OBJECT_EVENT_COUNTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX } from "../src/rom-event-data";
 
 describe("Gun.Smoke vertical slice", () => {
   it("keeps the NES-inspired stage constants stable", () => {
@@ -24,8 +24,6 @@ describe("Gun.Smoke vertical slice", () => {
     expect(BLUE_YASHICHI_DURATION).toBeCloseTo(180 / NES_FRAME_RATE, 9);
     expect(ROUND_BOSS_GATE_SCROLL_NES).toEqual([2_767, 2_799, 4_863, 3_487, 2_879, 4_879]);
     expect(ROUND_LOOP_SCROLL_NES).toEqual([3_087, 3_055, 5_119, 3_839, 3_055, 5_119]);
-    expect(ROUND_WANTED_SCROLL_NES).toEqual([1_695, 1_455, 2_031, 1_471, 1_631, 1_951]);
-    expect(ROUND_WANTED_X_NES).toEqual([200, 64, 216, 216, 72, 216]);
     expect(ROUND_BOSS_TRIGGERS[0]).toBe(6_225.75);
     expect(ROUND_LENGTHS[5]).toBe(11_517.75);
     expect(NES_SCROLL_SPEED).toBeCloseTo(20.032667, 6);
@@ -60,10 +58,6 @@ describe("Gun.Smoke vertical slice", () => {
   it("loops a stage only when the wanted poster is missing", () => {
     expect(shouldLoopStage(ROUND_LENGTHS[0]!, 1, false)).toBe(true);
     expect(shouldLoopStage(ROUND_LENGTHS[0]!, 1, true)).toBe(false);
-    expect(shouldRevealWanted(WANTED_REVEAL_AT[0]! - 1, 1, false, false)).toBe(false);
-    expect(shouldRevealWanted(WANTED_REVEAL_AT[0]!, 1, false, false)).toBe(true);
-    expect(shouldRevealWanted(WANTED_REVEAL_AT[0]!, 1, true, false)).toBe(false);
-    expect(shouldRevealWanted(WANTED_REVEAL_AT[0]!, 1, false, true)).toBe(false);
   });
 
   it("matches the NES score-life thresholds", () => {
@@ -82,17 +76,19 @@ describe("Gun.Smoke vertical slice", () => {
   });
 
   it("keeps the round shop cadence explicit", () => {
-    expect(SHOP_CHECKPOINTS).toHaveLength(MAX_STAGE);
+    const shopEvents = ROUND_ROM_OBJECT_EVENTS.map((events) => events.filter((event) => event.semantic === "weaponShop" || event.semantic === "supplyShop"));
     expect(SHOP_TYPES).toEqual([
       ["weapons", "supplies"], ["weapons", "supplies"], ["weapons", "supplies", "weapons"],
       ["weapons", "supplies"], ["weapons", "supplies"], ["weapons", "supplies", "weapons"],
     ]);
-    expect(SHOP_X_OFFSETS).toHaveLength(MAX_STAGE);
-    expect(SHOP_X_OFFSETS.every((offsets, round) => offsets.length === SHOP_CHECKPOINTS[round]?.length)).toBe(true);
-    expect(SHOP_CHECKPOINTS[2]).toHaveLength(3);
-    expect(SHOP_CHECKPOINTS[5]).toHaveLength(3);
-    expect(SHOP_CHECKPOINTS[2]).toEqual([420, 860, 1_300]);
-    expect(SHOP_CHECKPOINTS[5]).toEqual([420, 1_050, 1_250]);
+    expect(shopEvents.map((events) => events.map((event) => event.semantic === "weaponShop" ? "weapons" : "supplies"))).toEqual(SHOP_TYPES);
+    expect(shopEvents.map((events) => events.map((event) => event.at))).toEqual([
+      [959, 1_695], [815, 1_455], [623, 2_031, 3_311], [543, 1_471], [79, 1_631], [383, 1_951, 2_335],
+    ]);
+    expect(shopEvents.map((events) => events.map((event) => event.x))).toEqual([
+      [56, 200], [168, 64], [40, 216, 40], [40, 216], [152, 72], [216, 216, 56],
+    ]);
+    expect(shopEvents.flat().every((event) => romObjectWorldAt(event) === event.at * (540 / 240) && romObjectWorldX(event) === event.x * (960 / 256))).toBe(true);
     expect(ROAD_WIDTHS).toHaveLength(MAX_STAGE);
     expect(ROAD_WIDTHS[0]).toBe(730);
     expect(ROAD_WIDTHS[2]).toBeLessThan(ROAD_WIDTHS[4]);
@@ -105,10 +101,6 @@ describe("Gun.Smoke vertical slice", () => {
     expect(AMMO_GAIN).toEqual({ pistol: 0, shotgun: 20, machinegun: 40, magnum: 10 });
     expect(WANTED_COSTS).toEqual([20_000, 24_000, 50_000, 40_000, 40_000, 60_000]);
     expect(BOSS_REWARDS).toEqual(WANTED_COSTS.map((cost) => cost / 2));
-    expect(WANTED_X_OFFSETS).toHaveLength(MAX_STAGE);
-    expect(WANTED_REVEAL_AT).toHaveLength(MAX_STAGE);
-    expect(WANTED_REVEAL_AT.every((position, round) => position < (ROUND_BOSS_TRIGGERS[round] ?? 0))).toBe(true);
-    expect(WANTED_X_OFFSETS).toEqual([270, -240, 330, 330, -210, 330]);
     expect(ROUND_ENEMY_TYPES).toHaveLength(MAX_STAGE);
     expect(ROUND_ENEMY_TYPES[0]).toContain("backstabber");
     expect(ROUND_ENEMY_TYPES[0]).toContain("shotgunner");
@@ -163,8 +155,9 @@ describe("Gun.Smoke vertical slice", () => {
       expect(stream.every((event) => romEventWorldX(event) >= 0 && romEventWorldX(event) <= 960 && romEventWorldY(event) >= 0 && romEventWorldY(event) <= 540)).toBe(true);
     }
     expect(romEventWorldY(ROUND_ROM_ENEMY_EVENTS[0]![0]!)).toBe(0);
-    expect(ROUND_ROM_OBJECT_EVENTS.every((stream) => stream.filter((event) => event.semantic === "wantedTrigger").length === 1)).toBe(true);
-    expect(ROUND_ROM_OBJECT_EVENTS.flatMap((stream) => stream.filter((event) => event.semantic === "wantedTrigger")).every((event) => (event.flags & 0x40) !== 0)).toBe(true);
+    expect(ROUND_ROM_OBJECT_EVENTS.every((stream) => stream.filter((event) => event.semantic === "supplyShop").length === 1)).toBe(true);
+    expect(ROUND_ROM_OBJECT_EVENTS.flatMap((stream) => stream.filter((event) => event.semantic === "supplyShop")).every((event) => (event.flags & 0x40) !== 0)).toBe(true);
+    expect(ROUND_ROM_OBJECT_EVENTS.map((stream) => stream.filter((event) => event.semantic === "weaponShop").length)).toEqual([1, 1, 2, 1, 1, 2]);
     expect(ROUND_ROM_OBJECT_EVENTS.flat().every((event) => event.pool === "enemy" || event.pool === "object")).toBe(true);
   });
 

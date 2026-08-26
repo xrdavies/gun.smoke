@@ -31,11 +31,8 @@ export const NES_WORLD_Y_SCALE = WORLD_VIEWPORT_HEIGHT / 240;
 export const NES_WORLD_X_SCALE = 960 / 256;
 export const ROUND_BOSS_GATE_SCROLL_NES = [2_767, 2_799, 4_863, 3_487, 2_879, 4_879] as const;
 export const ROUND_LOOP_SCROLL_NES = [3_087, 3_055, 5_119, 3_839, 3_055, 5_119] as const;
-export const ROUND_WANTED_SCROLL_NES = [1_695, 1_455, 2_031, 1_471, 1_631, 1_951] as const;
-export const ROUND_WANTED_X_NES = [200, 64, 216, 216, 72, 216] as const;
 export const ROUND_BOSS_TRIGGERS = ROUND_BOSS_GATE_SCROLL_NES.map((value) => value * NES_WORLD_Y_SCALE);
 export const ROUND_LENGTHS = ROUND_LOOP_SCROLL_NES.map((value) => value * NES_WORLD_Y_SCALE);
-export const WANTED_REVEAL_AT = ROUND_WANTED_SCROLL_NES.map((value) => value * NES_WORLD_Y_SCALE);
 export const NES_SCROLL_SPEED = 20 * (NES_FRAME_RATE / 60);
 export const WORLD_SCROLL_SPEED = NES_SCROLL_SPEED * NES_WORLD_Y_SCALE;
 // ROM object Y advances with the camera scroll plus one screen-speed descent.
@@ -337,15 +334,6 @@ export function backstabberRaidOffset(frame: number): readonly [number, number] 
   return [previous[1] + (next[1] - previous[1]) * amount, previous[2] + (next[2] - previous[2]) * amount];
 }
 
-export const SHOP_CHECKPOINTS: readonly (readonly number[])[] = [
-  [560, 1_180],
-  [500, 1_120],
-  [420, 860, 1_300],
-  [560, 1_180],
-  [420, 1_160],
-  [420, 1_050, 1_250],
-];
-
 export type ShopType = "weapons" | "supplies";
 export const SHOP_TYPES: readonly (readonly ShopType[])[] = [
   ["weapons", "supplies"],
@@ -355,19 +343,9 @@ export const SHOP_TYPES: readonly (readonly ShopType[])[] = [
   ["weapons", "supplies"],
   ["weapons", "supplies", "weapons"],
 ];
-export const SHOP_X_OFFSETS: readonly (readonly number[])[] = [
-  [180, -180],
-  [180, -180],
-  [-180, 180, 0],
-  [-180, 180],
-  [180, -180],
-  [180, -180, 0],
-];
-
 export const ROAD_WIDTHS = [730, 450, 430, 500, 650, 540] as const;
 export const WANTED_COSTS = [20_000, 24_000, 50_000, 40_000, 40_000, 60_000] as const;
 export const BOSS_REWARDS = [10_000, 12_000, 25_000, 20_000, 20_000, 30_000] as const;
-export const WANTED_X_OFFSETS = ROUND_WANTED_X_NES.map((value) => value * (960 / 256) - 480);
 
 export const ROUND_ENEMY_TYPES: readonly (readonly EnemyType[])[] = [
   ["gunman", "bomber", "sniper", "backstabber", "shotgunner"],
@@ -472,10 +450,6 @@ export function distance(a: { x: number; y: number }, b: { x: number; y: number 
 
 export function shouldLoopStage(scroll: number, round: number, hasWanted: boolean): boolean {
   return scroll >= (ROUND_LENGTHS[round - 1] ?? ROUND_LENGTHS[0]!) && !hasWanted;
-}
-
-export function shouldRevealWanted(scroll: number, round: number, hasWanted: boolean, spawned: boolean): boolean {
-  return !hasWanted && !spawned && scroll >= (WANTED_REVEAL_AT[round - 1] ?? ROUND_BOSS_TRIGGERS[round - 1] ?? ROUND_BOSS_TRIGGERS[0]!);
 }
 
 export function segmentDelay(scroll: number, at: number, speed: number): number {

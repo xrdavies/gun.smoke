@@ -14,18 +14,14 @@ names are cross-checked against the public NES walkthrough on
 | 6 | Wingate town / cemetery | Wingate (two encounters) | gate, poster, shop, measured first entrance, two-phase approximation |
 
 The NES version's stage rule is important: the wanted poster for the round's
-outlaw must be collected before the boss gate can resolve. The web build uses
-an original procedural barrel prop at a round-specific horizontal position;
-shooting the barrel reveals the poster,
-and keeps that gate in the gameplay state machine. Poster reveal positions are
-separate from the later Boss trigger, so collecting one does not skip the final
-items and terrain. Later trading posts provide
-the alternate purchase route described by the NES walkthrough.
+outlaw must be collected before the boss gate can resolve. The web build keeps
+that gate in the gameplay state machine and sells the poster through the
+Round's decoded supply-shop encounter.
 
 If the player reaches the end without the poster, the Round loops to its first
-segment with shops and the hidden barrel available again. Once the poster is
+segment with its shop encounters available again. Once the poster is
 owned, scrolling stops at the Boss arena.
-Boss gates, Wanted-trigger records, and loop points now use the six values
+Boss gates, shop-trigger records, and loop points now use the six values
 decoded from the ROM's `$8C00` Round scripts rather than one shared stage
 length; positions are scaled from NES pixels into the procedural world's
 540-pixel viewport.
@@ -46,8 +42,8 @@ Round 6 orders its lone POW after the first weapon shop, the grave-group Blue
 before the supply shop, the later weapon revisit, then the left Red barrel and
 final grave-group Wanted area.
 
-The web build also models the resource loop with Money Bag pickups, round-specific
-trading-post checkpoints, Shotgun, Machine Gun, Magnum, finite ammunition,
+The web build also models the resource loop with Money Bag pickups, ROM-driven
+trading-post encounters, Shotgun, Machine Gun, Magnum, finite ammunition,
 Smart Bomb inventory, Wanted poster purchases and Horse upgrades. NES shop
 prices and capacities are applied: Shotgun 6,000/120 shots, Machine Gun
 10,000/400 shots, Magnum 20,000/100 shots, four Bullet refills for 1,500,
@@ -56,11 +52,11 @@ exact frame timing are intentionally parameters rather than claims of
 byte-identical reproduction.
 
 Weapon and supply shops are separate roadside encounters rather than automatic
-dialogs. A shopkeeper appears at each checkpoint and freezes the action only
-when Billy walks up; riding past skips that shop. The first shop in each Round
-sells the three special guns and Smart Bomb, later supply shops sell Horse,
-Bullet refills, and Wanted posters, and Rounds 3 and 6 receive a later
-weapon-shop revisit.
+dialogs. A shopkeeper descends at each decoded dispatch `30/31` event and
+freezes the action only when Billy walks up; riding past skips that shop. The
+first shop in each Round sells the three special guns and Smart Bomb, the
+flagged supply shop sells Horse, Bullet refills, and Wanted posters, and Rounds
+3 and 6 receive a later weapon-shop revisit.
 
 The Horse is a three-hit shield rather than a speed bonus. Score awards an
 extra life at 30,000, again at 100,000, and at each later 100,000-point
@@ -193,9 +189,6 @@ original Round order and NES coordinate without a second authored barrel list.
 Breakable objects enter at the top edge and descend with the measured ROM
 object speed, keeping the barrel and pickup interaction in the playable area.
 Enemy Money Bag and ammunition drops remain randomized.
-The Wanted barrel itself now comes from the decoded `wantedTrigger` object
-event, while the older authored item list remains the source for the verified
-pickup contents.
 
 After the second Wingate encounter the web recreation enters a separate ending
 and credits state instead of treating the win as Game Over.

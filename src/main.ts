@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, banditBillOpeningY, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, BOMBER_FIRST_THROW_DELAY, BOMBER_THROW_INTERVAL, bossReward, BOOTS_SPEED_MULTIPLIER, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, DYNAMITE_LIFETIME, DYNAMITE_WORLD_SPEED, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X, FATMAN_JOE_ENTRY_Y, fatmanJoeOpeningY, FIREBREATHER_FIRST_SHOT_DELAY, FIREBREATHER_PROJECTILE_SPEED, formationEntryY, HATCHET_FIRST_SHOT_DELAY, HATCHET_PROJECTILE_SPEED, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_X_LANES, NINJA_BOSS_ENTRY_Y_LANES, NINJA_FIRST_SHOT_DELAY, NINJA_PROJECTILE_SPEED, PISTOL_BULLET_LIFETIME, RIFLE_BULLET_SPEED_MULTIPLIER, RIFLEMAN_BULLET_SPEED, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_LIFETIME, ROCK_WORLD_SPEED_X, ROCK_WORLD_SPEED_Y, ROAD_WIDTHS, ROM_OBJECT_DROP_SPEED, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_VOLLEY_INTERVAL, shouldLoopStage, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, SPEAR_FIRST_SHOT_DELAY, SPEAR_PROJECTILE_SPEED, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_DURATION, WINGATE_ENTRY_X, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_X, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, wingateOpeningY, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, banditBillOpeningY, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, BOMBER_FIRST_THROW_DELAY, BOMBER_THROW_INTERVAL, bossReward, BOOTS_SPEED_MULTIPLIER, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, DYNAMITE_LIFETIME, DYNAMITE_WORLD_SPEED, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X, FATMAN_JOE_ENTRY_Y, fatmanJoeOpeningY, FIREBREATHER_FIRST_SHOT_DELAY, FIREBREATHER_PROJECTILE_SPEED, formationEntryY, HATCHET_FIRST_SHOT_DELAY, HATCHET_PROJECTILE_SPEED, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_X_LANES, NINJA_BOSS_ENTRY_Y_LANES, NINJA_FIRST_SHOT_DELAY, NINJA_PROJECTILE_SPEED, PISTOL_BULLET_LIFETIME, RIFLE_BULLET_SPEED_MULTIPLIER, RIFLEMAN_BULLET_SPEED, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_LIFETIME, ROCK_WORLD_SPEED_X, ROCK_WORLD_SPEED_Y, ROAD_WIDTHS, ROM_OBJECT_DROP_SPEED, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_VOLLEY_INTERVAL, shouldLoopStage, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, SPEAR_FIRST_SHOT_DELAY, SPEAR_PROJECTILE_SPEED, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_DURATION, WINGATE_ENTRY_X, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_X, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, wingateOpeningY, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
 import { GUNMAN_BULLET_SPEED, GUNMAN_FIRST_SHOT_DELAY, GUNMAN_LIFETIME } from "./game-constants";
 import { RIFLEMAN_ATTACK_STATE_FRAME } from "./game-constants";
 import { BANDIT_BILL_BULLET_SPEED, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, banditBillCombatX, banditBillCombatY } from "./game-constants";
@@ -42,9 +42,9 @@ type GameAction =
   | "inventory"
   | "start";
 type GameMode = "title" | "intro" | "briefing" | "playing" | "paused" | "gameover" | "ending";
-type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "moneyBag" | "ammo" | "barrel" | "item" | "wanted" | "shopkeeper" | "sceneObject";
+type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "moneyBag" | "ammo" | "barrel" | "item" | "shopkeeper" | "sceneObject";
 type ProjectileType = "bullet" | "dynamite" | "grenade" | "boomerang" | "fireball" | "shuriken" | "spear" | "hatchet" | "rock";
-type TextureName = "player" | "horse" | "shopkeeper" | "bullet" | "moneyBag" | "ammo" | "barrel" | "wanted" | "terrain" | "road" | "landmark";
+type TextureName = "player" | "horse" | "shopkeeper" | "bullet" | "moneyBag" | "ammo" | "barrel" | "terrain" | "road" | "landmark";
 type Rgba = [number, number, number, number];
 
 interface Unit {
@@ -248,7 +248,6 @@ class GunSmokeGame {
   bossSpawned = false;
   stageClearClock = 0;
   hasWanted = false;
-  posterPropSpawned = false;
   romEventCursor = 0;
   romObjectCursor = 0;
   readonly romEventMode = true;
@@ -322,7 +321,6 @@ class GunSmokeGame {
       moneyBag: pixelTexture(engine, ["..oo..", ".oooo.", "ookkoo", "okkkko", "okkkko", ".oooo."], palette),
       ammo: pixelTexture(engine, [".bbb.", "bkkkb", "bkkkb", ".bbb."], palette),
       barrel: pixelTexture(engine, [".oooo.", "okkkko", "okkkko", "okkkko", ".oooo."], palette),
-      wanted: pixelTexture(engine, ["wwwwww", "wkkkkw", "wkrrkw", "wkkkkw", "wkookw", "wwwwww"], palette),
       terrain: pixelTexture(engine, proceduralRows(64, 64, this.stage, ["d", "d", "d", "p", "d", "p"]), palette),
       road: pixelTexture(engine, proceduralRows(64, 64, this.stage + 3, ["t", "t", "s", "t", "s", "t"]), palette),
       landmark: pixelTexture(engine, [
@@ -529,7 +527,6 @@ class GunSmokeGame {
     this.scroll += scrollDelta;
     this.player.y += scrollDelta;
     if (shouldLoopStage(this.scroll, this.stage, this.hasWanted)) this.loopStage();
-    this.updateShopSpawns();
     if (this.shopOpen) return;
     this.camera.position.y = this.scroll + 270;
     this.invulnerable = Math.max(0, this.invulnerable - delta);
@@ -709,18 +706,16 @@ class GunSmokeGame {
       const event = events[this.romObjectCursor];
       if (!event || romObjectWorldAt(event) > this.scroll) break;
       this.romObjectCursor += 1;
-      if (event.semantic === "wantedTrigger") {
-        if (this.hasWanted || this.posterPropSpawned) continue;
-        this.posterPropSpawned = true;
-        const wantedBarrel = this.spawnUnit("barrel", clamp(romObjectWorldX(event), 70, 890), this.scroll + romObjectWorldY(event), 1);
-        wantedBarrel.vy = ROM_OBJECT_DROP_SPEED;
-        wantedBarrel.romEntityCode = event.entityCode ?? 0x40;
-        wantedBarrel.romFlags = event.flags;
-        wantedBarrel.romPool = event.pool;
-        this.showMessage("SHOOT THE BARREL");
+      const activeObjects = this.units.filter((unit) => unit.romPool === event.pool && unit.romEntityCode !== undefined && unit.hp > 0).length;
+      if (event.semantic === "weaponShop" || event.semantic === "supplyShop") {
+        const keeper = this.spawnUnit("shopkeeper", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), 1);
+        keeper.vy = ROM_OBJECT_DROP_SPEED;
+        keeper.shopIndex = ++this.shopSpawnCursor;
+        keeper.romEntityCode = event.entityCode;
+        keeper.romFlags = event.flags;
+        keeper.romPool = event.pool;
         continue;
       }
-      const activeObjects = this.units.filter((unit) => unit.romPool === event.pool && unit.romEntityCode !== undefined && unit.hp > 0).length;
       if (event.semantic === "sceneObject" && ROM_SCENE_PROP_DISPATCH_TYPES.includes(event.dispatchType as 8)) {
         if (!canSpawnRomPool(event.pool, activeObjects)) continue;
         const prop = this.spawnUnit("sceneObject", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), 1);
@@ -952,16 +947,6 @@ class GunSmokeGame {
     this.spawnClock = segment.interval;
   }
 
-  private updateShopSpawns(): void {
-    const checkpoints = SHOP_CHECKPOINTS[this.stage - 1] ?? [];
-    while (this.shopSpawnCursor < checkpoints.length && this.scroll >= (checkpoints[this.shopSpawnCursor] ?? Number.POSITIVE_INFINITY)) {
-      const offset = SHOP_X_OFFSETS[this.stage - 1]?.[this.shopSpawnCursor] ?? 0;
-      const keeper = this.spawnUnit("shopkeeper", clamp(480 + offset, 70, 890), this.scroll + 500, 1);
-      keeper.shopIndex = this.shopSpawnCursor + 1;
-      this.shopSpawnCursor += 1;
-    }
-  }
-
   private openShop(index: number): void {
     if (this.shopOpen) return;
     this.shopIndex = index;
@@ -1062,9 +1047,9 @@ class GunSmokeGame {
   }
 
   private spawnUnit(kind: UnitKind, x: number, y: number, hp: number, enemyType?: EnemyType, itemType?: ItemType): Unit {
-    const textureName: TextureName = kind === "enemyBullet" || kind === "enemy" || kind === "boss" ? "bullet" : kind === "item" ? "ammo" : kind === "sceneObject" ? "landmark" : kind === "bullet" || kind === "moneyBag" || kind === "ammo" || kind === "barrel" || kind === "wanted" || kind === "shopkeeper" ? kind : "bullet";
+    const textureName: TextureName = kind === "enemyBullet" || kind === "enemy" || kind === "boss" ? "bullet" : kind === "item" ? "ammo" : kind === "sceneObject" ? "landmark" : kind === "bullet" || kind === "moneyBag" || kind === "ammo" || kind === "barrel" || kind === "shopkeeper" ? kind : "bullet";
     const isBoss = kind === "boss";
-    const isPickup = kind === "moneyBag" || kind === "ammo" || kind === "item" || kind === "wanted";
+    const isPickup = kind === "moneyBag" || kind === "ammo" || kind === "item";
     const small = kind === "bullet" || kind === "enemyBullet";
     const sceneObject = kind === "sceneObject";
     const colors: Record<EnemyType, [number, number, number, number]> = {
@@ -1087,7 +1072,7 @@ class GunSmokeGame {
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" || sceneObject ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
-      value: isBoss ? bossReward(this.stage, this.wingatePhase) : kind === "moneyBag" ? 200 : kind === "ammo" || kind === "item" || kind === "wanted" ? 0 : kind === "barrel" ? 50 : 100,
+      value: isBoss ? bossReward(this.stage, this.wingatePhase) : kind === "moneyBag" ? 200 : kind === "ammo" || kind === "item" ? 0 : kind === "barrel" ? 50 : 100,
       age: 0, phase: this.nextRandom() * Math.PI * 2, damage: kind === "enemy" && enemyType === "rifleman" ? 0 : 1, fired: false, nextFireAt: 0, volleysFired: 0, turnRate: 0, maxAge: isBoss ? unitMaxAge("boss") : sceneObject ? Number.POSITIVE_INFINITY : small ? unitMaxAge("projectile") : isPickup || kind === "barrel" ? unitMaxAge("pickup") : unitMaxAge("enemy"), invulnerableUntil: 0, piercing: false,
     };
     this.units.push(unit);
@@ -1293,9 +1278,8 @@ class GunSmokeGame {
       else unit.y = this.scroll + 92 + Math.sin(unit.age * 2) * 18;
       unit.sprite.visible = unit.age >= unit.invulnerableUntil;
     } else if (unit.kind === "shopkeeper" || unit.kind === "sceneObject") {
-      // Shopkeepers stay in world space; decoded object proxies descend like ROM barrels.
-      if (unit.kind === "sceneObject" && unit.vy !== 0) unit.y += unit.vy * delta;
-    } else if (unit.kind === "moneyBag" || unit.kind === "item" || unit.kind === "ammo" || unit.kind === "wanted") {
+      if (unit.vy !== 0) unit.y += unit.vy * delta;
+    } else if (unit.kind === "moneyBag" || unit.kind === "item" || unit.kind === "ammo") {
       unit.y += 40 * delta;
       unit.x += Math.sin(unit.age * 4 + unit.phase) * 14 * delta;
     } else {
@@ -1353,18 +1337,14 @@ class GunSmokeGame {
       this.defeatTarget(target);
     }
     for (const unit of this.units.filter((candidate) => candidate.hp > 0)) {
-      if (unit.kind === "moneyBag" || unit.kind === "item" || unit.kind === "ammo" || unit.kind === "wanted") {
+      if (unit.kind === "moneyBag" || unit.kind === "item" || unit.kind === "ammo") {
         if (distance(unit, this.player) <= unit.radius + 22) {
           unit.hp = 0;
           this.score += unit.value;
           this.awardScoreLife();
           if (unit.kind === "item" && unit.itemType) this.collectItem(unit.itemType);
           else if (unit.kind === "ammo") this.refillAmmo(1);
-          else if (unit.kind === "wanted") {
-            this.hasWanted = true;
-            this.showMessage("WANTED POSTER FOUND");
-          }
-          this.beep(unit.kind === "moneyBag" ? 980 : unit.kind === "wanted" ? 520 : 620, 0.08);
+          this.beep(unit.kind === "moneyBag" ? 980 : 620, 0.08);
         }
       } else if (unit.kind === "shopkeeper" && distance(unit, this.player) <= unit.radius + 22) {
         this.openShop(unit.shopIndex ?? this.shopSpawnCursor);
@@ -1388,10 +1368,6 @@ class GunSmokeGame {
     this.awardScoreLife();
     if (target.kind === "barrel") {
       if (target.itemType) this.spawnUnit("item", target.x, target.y, 1, undefined, target.itemType);
-      else if (target.romEntityCode === undefined || Boolean((target.romFlags ?? 0) & 0x40)) {
-        this.spawnUnit("wanted", target.x, target.y, 1);
-        this.showMessage("WANTED POSTER FOUND");
-      }
     } else if (target.kind === "enemy") {
       const drop = this.nextRandom();
       if (drop < 0.22) this.spawnUnit("moneyBag", target.x, target.y, 1);
@@ -1527,7 +1503,6 @@ class GunSmokeGame {
     this.hasWanted = false;
     this.wingatePhase = 0;
     this.wingateRespawnClock = 0;
-    this.posterPropSpawned = false;
     this.romObjectCursor = 0;
     this.romEventCursor = 0;
     this.stageLoopCount = 0;
@@ -1547,7 +1522,6 @@ class GunSmokeGame {
     this.camera.position.y = 270;
     this.player.y = 410;
     this.player.sprite.position = { x: this.player.x, y: this.player.y };
-    this.posterPropSpawned = false;
     this.wingateRespawnClock = 0;
     this.romObjectCursor = 0;
     this.romEventCursor = 0;

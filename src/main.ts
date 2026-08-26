@@ -398,7 +398,10 @@ class GunSmokeGame {
       this.updateHud();
       return;
     }
-    if (!this.bossSpawned) this.scroll += WORLD_SCROLL_SPEED * delta;
+    const scrollDelta = this.bossSpawned ? 0 : WORLD_SCROLL_SPEED * delta;
+    this.scroll += scrollDelta;
+    const scrolledPlayerY = this.player.y + scrollDelta;
+    if (!this.isPlayerBlocked(this.player.x, scrolledPlayerY)) this.player.y = scrolledPlayerY;
     if (shouldLoopStage(this.scroll, this.hasWanted)) this.loopStage();
     this.maybeOpenShop();
     if (this.shopOpen) return;
@@ -407,7 +410,7 @@ class GunSmokeGame {
     const movement = WORLD_PLAYER_SPEED * (this.powerups.boots > 0 ? BOOTS_SPEED_MULTIPLIER : 1);
     const halfRoad = (ROAD_WIDTHS[this.stage - 1] ?? 520) / 2;
     const nextX = clamp(this.player.x + (this.actions.value("right") - this.actions.value("left")) * movement * delta, 480 - halfRoad + 22, 480 + halfRoad - 22);
-    const nextY = clamp(this.player.y + (this.actions.value("down") - this.actions.value("up")) * movement * delta, this.scroll + 285, this.scroll + 500);
+    const nextY = clamp(this.player.y + (this.actions.value("down") - this.actions.value("up")) * movement * delta, this.scroll + 55, this.scroll + 500);
     if (!this.isPlayerBlocked(nextX, nextY)) {
       this.player.x = nextX;
       this.player.y = nextY;

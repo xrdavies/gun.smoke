@@ -120,6 +120,11 @@ fires straight ahead, Start pauses, and Select (Shift/Tab or Gamepad Select)
 opens the inventory/ammo screen. Overlay exits restore focus to the engine
 canvas so keyboard control continues after DOM interaction.
 
+Automatic map scroll now carries Billy's world-space Y coordinate by the same
+delta, keeping his screen position stable while idle. Eight-direction movement
+then ranges across nearly the full visible height; horizontal bounds remain
+terrain-specific so buildings and cliff edges retain their gameplay role.
+
 ## Known Approximation Boundary
 
 - The repository does not contain extracted ROM graphics, music, or Capcom

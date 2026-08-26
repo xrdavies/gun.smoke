@@ -58,8 +58,10 @@ base lifetime in the procedural world.
 
 The first active enemy wave appears around gameplay frame 195 in the verified
 Round 1 trace, which maps to roughly 146 world pixels at the calibrated 45
-world-pixel/second scroll speed. Round segment scripts use that as their common
-initial wave delay.
+world-pixel/second scroll speed. OAM activity changes at approximately gameplay
+frames 555, 735 and 975, mapping to world segment boundaries 416, 551 and 731;
+Round 1 uses those measured boundaries. Other Round boundaries remain explicit
+approximation parameters until each has an equivalent trace.
 
 The web title page can also load the same local ROM into Reference ROM mode.
 This provides a legal exact-runtime comparison path without distributing the

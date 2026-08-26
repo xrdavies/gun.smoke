@@ -207,9 +207,9 @@ Round 6's first Wingate encounter is dispatch `0xa3`, variant `0x65`. It enters
 from the top at NES `(x=152, y=0)`, holds that horizontal lane and reaches
 approximately `y=98` after 151 frames. The runtime preserves this first-
 encounter opening without reusing it for the second, real Wingate. After the
-opening, both encounters resume horizontal movement at roughly 176 world
-pixels/s; their later attack phases remain approximations pending isolated
-traces.
+opening, both encounters use a short roughly 176 world-pixel/s horizontal rush,
+then settle to about 123 world pixels/s; their later attack phases remain
+approximations pending isolated traces.
 The first encounter clears into a 264-frame empty interval. The real Wingate
 then reuses dispatch `0xa3`, variant `0x65` and the same 151-frame vertical
 opening, but enters on NES lane `x=192`; `$BA=1` distinguishes this second

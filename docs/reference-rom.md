@@ -108,6 +108,8 @@ Skull, and Blue Yashichi drops for those codes. Code `40` does not occur in the
 six decoded scripts. Code `41` remains dispatch `0x07` until hit, then enters
 dispatch `0x09`'s short explosion state and is released without a pickup
 conversion; it is not the Wanted poster.
+These object conversions do not add score when the barrel is broken; the Money
+pickup's later collection is the 200-point reward.
 The Blue Yashichi branch writes `180` to `$7C`, so the runtime uses a
 `180 / 60.098`-second invulnerability window. The Life branch stops incrementing
 at `$7A == 5`; both item and score-awarded lives share that five-life cap.

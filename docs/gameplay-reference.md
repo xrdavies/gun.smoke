@@ -204,6 +204,8 @@ so every Boots, Rifle, POW, Money, Yashichi, Skull and Horse barrel uses its
 original Round order and NES coordinate without a second authored barrel list.
 Breakable objects enter at the top edge and descend with the measured ROM
 object speed, keeping the barrel and pickup interaction in the playable area.
+Breaking a barrel itself awards no points; only a collected Money Bag adds its
+200-point value.
 Enemy Money Bag and ammunition drops follow the decoded event flag: marked
 enemies drop Bullet supplies while any special stock remains, otherwise they
 drop a Money Bag; unmarked enemies do not drop either pickup.

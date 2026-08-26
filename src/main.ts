@@ -850,7 +850,7 @@ class GunSmokeGame {
       vx: isBoss ? 42 : kind === "barrel" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : small ? 7 : 19,
-      value: isBoss ? bossReward(this.stage, this.wingatePhase) : kind === "moneyBag" ? 200 : kind === "ammo" || kind === "item" ? 0 : kind === "barrel" ? 50 : kind === "wanted" ? 1_000 : 100,
+      value: isBoss ? bossReward(this.stage, this.wingatePhase) : kind === "moneyBag" ? 200 : kind === "ammo" || kind === "item" || kind === "wanted" ? 0 : kind === "barrel" ? 50 : 100,
       age: 0, phase: this.nextRandom() * Math.PI * 2, damage: kind === "enemy" && enemyType === "rifleman" ? 0 : 1, fired: false, turnRate: 0, maxAge: isBoss ? unitMaxAge("boss") : small ? unitMaxAge("projectile") : isPickup || kind === "barrel" ? unitMaxAge("pickup") : unitMaxAge("enemy"), invulnerableUntil: 0, piercing: false,
     };
     this.units.push(unit);

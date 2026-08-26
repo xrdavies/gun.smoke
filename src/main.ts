@@ -22,7 +22,7 @@ import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "./game-constants";
 import { pistolShots } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
 import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_MOVEMENT_SPEED, FATMAN_JOE_VOLLEY_INTERVAL, FATMAN_JOE_VOLLEY_SIZE, fatmanJoeCombatY } from "./game-constants";
-import { WINGATE_BULLET_SPEED, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateShotCooldown } from "./game-constants";
+import { WINGATE_BULLET_SPEED, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateCombatY, wingateShotCooldown } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPEED, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { CUTTER_ENTRY_DURATION, CUTTER_MOVEMENT_SPEED, cutterCombatY, cutterOpeningY } from "./game-constants";
 import { DEVIL_HAWK_ENTRY_DURATION, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_POST_ENTRY_X_HOLD, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY } from "./game-constants";
@@ -1279,7 +1279,7 @@ class GunSmokeGame {
         unit.y = this.scroll + (unit.age <= NINJA_BOSS_ENTRY_INVULNERABILITY ? entryY : ninjaBossCombatY(unit.age, entryY));
       }
       else if (this.stage === 5) unit.y = this.scroll + (unit.age <= FATMAN_JOE_ENTRY_DURATION ? fatmanJoeOpeningY(unit.age) : fatmanJoeCombatY(unit.age));
-      else if (this.stage === 6 && unit.bossEntryY !== undefined) unit.y = this.scroll + wingateOpeningY(unit.age <= WINGATE_ENTRY_DURATION ? unit.age : WINGATE_ENTRY_DURATION) + (unit.age <= WINGATE_ENTRY_DURATION ? 0 : Math.min((unit.age - WINGATE_ENTRY_DURATION) * 110, 170));
+      else if (this.stage === 6 && unit.bossEntryY !== undefined) unit.y = this.scroll + (unit.age <= WINGATE_ENTRY_DURATION ? wingateOpeningY(unit.age) : wingateCombatY(unit.age, this.wingatePhase));
       else if (this.stage === 6) unit.y = this.scroll + 92 + Math.min(unit.age * 110, 170);
       else unit.y = this.scroll + 92 + Math.sin(unit.age * 2) * 18;
       unit.sprite.visible = unit.age >= unit.invulnerableUntil;

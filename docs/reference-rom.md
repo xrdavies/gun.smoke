@@ -221,7 +221,8 @@ approximations pending isolated traces.
 The first encounter clears into a 264-frame empty interval. The real Wingate
 then reuses dispatch `0xa3`, variant `0x65` and the same 151-frame vertical
 opening, but enters on NES lane `x=192`; `$BA=1` distinguishes this second
-encounter. The runtime preserves the delay and separate entry lane.
+encounter. The runtime preserves the delay, separate entry lane, and the
+phase-specific vertical combat profile.
 With ordinary enemy slots suppressed, the first encounter emits six low-slot
 `0x30` bullets beginning at frame 4 and spaced 12 frames apart; the next volley
 starts 24 frames after the sixth. Vertical bullets move 2 NES pixels per frame.

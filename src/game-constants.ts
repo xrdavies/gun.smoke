@@ -297,6 +297,24 @@ export const WINGATE_BULLET_SPEED = 2 * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
 export function wingateOpeningY(age: number): number {
   return Math.max(0, Math.min(1, age / WINGATE_ENTRY_DURATION)) * WINGATE_ENTRY_END_Y;
 }
+const WINGATE_COMBAT_PATHS_NES = [
+  [[0, 98], [34, 46], [39, 57], [149, 69], [269, 97], [279, 79], [299, 47], [309, 54], [369, 87], [383, 99], [399, 58], [419, 85], [439, 95], [449, 63], [459, 57], [479, 83]] as const,
+  [[0, 98], [34, 42], [39, 50], [269, 50], [279, 39], [309, 40], [319, 41], [419, 79], [439, 47], [449, 57], [469, 60], [579, 95], [599, 47], [609, 58], [619, 60]] as const,
+] as const;
+
+export function wingateCombatY(age: number, phase = 0): number {
+  const frame = Math.max(0, age * NES_FRAME_RATE - WINGATE_ENTRY_DURATION * NES_FRAME_RATE);
+  const path = WINGATE_COMBAT_PATHS_NES[phase > 0 ? 1 : 0];
+  const first = path[0]!;
+  if (frame <= first[0]) return first[1] * NES_WORLD_Y_SCALE;
+  const last = path.at(-1)!;
+  if (frame >= last[0]) return last[1] * NES_WORLD_Y_SCALE;
+  const nextIndex = path.findIndex(([at]) => at >= frame);
+  const previous = path[nextIndex - 1]!;
+  const next = path[nextIndex]!;
+  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  return (previous[1] + (next[1] - previous[1]) * amount) * NES_WORLD_Y_SCALE;
+}
 
 export function wingateShotCooldown(phase: number, shotsFired: number): number {
   const volleySize = phase === 0 ? WINGATE_FIRST_VOLLEY_SIZE : WINGATE_SECOND_VOLLEY_SIZE;

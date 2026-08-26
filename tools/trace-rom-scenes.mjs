@@ -74,6 +74,15 @@ const ppuUpdate = () => {
     payload: Array.from(nes.cpu.mem.slice(0x36d, 0x36d + (repeat ? 1 : length))),
   };
 };
+const roundState = () => ({
+  roundIndex: nes.cpu.mem[0x41],
+  roundNumber: (nes.cpu.mem[0x41] ?? 0) + 1,
+  mapPointer: (nes.cpu.mem[0x5a] ?? 0) | ((nes.cpu.mem[0x5b] ?? 0) << 8),
+  mapEnd: (nes.cpu.mem[0x5e] ?? 0) | ((nes.cpu.mem[0x5f] ?? 0) << 8),
+  mapPage: nes.cpu.mem[0x5c],
+  scrollOffset: nes.cpu.mem[0x5d],
+  player: { x: nes.cpu.mem[0x74], y: nes.cpu.mem[0x71] },
+});
 const sample = (frame) => {
   const oam = activeOam();
   const value = {
@@ -88,6 +97,7 @@ const sample = (frame) => {
       "0x7a": nes.cpu.mem[0x7a],
     },
     eventCursor: { slot: nes.cpu.mem[0x6a], delay: nes.cpu.mem[0x6b], ramA3: nes.cpu.mem[0xa3] },
+    roundState: roundState(),
     ppuUpdate: ppuUpdate(),
     mapperBank,
     mapperBanksSeen: [...mapperBanksSeen].sort((left, right) => left - right),

@@ -75,9 +75,10 @@ const rounds = Array.from({ length: 6 }, (_, roundIndex) => {
   const cells = Array.from(bank.slice(mapStart - 0x8000, mapEnd - 0x8000));
   const storageRows = Array.from({ length: length / columns }, (_, row) => cells.slice(row * columns, (row + 1) * columns));
   const initialRow = (initialMapPointer - mapStart) / columns;
+  if (!Number.isInteger(initialRow) || initialRow >= storageRows.length) throw new Error(`Round ${roundIndex + 1} has an invalid initial map pointer`);
   const traversalIndexes = [
-    ...Array.from({ length: initialRow + 1 }, (_, index) => initialRow - index),
-    ...Array.from({ length: storageRows.length - initialRow - 1 }, (_, index) => storageRows.length - 1 - index),
+    ...Array.from({ length: storageRows.length - initialRow }, (_, index) => initialRow + index),
+    ...Array.from({ length: initialRow }, (_, index) => index),
   ];
   const rows = traversalIndexes.map((index) => storageRows[index]);
   const uniqueCells = [...new Set(cells)].sort((left, right) => left - right);

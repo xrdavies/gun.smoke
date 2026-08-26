@@ -50,8 +50,8 @@ title/opening flow; this data is not labeled as a Round gameplay script.
 The verified Round initializer stores a per-Round map-end pointer from
 `$E875` in `$5E/$5F`; collision lookup at `$C6C4` indexes the current Round
 bank in eight 32-pixel columns. `$8400` is the ring base and `$8440` is the
-initial row pointer; forward scrolling decrements the pointer and wraps from
-the base to the per-Round end. Running
+initial row pointer; normal forward scrolling increments the pointer by one
+eight-byte row and wraps from the per-Round end to the base. Running
 `npm run extract:rom-round-maps` extracts the six cell grids, their five-byte
 cell definitions, and self-generated ID-color/collision previews into the ignored
 `.rom-traces/round-maps/` directory. The previews visualize structure without
@@ -83,6 +83,11 @@ clearing `$62` when that list is exhausted, which is the current evidence for
 its event-cursor role. Add `--hold-ab` when a
 deterministic continuous-fire comparison is needed. The trace contains
 observations only; it does not include ROM bytes or extracted graphics.
+Both trace modes include the verified zero-based Round index at `$41`, the
+`$5A/$5B` map-ring pointer, `$5E/$5F` map end, raw `$5C/$5D` map page/scroll
+state, and Billy's `$74/$71` X/Y coordinates. The initializer at `$E7E5` and
+collision lookup at `$C6C4` provide the map-field evidence; `$E85E` initializes
+Billy at `(128, 188)` before calling the collision routine.
 Both trace formats also decode `hudScore` from the six visible OAM digit tiles
 at `y=16`: runtime tiles 88 through 97 map directly to digits 0 through 9.
 This gives a verified score observation without assigning semantics to an

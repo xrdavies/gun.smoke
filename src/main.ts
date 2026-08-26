@@ -24,7 +24,8 @@ type GameAction =
   | "fireCenter"
   | "fireRight"
   | "smartBomb"
-  | "inventory";
+  | "inventory"
+  | "start";
 type GameMode = "title" | "intro" | "briefing" | "playing" | "paused" | "gameover" | "ending";
 type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "coin" | "ammo" | "barrel" | "item" | "wanted";
 type ProjectileType = "bullet" | "dynamite" | "boomerang" | "fireball" | "shuriken";
@@ -65,7 +66,8 @@ actions
   .bind("fireLeft", { type: "key", code: "KeyZ" }, { type: "gamepad-button", button: 1 })
   .bind("fireRight", { type: "key", code: "KeyX" }, { type: "gamepad-button", button: 0 })
   .bind("smartBomb", { type: "key", code: "KeyV" }, { type: "gamepad-button", button: 3 })
-  .bind("inventory", { type: "gamepad-button", button: 8 });
+  .bind("inventory", { type: "gamepad-button", button: 8 })
+  .bind("start", { type: "gamepad-button", button: 9 });
 
 function requireElement<T extends Element>(selector: string): T {
   const element = document.querySelector<T>(selector);
@@ -188,6 +190,8 @@ class GunSmokeGame {
   fireClock = 0;
   fireMask = 0;
   bombLatch = false;
+  startLatch = false;
+  pausePollHandle: number | undefined;
   inventoryLatch = false;
   inventoryOpen = false;
   inventoryWeaponIndex = 0;
@@ -366,10 +370,15 @@ class GunSmokeGame {
       this.mode = "paused";
       this.engine.pause();
       pauseScreen.hidden = false;
+      this.pollPausedGamepad();
     } else if (this.mode === "paused") {
       this.mode = "playing";
       pauseScreen.hidden = true;
       canvas.focus();
+      if (this.pausePollHandle !== undefined) {
+        window.cancelAnimationFrame(this.pausePollHandle);
+        this.pausePollHandle = undefined;
+      }
       this.engine.resume();
     }
   }
@@ -383,8 +392,14 @@ class GunSmokeGame {
   }
 
   private update(delta: number): void {
-    if (this.mode !== "playing") return;
     this.engine.input?.pollGamepads();
+    const startActive = this.actions.active("start");
+    if (!startActive) this.startLatch = false;
+    else if (!this.startLatch) {
+      this.startLatch = true;
+      if (this.mode === "playing") this.togglePause();
+    }
+    if (this.mode !== "playing") return;
     this.updateInventoryInput();
     if (this.inventoryOpen) {
       this.updateInventorySelection();
@@ -1283,7 +1298,26 @@ class GunSmokeGame {
 
   private dispose(): void {
     this.stopMusic();
+    if (this.pausePollHandle !== undefined) window.cancelAnimationFrame(this.pausePollHandle);
     this.audio?.dispose();
+  }
+
+  private pollPausedGamepad(): void {
+    if (this.pausePollHandle !== undefined) return;
+    const poll = (): void => {
+      this.pausePollHandle = undefined;
+      if (this.mode !== "paused") return;
+      this.engine.input?.pollGamepads();
+      const active = this.actions.active("start");
+      if (!active) this.startLatch = false;
+      else if (!this.startLatch) {
+        this.startLatch = true;
+        this.togglePause();
+        return;
+      }
+      this.pausePollHandle = window.requestAnimationFrame(poll);
+    };
+    this.pausePollHandle = window.requestAnimationFrame(poll);
   }
 
   private createAudio(): AudioManager | undefined {

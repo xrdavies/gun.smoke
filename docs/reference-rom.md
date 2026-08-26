@@ -117,8 +117,9 @@ and 159 frames, then exits at age 228; the runtime preserves both volleys.
 The shared allocator at `$E454-$E460` scans ordinary enemy projectile slots
 `$0418-$041f`, giving field bullets and dynamite a common eight-slot limit.
 `$B24B-$B25F` first requires three free slots before a Shotgunner volley; the
-runtime keeps that all-or-nothing reservation. Isolated Boss snapshots place
-Cutter boomerangs, Devil Hawk fireballs, Ninja shuriken, Fatman Joe grenades and
+runtime keeps that all-or-nothing reservation. Bandit Bill's traced `0x30`
+shots remain in this ordinary pool. Other isolated Boss snapshots place Cutter
+boomerangs, Devil Hawk fireballs, Ninja shuriken, Fatman Joe grenades and
 Wingate bullets in the separate six slots `$0402-$0407`; falling rocks continue
 to use their object pool.
 Projectile clear routine `$CDD4-$CDE0` only zeros those same eight slots. The

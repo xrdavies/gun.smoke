@@ -118,9 +118,10 @@ crawls for a short interval after each lost health bar, while Cutter and Devil
 Hawk become vulnerable only after their opening attack. Fatman Joe is
 vulnerable before each bomb-gun firing and briefly protected during the launch;
 Cutter's boomerangs also curve in opposite directions.
-Boss weapons use a six-slot projectile pool separate from the eight slots used
-by ordinary enemy gunfire, so field bullets cannot suppress a Boss attack and
-ordinary screen clears do not erase active Boss shots.
+Most Boss weapons use a six-slot projectile pool separate from the eight slots
+used by ordinary enemy gunfire, so field bullets cannot suppress those attacks;
+Bandit Bill's traced `0x30` shots are the exception and use the ordinary pool.
+Ordinary screen clears do not erase active low-slot Boss shots.
 Cutter enters from the top edge on one of the measured NES X lanes
 (`x=88/144/168`) and reaches approximately `y=136` after 324 frames, then
 resumes horizontal movement. Its first paired boomerangs appear at frame 350

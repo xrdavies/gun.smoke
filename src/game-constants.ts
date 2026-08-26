@@ -127,6 +127,20 @@ export const CUTTER_MOVEMENT_SPEED = (31 / 18) * NES_FRAME_RATE * NES_WORLD_X_SC
 export function cutterOpeningY(age: number): number {
   return Math.max(0, Math.min(1, age / CUTTER_ENTRY_DURATION)) * CUTTER_ENTRY_END_Y;
 }
+const CUTTER_COMBAT_PATH_NES = [[0, 136], [26, 136], [71, 41], [131, 40], [256, 99], [311, 40]] as const;
+
+export function cutterCombatY(age: number): number {
+  const frame = Math.max(0, age * NES_FRAME_RATE - CUTTER_ENTRY_DURATION * NES_FRAME_RATE);
+  const first = CUTTER_COMBAT_PATH_NES[0]!;
+  if (frame <= first[0]) return first[1] * NES_WORLD_Y_SCALE;
+  const last = CUTTER_COMBAT_PATH_NES.at(-1)!;
+  if (frame >= last[0]) return last[1] * NES_WORLD_Y_SCALE;
+  const nextIndex = CUTTER_COMBAT_PATH_NES.findIndex(([at]) => at >= frame);
+  const previous = CUTTER_COMBAT_PATH_NES[nextIndex - 1]!;
+  const next = CUTTER_COMBAT_PATH_NES[nextIndex]!;
+  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  return (previous[1] + (next[1] - previous[1]) * amount) * NES_WORLD_Y_SCALE;
+}
 export const DEVIL_HAWK_ENTRY_X_NES = [128, 168, 208] as const;
 export const DEVIL_HAWK_ENTRY_X_LANES = DEVIL_HAWK_ENTRY_X_NES.map((value) => value * NES_WORLD_X_SCALE);
 export const DEVIL_HAWK_ENTRY_Y_NES = 0;

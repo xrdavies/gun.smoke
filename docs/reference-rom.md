@@ -172,7 +172,8 @@ The same controlled full-round trace identifies Round 2's Cutter as dispatch
 `0x90`, variant `0x5b`, entering from the top edge (`y=0`). Controlled runs
 observe NES horizontal entry lanes near `x=88/144/168`; one lane reaches about
 `y=136` after 324 frames. The web runtime selects one measured lane and uses
-the calibrated downward opening, then resumes horizontal movement at about
+the calibrated downward opening, then follows the measured 136-to-40/99 NES
+vertical combat profile while resuming horizontal movement at about
 1.72 NES X pixels per frame. At frame 350 it creates the paired `0x98/0x99`
 boomerangs, repeating every 256 frames. Their first 29-frame path measures
 about 63 NES X pixels and 40 NES Y pixels, converting to roughly 524 world

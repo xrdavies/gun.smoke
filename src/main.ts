@@ -24,7 +24,7 @@ import { storedPowerupPickup } from "./game-constants";
 import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_VOLLEY_INTERVAL, FATMAN_JOE_VOLLEY_SIZE } from "./game-constants";
 import { WINGATE_BULLET_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateShotCooldown } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPEED, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
-import { CUTTER_ENTRY_DURATION, cutterOpeningY } from "./game-constants";
+import { CUTTER_ENTRY_DURATION, CUTTER_MOVEMENT_SPEED, cutterOpeningY } from "./game-constants";
 import { DEVIL_HAWK_ENTRY_DURATION, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkOpeningY } from "./game-constants";
 import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_ATTACK_DELAY, NINJA_BOSS_SHURIKEN_COUNT, NINJA_BOSS_SHURIKEN_SPEED } from "./game-constants";
 import { roundCollisionBlocks } from "./round-collision";
@@ -1248,10 +1248,14 @@ class GunSmokeGame {
       if (unit.x < 32 || unit.x > 928) unit.vx *= -1;
     } else if (unit.kind === "boss") {
       if (this.stage === 1) unit.x = unit.bossEntryX ?? unit.x;
+      else if (this.stage === 2 && unit.age <= CUTTER_ENTRY_DURATION) unit.x = unit.bossEntryX ?? unit.x;
       else if (this.stage === 3 && unit.age <= DEVIL_HAWK_ENTRY_DURATION) unit.x = unit.bossEntryX ?? unit.x;
       else if (this.stage === 5 && unit.age <= FATMAN_JOE_ENTRY_DURATION) unit.x = unit.bossEntryX ?? unit.x;
       else if (this.stage === 6 && unit.bossEntryY !== undefined && unit.age <= WINGATE_ENTRY_DURATION) unit.x = unit.bossEntryX ?? unit.x;
-      else unit.x += unit.vx * delta;
+      else {
+        if (this.stage === 2 && unit.vx === 0) unit.vx = (unit.phase < Math.PI ? 1 : -1) * CUTTER_MOVEMENT_SPEED;
+        unit.x += unit.vx * delta;
+      }
       const edgeEntryBoss = this.stage === 1 || this.stage === 2 || this.stage === 3 || this.stage === 4 || (this.stage === 6 && unit.bossEntryY !== undefined);
       const minBossX = edgeEntryBoss ? 0 : 380;
       const maxBossX = edgeEntryBoss ? 960 : 580;

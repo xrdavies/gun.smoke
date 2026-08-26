@@ -10,6 +10,7 @@ import { MAX_POWERUP_STOCK, POWERUP_OVERFLOW_SCORE, storedPowerupPickup } from "
 import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_VOLLEY_INTERVAL, FATMAN_JOE_VOLLEY_SIZE } from "../src/game-constants";
 import { WINGATE_BULLET_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_FIRST_VOLLEY_GAP, WINGATE_FIRST_VOLLEY_SIZE, WINGATE_SECOND_FIRST_SHOT_DELAY, WINGATE_SECOND_VOLLEY_GAP, WINGATE_SECOND_VOLLEY_SIZE, WINGATE_SHOT_INTERVAL, wingateShotCooldown } from "../src/game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPEED, CUTTER_FIRST_ATTACK_DELAY } from "../src/game-constants";
+import { CUTTER_MOVEMENT_SPEED } from "../src/game-constants";
 import { DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_VOLLEY_INTERVAL } from "../src/game-constants";
 import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_ATTACK_DELAY, NINJA_BOSS_SHURIKEN_COUNT, NINJA_BOSS_SHURIKEN_SPEED } from "../src/game-constants";
 import { roundCollisionBlocks, ROUND_COLLISION_ROW_COUNTS } from "../src/round-collision";
@@ -287,6 +288,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(CUTTER_FIRST_ATTACK_DELAY).toBeCloseTo(350 / NES_FRAME_RATE, 9);
     expect(CUTTER_ATTACK_INTERVAL).toBeCloseTo(256 / NES_FRAME_RATE, 9);
     expect(CUTTER_BOOMERANG_SPEED).toBeCloseTo(Math.hypot(63 * NES_WORLD_X_SCALE, 40 * (540 / 240)) * NES_FRAME_RATE / 29, 9);
+    expect(CUTTER_MOVEMENT_SPEED).toBeCloseTo((31 / 18) * NES_FRAME_RATE * NES_WORLD_X_SCALE, 9);
   });
 
   it("matches the traced Devil Hawk entrance", () => {

@@ -181,6 +181,10 @@ export function shouldLoopStage(scroll: number, hasWanted: boolean): boolean {
   return scroll >= STAGE_LENGTH && !hasWanted;
 }
 
+export function shouldRevealWanted(scroll: number, round: number, hasWanted: boolean, spawned: boolean): boolean {
+  return !hasWanted && !spawned && scroll >= (WANTED_REVEAL_AT[round - 1] ?? BOSS_TRIGGER);
+}
+
 export function segmentDelay(scroll: number, at: number, speed: number): number {
   return Math.max(0, (at - scroll) / speed);
 }

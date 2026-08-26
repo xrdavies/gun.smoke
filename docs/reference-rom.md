@@ -114,6 +114,10 @@ the runtime uses these measured timings at 60.098 Hz.
 An isolated `$B080` Sniper fires at ages 134, 224, 405, 495 and 585 frames,
 then releases its slot at age 732. The routine's 90-frame base cooldown is
 visible directly; the longer middle gap is a missed discrete aiming window.
+An isolated `$B775` Rifleman enters its attack state at age 80 frames, emits
+five dispatch `0x30` shots at ages 96, 112, 128, 144 and 160, then returns to
+its movement state. The runtime preserves that five-shot vertical volley and
+its 16-frame cadence.
 
 Current behavior map:
 
@@ -126,7 +130,7 @@ Current behavior map:
 | `$B501` | Bomber | isolated delayed dynamite state |
 | `$B5BF` | object-only scene behavior | 44 Round 4 records all select object pool |
 | `$B671` | Ninja | Round 4 roster elimination after Gunman/Shotgunner |
-| `$B775` | Rifleman | Round 2/Round 5 roster elimination |
+| `$B775` | Rifleman | isolated state/OAM timing trace |
 | `$B82F` | Backstabber | Round 5 roster elimination |
 | `$B8F4` | Hatchet Thrower | Native Village roster elimination |
 | `$BA51` | Spear Thrower | Native Village roster elimination |

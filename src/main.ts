@@ -26,7 +26,7 @@ import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_
 import { WINGATE_BULLET_SPEED, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateCombatY, wingateShotCooldown } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPEED, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { CUTTER_ENTRY_DURATION, CUTTER_MOVEMENT_SPEED, cutterCombatY, cutterOpeningY } from "./game-constants";
-import { DEVIL_HAWK_ENTRY_DURATION, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_POST_ENTRY_X_HOLD, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY } from "./game-constants";
+import { DEVIL_HAWK_ENTRY_DURATION, DEVIL_HAWK_FIREBALL_FAN_NES, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_POST_ENTRY_X_HOLD, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY } from "./game-constants";
 import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_ATTACK_DELAY, NINJA_BOSS_SHURIKEN_COUNT, NINJA_BOSS_SHURIKEN_SPEED, ninjaBossCombatY } from "./game-constants";
 import { canSpawnEnemyProjectile } from "./game-constants";
 import { canSpawnBossProjectile } from "./game-constants";
@@ -875,9 +875,15 @@ class GunSmokeGame {
       const projectile = this.spawnEnemyProjectile(boss.x, boss.y + 24, true);
       if (!projectile) break;
       projectile.projectileType = this.stage === 2 ? "boomerang" : this.stage === 3 ? "fireball" : this.stage === 4 ? "shuriken" : this.stage === 5 ? "grenade" : "bullet";
-      const shotAngle = angle + (index - center) * pattern.spread;
-      projectile.vx = Math.cos(shotAngle) * pattern.speed;
-      projectile.vy = Math.sin(shotAngle) * pattern.speed;
+      const fan = this.stage === 3 && pattern.count === DEVIL_HAWK_FIREBALL_FAN_NES.length ? DEVIL_HAWK_FIREBALL_FAN_NES[index] : undefined;
+      if (fan) {
+        projectile.vx = fan[0] * NES_FRAME_RATE * NES_WORLD_X_SCALE;
+        projectile.vy = fan[1] * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
+      } else {
+        const shotAngle = angle + (index - center) * pattern.spread;
+        projectile.vx = Math.cos(shotAngle) * pattern.speed;
+        projectile.vy = Math.sin(shotAngle) * pattern.speed;
+      }
       projectile.turnRate = pattern.turnRate * (index === 0 ? -1 : 1);
       projectile.radius = 7;
     }

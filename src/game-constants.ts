@@ -211,6 +211,7 @@ export const DEVIL_HAWK_FIRST_VOLLEY_DELAY = 174 / NES_FRAME_RATE;
 export const DEVIL_HAWK_VOLLEY_INTERVAL = 125 / NES_FRAME_RATE;
 export const DEVIL_HAWK_ENTRY_SPEED_Y = (96 / 143) * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
 export const DEVIL_HAWK_FIREBALL_SPEED = 3 * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
+export const DEVIL_HAWK_FIREBALL_FAN_NES = [[-2, 2], [-1, 3], [0, 3], [1, 3], [2, 2]] as const;
 
 export function devilHawkOpeningY(age: number): number {
   return Math.max(0, Math.min(1, age / DEVIL_HAWK_ENTRY_DURATION)) * DEVIL_HAWK_ENTRY_END_Y;

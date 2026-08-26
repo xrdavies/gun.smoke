@@ -54,6 +54,11 @@ pixels per frame. Normal pistol shots persist for roughly 15 frames. These map
 to 810 straight, 337.5/675 diagonal world pixels per second and a 0.25-second
 base lifetime in the procedural world.
 
+The first active enemy wave appears around gameplay frame 195 in the verified
+Round 1 trace, which maps to roughly 146 world pixels at the calibrated 45
+world-pixel/second scroll speed. Round segment scripts use that as their common
+initial wave delay.
+
 The web title page can also load the same local ROM into Reference ROM mode.
 This provides a legal exact-runtime comparison path without distributing the
 ROM; the regular web game remains the original procedural recreation. The

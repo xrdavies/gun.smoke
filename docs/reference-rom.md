@@ -155,6 +155,8 @@ the runtime uses these measured timings at 60.098 Hz.
 An isolated `$B080` Sniper fires at ages 134, 224, 405, 495 and 585 frames,
 then releases its slot at age 732. The routine's 90-frame base cooldown is
 visible directly; the longer middle gap is a missed discrete aiming window.
+Its ROM Y coordinate advances with the camera at the measured scroll rate while
+the X lane stays fixed; the runtime carries ROM-tagged Snipers with that scroll.
 An isolated `$B284` Gunman fires one dispatch `0x30` bullet at age 39 frames
 and releases its slot at age 289. The projectile's measured 20-frame travel
 maps to roughly 266 world pixels/s; ROM-tagged Gunmen use this per-actor timing

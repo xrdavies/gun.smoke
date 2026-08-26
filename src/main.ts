@@ -1183,6 +1183,7 @@ class GunSmokeGame {
           }
         }
       } else if (unit.enemyType === "sniper") {
+        if (unit.romBehavior === 0) unit.y += WORLD_SCROLL_SPEED * delta;
         const nextShotFrame = unit.romBehavior === 0 ? SNIPER_SHOT_FRAMES[unit.volleysFired] : undefined;
         const shouldFire = unit.romBehavior === 0
           ? nextShotFrame !== undefined && unit.age >= nextShotFrame / NES_FRAME_RATE

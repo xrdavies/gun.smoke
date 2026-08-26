@@ -68,6 +68,7 @@ const rounds = Array.from({ length: 6 }, (_, roundIndex) => {
     const phase = command === "spawn" ? positionByte >> 7 : 0;
     const positionIndex = positionByte & 0x7f;
     if (command === "spawn" && positionIndex >= positionCount) throw new Error(`Round ${roundIndex + 1} record ${records.length} has an invalid position index`);
+    const behavior = command === "spawn" ? initializerFor(typeByte & 0x3f) : undefined;
     const rowDistance = (mapRow - initialMapRow + mapRows) % mapRows;
     const rawHalfStep = rowDistance * 2 + phase;
     if (command === "spawn" || records.at(-1)?.mapRow !== mapRow) {
@@ -88,6 +89,9 @@ const rounds = Array.from({ length: 6 }, (_, roundIndex) => {
       y: command === "spawn" ? positionY[positionIndex] : undefined,
       entityCode: command === "spawn" ? typeByte & 0x3f : undefined,
       entityFlags: command === "spawn" ? typeByte & 0xc0 : undefined,
+      initializerCode: behavior?.initializerCode,
+      dispatchType: behavior?.dispatchType,
+      behaviorRoutine: behavior?.behaviorRoutine,
       nesScrollAt: halfStep * 16 + 15,
       raw: [mapRow, positionByte, typeByte],
     });

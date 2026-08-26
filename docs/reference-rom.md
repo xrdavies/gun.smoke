@@ -102,8 +102,9 @@ increasing the life counter, code `39` converting to dispatch `0x27` (Skull),
 and code `42` converting to dispatch `0x26` (the Blue Yashichi invulnerability
 branch). The runtime therefore enables deterministic POW, Money, Horse, Life,
 Skull, and Blue Yashichi drops for those codes. Code `40` does not occur in the
-six decoded scripts; code `41` remains dispatch `0x07` and is cleared without
-a pickup conversion in the controlled trace.
+six decoded scripts. Code `41` remains dispatch `0x07` until hit, then enters
+dispatch `0x09`'s short explosion state and is released without a pickup
+conversion; it is not the Wanted poster.
 The Blue Yashichi branch writes `180` to `$7C`, so the runtime uses a
 `180 / 60.098`-second invulnerability window. The Life branch stops incrementing
 at `$7A == 5`; both item and score-awarded lives share that five-life cap.

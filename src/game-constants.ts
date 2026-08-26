@@ -123,18 +123,20 @@ export const CUTTER_BOOMERANG_SPEED = 425;
 export function cutterOpeningY(age: number): number {
   return Math.max(0, Math.min(1, age / CUTTER_ENTRY_DURATION)) * CUTTER_ENTRY_END_Y;
 }
-export const DEVIL_HAWK_ENTRY_X = 0 * NES_WORLD_X_SCALE;
-export const DEVIL_HAWK_ENTRY_Y_NES = [128, 168, 208] as const;
-export const DEVIL_HAWK_ENTRY_Y_LANES = DEVIL_HAWK_ENTRY_Y_NES.map((value) => value * NES_WORLD_Y_SCALE);
-export const DEVIL_HAWK_ENTRY_SPEED_X = (96 / 143) * NES_FRAME_RATE * NES_WORLD_X_SCALE;
-export const DEVIL_HAWK_ENTRY_END_X = 96 * NES_WORLD_X_SCALE;
+export const DEVIL_HAWK_ENTRY_X_NES = [128, 168, 208] as const;
+export const DEVIL_HAWK_ENTRY_X_LANES = DEVIL_HAWK_ENTRY_X_NES.map((value) => value * NES_WORLD_X_SCALE);
+export const DEVIL_HAWK_ENTRY_Y_NES = 0;
+export const DEVIL_HAWK_ENTRY_Y = DEVIL_HAWK_ENTRY_Y_NES * NES_WORLD_Y_SCALE;
+export const DEVIL_HAWK_ENTRY_END_Y_NES = 96;
+export const DEVIL_HAWK_ENTRY_END_Y = DEVIL_HAWK_ENTRY_END_Y_NES * NES_WORLD_Y_SCALE;
 export const DEVIL_HAWK_ENTRY_DURATION = 143 / NES_FRAME_RATE;
 export const DEVIL_HAWK_FIRST_VOLLEY_DELAY = 174 / NES_FRAME_RATE;
 export const DEVIL_HAWK_VOLLEY_INTERVAL = 125 / NES_FRAME_RATE;
-export const DEVIL_HAWK_FIREBALL_SPEED = 3 * NES_FRAME_RATE * NES_WORLD_X_SCALE;
+export const DEVIL_HAWK_ENTRY_SPEED_Y = (96 / 143) * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
+export const DEVIL_HAWK_FIREBALL_SPEED = 3 * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
 
-export function devilHawkOpeningX(age: number): number {
-  return Math.max(0, Math.min(1, age / DEVIL_HAWK_ENTRY_DURATION)) * DEVIL_HAWK_ENTRY_END_X;
+export function devilHawkOpeningY(age: number): number {
+  return Math.max(0, Math.min(1, age / DEVIL_HAWK_ENTRY_DURATION)) * DEVIL_HAWK_ENTRY_END_Y;
 }
 export const NINJA_BOSS_ENTRY_X_NES = 64;
 export const NINJA_BOSS_ENTRY_X = NINJA_BOSS_ENTRY_X_NES * NES_WORLD_X_SCALE;

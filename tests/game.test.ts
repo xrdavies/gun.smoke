@@ -81,6 +81,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(segmentDelay(27, 146, 45)).toBeCloseTo(2.644, 2);
     expect(ROUND_ITEM_EVENTS).toHaveLength(MAX_STAGE);
     expect(ROUND_ITEM_EVENTS.every((events) => events.every((event, index) => index === 0 || event.at > (events[index - 1]?.at ?? -1)))).toBe(true);
+    expect(ROUND_ITEM_EVENTS[0]?.[0]?.at).toBeGreaterThan(0);
     expect(ROUND_ITEM_EVENTS[0]?.map((event) => event.item)).toContain("blueYashichi");
     expect(ROUND_ITEM_EVENTS[2]?.map((event) => event.item)).toContain("skull");
     expect(ROUND_ITEM_EVENTS[1]?.filter((event) => event.loopOnly)).toEqual([{ at: 300, xOffset: -170, item: "horse", loopOnly: true }]);

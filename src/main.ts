@@ -644,7 +644,7 @@ class GunSmokeGame {
     const events = ROUND_ITEM_EVENTS[this.stage - 1] ?? [];
     while (this.itemEventCursor < events.length) {
       const event = events[this.itemEventCursor];
-      if (!event || this.scroll + 560 < event.at) break;
+      if (!event || this.scroll < event.at) break;
       if (event.loopOnly && this.stageLoopCount === 0) {
         this.itemEventCursor += 1;
         continue;

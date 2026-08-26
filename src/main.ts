@@ -240,6 +240,9 @@ class GunSmokeGame {
       s: [196, 158, 98, 255] as Rgba,
       d: [44, 57, 50, 255] as Rgba,
       p: [121, 76, 47, 255] as Rgba,
+      n: [13, 47, 92, 255] as Rgba,
+      q: [22, 73, 124, 255] as Rgba,
+      h: [39, 96, 151, 255] as Rgba,
       ".": transparent,
     };
     this.textures = {
@@ -284,7 +287,7 @@ class GunSmokeGame {
       ["d", "p", "d", "s", "d", "p"],
     ];
     const roadPatterns: readonly (readonly string[])[] = [
-      ["t", "t", "s", "t", "s", "t"],
+      ["n", "q", "q", "h", "q", "n"],
       ["b", "s", "b", "s", "b", "s"],
       ["t", "g", "t", "g", "t", "g"],
       ["s", "t", "s", "t", "s", "t"],

@@ -87,7 +87,9 @@ frames, and touching one costs a life. The runtime renders a self-generated
 rock proxy and preserves the separate six-slot object capacity.
 In contrast, `sceneObject` records with dispatch type `0x07` render as generic
 field enemies in the ROM. The runtime now preserves those events as object-pool
-gunmen, while dispatch `0x08` and state-control records remain deferred.
+gunmen. Dispatch `0x08` records are static scene props; the runtime renders a
+self-generated landmark proxy for them, while state-control records remain
+deferred.
 Contact verification confirms object codes `33` and `34` drop Boots and Rifle
 respectively after destruction. The same isolated contact trace shows code
 `35` converting to dispatch `0x22` (the ROM's all-enemy effect), code `37`

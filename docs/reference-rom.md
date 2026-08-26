@@ -114,11 +114,13 @@ Behavior routine `$B0E5` allocates three projectile slots at `$B24B-$B281`
 and emits adjacent direction values, identifying it as the Shotgunner spread
 attack used by the runtime behavior map. An isolated instance fires at age 108
 and 159 frames, then exits at age 228; the runtime preserves both volleys.
-The shared allocator at `$E454-$E460` scans enemy projectile slots
-`$0418-$041f`, giving bullets, dynamite and Boss weapons a common eight-slot
-limit. `$B24B-$B25F` first requires three free slots before a Shotgunner volley;
-the runtime keeps that all-or-nothing reservation while falling rocks continue
-to use their separate object pool.
+The shared allocator at `$E454-$E460` scans ordinary enemy projectile slots
+`$0418-$041f`, giving field bullets and dynamite a common eight-slot limit.
+`$B24B-$B25F` first requires three free slots before a Shotgunner volley; the
+runtime keeps that all-or-nothing reservation. Isolated Boss snapshots place
+Cutter boomerangs, Devil Hawk fireballs, Ninja shuriken, Fatman Joe grenades and
+Wingate bullets in the separate six slots `$0402-$0407`; falling rocks continue
+to use their object pool.
 Projectile clear routine `$CDD4-$CDE0` only zeros those same eight slots. The
 POW path at `$CDAB-$CDD3` also handles ordinary enemy slots `$0410-$0416`, but
 neither path clears object-pool falling rocks; runtime screen clears preserve

@@ -44,6 +44,7 @@ export const NES_BULLET_SPEED = 6 * NES_FRAME_RATE;
 export const WORLD_BULLET_SPEED = NES_BULLET_SPEED * NES_WORLD_Y_SCALE;
 export const PLAYER_BULLET_CAPACITY = 6;
 export const ENEMY_PROJECTILE_CAPACITY = 8;
+export const BOSS_PROJECTILE_CAPACITY = 6;
 export const MAGNUM_BULLET_SPEED = WORLD_BULLET_SPEED;
 export const MAGNUM_BULLET_LIFETIME = 34 / NES_FRAME_RATE;
 export const SHOTGUN_BULLET_LIFETIME = 11 / NES_FRAME_RATE;
@@ -61,6 +62,10 @@ export function canSpawnPlayerBullet(active: number): boolean {
 
 export function canSpawnEnemyProjectile(active: number, requested = 1): boolean {
   return active + requested <= ENEMY_PROJECTILE_CAPACITY;
+}
+
+export function canSpawnBossProjectile(active: number, requested = 1): boolean {
+  return active + requested <= BOSS_PROJECTILE_CAPACITY;
 }
 
 export function romEnemyDrop(flags: number, hasSpecialStock: boolean): "ammo" | "moneyBag" | undefined {

@@ -29,6 +29,7 @@ import { CUTTER_ENTRY_DURATION, CUTTER_MOVEMENT_SPEED, cutterCombatY, cutterOpen
 import { DEVIL_HAWK_ENTRY_DURATION, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_POST_ENTRY_X_HOLD, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY } from "./game-constants";
 import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_ATTACK_DELAY, NINJA_BOSS_SHURIKEN_COUNT, NINJA_BOSS_SHURIKEN_SPEED, ninjaBossCombatY } from "./game-constants";
 import { canSpawnEnemyProjectile } from "./game-constants";
+import { canSpawnBossProjectile } from "./game-constants";
 import { romEnemyDrop } from "./game-constants";
 import { roundCollisionBlocks, ROUND_COLLISION_ROWS } from "./round-collision";
 import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
@@ -82,6 +83,7 @@ interface Unit {
   romOriginY?: number;
   bossEntryX?: number;
   bossEntryY?: number;
+  bossProjectile?: boolean;
   nextFireAt: number;
   volleysFired: number;
 }
@@ -822,7 +824,7 @@ class GunSmokeGame {
   private fireBoss(boss: Unit): void {
     const angle = Math.atan2(this.player.y - boss.y, this.player.x - boss.x);
     if (this.stage === 1) {
-      const projectile = this.spawnEnemyProjectile(boss.x, boss.y + 24);
+      const projectile = this.spawnEnemyProjectile(boss.x, boss.y + 24, true);
       if (projectile) {
         projectile.vx = Math.cos(angle) * BANDIT_BILL_BULLET_SPEED;
         projectile.vy = Math.sin(angle) * BANDIT_BILL_BULLET_SPEED;
@@ -833,7 +835,7 @@ class GunSmokeGame {
       return;
     }
     if (this.stage === MAX_STAGE) {
-      const projectile = this.spawnEnemyProjectile(boss.x, boss.y + 24);
+      const projectile = this.spawnEnemyProjectile(boss.x, boss.y + 24, true);
       if (projectile) {
         projectile.vx = 0;
         projectile.vy = WINGATE_BULLET_SPEED;
@@ -846,7 +848,7 @@ class GunSmokeGame {
     }
     if (this.stage === 5) {
       const shotInVolley = boss.volleysFired + 1;
-      const projectile = this.spawnEnemyProjectile(boss.x, boss.y + 24);
+      const projectile = this.spawnEnemyProjectile(boss.x, boss.y + 24, true);
       if (projectile) {
         projectile.projectileType = "grenade";
         projectile.vx = 0;
@@ -870,7 +872,7 @@ class GunSmokeGame {
     if (this.stage === 3 && Math.abs(this.player.x - boss.x) > 120) pattern = { ...pattern, count: 3 };
     const center = (pattern.count - 1) / 2;
     for (let index = 0; index < pattern.count; index += 1) {
-      const projectile = this.spawnEnemyProjectile(boss.x, boss.y + 24);
+      const projectile = this.spawnEnemyProjectile(boss.x, boss.y + 24, true);
       if (!projectile) break;
       projectile.projectileType = this.stage === 2 ? "boomerang" : this.stage === 3 ? "fireball" : this.stage === 4 ? "shuriken" : this.stage === 5 ? "grenade" : "bullet";
       const shotAngle = angle + (index - center) * pattern.spread;
@@ -1131,9 +1133,12 @@ class GunSmokeGame {
     return canSpawnPlayerBullet(active) ? this.spawnUnit("bullet", x, this.player.y - 32, 1) : undefined;
   }
 
-  private spawnEnemyProjectile(x: number, y: number): Unit | undefined {
-    const active = this.units.filter((unit) => unit.kind === "enemyBullet" && unit.projectileType !== "rock" && unit.hp > 0).length;
-    return canSpawnEnemyProjectile(active) ? this.spawnUnit("enemyBullet", x, y, 1) : undefined;
+  private spawnEnemyProjectile(x: number, y: number, bossProjectile = false): Unit | undefined {
+    const active = this.units.filter((unit) => unit.kind === "enemyBullet" && unit.projectileType !== "rock" && Boolean(unit.bossProjectile) === bossProjectile && unit.hp > 0).length;
+    if (!(bossProjectile ? canSpawnBossProjectile(active) : canSpawnEnemyProjectile(active))) return undefined;
+    const projectile = this.spawnUnit("enemyBullet", x, y, 1);
+    projectile.bossProjectile = bossProjectile;
+    return projectile;
   }
 
   private updateUnit(unit: Unit, delta: number): void {

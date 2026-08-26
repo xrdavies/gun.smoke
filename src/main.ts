@@ -614,11 +614,12 @@ class GunSmokeGame {
       5: { count: 1, spread: 0, speed: 100, cooldown: 0.8, turnRate: 0 },
       6: { count: this.wingatePhase ? 5 : 3, spread: 0.1, speed: 190, cooldown: this.wingatePhase ? 0.42 : 0.7, turnRate: 0 },
     };
-    const pattern = patterns[this.stage] ?? patterns[1]!;
+    let pattern = patterns[this.stage] ?? patterns[1]!;
+    if (this.stage === 3 && Math.abs(this.player.x - boss.x) > 120) pattern = { ...pattern, count: 3 };
     const center = (pattern.count - 1) / 2;
     for (let index = 0; index < pattern.count; index += 1) {
       const projectile = this.spawnUnit("enemyBullet", boss.x, boss.y + 24, 1);
-      projectile.projectileType = this.stage === 2 ? "boomerang" : this.stage === 3 ? "fireball" : this.stage === 4 ? "shuriken" : "bullet";
+      projectile.projectileType = this.stage === 2 ? "boomerang" : this.stage === 3 ? "fireball" : this.stage === 4 ? "shuriken" : this.stage === 5 ? "dynamite" : "bullet";
       const shotAngle = angle + (index - center) * pattern.spread;
       projectile.vx = Math.cos(shotAngle) * pattern.speed;
       projectile.vy = Math.sin(shotAngle) * pattern.speed;

@@ -71,9 +71,10 @@ crawls for a short interval after each lost health bar, while Cutter, Devil
 Hawk and Fatman Joe become vulnerable only after their opening attack;
 Cutter's boomerangs also curve in opposite directions.
 
-Devil Hawk uses a long jump arc, Fatman Joe uses short hops, Wingate rushes
-forward, and the Ninja enters a smoke/invulnerability phase and teleports after
-each lost health bar.
+Devil Hawk uses a long jump arc and fires a five-shot or side-aimed three-shot
+fireball fan, Fatman Joe uses short hops and a delayed dynamite bomb gun,
+Wingate rushes forward, and the Ninja enters a smoke/invulnerability phase and
+teleports after each lost health bar.
 
 The procedural enemy roster is data-driven per Round: early town stages include
 gunmen, bombers, snipers and back-stabbers; Rocky Pass adds riflemen; Native

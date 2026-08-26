@@ -90,9 +90,12 @@ road center for about 24 frames, remain at the impact point for another 25
 frames, and touching one costs a life. The runtime renders a self-generated
 rock proxy and preserves the separate six-slot object capacity.
 Dispatch `0x07` records with a verified pickup conversion now render as
-self-generated breakable barrels instead of enemy proxies. Unresolved variants
-`32` and `41` remain non-interactive scene proxies. Dispatch `0x08` records are
-static scene props and use the same original landmark texture family.
+self-generated breakable barrels instead of enemy proxies. Codes `32` and `41`
+are also breakable empty barrels: controlled pulse traces move them to dispatch
+`0x09` for about 10 frames before release, with no pickup conversion. Dispatch
+`0x08` records are static scene props and use the same original landmark texture
+family. The web runtime models codes `32/41` as shootable empty barrels while
+their short explosion animation remains a visual approximation.
 Contact verification confirms object codes `33` and `34` drop Boots and Rifle
 respectively after destruction. The same isolated contact trace shows code
 `35` converting to dispatch `0x22` (the ROM's all-enemy effect), code `36`

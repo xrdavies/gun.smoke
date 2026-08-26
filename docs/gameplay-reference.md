@@ -193,8 +193,11 @@ six object slots, matching the ROM allocator. The all-object `$B5BF` Round 4
 records are rendered as falling rock hazards with their own object-pool
 capacity and player collision, rather than being misclassified as enemies.
 Dispatch `0x07` records with verified pickup conversions render as breakable
-barrels while unresolved variants remain non-interactive scene proxies. Their
-original entity codes and pool selection remain attached for comparison.
+barrels; codes 32 and 41 are also empty breakable barrels that enter a short
+post-hit explosion state without yielding a pickup. The web runtime exposes the
+breakable/no-pickup behavior; the brief explosion animation remains an explicit
+visual approximation. Their original entity codes and pool selection remain
+attached for comparison.
 
 Important barrel contents now come directly from the decoded ROM object stream,
 so every Boots, Rifle, POW, Money, Yashichi, Skull and Horse barrel uses its

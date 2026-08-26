@@ -80,7 +80,7 @@ twice.
 
 Barrels can reveal the NES item set: stored Boots and Rifle power-ups, special
 weapon ammo, money, POW, Cattle Skull, Horse, and Blue/Red Yashichi. Stored
-Boots/Rifle are capped at five and each loses one stock on death; Blue Yashichi
+Boots/Rifle are capped at four and each loses one stock on death; Blue Yashichi
 grants contact damage and temporary invulnerability, while Magnum bullets can
 destroy enemy projectiles. POW clears regular enemies and their projectiles but
 does not damage the low-slot Boss actor. Smart Bomb is armed from the inventory and triggers
@@ -89,7 +89,7 @@ one bomb; it does not damage bosses. Arming it selects the unlimited Pistol,
 and equipping another weapon disarms the bomb without consuming it. Only one
 Smart Bomb can be owned at a time.
 
-Rifle range applies only to the unlimited pistols. Bullet pickups use
+Rifle increases unlimited Pistol bullet speed without extending lifetime. Bullet pickups use
 weapon-specific refill amounts, with Machine Gun receiving more rounds per
 pickup than Magnum. Stored special weapons and their ammo persist
 independently, while the equipped special weapon is lost on an unshielded

@@ -19,6 +19,7 @@ import { BANDIT_BILL_BULLET_SPEED, BANDIT_BILL_FIRST_VOLLEY_DELAY } from "./game
 import { banditBillCooldown } from "./game-constants";
 import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "./game-constants";
 import { pistolShots } from "./game-constants";
+import { storedPowerupPickup } from "./game-constants";
 import { roundCollisionBlocks } from "./round-collision";
 import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
 
@@ -1361,7 +1362,10 @@ class GunSmokeGame {
 
   private collectItem(item: ItemType): void {
     if (item === "boots" || item === "rifle") {
-      this.powerups[item] = Math.min(5, this.powerups[item] + 1);
+      const pickup = storedPowerupPickup(this.powerups[item]);
+      this.powerups[item] = pickup.stock;
+      this.score += pickup.score;
+      if (pickup.score > 0) this.awardScoreLife();
     } else if (item === "ammo") {
       this.refillAmmo(1);
     } else if (item === "money") {

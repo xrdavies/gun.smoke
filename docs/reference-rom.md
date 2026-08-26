@@ -104,6 +104,9 @@ a pickup conversion in the controlled trace.
 The Blue Yashichi branch writes `180` to `$7C`, so the runtime uses a
 `180 / 60.098`-second invulnerability window. The Life branch stops incrementing
 at `$7A == 5`; both item and score-awarded lives share that five-life cap.
+Boots and Rifle compare `$78/$79` against `4` before incrementing. At that cap,
+contact leaves the stock unchanged and awards 100 points; the runtime preserves
+both the four-item cap and overflow reward.
 Behavior routine `$B0E5` allocates three projectile slots at `$B24B-$B281`
 and emits adjacent direction values, identifying it as the Shotgunner spread
 attack used by the runtime behavior map. An isolated instance fires at age 108

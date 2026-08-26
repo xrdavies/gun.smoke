@@ -20,6 +20,12 @@ export const MAX_STAGE = STAGES.length;
 export const NES_FRAME_RATE = 60.098;
 export const MAX_LIVES = 5;
 export const BLUE_YASHICHI_DURATION = 180 / NES_FRAME_RATE;
+export const MAX_POWERUP_STOCK = 4;
+export const POWERUP_OVERFLOW_SCORE = 100;
+
+export function storedPowerupPickup(stock: number): { stock: number; score: number } {
+  return stock >= MAX_POWERUP_STOCK ? { stock: MAX_POWERUP_STOCK, score: POWERUP_OVERFLOW_SCORE } : { stock: stock + 1, score: 0 };
+}
 export const WORLD_VIEWPORT_HEIGHT = 540;
 const NES_WORLD_Y_SCALE = WORLD_VIEWPORT_HEIGHT / 240;
 export const ROUND_BOSS_GATE_SCROLL_NES = [2_767, 2_799, 4_863, 3_487, 2_879, 4_879] as const;

@@ -6,6 +6,7 @@ import { banditBillCooldown } from "../src/game-constants";
 import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "../src/game-constants";
 import { RIFLE_BULLET_SPEED_MULTIPLIER } from "../src/game-constants";
 import { pistolShots } from "../src/game-constants";
+import { MAX_POWERUP_STOCK, POWERUP_OVERFLOW_SCORE, storedPowerupPickup } from "../src/game-constants";
 import { roundCollisionBlocks, ROUND_COLLISION_ROW_COUNTS } from "../src/round-collision";
 import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_ENEMY_SLOT_CAPACITY, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_OBJECT_SLOT_CAPACITY, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_ENEMY_EVENT_COUNTS, ROUND_ROM_OBJECT_EVENTS, ROUND_ROM_OBJECT_EVENT_COUNTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY } from "../src/rom-event-data";
 
@@ -63,6 +64,13 @@ describe("Gun.Smoke vertical slice", () => {
     expect(scoreExtraLives(230_000, 30_000)).toEqual({ lives: 3, nextThreshold: 300_000 });
     expect(spendPoints(10_000, 6_000)).toBe(4_000);
     expect(spendPoints(5_999, 6_000)).toBeUndefined();
+  });
+
+  it("caps stored Boots and Rifle with the traced overflow reward", () => {
+    expect(MAX_POWERUP_STOCK).toBe(4);
+    expect(POWERUP_OVERFLOW_SCORE).toBe(100);
+    expect(storedPowerupPickup(3)).toEqual({ stock: 4, score: 0 });
+    expect(storedPowerupPickup(4)).toEqual({ stock: 4, score: 100 });
   });
 
   it("keeps the round shop cadence explicit", () => {

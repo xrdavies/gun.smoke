@@ -49,11 +49,14 @@ title/opening flow; this data is not labeled as a Round gameplay script.
 
 The verified Round initializer stores a per-Round map-end pointer from
 `$E875` in `$5E/$5F`; collision lookup at `$C6C4` indexes the current Round
-bank from a common `$8440` start in eight 32-pixel columns. Running
+bank in eight 32-pixel columns. `$8400` is the ring base and `$8440` is the
+initial row pointer; forward scrolling decrements the pointer and wraps from
+the base to the per-Round end. Running
 `npm run extract:rom-round-maps` extracts the six cell grids, their five-byte
-cell definitions, and self-generated ID-color previews into the ignored
+cell definitions, and self-generated ID-color/collision previews into the ignored
 `.rom-traces/round-maps/` directory. The previews visualize structure without
-reusing the original tile artwork.
+reusing the original tile artwork. Collision is decoded from bit 6 of each
+definition quadrant, matching the player collision test at `$C733-$C77F`.
 
 Pattern-table previews remain grayscale for bitplane inspection; nametable
 previews apply each tile's expanded attribute and the live NES background

@@ -65,7 +65,10 @@ through the X/Y tables at `$FB09/$FB71`; position byte `0x00` is the Boss gate
 guarded by `$49`, while `0xFF` resets the script to `$8C00` and increments the
 loop counter. `npm run extract:rom-round-events` validates and extracts all six
 scripts into ignored `.rom-traces/round-events/manifest.json`, retaining raw
-entity codes until their dispatch routines are individually identified.
+entity codes until their behavior is individually identified. The manifest
+also follows `$C796` through the initializer table at `$DE83` and, for enemy
+slots, the bank 6 behavior-pointer table at `$B000`; this records mechanical
+code-to-routine mappings without assigning speculative gameplay names.
 
 Pattern-table previews remain grayscale for bitplane inspection; nametable
 previews apply each tile's expanded attribute and the live NES background

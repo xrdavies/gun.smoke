@@ -162,13 +162,6 @@ export interface RoundSegment {
   landmark: LandmarkType;
 }
 
-export interface RoundItemEvent {
-  at: number;
-  xOffset: number;
-  item: ItemType;
-  loopOnly?: boolean;
-}
-
 export interface RoundObstacle {
   at: number;
   length: number;
@@ -184,15 +177,6 @@ export const ROUND_SEGMENTS: readonly (readonly RoundSegment[])[] = [
   [{ at: 146, formation: "rear", enemyTypes: ["gunman", "ninja"], interval: 1, landmark: "cliff" }, { at: 480, formation: "wedge", enemyTypes: ["ninja", "shotgunner"], interval: 0.86, landmark: "open" }, { at: 1_020, formation: "cross", enemyTypes: ["sniper", "gunman"], interval: 0.78, landmark: "cliff" }, { at: 1_520, formation: "rear", enemyTypes: ["gunman", "shotgunner"], interval: 0.7, landmark: "open" }],
   [{ at: 146, formation: "line", enemyTypes: ["gunman", "rifleman"], interval: 1, landmark: "forest" }, { at: 420, formation: "wedge", enemyTypes: ["bomber", "backstabber"], interval: 0.9, landmark: "forest" }, { at: 980, formation: "line", enemyTypes: ["rifleman", "bomber"], interval: 0.78, landmark: "forest" }, { at: 1_480, formation: "cross", enemyTypes: ["gunman", "backstabber"], interval: 0.68, landmark: "forest" }],
   [{ at: 146, formation: "cross", enemyTypes: ["gunman", "sniper"], interval: 1, landmark: "cemetery" }, { at: 420, formation: "rear", enemyTypes: ["bomber", "backstabber"], interval: 0.86, landmark: "open" }, { at: 980, formation: "wedge", enemyTypes: ["sniper", "gunman"], interval: 0.74, landmark: "cemetery" }, { at: 1_500, formation: "cross", enemyTypes: ["bomber", "backstabber"], interval: 0.64, landmark: "open" }],
-];
-
-export const ROUND_ITEM_EVENTS: readonly (readonly RoundItemEvent[])[] = [
-  [{ at: 220, xOffset: 170, item: "rifle" }, { at: 300, xOffset: 140, item: "money" }, { at: 380, xOffset: 0, item: "boots" }, { at: 440, xOffset: 140, item: "money" }, { at: 500, xOffset: 0, item: "pow" }, { at: 800, xOffset: 170, item: "horse" }, { at: 1_280, xOffset: -170, item: "money" }, { at: 1_450, xOffset: 120, item: "blueYashichi" }, { at: 1_620, xOffset: -130, item: "redYashichi" }, { at: 1_750, xOffset: -40, item: "pow" }],
-  [{ at: 300, xOffset: -170, item: "horse", loopOnly: true }, { at: 620, xOffset: 150, item: "skull" }, { at: 700, xOffset: 0, item: "blueYashichi" }, { at: 820, xOffset: 160, item: "redYashichi" }, { at: 900, xOffset: -150, item: "skull" }, { at: 1_520, xOffset: 0, item: "pow" }],
-  [{ at: 520, xOffset: -150, item: "pow" }, { at: 580, xOffset: 150, item: "redYashichi" }, { at: 640, xOffset: 150, item: "skull" }, { at: 780, xOffset: -150, item: "blueYashichi" }, { at: 1_380, xOffset: -150, item: "skull" }, { at: 1_520, xOffset: -120, item: "skull" }, { at: 1_600, xOffset: 0, item: "redYashichi" }, { at: 1_680, xOffset: 120, item: "skull" }],
-  [{ at: 650, xOffset: -160, item: "blueYashichi" }, { at: 1_280, xOffset: 150, item: "blueYashichi" }, { at: 1_400, xOffset: -150, item: "redYashichi" }, { at: 1_500, xOffset: 150, item: "redYashichi" }, { at: 1_600, xOffset: -160, item: "skull" }, { at: 1_660, xOffset: -100, item: "pow" }, { at: 1_720, xOffset: -40, item: "skull" }],
-  [{ at: 620, xOffset: -150, item: "blueYashichi" }, { at: 950, xOffset: 140, item: "redYashichi" }, { at: 1_280, xOffset: -100, item: "pow" }, { at: 1_420, xOffset: -140, item: "skull" }, { at: 1_500, xOffset: 0, item: "skull" }, { at: 1_560, xOffset: 140, item: "skull" }],
-  [{ at: 650, xOffset: 0, item: "pow" }, { at: 900, xOffset: 0, item: "blueYashichi" }, { at: 1_400, xOffset: -150, item: "redYashichi" }],
 ];
 
 // Obstacles are gameplay-space blockers, separate from decorative landmarks.
@@ -269,10 +253,6 @@ export function shouldRevealWanted(scroll: number, round: number, hasWanted: boo
 
 export function segmentDelay(scroll: number, at: number, speed: number): number {
   return Math.max(0, (at - scroll) / speed);
-}
-
-export function worldEventEnteredView(scroll: number, at: number, viewportHeight = WORLD_VIEWPORT_HEIGHT): boolean {
-  return at <= scroll + viewportHeight;
 }
 
 export function obstacleBlocks(obstacle: RoundObstacle, x: number, y: number, radius = 18): boolean {

@@ -67,7 +67,7 @@ each lost health bar.
 
 The procedural enemy roster is data-driven per Round: early town stages include
 gunmen, bombers, snipers and back-stabbers; Rocky Pass adds riflemen; Native
-Village adds hatchet throwers and firebreathers; Cliff Valley adds ninjas and
+Village adds spear throwers and firebreathers; Cliff Valley adds ninjas and
 shotgunners; the final rounds return to gunmen, riflemen, bombers and snipers.
 
 Round 1 Bomber dynamite has explicit flight, landed, defusable, and delayed

@@ -744,7 +744,7 @@ class GunSmokeGame {
     const small = kind === "bullet" || kind === "enemyBullet";
     const colors: Record<EnemyType, [number, number, number, number]> = {
       gunman: [1, 0.82, 0.82, 1], rifleman: [0.82, 0.9, 1, 1], bomber: [1, 0.9, 0.65, 1], sniper: [0.78, 1, 0.88, 1],
-      backstabber: [1, 0.72, 0.88, 1], ninja: [0.82, 0.78, 1, 1], hatchet: [1, 0.82, 0.68, 1], firebreather: [1, 0.62, 0.42, 1], shotgunner: [1, 0.48, 0.3, 1],
+      backstabber: [1, 0.72, 0.88, 1], ninja: [0.82, 0.78, 1, 1], hatchet: [1, 0.82, 0.68, 1], spear: [0.7, 0.9, 0.72, 1], firebreather: [1, 0.62, 0.42, 1], shotgunner: [1, 0.48, 0.3, 1],
     };
     const bossColors: readonly [number, number, number, number][] = [[1, 0.55, 0.42, 1], [0.55, 0.75, 1, 1], [1, 0.72, 0.34, 1], [0.78, 0.58, 1, 1], [1, 0.82, 0.42, 1], [1, 0.96, 0.72, 1]];
     const itemColors: Record<ItemType, [number, number, number, number]> = { boots: [0.45, 0.8, 1, 1], rifle: [0.7, 0.9, 0.5, 1], ammo: [0.5, 0.7, 1, 1], money: [1, 0.85, 0.35, 1], pow: [1, 0.35, 0.35, 1], skull: [0.75, 0.75, 0.75, 1], horse: [0.8, 0.55, 0.3, 1], blueYashichi: [0.35, 0.65, 1, 1], redYashichi: [1, 0.3, 0.35, 1] };
@@ -812,6 +812,17 @@ class GunSmokeGame {
             projectile.vx = Math.cos(angle + spread) * 145;
             projectile.vy = Math.sin(angle + spread) * 145;
           }
+        }
+      } else if (unit.enemyType === "spear") {
+        unit.x += Math.sin(unit.age * 3 + unit.phase) * 28 * delta;
+        unit.y += unit.vy * delta;
+        if (!unit.fired && unit.age > 0.65) {
+          unit.fired = true;
+          const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
+          const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y + 12, 1);
+          projectile.projectileType = "shuriken";
+          projectile.vx = Math.cos(angle) * 150;
+          projectile.vy = Math.sin(angle) * 150;
         }
       } else if (unit.enemyType === "firebreather") {
         unit.x += Math.sin(unit.age * 4 + unit.phase) * 55 * delta;

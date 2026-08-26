@@ -162,6 +162,10 @@ An early Boss-gate trace identifies Bandit Bill as dispatch `0x88`, variant
 and the next volley starts 72 frames after the fourth shot. Dispatch `0x30`
 projectiles travel at roughly 444 world pixels/s; Round 1 uses these measured
 values instead of its former single slow shot.
+The same gate trace places his initial entity at NES `(x=0, y=160)`; after 96
+frames the actor reaches approximately `x=64`. The web runtime uses the
+corresponding world-space edge entry and horizontal speed, while later
+movement and damage phases remain separate Boss approximations.
 
 Current behavior map:
 

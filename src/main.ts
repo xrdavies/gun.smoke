@@ -692,7 +692,8 @@ class GunSmokeGame {
     const types = segment.enemyTypes;
     for (const offset of offsets) {
       const enemyType = types[Math.floor(this.nextRandom() * types.length)] ?? "gunman";
-      const entryY = enemyType === "backstabber" || segment.formation === "rear" ? this.scroll + 520 : y - Math.abs(offset) * 22;
+      const entersFromBehind = enemyType === "backstabber" || (segment.formation === "rear" && enemyType === "gunman");
+      const entryY = entersFromBehind ? this.scroll + 520 : y - Math.abs(offset) * 22;
       const sniperX = offset <= 0 ? 480 - roadHalf + 22 : 480 + roadHalf - 22;
       const enemy = this.spawnUnit("enemy", enemyType === "sniper" ? sniperX : clamp(center + offset * 66, 54, 906), entryY, 1 + Number(this.stage >= 4), enemyType);
       enemy.vx = segment.formation === "cross" ? offset * 32 : (this.nextRandom() - 0.5) * (55 + this.stage * 8);

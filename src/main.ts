@@ -582,14 +582,14 @@ class GunSmokeGame {
       this.showMessage("SHOOT THE BARREL");
     }
     if (this.scroll >= BOSS_TRIGGER && this.hasWanted && !this.bossSpawned) this.spawnBoss();
-    if (this.spawnClock <= 0 && !this.bossSpawned) {
+    if (this.spawnClock <= 0) {
       const segments = ROUND_SEGMENTS[this.stage - 1] ?? ROUND_SEGMENTS[0]!;
-      const nextSegment = segments.find((segment) => this.scroll < segment.at);
+      const nextSegment = this.bossSpawned ? undefined : segments.find((segment) => this.scroll < segment.at);
       if (nextSegment) {
         this.spawnClock = Math.max(0.01, segmentDelay(this.scroll, nextSegment.at, WORLD_SCROLL_SPEED));
         return;
       }
-      this.spawnFormation();
+      this.spawnFormation(this.bossSpawned);
     }
   }
 
@@ -717,7 +717,7 @@ class GunSmokeGame {
     return (ROUND_OBSTACLES[this.stage - 1] ?? []).some((obstacle) => obstacleBlocks(obstacle, x, y));
   }
 
-  private spawnFormation(): void {
+  private spawnFormation(bossEncounter = false): void {
     const roadHalf = (ROAD_WIDTHS[this.stage - 1] ?? 520) / 2;
     const center = clamp(480 + (this.nextRandom() - 0.5) * (roadHalf * 1.5), 80, 880);
     const y = this.scroll + 55;
@@ -736,13 +736,13 @@ class GunSmokeGame {
       enemy.vx = segment.formation === "cross" ? offset * 32 : (this.nextRandom() - 0.5) * (55 + this.stage * 8);
       enemy.vy = entersFromBehind ? -100 : enemyType === "sniper" ? 0 : 24 + this.stage * 6;
     }
-    if (this.nextRandom() < 0.28) this.spawnUnit("coin", clamp(center + (this.nextRandom() - 0.5) * 260, 60, 900), y + 55, 1);
-    if (this.nextRandom() < 0.1) {
+    if (!bossEncounter && this.nextRandom() < 0.28) this.spawnUnit("coin", clamp(center + (this.nextRandom() - 0.5) * 260, 60, 900), y + 55, 1);
+    if (!bossEncounter && this.nextRandom() < 0.1) {
       const itemTypes = ROUND_ITEM_TYPES[this.stage - 1] ?? ROUND_ITEM_TYPES[0]!;
       const itemType = itemTypes[Math.floor(this.nextRandom() * itemTypes.length)] ?? "money";
       this.spawnUnit("barrel", clamp(center + (this.nextRandom() - 0.5) * 300, 60, 900), y + 90, 1, undefined, itemType);
     }
-    if (this.ownedWeapons.size > 1 && this.nextRandom() < 0.18) this.spawnUnit("ammo", clamp(center + (this.nextRandom() - 0.5) * 220, 60, 900), y + 120, 1);
+    if (!bossEncounter && this.ownedWeapons.size > 1 && this.nextRandom() < 0.18) this.spawnUnit("ammo", clamp(center + (this.nextRandom() - 0.5) * 220, 60, 900), y + 120, 1);
     this.spawnClock = segment.interval;
   }
 

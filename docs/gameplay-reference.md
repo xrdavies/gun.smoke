@@ -80,6 +80,11 @@ Hawk become vulnerable only after their opening attack. Fatman Joe is
 vulnerable before each bomb-gun firing and briefly protected during the launch;
 Cutter's boomerangs also curve in opposite directions.
 
+The final Round segment continues spawning regular enemy formations during
+each Boss encounter. Boss reinforcements can still drop money or ammunition
+when defeated, but the formation scheduler does not create extra ambient
+barrels or loose pickups inside the locked arena.
+
 Devil Hawk uses a long jump arc and fires a five-shot or side-aimed three-shot
 fireball fan, Fatman Joe uses short hops and a delayed dynamite bomb gun,
 Wingate rushes forward, and the Ninja enters a smoke/invulnerability phase and

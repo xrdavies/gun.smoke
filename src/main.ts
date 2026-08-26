@@ -1305,7 +1305,6 @@ class GunSmokeGame {
       if (bullet.piercing) {
         const projectile = this.units.find((candidate) => candidate.kind === "enemyBullet" && candidate.hp > 0 && distance(bullet, candidate) <= bullet.radius + candidate.radius);
         if (projectile) {
-          bullet.hp = 0;
           projectile.hp = 0;
           continue;
         }

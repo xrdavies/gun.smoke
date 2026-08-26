@@ -118,6 +118,9 @@ An isolated `$B775` Rifleman enters its attack state at age 80 frames, emits
 five dispatch `0x30` shots at ages 96, 112, 128, 144 and 160, then returns to
 its movement state. The runtime preserves that five-shot vertical volley and
 its 16-frame cadence.
+An isolated `$B671` Ninja emits one dispatch `0x31` Shuriken at age 103
+frames. Its measured path is diagonal toward Billy; the runtime uses the
+same one-shot timing and a 300-world-pixel/s self-generated projectile.
 
 Current behavior map:
 
@@ -129,7 +132,7 @@ Current behavior map:
 | `$B46E` | Backstabber | Round 1 roster elimination |
 | `$B501` | Bomber | isolated delayed dynamite state |
 | `$B5BF` | object-only scene behavior | 44 Round 4 records all select object pool |
-| `$B671` | Ninja | Round 4 roster elimination after Gunman/Shotgunner |
+| `$B671` | Ninja | isolated dispatch/OAM timing trace |
 | `$B775` | Rifleman | isolated state/OAM timing trace |
 | `$B82F` | Backstabber | Round 5 roster elimination |
 | `$B8F4` | Hatchet Thrower | Native Village roster elimination |

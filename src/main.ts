@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, BOMBER_FIRST_THROW_DELAY, BOMBER_THROW_INTERVAL, bossReward, BOOTS_SPEED_MULTIPLIER, clamp, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, DYNAMITE_LIFETIME, DYNAMITE_WORLD_SPEED, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLEMAN_BULLET_SPEED, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_BOSS_TRIGGERS, ROUND_ITEM_EVENTS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_VOLLEY_INTERVAL, shouldLoopStage, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, worldEventEnteredView, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, BOMBER_FIRST_THROW_DELAY, BOMBER_THROW_INTERVAL, bossReward, BOOTS_SPEED_MULTIPLIER, clamp, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, DYNAMITE_LIFETIME, DYNAMITE_WORLD_SPEED, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, NINJA_FIRST_SHOT_DELAY, NINJA_PROJECTILE_SPEED, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLEMAN_BULLET_SPEED, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_BOSS_TRIGGERS, ROUND_ITEM_EVENTS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_VOLLEY_INTERVAL, shouldLoopStage, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, worldEventEnteredView, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
 import { roundCollisionBlocks } from "./round-collision";
 import { canSpawnRomPool, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_ENEMY_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
 
@@ -747,7 +747,7 @@ class GunSmokeGame {
     }
     this.enemyFireClock -= delta;
     if (this.enemyFireClock > 0) return;
-    const shooters = this.units.filter((unit) => unit.kind === "enemy" && unit.enemyType !== "rifleman" && unit.enemyType !== "sniper" && unit.enemyType !== "bomber" && unit.enemyType !== "shotgunner" && unit.enemyType !== "spear" && unit.enemyType !== "firebreather" && unit.enemyType !== "hatchet" && unit.hp > 0 && unit.y < this.player.y);
+    const shooters = this.units.filter((unit) => unit.kind === "enemy" && unit.enemyType !== "rifleman" && unit.enemyType !== "sniper" && unit.enemyType !== "bomber" && unit.enemyType !== "shotgunner" && unit.enemyType !== "spear" && unit.enemyType !== "firebreather" && unit.enemyType !== "hatchet" && unit.enemyType !== "ninja" && unit.hp > 0 && unit.y < this.player.y);
     const shooter = shooters[Math.floor(this.nextRandom() * shooters.length)];
     if (shooter) {
       const angle = Math.atan2(this.player.y - shooter.y, this.player.x - shooter.x);
@@ -1029,6 +1029,16 @@ class GunSmokeGame {
       } else if (unit.enemyType === "ninja") {
         unit.x += (unit.vx + Math.sin(unit.age * 6 + unit.phase) * 90) * delta;
         unit.y += unit.vy * 1.8 * delta;
+        if (!unit.fired && unit.age >= NINJA_FIRST_SHOT_DELAY) {
+          unit.fired = true;
+          const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
+          const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y, 1);
+          projectile.projectileType = "shuriken";
+          projectile.vx = Math.cos(angle) * NINJA_PROJECTILE_SPEED;
+          projectile.vy = Math.sin(angle) * NINJA_PROJECTILE_SPEED;
+          projectile.radius = 8;
+          projectile.sprite.size = { x: 16, y: 16 };
+        }
       } else if (unit.enemyType === "rifleman") {
         unit.x += unit.vx * delta;
         unit.y += (unit.age < 1.2 ? unit.vy : -unit.vy * 0.75) * delta;

@@ -58,6 +58,8 @@ export const RIFLEMAN_FIRST_SHOT_DELAY = 96 / NES_FRAME_RATE;
 export const RIFLEMAN_SHOT_INTERVAL = 16 / NES_FRAME_RATE;
 export const RIFLEMAN_SHOTS_PER_VOLLEY = 5;
 export const RIFLEMAN_BULLET_SPEED = 0.375 * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
+export const NINJA_FIRST_SHOT_DELAY = 103 / NES_FRAME_RATE;
+export const NINJA_PROJECTILE_SPEED = 300;
 
 export const SHOP_CHECKPOINTS: readonly (readonly number[])[] = [
   [560, 1_180],

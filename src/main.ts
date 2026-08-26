@@ -620,18 +620,21 @@ class GunSmokeGame {
     const road = this.roadTextures[this.stage - 1] ?? this.textures.road;
     const roadWidth = ROAD_WIDTHS[this.stage - 1] ?? 520;
     const edge = (960 - roadWidth) / 2;
+    const segments = ROUND_SEGMENTS[this.stage - 1] ?? ROUND_SEGMENTS[0]!;
     for (let y = -360; y < STAGE_LENGTH + 650; y += 180) {
+      let landmark = segments[0]?.landmark ?? "town";
+      for (const candidate of segments) if (y >= candidate.at) landmark = candidate.landmark;
       this.backgrounds.push(new Sprite({ texture: terrain, sampler: this.sampler, position: { x: 480, y: y + 90 }, size: { x: 960, y: 180 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -20 }));
       this.backgrounds.push(new Sprite({ texture: road, sampler: this.sampler, position: { x: 480, y: y + 90 }, size: { x: roadWidth, y: 180 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -19 }));
-      if (this.currentLandmark === "open") {
+      if (landmark === "open") {
         // Open clearings deliberately omit side landmarks.
-      } else if (this.currentLandmark === "town" || this.currentLandmark === "cemetery") {
+      } else if (landmark === "town" || landmark === "cemetery") {
         for (const x of [edge - 48, 960 - edge + 48]) this.backgrounds.push(new Sprite({ texture: this.textures.landmark, sampler: this.sampler, position: { x, y: y + 90 }, size: { x: 86, y: 130 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -18 }));
-      } else if (this.currentLandmark === "rock" || this.currentLandmark === "cliff") {
+      } else if (landmark === "rock" || landmark === "cliff") {
         for (const x of [edge - 30, 960 - edge + 30]) this.backgrounds.push(new Sprite({ texture: this.textures.landmark, sampler: this.sampler, position: { x, y: y + 90 }, size: { x: 52, y: 170 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -18 }));
-      } else if (this.currentLandmark === "village") {
+      } else if (landmark === "village") {
         for (const x of [edge - 36, 960 - edge + 36]) this.backgrounds.push(new Sprite({ texture: this.textures.landmark, sampler: this.sampler, position: { x, y: y + 90 }, size: { x: 68, y: 92 }, anchor: { x: 0.5, y: 0.5 }, color: [1, 0.78, 0.6, 1], layer: -18 }));
-      } else if (this.currentLandmark === "forest" && Math.floor(y / 180) % 3 === 1) {
+      } else if (landmark === "forest" && Math.floor(y / 180) % 3 === 1) {
         this.backgrounds.push(new Sprite({ texture: this.textures.landmark, sampler: this.sampler, position: { x: 480, y: y + 90 }, size: { x: roadWidth, y: 26 }, anchor: { x: 0.5, y: 0.5 }, color: [0.75, 0.5, 0.28, 1], layer: -18 }));
       }
     }

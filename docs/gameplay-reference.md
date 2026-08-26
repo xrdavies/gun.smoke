@@ -38,6 +38,9 @@ after the second shop, then two Red Yashichi barrels and the final
 Skull/POW/Skull group immediately before the left-side Wanted spot.
 Round 5 places its tree-side Blue and dock-side Red between the two shops, then
 the left POW and closing Skull group before the Wanted spot to their right.
+Round 6 orders its lone POW after the first weapon shop, the grave-group Blue
+before the supply shop, the later weapon revisit, then the left Red barrel and
+final grave-group Wanted area.
 
 The web build also models the resource loop with Money Bag pickups, round-specific
 trading-post checkpoints, Shotgun, Machine Gun, Magnum, finite ammunition,

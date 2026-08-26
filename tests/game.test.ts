@@ -52,6 +52,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(SHOP_X_OFFSETS.every((offsets, round) => offsets.length === SHOP_CHECKPOINTS[round]?.length)).toBe(true);
     expect(SHOP_CHECKPOINTS[2]).toHaveLength(3);
     expect(SHOP_CHECKPOINTS[5]).toHaveLength(3);
+    expect(SHOP_CHECKPOINTS[2]).toEqual([420, 860, 1_300]);
+    expect(SHOP_CHECKPOINTS[5]).toEqual([420, 1_050, 1_250]);
     expect(ROAD_WIDTHS).toHaveLength(MAX_STAGE);
     expect(ROAD_WIDTHS[0]).toBe(730);
     expect(ROAD_WIDTHS[2]).toBeLessThan(ROAD_WIDTHS[4]);
@@ -92,6 +94,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROUND_ITEM_EVENTS[2]?.map((event) => event.item)).toEqual(["pow", "redYashichi", "skull", "blueYashichi", "skull", "skull", "redYashichi", "skull"]);
     expect(ROUND_ITEM_EVENTS[3]?.map((event) => event.item)).toEqual(["blueYashichi", "blueYashichi", "redYashichi", "redYashichi", "skull", "pow", "skull"]);
     expect(ROUND_ITEM_EVENTS[4]?.map((event) => event.item)).toEqual(["blueYashichi", "redYashichi", "pow", "skull", "skull", "skull"]);
+    expect(ROUND_ITEM_EVENTS[5]?.map((event) => event.item)).toEqual(["pow", "blueYashichi", "redYashichi"]);
     expect(ROUND_ITEM_EVENTS[1]?.filter((event) => event.loopOnly)).toEqual([{ at: 300, xOffset: -170, item: "horse", loopOnly: true }]);
     expect(ROUND_ITEM_EVENTS[1]?.map((event) => event.item)).toEqual(["horse", "skull", "blueYashichi", "redYashichi", "skull", "pow"]);
     expect(ROUND_ITEM_EVENTS.flatMap((events, round) => events.filter((event) => event.item === "horse").map(() => round + 1))).toEqual([1, 2]);

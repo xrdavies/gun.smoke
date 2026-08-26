@@ -84,6 +84,7 @@ export interface RoundItemEvent {
   at: number;
   xOffset: number;
   item: ItemType;
+  loopOnly?: boolean;
 }
 
 export interface RoundObstacle {
@@ -105,7 +106,7 @@ export const ROUND_SEGMENTS: readonly (readonly RoundSegment[])[] = [
 
 export const ROUND_ITEM_EVENTS: readonly (readonly RoundItemEvent[])[] = [
   [{ at: 220, xOffset: 170, item: "rifle" }, { at: 360, xOffset: -150, item: "money" }, { at: 720, xOffset: 0, item: "boots" }, { at: 900, xOffset: 140, item: "money" }, { at: 1_180, xOffset: 170, item: "horse" }, { at: 1_480, xOffset: -170, item: "pow" }, { at: 1_600, xOffset: 120, item: "blueYashichi" }, { at: 1_700, xOffset: -130, item: "redYashichi" }, { at: 1_780, xOffset: -40, item: "pow" }],
-  [{ at: 260, xOffset: 140, item: "skull" }, { at: 520, xOffset: -140, item: "blueYashichi" }, { at: 780, xOffset: 160, item: "redYashichi" }, { at: 920, xOffset: -150, item: "skull" }, { at: 1_160, xOffset: -120, item: "horse" }, { at: 1_520, xOffset: 0, item: "pow" }],
+  [{ at: 260, xOffset: 140, item: "skull" }, { at: 300, xOffset: -170, item: "horse", loopOnly: true }, { at: 520, xOffset: -140, item: "blueYashichi" }, { at: 780, xOffset: 160, item: "redYashichi" }, { at: 920, xOffset: -150, item: "skull" }, { at: 1_520, xOffset: 0, item: "pow" }],
   [{ at: 240, xOffset: -150, item: "pow" }, { at: 480, xOffset: 150, item: "redYashichi" }, { at: 560, xOffset: 150, item: "skull" }, { at: 820, xOffset: -120, item: "blueYashichi" }, { at: 1_120, xOffset: 130, item: "horse" }, { at: 1_360, xOffset: -150, item: "skull" }, { at: 1_520, xOffset: 0, item: "redYashichi" }],
   [{ at: 300, xOffset: -160, item: "blueYashichi" }, { at: 680, xOffset: 150, item: "redYashichi" }, { at: 900, xOffset: -150, item: "redYashichi" }, { at: 1_040, xOffset: -120, item: "pow" }, { at: 1_300, xOffset: 140, item: "blueYashichi" }, { at: 1_440, xOffset: 120, item: "redYashichi" }],
   [{ at: 240, xOffset: -150, item: "blueYashichi" }, { at: 700, xOffset: 140, item: "redYashichi" }, { at: 1_020, xOffset: -100, item: "pow" }, { at: 1_240, xOffset: 160, item: "skull" }, { at: 1_440, xOffset: 120, item: "skull" }],

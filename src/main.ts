@@ -210,6 +210,7 @@ class GunSmokeGame {
   hasWanted = false;
   posterPropSpawned = false;
   itemEventCursor = 0;
+  stageLoopCount = 0;
   currentLandmark: LandmarkType = "town";
   wingatePhase = 0;
   weapon: WeaponName = "pistol";
@@ -644,6 +645,10 @@ class GunSmokeGame {
     while (this.itemEventCursor < events.length) {
       const event = events[this.itemEventCursor];
       if (!event || this.scroll + 560 < event.at) break;
+      if (event.loopOnly && this.stageLoopCount === 0) {
+        this.itemEventCursor += 1;
+        continue;
+      }
       this.spawnUnit("barrel", clamp(480 + event.xOffset, 60, 900), event.at, 1, undefined, event.item);
       this.itemEventCursor += 1;
     }
@@ -1254,6 +1259,7 @@ class GunSmokeGame {
     this.wingatePhase = 0;
     this.posterPropSpawned = false;
     this.itemEventCursor = 0;
+    this.stageLoopCount = 0;
     this.shopIndex = 0;
     this.units.length = 0;
     this.buildBackground();
@@ -1264,6 +1270,7 @@ class GunSmokeGame {
   }
 
   private loopStage(): void {
+    this.stageLoopCount += 1;
     this.scroll = 0;
     this.camera.position.y = 270;
     this.player.y = 410;

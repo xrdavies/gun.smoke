@@ -23,6 +23,8 @@ the alternate purchase route described by the NES walkthrough.
 If the player reaches the end without the poster, the Round loops to its first
 segment with shops and the hidden barrel available again. Once the poster is
 owned, scrolling stops at the Boss arena.
+Round 2 also adds its free Horse barrel near the left cactus only after such a
+loop; it is not present on the first pass.
 
 The web build also models the resource loop with Money Bag pickups, round-specific
 trading-post checkpoints, Shotgun, Machine Gun, Magnum, finite ammunition,

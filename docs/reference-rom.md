@@ -132,8 +132,8 @@ maps to roughly 266 world pixels/s; ROM-tagged Gunmen use this per-actor timing
 instead of the procedural global firing clock.
 An isolated `$B775` Rifleman enters its attack state at age 80 frames, emits
 five dispatch `0x30` shots at ages 96, 112, 128, 144 and 160, then returns to
-its movement state. The runtime preserves that five-shot vertical volley and
-its 16-frame cadence.
+its movement state. The runtime preserves the 80-frame state transition, the
+five-shot vertical volley and its 16-frame cadence.
 An isolated `$B671` Ninja emits one dispatch `0x31` Shuriken at age 103
 frames. Its measured path is diagonal toward Billy; the runtime uses the
 same one-shot timing and a 300-world-pixel/s self-generated projectile.

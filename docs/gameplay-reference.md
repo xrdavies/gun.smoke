@@ -146,7 +146,8 @@ Throwers; individual routine names remain explicit approximations until their
 full state machines are traced.
 Snipers are edge-mounted static shooters that aim once and retreat into their
 window/tee-pee cover instead of walking with field enemies. Riflemen advance,
-fire a five-shot vertical volley, and retreat toward the top of the playfield.
+enter their attack state at 80 NES frames, fire a five-shot vertical volley,
+and retreat toward the top of the playfield.
 
 Round 1 Bomber dynamite has explicit flight, landed, defusable, and delayed
 explosion phases. Boss and enemy projectiles are typed separately as bullets,

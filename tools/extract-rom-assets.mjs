@@ -62,7 +62,6 @@ function writeScene(name) {
 
 function writeNameTables() {
   const baseTile = nes.ppu.f_bgPatternTable === 0 ? 0 : 256;
-  const palette = [0, 96, 176, 255];
   for (let tableIndex = 0; tableIndex < nes.ppu.nameTable.length; tableIndex += 1) {
     const table = nes.ppu.nameTable[tableIndex];
     fs.writeFileSync(path.join(output, `nametable-${tableIndex}.bin`), Buffer.from(table.tile));
@@ -70,15 +69,17 @@ function writeNameTables() {
     writeRgbaPng(`nametable-${tableIndex}.png`, 256, 240, (x, y) => {
       const tileX = Math.floor(x / 8);
       const tileY = Math.floor(y / 8);
-      const tileIndex = table.tile[tileY * 32 + tileX] ?? 0;
+      const nameTableIndex = tileY * 32 + tileX;
+      const tileIndex = table.tile[nameTableIndex] ?? 0;
       const row = y % 8;
       const column = 7 - (x % 8);
       const address = (baseTile + tileIndex) * 16;
       const low = nes.ppu.vramMem[address + row] ?? 0;
       const high = nes.ppu.vramMem[address + row + 8] ?? 0;
       const value = ((high >> column) & 1) * 2 + ((low >> column) & 1);
-      const color = palette[value] ?? 0;
-      return [color, color, color, 255];
+      const paletteIndex = value === 0 ? 0 : (table.attrib[nameTableIndex] ?? 0) + value;
+      const color = nes.ppu.imgPalette[paletteIndex] ?? 0;
+      return [(color >> 16) & 0xff, (color >> 8) & 0xff, color & 0xff, 255];
     });
   }
 }

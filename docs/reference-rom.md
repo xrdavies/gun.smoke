@@ -31,6 +31,9 @@ all four nametable/attribute buffers and rendered nametable previews, VRAM,
 sprite OAM and selected 256x240 frames. `nametable-summary.json` records hashes,
 dominant tiles and occupied bounds without bundling the raw assets. The output is ignored by Git and
 is intended only for private inspection against the supplied reference file.
+Pattern-table previews remain grayscale for bitplane inspection; nametable
+previews apply each tile's expanded attribute and the live NES background
+palette so terrain colors match the captured scene.
 
 `npm run trace:rom:timeline` presses Start before the attract timer begins,
 starts a real game,

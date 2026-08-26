@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { AMMO_GAIN, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, MAX_STAGE, NES_BULLET_SPEED, NES_DIAGONAL_BULLET_X, NES_DIAGONAL_BULLET_Y, NES_PLAYER_SPEED, NES_SCROLL_SPEED, PISTOL_BULLET_LIFETIME, ROAD_WIDTHS, ROUND_ENEMY_TYPES, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, SHOP_CHECKPOINTS, SHOP_COSTS, STAGE_LENGTH, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, clamp, distance, nextExtraLifeScore, scoreExtraLives, shouldLoopStage } from "../src/game-constants";
+import { AMMO_GAIN, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, MAX_STAGE, NES_BULLET_SPEED, NES_DIAGONAL_BULLET_X, NES_DIAGONAL_BULLET_Y, NES_PLAYER_SPEED, NES_SCROLL_SPEED, PISTOL_BULLET_LIFETIME, ROAD_WIDTHS, ROUND_ENEMY_TYPES, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, SHOP_CHECKPOINTS, SHOP_COSTS, segmentDelay, STAGE_LENGTH, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, nextExtraLifeScore, scoreExtraLives, shouldLoopStage } from "../src/game-constants";
 
 describe("Gun.Smoke vertical slice", () => {
   it("keeps the NES-inspired stage constants stable", () => {
@@ -45,6 +45,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROUND_SEGMENTS).toHaveLength(MAX_STAGE);
     expect(ROUND_SEGMENTS.every((segments) => segments[0]?.at === 146)).toBe(true);
     expect(ROUND_SEGMENTS[0]?.some((segment) => segment.landmark === "open")).toBe(true);
+    expect(segmentDelay(27, 146, 45)).toBeCloseTo(2.644, 2);
     expect(ROUND_ITEM_TYPES).toHaveLength(MAX_STAGE);
     expect(ROUND_ITEM_TYPES[0]).toContain("horse");
     expect(ROUND_ITEM_TYPES[1]).toContain("skull");

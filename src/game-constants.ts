@@ -136,6 +136,10 @@ export function shouldLoopStage(scroll: number, hasWanted: boolean): boolean {
   return scroll >= STAGE_LENGTH && !hasWanted;
 }
 
+export function segmentDelay(scroll: number, at: number, speed: number): number {
+  return Math.max(0, (at - scroll) / speed);
+}
+
 export function nextExtraLifeScore(currentThreshold: number): number {
   return currentThreshold === 30_000 ? 100_000 : currentThreshold + 100_000;
 }

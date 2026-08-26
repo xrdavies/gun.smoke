@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, MAX_STAGE, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, shouldLoopStage, SHOP_CHECKPOINTS, SHOP_COSTS, scoreExtraLives, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, MAX_STAGE, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, segmentDelay, shouldLoopStage, SHOP_CHECKPOINTS, SHOP_COSTS, scoreExtraLives, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -545,6 +545,12 @@ class GunSmokeGame {
     }
     if (this.scroll >= BOSS_TRIGGER && this.hasWanted && !this.bossSpawned) this.spawnBoss();
     if (this.spawnClock <= 0 && !this.bossSpawned) {
+      const segments = ROUND_SEGMENTS[this.stage - 1] ?? ROUND_SEGMENTS[0]!;
+      const nextSegment = segments.find((segment) => this.scroll < segment.at);
+      if (nextSegment) {
+        this.spawnClock = Math.max(0.01, segmentDelay(this.scroll, nextSegment.at, WORLD_SCROLL_SPEED));
+        return;
+      }
       this.spawnFormation();
     }
   }

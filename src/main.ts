@@ -22,7 +22,7 @@ import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "./game-constants";
 import { pistolShots } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
 import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_VOLLEY_INTERVAL, FATMAN_JOE_VOLLEY_SIZE } from "./game-constants";
-import { WINGATE_BULLET_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateShotCooldown } from "./game-constants";
+import { WINGATE_BULLET_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateShotCooldown } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPEED, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { CUTTER_ENTRY_DURATION, CUTTER_MOVEMENT_SPEED, cutterOpeningY } from "./game-constants";
 import { DEVIL_HAWK_ENTRY_DURATION, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkOpeningY } from "./game-constants";
@@ -505,6 +505,7 @@ class GunSmokeGame {
         const boss = this.spawnUnit("boss", WINGATE_SECOND_ENTRY_X, this.scroll + WINGATE_SECOND_ENTRY_Y, (STAGES[MAX_STAGE - 1]?.bossHp ?? 6) * 4);
         boss.bossEntryX = boss.x;
         boss.bossEntryY = WINGATE_SECOND_ENTRY_Y;
+        boss.vx = (boss.phase < Math.PI ? 1 : -1) * WINGATE_MOVEMENT_SPEED;
         this.bossFireClock = WINGATE_SECOND_FIRST_SHOT_DELAY;
         this.showMessage("THE REAL WINGATE");
       }
@@ -1043,6 +1044,7 @@ class GunSmokeGame {
       boss.bossEntryX = boss.x;
       boss.bossEntryY = boss.y - this.scroll;
       if (isBanditBill || isCutter) boss.vx = 0;
+      if (isFirstWingate) boss.vx = (boss.phase < Math.PI ? 1 : -1) * WINGATE_MOVEMENT_SPEED;
       if (isNinjaBoss) boss.invulnerableUntil = NINJA_BOSS_ENTRY_INVULNERABILITY;
     }
     this.showMessage(`WANTED: ${definition.boss}`);

@@ -132,7 +132,7 @@ fireball fan, while the Ninja enters from measured NES lanes near `x=176/192`
 with an initial smoke/invulnerability window,
 Fatman Joe enters from NES `x=152` at the top edge before using short hops and a
 delayed dynamite bomb gun, while Wingate's two encounters use top-edge NES
-lanes `x=152` and `x=192`; the Ninja enters a smoke/invulnerability phase and
+lanes `x=152` and `x=192` before resuming horizontal movement; the Ninja enters a smoke/invulnerability phase and
 teleports after each lost health bar.
 Fatman Joe's measured opening volley begins at frame 205, emits five projectiles
 and repeats after roughly 131 frames; projectile arcs remain procedural.

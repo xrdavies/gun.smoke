@@ -141,6 +141,8 @@ test("rejects non-iNES reference files", async ({ page }) => {
   });
   await expect(page.locator("#rom-status")).toContainText("Could not load ROM");
   await expect(page.locator("#title-screen")).toBeVisible();
+  await page.locator("#start-button").click();
+  await expect(page.locator("#intro-screen")).toBeVisible();
 });
 
 test("survives a sustained gameplay run", async ({ page }) => {

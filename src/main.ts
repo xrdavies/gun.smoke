@@ -1618,10 +1618,11 @@ async function loadReferenceRom(): Promise<void> {
   referenceRomInput.disabled = true;
   romStatus.textContent = `Loading ${file.name}...`;
   try {
+    const nextReferenceGame = await ReferenceRomGame.create(await file.arrayBuffer());
     referenceGame?.destroy();
     game?.destroy();
     game = undefined;
-    referenceGame = await ReferenceRomGame.create(await file.arrayBuffer());
+    referenceGame = nextReferenceGame;
     titleScreen.hidden = true;
     introScreen.hidden = true;
     briefingScreen.hidden = true;

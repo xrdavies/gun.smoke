@@ -19,6 +19,7 @@ export const STAGES: readonly StageDefinition[] = [
 export const STAGE_LENGTH = 2_200;
 export const BOSS_TRIGGER = 1_820;
 export const MAX_STAGE = STAGES.length;
+export const NES_FRAME_RATE = 60.098;
 export const NES_SCROLL_SPEED = 20;
 export const WORLD_SCROLL_SPEED = NES_SCROLL_SPEED * (540 / 240);
 export const NES_PLAYER_SPEED = 75;

@@ -80,7 +80,7 @@ The web title page can also load the same local ROM into Reference ROM mode.
 This provides a legal exact-runtime comparison path without distributing the
 ROM; the regular web game remains the original procedural recreation. The
 runtime validates the iNES header, reports Mapper/PRG metadata, maps keyboard
-and Gamepad input to controller 1, advances at 60 Hz and forwards JSNES APU
+and Gamepad input to controller 1, advances at the JSNES NTSC rate of 60.098 Hz and forwards JSNES APU
 samples to the engine `AudioManager` music PCM stream. JSNES uses the actual
 `AudioContext.sampleRate`, avoiding pitch and timing drift on non-48-kHz audio
 devices.

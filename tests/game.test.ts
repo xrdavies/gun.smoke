@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { AMMO_GAIN, BOSS_REWARDS, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, MAX_STAGE, NES_BULLET_SPEED, NES_DIAGONAL_BULLET_X, NES_DIAGONAL_BULLET_Y, NES_PLAYER_SPEED, NES_SCROLL_SPEED, obstacleBlocks, PISTOL_BULLET_LIFETIME, ROAD_WIDTHS, ROUND_ENEMY_TYPES, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_OBSTACLES, ROUND_SEGMENTS, SHOP_CHECKPOINTS, SHOP_COSTS, segmentDelay, STAGE_LENGTH, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, nextExtraLifeScore, scoreExtraLives, shouldLoopStage } from "../src/game-constants";
+import { AMMO_GAIN, BOSS_REWARDS, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_BULLET_SPEED, NES_DIAGONAL_BULLET_X, NES_DIAGONAL_BULLET_Y, NES_PLAYER_SPEED, NES_SCROLL_SPEED, obstacleBlocks, PISTOL_BULLET_LIFETIME, ROAD_WIDTHS, ROUND_ENEMY_TYPES, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_OBSTACLES, ROUND_SEGMENTS, SHOP_CHECKPOINTS, SHOP_COSTS, segmentDelay, STAGE_LENGTH, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, nextExtraLifeScore, scoreExtraLives, shouldLoopStage } from "../src/game-constants";
 
 describe("Gun.Smoke vertical slice", () => {
   it("keeps the NES-inspired stage constants stable", () => {
@@ -7,6 +7,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect({ nesPlayerSpeed: NES_PLAYER_SPEED, playerSpeed: WORLD_PLAYER_SPEED, bootsMultiplier: BOOTS_SPEED_MULTIPLIER }).toEqual({ nesPlayerSpeed: 75, playerSpeed: 168.75, bootsMultiplier: 1.2 });
     expect({ nesBulletSpeed: NES_BULLET_SPEED, bulletSpeed: WORLD_BULLET_SPEED }).toEqual({ nesBulletSpeed: 360, bulletSpeed: 810 });
     expect({ x: NES_DIAGONAL_BULLET_X, y: NES_DIAGONAL_BULLET_Y, worldX: WORLD_DIAGONAL_BULLET_X, worldY: WORLD_DIAGONAL_BULLET_Y, lifetime: PISTOL_BULLET_LIFETIME }).toEqual({ x: 150, y: 300, worldX: 337.5, worldY: 675, lifetime: 0.25 });
+    expect({ speed: MAGNUM_BULLET_SPEED, lifetime: MAGNUM_BULLET_LIFETIME }).toEqual({ speed: 607.5, lifetime: 0.8 });
   });
 
   it("keeps collision helpers bounded and Euclidean", () => {

@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, BOSS_REWARDS, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, MAX_STAGE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, shouldLoopStage, SHOP_CHECKPOINTS, SHOP_COSTS, scoreExtraLives, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, BOSS_REWARDS, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, shouldLoopStage, SHOP_CHECKPOINTS, SHOP_COSTS, scoreExtraLives, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -823,12 +823,17 @@ class GunSmokeGame {
 
   private spawnBullet(direction: number, damage: number): void {
     const unit = this.spawnUnit("bullet", this.player.x + direction * 10, this.player.y - 32, 1);
-    unit.vx = direction * WORLD_DIAGONAL_BULLET_X;
-    unit.vy = Math.abs(direction) < 0.01 ? -WORLD_BULLET_SPEED : -WORLD_DIAGONAL_BULLET_Y;
+    const speedFactor = this.weapon === "magnum" ? MAGNUM_BULLET_SPEED / WORLD_BULLET_SPEED : 1;
+    unit.vx = direction * WORLD_DIAGONAL_BULLET_X * speedFactor;
+    unit.vy = Math.abs(direction) < 0.01 ? -WORLD_BULLET_SPEED * speedFactor : -WORLD_DIAGONAL_BULLET_Y * speedFactor;
     unit.damage = damage;
-    unit.maxAge = this.weapon === "pistol" ? PISTOL_BULLET_LIFETIME * (this.powerups.rifle > 0 ? RIFLE_RANGE_MULTIPLIER : 1) : 0.55;
+    unit.maxAge = this.weapon === "pistol" ? PISTOL_BULLET_LIFETIME * (this.powerups.rifle > 0 ? RIFLE_RANGE_MULTIPLIER : 1) : this.weapon === "magnum" ? MAGNUM_BULLET_LIFETIME : 0.55;
     unit.piercing = this.weapon === "magnum";
     unit.hitTargets = unit.piercing ? new Set<Unit>() : undefined;
+    if (unit.piercing) {
+      unit.radius = 11;
+      unit.sprite.size = { x: 14, y: 32 };
+    }
   }
 
   private spawnBulletVelocity(vx: number, vy: number, damage: number): void {

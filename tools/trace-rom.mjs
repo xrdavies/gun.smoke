@@ -23,6 +23,16 @@ const activeSprites = () => {
   }
   return count;
 };
+const hudScore = () => {
+  const digits = [];
+  for (let index = 0; index < nes.ppu.spriteMem.length; index += 4) {
+    const y = nes.ppu.spriteMem[index] ?? 0xff;
+    const tile = nes.ppu.spriteMem[index + 1] ?? 0xff;
+    const x = nes.ppu.spriteMem[index + 3] ?? 0xff;
+    if (y === 16 && x >= 104 && x <= 144 && (x - 104) % 8 === 0 && tile >= 88 && tile <= 97) digits[(x - 104) / 8] = tile - 88;
+  }
+  return digits.length === 6 && digits.filter(Number.isInteger).length === 6 ? Number(digits.join("")) : undefined;
+};
 const checkpoint = (label, gameFrame) => {
   const frameHash = lastFrame
     ? crypto.createHash("sha256").update(Buffer.from(lastFrame.buffer)).digest("hex").slice(0, 16)
@@ -39,6 +49,7 @@ const checkpoint = (label, gameFrame) => {
       "0x69": nes.cpu.mem[0x69],
       "0x7a": nes.cpu.mem[0x7a],
     },
+    hudScore: hudScore(),
     ppu: {
       vramAddress: nes.ppu.vramAddress,
       coarseX: nes.ppu.regHT,

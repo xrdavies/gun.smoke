@@ -53,6 +53,10 @@ unverified semantic names. In particular, `0x62` changes inside a single Round
 and must not be treated as a stable stage number. Add `--hold-ab` when a
 deterministic continuous-fire comparison is needed. The trace contains
 observations only; it does not include ROM bytes or extracted graphics.
+Both trace formats also decode `hudScore` from the six visible OAM digit tiles
+at `y=16`: runtime tiles 88 through 97 map directly to digits 0 through 9.
+This gives a verified score observation without assigning semantics to an
+unknown RAM address.
 
 The corrected Round 1 trace shows the PPU vertical position advancing 20 pixels
 per 60 frames. At 60.098 Hz, the 540-high procedural world therefore uses

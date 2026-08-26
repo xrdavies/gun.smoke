@@ -37,6 +37,16 @@ const activeOam = () => {
   return entries;
 };
 const nameTableHashes = () => nes.ppu.nameTable.map((table) => sha(Buffer.from(table.tile.slice(0, 32 * 30))));
+const hudScore = () => {
+  const digits = [];
+  for (let index = 0; index < nes.ppu.spriteMem.length; index += 4) {
+    const y = nes.ppu.spriteMem[index] ?? 0xff;
+    const tile = nes.ppu.spriteMem[index + 1] ?? 0xff;
+    const x = nes.ppu.spriteMem[index + 3] ?? 0xff;
+    if (y === 16 && x >= 104 && x <= 144 && (x - 104) % 8 === 0 && tile >= 88 && tile <= 97) digits[(x - 104) / 8] = tile - 88;
+  }
+  return digits.length === 6 && digits.filter(Number.isInteger).length === 6 ? Number(digits.join("")) : undefined;
+};
 const sample = (frame) => {
   const oam = activeOam();
   return {
@@ -50,6 +60,7 @@ const sample = (frame) => {
       "0x69": nes.cpu.mem[0x69],
       "0x7a": nes.cpu.mem[0x7a],
     },
+    hudScore: hudScore(),
     ppu: {
       coarseX: nes.ppu.regHT,
       coarseY: nes.ppu.regVT,

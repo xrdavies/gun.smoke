@@ -68,6 +68,10 @@ export function canSpawnBossProjectile(active: number, requested = 1): boolean {
   return active + requested <= BOSS_PROJECTILE_CAPACITY;
 }
 
+export function pistolBulletSpeedFactor(rifleStock: number): number {
+  return rifleStock > 0 ? RIFLE_BULLET_SPEED_MULTIPLIER : 1;
+}
+
 export function romEnemyDrop(flags: number, hasSpecialStock: boolean): "ammo" | "moneyBag" | undefined {
   return flags & 0x80 ? hasSpecialStock ? "ammo" : "moneyBag" : undefined;
 }

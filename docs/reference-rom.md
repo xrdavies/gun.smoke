@@ -98,8 +98,9 @@ increasing the life counter, code `39` converting to dispatch `0x27` (Skull),
 and code `42` converting to dispatch `0x26` (the Blue Yashichi invulnerability
 branch). The runtime therefore enables deterministic POW, Horse, Life, Skull,
 and Blue Yashichi drops for those codes. Code `40` does not occur in the six
-decoded scripts, while code `36` and `41` convert to branches with no stable
-gameplay state change in the controlled trace and remain unresolved.
+decoded scripts. Code `36` converts to dispatch `0x23`, whose contact path has
+no stable gameplay state change; code `41` remains a dispatch `0x07` scene
+enemy and is cleared without a pickup conversion in the controlled trace.
 Behavior routine `$B0E5` allocates three projectile slots at `$B24B-$B281`
 and emits adjacent direction values, identifying it as the Shotgunner spread
 attack used by the runtime behavior map. An isolated instance fires at age 108

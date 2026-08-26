@@ -852,7 +852,7 @@ class GunSmokeGame {
       } else if (unit.enemyType === "rifleman") {
         unit.x += unit.vx * delta;
         unit.y += (unit.age < 1.2 ? unit.vy : -unit.vy * 0.75) * delta;
-        if (unit.age > 0.72 && unit.age < 1.18 && Math.floor((unit.age - 0.72) / 0.2) > unit.damage - 1) {
+        if (unit.age > 0.72 && unit.age < 1.18 && unit.damage < 2 && unit.age >= 0.72 + unit.damage * 0.2) {
           unit.damage += 1;
           const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
           const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y + 12, 1);

@@ -9,12 +9,12 @@ if (!fs.existsSync(manifestFilename)) {
 
 const manifest = JSON.parse(fs.readFileSync(manifestFilename, "utf8"));
 const routines = [...new Set(manifest.rounds.flatMap((round) => round.records
-  .filter((record) => record.command === "spawn" && record.behaviorRoutine)
+  .filter((record) => record.command === "spawn" && record.slotPool === "enemy" && record.behaviorRoutine)
   .map((record) => record.behaviorRoutine)))].sort();
 const routineIds = Object.fromEntries(routines.map((routine, index) => [routine, index]));
 const streams = manifest.rounds.map((round) => {
   const bytes = [];
-  for (const record of round.records.filter((candidate) => candidate.command === "spawn" && candidate.behaviorRoutine)) {
+  for (const record of round.records.filter((candidate) => candidate.command === "spawn" && candidate.slotPool === "enemy" && candidate.behaviorRoutine)) {
     const at = record.nesScrollAt;
     bytes.push(at & 0xff, at >> 8, record.x ?? 0, record.y ?? 0, routineIds[record.behaviorRoutine], record.entityCode ?? 0, record.entityFlags ?? 0);
   }
@@ -54,8 +54,8 @@ const source = [
   "",
   "// Behavior routines are mechanically identified; these names are gameplay approximations until each routine is fully traced.",
   "export const ROM_BEHAVIOR_ENEMY_TYPES = [",
-  '  "sniper", "backstabber", "gunman", "shotgunner", "bomber", "rifleman",',
-  '  "ninja", "rifleman", "backstabber", "hatchet", "spear", "firebreather",',
+  '  "sniper", "backstabber", "gunman", "bomber", "ninja",',
+  '  "rifleman", "backstabber", "hatchet", "spear", "firebreather",',
   "] as const;",
   "",
 ].join("\n");

@@ -67,6 +67,7 @@ const rounds = Array.from({ length: 6 }, (_, roundIndex) => {
     const command = positionByte === 0 ? "bossGate" : positionByte === 0xff ? "loop" : "spawn";
     const phase = command === "spawn" ? positionByte >> 7 : 0;
     const positionIndex = positionByte & 0x7f;
+    const slotPool = command === "spawn" ? positionByte & 0x20 ? "object" : "enemy" : undefined;
     if (command === "spawn" && positionIndex >= positionCount) throw new Error(`Round ${roundIndex + 1} record ${records.length} has an invalid position index`);
     const behavior = command === "spawn" ? initializerFor(typeByte & 0x3f) : undefined;
     const rowDistance = (mapRow - initialMapRow + mapRows) % mapRows;
@@ -85,6 +86,7 @@ const rounds = Array.from({ length: 6 }, (_, roundIndex) => {
       mapRow,
       phase: command === "spawn" ? phase : undefined,
       positionIndex: command === "spawn" ? positionIndex : undefined,
+      slotPool,
       x: command === "spawn" ? positionX[positionIndex] : undefined,
       y: command === "spawn" ? positionY[positionIndex] : undefined,
       entityCode: command === "spawn" ? typeByte & 0x3f : undefined,

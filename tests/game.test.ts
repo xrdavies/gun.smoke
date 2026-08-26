@@ -126,8 +126,8 @@ describe("Gun.Smoke vertical slice", () => {
   });
 
   it("keeps the ROM enemy event streams ordered and bounded", () => {
-    expect(ROUND_ROM_ENEMY_EVENT_COUNTS).toEqual([128, 137, 275, 299, 185, 313]);
-    expect(ROM_BEHAVIOR_ENEMY_TYPES).toHaveLength(12);
+    expect(ROUND_ROM_ENEMY_EVENT_COUNTS).toEqual([105, 94, 211, 233, 157, 245]);
+    expect(ROM_BEHAVIOR_ENEMY_TYPES).toHaveLength(10);
     for (const stream of ROUND_ROM_ENEMY_EVENTS) {
       expect(stream.every((event, index) => index === 0 || romEventWorldAt(event) >= romEventWorldAt(stream[index - 1]!))).toBe(true);
       expect(stream.every((event) => romEventWorldX(event) >= 0 && romEventWorldX(event) <= 960 && romEventWorldY(event) >= 0 && romEventWorldY(event) <= 540)).toBe(true);

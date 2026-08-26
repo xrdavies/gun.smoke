@@ -72,7 +72,10 @@ also follows `$C796` through the initializer table at `$DE83` and, for enemy
 slots, the bank 6 behavior-pointer table at `$B000`; this records mechanical
 code-to-routine mappings without assigning speculative gameplay names.
 With the local ROM present, `npm run generate:rom-event-data` regenerates the
-committed compressed runtime event stream from that manifest.
+committed compressed runtime event stream from that manifest. Position-byte
+bit 5 selects the six-slot object pool at `$0402-$0407`; clear bit 5 selects
+the seven-slot enemy pool at `$0410-$0416`. Only enemy-pool records enter the
+runtime enemy stream.
 The one record per Round carrying entity flag `0x40` occurs before the Boss
 gate and feeds the `$CBDA-$CBDF` interaction path that sets `$49`; its decoded
 NES X positions are `[200,64,216,216,72,216]`, and these are the current

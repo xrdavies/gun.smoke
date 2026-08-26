@@ -678,7 +678,7 @@ class GunSmokeGame {
     this.shopOpen = true;
     shop.hidden = false;
     shopTitle.textContent = `TRADING POST / ROUND ${this.stage}`;
-    shopMessage.textContent = `MONEY $${String(this.money).padStart(3, "0")}`;
+    shopMessage.textContent = `MONEY $${String(this.money).padStart(6, "0")}`;
     this.refreshShopButtons();
   }
 
@@ -1077,7 +1077,7 @@ class GunSmokeGame {
       gameOver.hidden = false;
       endingScreen.hidden = true;
       gameOver.querySelector("h2")!.textContent = "WANTED: ALIVE";
-      finalScore.textContent = `SCORE ${String(this.score).padStart(6, "0")}  MONEY $${String(this.money).padStart(3, "0")}`;
+      finalScore.textContent = `SCORE ${String(this.score).padStart(6, "0")}  MONEY $${String(this.money).padStart(6, "0")}`;
     }
   }
 
@@ -1085,7 +1085,7 @@ class GunSmokeGame {
     const definition = STAGES[this.stage - 1] ?? STAGES[0]!;
     stageLabel.textContent = `ROUND ${this.stage} ${definition.name}`;
     scoreLabel.textContent = `SCORE ${String(this.score).padStart(6, "0")}`;
-    moneyLabel.textContent = `$${String(this.money).padStart(5, "0")}`;
+    moneyLabel.textContent = `$${String(this.money).padStart(6, "0")}`;
     livesLabel.textContent = `LIVES ${this.lives}`;
     const ammo = Number.isFinite(WEAPONS[this.weapon].maxAmmo) ? ` ${this.ammo}` : "";
     weaponLabel.textContent = `${this.weapon.toUpperCase()}${ammo} / BOMB ${this.smartBombs} / BOOTS ${this.powerups.boots} / RIFLE ${this.powerups.rifle}${this.hasHorse ? ` / HORSE ${this.horseHealth}` : ""} / WANTED ${this.hasWanted ? "YES" : "NO"}`;

@@ -136,6 +136,10 @@ An isolated `$BA51` Spear Thrower creates its dispatch `0x33` spear at age 72
 frames and aims it toward Billy at roughly 250 world pixels/s. ROM-tagged
 Spear Throwers use this measured timing; the procedural fallback remains the
 shorter generic throw delay.
+The `$B82F` Round 5 Backstabber variant is an ambush actor rather than a
+projectile shooter: its X remains fixed, it descends roughly 85 NES pixels, and
+its slot is released after about 407 frames. The runtime keeps this state
+separate from the `$B46E` movement variant.
 
 Current behavior map:
 
@@ -149,7 +153,7 @@ Current behavior map:
 | `$B5BF` | falling rock hazard | isolated contact/state trace |
 | `$B671` | Ninja | isolated dispatch/OAM timing trace |
 | `$B775` | Rifleman | isolated state/OAM timing trace |
-| `$B82F` | Backstabber | Round 5 roster elimination |
+| `$B82F` | Backstabber ambush | isolated movement/lifetime trace |
 | `$B8F4` | Hatchet Thrower | isolated dispatch/OAM timing trace |
 | `$BA51` | Spear Thrower | isolated dispatch/OAM timing trace |
 | `$BB29` | Firebreather | isolated dispatch/OAM timing trace |

@@ -42,7 +42,7 @@ export const SHOP_CHECKPOINTS: readonly (readonly number[])[] = [
   [420, 860, 1_300],
 ];
 
-export const ROAD_WIDTHS = [520, 450, 430, 500, 650, 540] as const;
+export const ROAD_WIDTHS = [730, 450, 430, 500, 650, 540] as const;
 export const WANTED_COSTS = [20_000, 24_000, 50_000, 40_000, 40_000, 60_000] as const;
 export const WANTED_X_OFFSETS = [-220, -170, -150, -150, 180, 0] as const;
 

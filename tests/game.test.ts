@@ -31,6 +31,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(SHOP_CHECKPOINTS[2]).toHaveLength(3);
     expect(SHOP_CHECKPOINTS[5]).toHaveLength(3);
     expect(ROAD_WIDTHS).toHaveLength(MAX_STAGE);
+    expect(ROAD_WIDTHS[0]).toBe(730);
     expect(ROAD_WIDTHS[2]).toBeLessThan(ROAD_WIDTHS[4]);
     expect(WEAPONS.shotgun.maxAmmo).toBe(120);
     expect(WEAPONS.magnum.damage).toBeGreaterThan(WEAPONS.pistol.damage);

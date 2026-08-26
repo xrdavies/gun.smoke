@@ -33,6 +33,10 @@ Smart Bomb 8,000, and Horse 20,000. Enemy placement, terrain art, audio and
 exact frame timing are intentionally parameters rather than claims of
 byte-identical reproduction.
 
+Weapon and supply shops are separate checkpoints: the first shop in each Round
+is a weapon shop, later supply shops sell Horse, Bullet refills, Smart Bombs,
+and Wanted posters, and Rounds 3 and 6 receive a later weapon-shop revisit.
+
 The Horse is a three-hit shield rather than a speed bonus. Score awards an
 extra life at 30,000, again at 100,000, and at each later 100,000-point
 threshold.

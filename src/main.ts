@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, BOSS_REWARDS, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, shouldLoopStage, SHOP_CHECKPOINTS, SHOP_COSTS, scoreExtraLives, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, BOSS_REWARDS, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, shouldLoopStage, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, scoreExtraLives, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -738,22 +738,32 @@ class GunSmokeGame {
     this.shopIndex = checkpoint;
     this.shopOpen = true;
     shop.hidden = false;
-    shopTitle.textContent = `TRADING POST / ROUND ${this.stage}`;
+    const shopType = SHOP_TYPES[this.stage - 1]?.[this.shopIndex - 1] ?? "supplies";
+    shopTitle.textContent = `${shopType === "weapons" ? "WEAPON SHOP" : "SUPPLY SHOP"} / ROUND ${this.stage}`;
     shopMessage.textContent = `MONEY $${String(this.money).padStart(6, "0")}`;
     this.refreshShopButtons();
   }
 
   private refreshShopButtons(): void {
+    const shopType: ShopType = SHOP_TYPES[this.stage - 1]?.[this.shopIndex - 1] ?? "supplies";
     for (const item of shopItems) {
       const key = item.dataset.shopItem as WeaponName | "horse" | "ammo" | "wanted" | "smartBomb" | undefined;
       const cost = key === "horse" ? SHOP_COSTS.horse : key === "ammo" ? SHOP_COSTS.ammo : key === "smartBomb" ? SHOP_COSTS.smartBomb : key === "wanted" ? WANTED_COSTS[this.stage - 1] ?? 50_000 : key ? WEAPONS[key].cost : 0;
       if (key === "wanted") item.textContent = `Wanted poster $${String(cost).padStart(5, "0")}`;
-      item.disabled = key === "horse" ? this.hasHorse || this.money < cost : key === "ammo" ? !this.canRefillAmmo() || this.money < cost : key === "wanted" ? this.shopIndex < 2 || this.hasWanted || this.money < cost : key === "smartBomb" ? this.smartBombs >= 5 || this.money < cost : key ? this.ownedWeapons.has(key) || this.money < cost : true;
+      const isWeapon = key === "shotgun" || key === "machinegun" || key === "magnum";
+      const available = shopType === "weapons" ? isWeapon : !isWeapon;
+      item.disabled = !available || key === "horse" ? !available || this.hasHorse || this.money < cost : key === "ammo" ? !available || !this.canRefillAmmo() || this.money < cost : key === "wanted" ? !available || this.shopIndex < 2 || this.hasWanted || this.money < cost : key === "smartBomb" ? !available || this.smartBombs >= 5 || this.money < cost : key ? !available || this.ownedWeapons.has(key) || this.money < cost : true;
     }
   }
 
   buyShopItem(item: string): void {
     const key = item as WeaponName | "horse" | "ammo" | "wanted" | "smartBomb";
+    const shopType: ShopType = SHOP_TYPES[this.stage - 1]?.[this.shopIndex - 1] ?? "supplies";
+    const isWeapon = key === "shotgun" || key === "machinegun" || key === "magnum";
+    if ((shopType === "weapons") !== isWeapon) {
+      shopMessage.textContent = "NOT SOLD HERE";
+      return;
+    }
     const cost = key === "horse" ? SHOP_COSTS.horse : key === "ammo" ? SHOP_COSTS.ammo : key === "smartBomb" ? SHOP_COSTS.smartBomb : key === "wanted" ? WANTED_COSTS[this.stage - 1] ?? 50_000 : WEAPONS[key]?.cost;
     if (cost === undefined || (key === "horse" && this.hasHorse) || this.money < cost) {
       shopMessage.textContent = "NOT ENOUGH MONEY";

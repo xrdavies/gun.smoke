@@ -355,6 +355,10 @@ class GunSmokeGame {
     hud.hidden = false;
     this.startMusic();
     this.showMessage("RIDE OUT");
+    if (this.pausePollHandle !== undefined) {
+      window.cancelAnimationFrame(this.pausePollHandle);
+      this.pausePollHandle = undefined;
+    }
     if (this.engine.status === "paused") this.engine.resume();
     else this.engine.start();
     canvas.focus();
@@ -368,6 +372,7 @@ class GunSmokeGame {
     briefingScreen.hidden = false;
     hud.hidden = true;
     if (this.engine.status === "running") this.engine.pause();
+    this.pollPausedGamepad();
   }
 
   togglePause(): void {
@@ -402,10 +407,7 @@ class GunSmokeGame {
     if (!startActive) this.startLatch = false;
     else if (!this.startLatch) {
       this.startLatch = true;
-      if (this.mode === "title") this.start();
-      else if (this.mode === "intro") this.continueFromIntro();
-      else if (this.mode === "briefing") this.continueFromBriefing();
-      else if (this.mode === "playing") this.togglePause();
+      this.activateStart();
     }
     if (this.mode !== "playing") return;
     this.updateInventoryInput();
@@ -1355,18 +1357,25 @@ class GunSmokeGame {
     if (this.pausePollHandle !== undefined) return;
     const poll = (): void => {
       this.pausePollHandle = undefined;
-      if (this.mode !== "paused") return;
+      if (this.mode !== "paused" && this.mode !== "briefing") return;
       this.engine.input?.pollGamepads();
       const active = this.actions.active("start");
       if (!active) this.startLatch = false;
       else if (!this.startLatch) {
         this.startLatch = true;
-        this.togglePause();
+        this.activateStart();
         return;
       }
       this.pausePollHandle = window.requestAnimationFrame(poll);
     };
     this.pausePollHandle = window.requestAnimationFrame(poll);
+  }
+
+  private activateStart(): void {
+    if (this.mode === "title") this.start();
+    else if (this.mode === "intro") this.continueFromIntro();
+    else if (this.mode === "briefing") this.continueFromBriefing();
+    else if (this.mode === "playing" || this.mode === "paused") this.togglePause();
   }
 
   private createAudio(): AudioManager | undefined {

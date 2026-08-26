@@ -47,21 +47,28 @@ test("accepts gamepad Start from the title flow", async ({ page }) => {
     Object.defineProperty(window, "__setStartPressed", { value: (pressed: boolean) => { startPressed = pressed; } });
     Object.defineProperty(navigator, "getGamepads", {
       configurable: true,
-      value: () => startPressed ? [{
+      value: () => [{
         connected: true,
         id: "test-pad",
         index: 0,
         mapping: "standard",
         timestamp: performance.now(),
         axes: [0, 0],
-        buttons: Array.from({ length: 10 }, (_, index) => ({ pressed: index === 9, touched: index === 9, value: index === 9 ? 1 : 0 })),
-      }] : [],
+        buttons: Array.from({ length: 10 }, (_, index) => ({ pressed: index === 9 && startPressed, touched: index === 9 && startPressed, value: index === 9 && startPressed ? 1 : 0 })),
+      }],
     });
   });
   await page.goto("/");
   await page.evaluate(() => (window as unknown as { __setStartPressed: (pressed: boolean) => void }).__setStartPressed(true));
   await expect(page.locator("#intro-screen")).toBeVisible();
   await page.evaluate(() => (window as unknown as { __setStartPressed: (pressed: boolean) => void }).__setStartPressed(false));
+  await page.waitForTimeout(100);
+  await page.evaluate(() => (window as unknown as { __setStartPressed: (pressed: boolean) => void }).__setStartPressed(true));
+  await expect(page.locator("#briefing-screen")).toBeVisible();
+  await page.evaluate(() => (window as unknown as { __setStartPressed: (pressed: boolean) => void }).__setStartPressed(false));
+  await page.waitForTimeout(100);
+  await page.evaluate(() => (window as unknown as { __setStartPressed: (pressed: boolean) => void }).__setStartPressed(true));
+  await expect(page.locator("#hud")).toBeVisible();
 });
 
 test("reaches the first trading post", async ({ page }) => {

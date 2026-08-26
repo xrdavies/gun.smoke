@@ -1,8 +1,9 @@
 # Asset provenance
 
-The current build uses runtime-generated 1x1 pixel textures scaled by the
-engine. They are temporary development assets, not extracted commercial art.
+The current build uses deterministic, runtime-generated pixel textures and
+Web Audio oscillator patterns. These are self-generated game assets; no ROM
+graphics, music, or Capcom source is bundled or redistributed.
 
-The game logic is intentionally isolated from the texture source so a future
-legal asset replacement can provide NES-authentic sprites, tiles and fonts
-without changing gameplay systems.
+The game logic is intentionally isolated from the texture source so later art
+passes can replace the generated sprites, tiles, and audio without changing
+the gameplay systems.

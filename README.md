@@ -12,10 +12,11 @@ formations and projectiles, Money Bags, life pickups, stage bosses, spendable sc
 damage recovery, wanted-poster gates, two final Wingate encounters, game over
 and a completion state.
 
-The current assets are procedural development sprites. No commercial ROM,
-copyrighted extracted assets, or original Capcom source code is included.
-Exact ROM-level reproduction requires a legally obtained reference ROM and a
-fixed revision/hash for comparison.
+The shipped assets are deterministic, self-generated pixel sprites, terrain
+patterns, and Web Audio oscillator music. No commercial ROM, copyrighted
+extracted assets, or original Capcom source code is included. Exact ROM-level
+reproduction requires a legally obtained reference ROM and a fixed
+revision/hash for comparison.
 
 For local verification, the title screen also accepts a legally obtained `.NES`
 file. That Reference ROM mode runs the supplied ROM through JSNES while the

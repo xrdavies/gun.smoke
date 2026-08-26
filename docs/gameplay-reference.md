@@ -66,10 +66,10 @@ sprites, WebGPU `Renderer2D` batches, `AudioManager` buses, `ActionMap` keyboard
 and Gamepad input, deterministic seeded randomness, and per-round terrain/road
 data.
 
-Boss encounters include phase gating: Bandit Bill alternates a vulnerable
-standing window, while Cutter, Devil Hawk and Fatman Joe become vulnerable only
-after their opening attack; Cutter's boomerangs also curve in opposite
-directions.
+Boss encounters include phase gating: Bandit Bill becomes invulnerable and
+crawls for a short interval after each lost health bar, while Cutter, Devil
+Hawk and Fatman Joe become vulnerable only after their opening attack;
+Cutter's boomerangs also curve in opposite directions.
 
 Devil Hawk uses a long jump arc, Fatman Joe uses short hops, Wingate rushes
 forward, and the Ninja enters a smoke/invulnerability phase and teleports after

@@ -584,6 +584,7 @@ class GunSmokeGame {
   private updateEnemyFire(delta: number): void {
     const boss = this.units.find((unit) => unit.kind === "boss" && unit.hp > 0);
     if (boss) {
+      if (this.stage === 1 && boss.age < boss.invulnerableUntil) return;
       this.bossFireClock -= delta;
       if (this.bossFireClock <= 0) this.fireBoss(boss);
       return;
@@ -905,7 +906,8 @@ class GunSmokeGame {
     } else if (unit.kind === "boss") {
       unit.x += unit.vx * delta;
       if (unit.x < 380 || unit.x > 580) unit.vx *= -1;
-      if (this.stage === 3) unit.y = this.scroll + 92 + Math.abs(Math.sin(unit.age * 2.1)) * 145;
+      if (this.stage === 1 && unit.age < unit.invulnerableUntil) unit.y = this.scroll + 430;
+      else if (this.stage === 3) unit.y = this.scroll + 92 + Math.abs(Math.sin(unit.age * 2.1)) * 145;
       else if (this.stage === 4) unit.y = this.scroll + 92 + Math.abs(Math.sin(unit.age * 3)) * 55;
       else if (this.stage === 5) unit.y = this.scroll + 92 + Math.abs(Math.sin(unit.age * 3.6)) * 32;
       else if (this.stage === 6) unit.y = this.scroll + 92 + Math.min(unit.age * 110, 170);
@@ -1023,17 +1025,22 @@ class GunSmokeGame {
   private isBossVulnerable(unit: Unit): boolean {
     if (unit.kind !== "boss") return true;
     if (unit.age < unit.invulnerableUntil) return false;
-    if (this.stage === 1) return unit.age % 3.2 < 2.2;
+    if (this.stage === 1) return true;
     if (this.stage === 2 || this.stage === 3 || this.stage === 5) return unit.fired;
     return true;
   }
 
   private handleBossDamage(unit: Unit, previousHp: number): void {
-    if (unit.kind !== "boss" || this.stage !== 4) return;
+    if (unit.kind !== "boss") return;
     if (Math.ceil(previousHp / 4) === Math.ceil(unit.hp / 4)) return;
-    unit.invulnerableUntil = unit.age + 0.45;
-    unit.x = clamp(unit.x + (this.nextRandom() - 0.5) * 220, 300, 660);
-    this.showMessage("NINJA SMOKE");
+    if (this.stage === 1) {
+      unit.invulnerableUntil = unit.age + 1.1;
+      this.showMessage("BANDIT BILL CRAWLS");
+    } else if (this.stage === 4) {
+      unit.invulnerableUntil = unit.age + 0.45;
+      unit.x = clamp(unit.x + (this.nextRandom() - 0.5) * 220, 300, 660);
+      this.showMessage("NINJA SMOKE");
+    }
   }
 
   private collectItem(item: ItemType): void {

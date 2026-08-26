@@ -10,6 +10,7 @@ import { MAX_POWERUP_STOCK, POWERUP_OVERFLOW_SCORE, storedPowerupPickup } from "
 import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_VOLLEY_INTERVAL, FATMAN_JOE_VOLLEY_SIZE } from "../src/game-constants";
 import { WINGATE_BULLET_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_FIRST_VOLLEY_GAP, WINGATE_FIRST_VOLLEY_SIZE, WINGATE_SECOND_FIRST_SHOT_DELAY, WINGATE_SECOND_VOLLEY_GAP, WINGATE_SECOND_VOLLEY_SIZE, WINGATE_SHOT_INTERVAL, wingateShotCooldown } from "../src/game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPEED, CUTTER_FIRST_ATTACK_DELAY } from "../src/game-constants";
+import { BOSS_ENTRY_SPEED_X } from "../src/game-constants";
 import { roundCollisionBlocks, ROUND_COLLISION_ROW_COUNTS } from "../src/round-collision";
 import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_ENEMY_SLOT_CAPACITY, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_OBJECT_SLOT_CAPACITY, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_ENEMY_EVENT_COUNTS, ROUND_ROM_OBJECT_EVENTS, ROUND_ROM_OBJECT_EVENT_COUNTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY } from "../src/rom-event-data";
 
@@ -325,6 +326,11 @@ describe("Gun.Smoke vertical slice", () => {
     expect([1, 2, 3].map((shot) => wingateShotCooldown(1, shot))).toEqual([
       WINGATE_SHOT_INTERVAL, WINGATE_SHOT_INTERVAL, WINGATE_SECOND_VOLLEY_GAP,
     ]);
+  });
+
+  it("does not reuse early Boss entry speeds for later rounds", () => {
+    expect(BOSS_ENTRY_SPEED_X.slice(0, 3)).toEqual([BANDIT_BILL_ENTRY_SPEED_X, CUTTER_ENTRY_SPEED_X, DEVIL_HAWK_ENTRY_SPEED_X]);
+    expect(BOSS_ENTRY_SPEED_X.slice(3)).toEqual([undefined, undefined, undefined]);
   });
 
   it("awards the Round 6 bounty only after the real Wingate", () => {

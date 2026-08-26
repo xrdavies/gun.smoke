@@ -156,6 +156,15 @@ export function wingateShotCooldown(phase: number, shotsFired: number): number {
   return phase === 0 ? WINGATE_FIRST_VOLLEY_GAP : WINGATE_SECOND_VOLLEY_GAP;
 }
 
+export const BOSS_ENTRY_SPEED_X = [
+  BANDIT_BILL_ENTRY_SPEED_X,
+  CUTTER_ENTRY_SPEED_X,
+  DEVIL_HAWK_ENTRY_SPEED_X,
+  undefined,
+  undefined,
+  undefined,
+] as const;
+
 export function banditBillCooldown(shotsFired: number): number {
   return shotsFired % BANDIT_BILL_SHOTS_PER_VOLLEY === 0 ? BANDIT_BILL_VOLLEY_GAP : BANDIT_BILL_SHOT_INTERVAL;
 }

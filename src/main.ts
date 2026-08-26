@@ -23,6 +23,7 @@ import { storedPowerupPickup } from "./game-constants";
 import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_VOLLEY_INTERVAL, FATMAN_JOE_VOLLEY_SIZE } from "./game-constants";
 import { WINGATE_BULLET_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateShotCooldown } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPEED, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
+import { BOSS_ENTRY_SPEED_X } from "./game-constants";
 import { roundCollisionBlocks } from "./round-collision";
 import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
 
@@ -1030,7 +1031,7 @@ class GunSmokeGame {
     );
     if (isBanditBill || isCutter || isDevilHawk || isNinjaBoss || isFatmanJoe || isFirstWingate) {
       boss.bossEntryY = boss.y - this.scroll;
-      boss.vx = isBanditBill ? BANDIT_BILL_ENTRY_SPEED_X : isCutter ? CUTTER_ENTRY_SPEED_X : DEVIL_HAWK_ENTRY_SPEED_X;
+      boss.vx = BOSS_ENTRY_SPEED_X[this.stage - 1] ?? boss.vx;
     }
     this.showMessage(`WANTED: ${definition.boss}`);
     this.beep(180, 0.18);

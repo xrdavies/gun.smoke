@@ -43,7 +43,7 @@ export const SHOP_CHECKPOINTS: readonly (readonly number[])[] = [
 ];
 
 export const ROAD_WIDTHS = [520, 450, 430, 500, 650, 540] as const;
-export const WANTED_COSTS = [20_000, 24_000, 50_000, 50_000, 50_000, 50_000] as const;
+export const WANTED_COSTS = [20_000, 24_000, 50_000, 40_000, 40_000, 60_000] as const;
 export const WANTED_X_OFFSETS = [-220, 160, -150, 180, -200, 0] as const;
 
 export const ROUND_ENEMY_TYPES: readonly (readonly EnemyType[])[] = [
@@ -140,26 +140,26 @@ export const ROUND_OBSTACLES: readonly (readonly RoundObstacle[])[] = [
 export type WeaponName = "pistol" | "shotgun" | "machinegun" | "magnum";
 
 export const SHOP_COSTS = {
-  shotgun: 4_000,
-  machinegun: 8_000,
-  magnum: 12_000,
-  horse: 6_000,
-  ammo: 2_000,
-  smartBomb: 10_000,
+  shotgun: 6_000,
+  machinegun: 10_000,
+  magnum: 20_000,
+  horse: 20_000,
+  ammo: 1_500,
+  smartBomb: 8_000,
 } as const;
 
 export const WEAPONS: Record<WeaponName, { cost: number; interval: number; damage: number; spread: number; maxAmmo: number }> = {
   pistol: { cost: 0, interval: 0.16, damage: 1, spread: 0, maxAmmo: Number.POSITIVE_INFINITY },
-  shotgun: { cost: SHOP_COSTS.shotgun, interval: 0.2, damage: 1, spread: 0.28, maxAmmo: 30 },
-  machinegun: { cost: SHOP_COSTS.machinegun, interval: 0.08, damage: 1, spread: 0, maxAmmo: 80 },
-  magnum: { cost: SHOP_COSTS.magnum, interval: 0.24, damage: 3, spread: 0, maxAmmo: 24 },
+  shotgun: { cost: SHOP_COSTS.shotgun, interval: 0.2, damage: 1, spread: 0.28, maxAmmo: 120 },
+  machinegun: { cost: SHOP_COSTS.machinegun, interval: 0.08, damage: 1, spread: 0, maxAmmo: 400 },
+  magnum: { cost: SHOP_COSTS.magnum, interval: 0.24, damage: 3, spread: 0, maxAmmo: 100 },
 };
 
 export const AMMO_GAIN: Record<WeaponName, number> = {
   pistol: 0,
-  shotgun: 5,
-  machinegun: 10,
-  magnum: 3,
+  shotgun: 20,
+  machinegun: 40,
+  magnum: 10,
 };
 
 export function clamp(value: number, minimum: number, maximum: number): number {

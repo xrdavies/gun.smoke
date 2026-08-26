@@ -26,24 +26,28 @@ owned, scrolling stops at the Boss arena.
 
 The web build also models the resource loop with money pickups, round-specific
 trading-post checkpoints, Shotgun, Machine Gun, Magnum, finite ammunition,
-Smart Bomb inventory, Wanted poster purchases and Horse upgrades. Weapon costs,
-enemy placement, terrain art, audio and exact frame timing are intentionally
-parameters rather than claims of byte-identical reproduction.
+Smart Bomb inventory, Wanted poster purchases and Horse upgrades. NES shop
+prices and capacities are applied: Shotgun 6,000/120 shots, Machine Gun
+10,000/400 shots, Magnum 20,000/100 shots, four Bullet refills for 1,500,
+Smart Bomb 8,000, and Horse 20,000. Enemy placement, terrain art, audio and
+exact frame timing are intentionally parameters rather than claims of
+byte-identical reproduction.
 
 The Horse is a three-hit shield rather than a speed bonus. Score awards an
 extra life at 30,000, again at 100,000, and at each later 100,000-point
 threshold.
 
 Shop funds now use the NES point scale: Money Bags are 200 points and the
-verified Wanted poster prices are 20,000 (Round 1), 24,000 (Round 2), and
-50,000 from Round 3 onward. Weapon and utility prices remain explicit tuning
-parameters until a reliable shop-table decode is confirmed.
+Wanted poster prices are 20,000 (Round 1), 24,000 (Round 2), 50,000 (Round 3),
+40,000 (Rounds 4 and 5), and 60,000 (Round 6).
 
 Barrels can reveal the NES item set: stored Boots and Rifle power-ups, special
 weapon ammo, money, POW, Cattle Skull, Horse, and Blue/Red Yashichi. Stored
 Boots/Rifle are capped at five and each loses one stock on death; Blue Yashichi
 grants contact damage and temporary invulnerability, while Magnum bullets can
-destroy enemy projectiles.
+destroy enemy projectiles. Smart Bomb is armed from the inventory and triggers
+on a lethal hit, clearing regular enemies and enemy bullets while consuming
+one bomb; it does not damage bosses.
 
 Rifle range applies only to the unlimited pistols. Bullet pickups use
 weapon-specific refill amounts, with Machine Gun receiving more rounds per

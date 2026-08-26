@@ -92,6 +92,7 @@ const inventoryClose = requireElement<HTMLButtonElement>("#inventory-close");
 const inventoryWeapons = requireElement<HTMLElement>("#inventory-weapons");
 const inventoryItems = requireElement<HTMLElement>("#inventory-items");
 const inventoryWeaponButtons = [...inventoryScreen.querySelectorAll<HTMLButtonElement>("[data-inventory-weapon]")];
+const smartBombButton = requireElement<HTMLButtonElement>("#inventory-smart-bomb");
 const referenceRomInput = requireElement<HTMLInputElement>("#reference-rom");
 const romStatus = requireElement<HTMLElement>("#rom-status");
 const finalScore = requireElement<HTMLElement>("#final-score");
@@ -178,6 +179,7 @@ class GunSmokeGame {
   weaponAmmo: Record<WeaponName, number> = { pistol: Number.POSITIVE_INFINITY, shotgun: 0, machinegun: 0, magnum: 0 };
   ownedWeapons = new Set<WeaponName>(["pistol"]);
   smartBombs = 0;
+  smartBombArmed = false;
   powerups = { boots: 0, rifle: 0 };
   time = 0;
   spawnClock = 0.6;
@@ -455,14 +457,16 @@ class GunSmokeGame {
   }
 
   private updateInventory(): void {
-    inventoryWeapons.textContent = `PISTOL UNLIMITED / SHOTGUN ${this.weaponAmmo.shotgun} / MACHINE GUN ${this.weaponAmmo.machinegun} / MAGNUM ${this.weaponAmmo.magnum} / SMART BOMB ${this.smartBombs}`;
-    inventoryItems.textContent = `BOOTS ${this.powerups.boots} / RIFLE ${this.powerups.rifle} / HORSE ${this.horseHealth} / WANTED ${this.hasWanted ? "YES" : "NO"}`;
+    inventoryWeapons.textContent = `PISTOL UNLIMITED / SHOTGUN ${this.weaponAmmo.shotgun} / MACHINE GUN ${this.weaponAmmo.machinegun} / MAGNUM ${this.weaponAmmo.magnum}`;
+    inventoryItems.textContent = `BOOTS ${this.powerups.boots} / RIFLE ${this.powerups.rifle} / HORSE ${this.horseHealth} / WANTED ${this.hasWanted ? "YES" : "NO"} / SMART BOMB ${this.smartBombArmed ? "ARMED" : this.smartBombs}`;
     for (const button of inventoryWeaponButtons) {
       const weapon = button.dataset.inventoryWeapon as WeaponName | undefined;
       if (!weapon) continue;
       button.disabled = !this.ownedWeapons.has(weapon) || (weapon !== "pistol" && this.weaponAmmo[weapon] <= 0);
       button.setAttribute("aria-pressed", String(weapon === this.weapon));
     }
+    smartBombButton.disabled = this.smartBombs <= 0;
+    smartBombButton.setAttribute("aria-pressed", String(this.smartBombArmed));
   }
 
   equipWeapon(weapon: WeaponName): void {
@@ -524,21 +528,18 @@ class GunSmokeGame {
     }
     if (this.bombLatch || this.smartBombs <= 0) return;
     this.bombLatch = true;
-    this.smartBombs -= 1;
-    for (const target of [...this.units]) {
-      if ((target.kind === "enemy" || target.kind === "enemyBullet") && target.hp > 0) {
-        if (target.kind === "enemy") this.defeatTarget(target);
-        else target.hp = 0;
-      } else if (target.kind === "boss" && target.hp > 0) {
-        const previousHp = target.hp;
-        target.hp -= 4;
-        if (target.hp <= 0) this.defeatTarget(target);
-        else this.handleBossDamage(target, previousHp);
-      }
-    }
-    this.beep(75, 0.35);
-    this.showMessage("SMART BOMB");
+    this.smartBombArmed = !this.smartBombArmed;
+    this.showMessage(this.smartBombArmed ? "SMART BOMB ARMED" : "SMART BOMB OFF");
+    this.updateInventory();
     this.updateHud();
+  }
+
+  toggleSmartBomb(): void {
+    if (this.smartBombs <= 0) return;
+    this.smartBombArmed = !this.smartBombArmed;
+    this.updateInventory();
+    this.updateHud();
+    this.showMessage(this.smartBombArmed ? "SMART BOMB ARMED" : "SMART BOMB OFF");
   }
 
   private updateSpawns(delta: number): void {
@@ -732,7 +733,7 @@ class GunSmokeGame {
       this.hasHorse = true;
       this.horseHealth = 3;
     }
-    else if (key === "ammo") this.refillAmmo(2);
+    else if (key === "ammo") this.refillAmmo(4);
     else if (key === "wanted") this.hasWanted = true;
     else if (key === "smartBomb") this.smartBombs = Math.min(5, this.smartBombs + 1);
     else {
@@ -1061,9 +1062,28 @@ class GunSmokeGame {
       this.updateHud();
       return;
     }
+    if (this.smartBombArmed && this.smartBombs > 0) {
+      this.smartBombs -= 1;
+      this.smartBombArmed = false;
+      for (const unit of [...this.units]) {
+        if (unit.kind === "enemy" && unit.hp > 0) this.defeatTarget(unit);
+        else if (unit.kind === "enemyBullet") unit.hp = 0;
+      }
+      this.invulnerable = 1;
+      this.beep(75, 0.35);
+      this.showMessage("SMART BOMB");
+      this.updateInventory();
+      this.updateHud();
+      return;
+    }
     this.lives -= 1;
     this.powerups.boots = Math.max(0, this.powerups.boots - 1);
     this.powerups.rifle = Math.max(0, this.powerups.rifle - 1);
+    if (this.weapon !== "pistol") {
+      this.weaponAmmo[this.weapon] = 0;
+      this.ownedWeapons.delete(this.weapon);
+      this.weapon = "pistol";
+    }
     this.invulnerable = 2;
     this.beep(120, 0.16);
     this.showMessage(this.lives > 0 ? "HIT!" : "OUT OF LIVES");
@@ -1145,7 +1165,7 @@ class GunSmokeGame {
     moneyLabel.textContent = `$${String(this.money).padStart(6, "0")}`;
     livesLabel.textContent = `LIVES ${this.lives}`;
     const ammo = Number.isFinite(WEAPONS[this.weapon].maxAmmo) ? ` ${this.ammo}` : "";
-    weaponLabel.textContent = `${this.weapon.toUpperCase()}${ammo} / BOMB ${this.smartBombs} / BOOTS ${this.powerups.boots} / RIFLE ${this.powerups.rifle}${this.hasHorse ? ` / HORSE ${this.horseHealth}` : ""} / WANTED ${this.hasWanted ? "YES" : "NO"}`;
+    weaponLabel.textContent = `${this.weapon.toUpperCase()}${ammo} / BOMB ${this.smartBombs}${this.smartBombArmed ? " ARMED" : ""} / BOOTS ${this.powerups.boots} / RIFLE ${this.powerups.rifle}${this.hasHorse ? ` / HORSE ${this.horseHealth}` : ""} / WANTED ${this.hasWanted ? "YES" : "NO"}`;
     const boss = this.units.find((unit) => unit.kind === "boss" && unit.hp > 0);
     bossLabel.hidden = !boss;
     if (boss) {
@@ -1438,6 +1458,7 @@ for (const button of inventoryWeaponButtons) {
   button.addEventListener("click", () => game?.equipWeapon(button.dataset.inventoryWeapon as WeaponName));
 }
 shopClose.addEventListener("click", () => game?.closeShop());
+smartBombButton.addEventListener("click", () => game?.toggleSmartBomb());
 for (const item of shopItems) item.addEventListener("click", () => game?.buyShopItem(item.dataset.shopItem ?? ""));
 referenceRomInput.addEventListener("change", () => void loadReferenceRom());
 window.addEventListener("keydown", (event) => {

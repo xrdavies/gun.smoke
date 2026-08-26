@@ -26,6 +26,7 @@ test("starts the WebGPU stage and renders gameplay", async ({ page }) => {
   await expect(page.locator("#inventory-weapons")).toContainText("PISTOL UNLIMITED");
   await expect(page.locator('[data-inventory-weapon="pistol"]')).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator('[data-inventory-weapon="shotgun"]')).toBeDisabled();
+  await expect(page.locator("#inventory-smart-bomb")).toBeDisabled();
   await page.locator("#inventory-close").click();
   await expect(page.locator("#inventory-screen")).toBeHidden();
   await page.keyboard.down("x");
@@ -49,6 +50,9 @@ test("reaches the first trading post", async ({ page }) => {
   await expect(page.locator("#shop")).toBeVisible();
   await expect(page.locator("#shop-title")).toContainText("ROUND 1");
   await expect(page.locator("#shop-message")).toHaveText("MONEY $000000");
+  await expect(page.locator('[data-shop-item="shotgun"]')).toContainText("$06000");
+  await expect(page.locator('[data-shop-item="horse"]')).toContainText("$20000");
+  await expect(page.locator('[data-shop-item="ammo"]')).toContainText("$01500");
   await expect(page.locator('[data-shop-item="magnum"]')).toBeDisabled();
   await expect(page.locator('[data-shop-item="wanted"]')).toBeDisabled();
   await page.locator("#shop-close").click();

@@ -32,12 +32,13 @@ describe("Gun.Smoke vertical slice", () => {
     expect(SHOP_CHECKPOINTS[5]).toHaveLength(3);
     expect(ROAD_WIDTHS).toHaveLength(MAX_STAGE);
     expect(ROAD_WIDTHS[2]).toBeLessThan(ROAD_WIDTHS[4]);
-    expect(WEAPONS.shotgun.maxAmmo).toBe(30);
+    expect(WEAPONS.shotgun.maxAmmo).toBe(120);
     expect(WEAPONS.magnum.damage).toBeGreaterThan(WEAPONS.pistol.damage);
     expect(AMMO_GAIN.pistol).toBe(0);
     expect(AMMO_GAIN.magnum).toBeLessThan(AMMO_GAIN.machinegun);
-    expect(SHOP_COSTS).toEqual({ shotgun: 4_000, machinegun: 8_000, magnum: 12_000, horse: 6_000, ammo: 2_000, smartBomb: 10_000 });
-    expect(WANTED_COSTS.slice(0, 3)).toEqual([20_000, 24_000, 50_000]);
+    expect(SHOP_COSTS).toEqual({ shotgun: 6_000, machinegun: 10_000, magnum: 20_000, horse: 20_000, ammo: 1_500, smartBomb: 8_000 });
+    expect(AMMO_GAIN).toEqual({ pistol: 0, shotgun: 20, machinegun: 40, magnum: 10 });
+    expect(WANTED_COSTS).toEqual([20_000, 24_000, 50_000, 40_000, 40_000, 60_000]);
     expect(WANTED_X_OFFSETS).toHaveLength(MAX_STAGE);
     expect(ROUND_ENEMY_TYPES).toHaveLength(MAX_STAGE);
     expect(ROUND_ENEMY_TYPES[0]).toContain("backstabber");

@@ -173,6 +173,12 @@ entry lanes `y=88` and `y=168`; one lane reaches about `x=106` after 324 frames.
 The web runtime selects one measured lane and uses the calibrated opening
 speed; Cutter's internal attack dispatches remain documented observations until
 their complete projectile state machine is isolated.
+After clearing only ordinary slots at the next real gate, Round 3 produces
+Devil Hawk as dispatch `0x9a`, variant `0x61`, also entering from the left
+edge. Controlled traces observe NES entry lanes `y=128` and `y=168`, with one
+run reaching approximately `x=96` after 143 frames. The web runtime uses those
+measured entry lanes and opening speed; its jump and fire phases remain an
+explicit approximation pending a complete isolated Boss trace.
 
 Current behavior map:
 

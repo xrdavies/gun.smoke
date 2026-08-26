@@ -264,6 +264,9 @@ With `$79/$88` set for an active Rifle stock, the straight A+B projectile moves
 8 pixels per frame but still persists for 15 frames. The runtime therefore
 applies a non-stacking `4 / 3` speed multiplier to Pistol shots rather than
 extending their lifetime.
+Straight A+B fire occupies both player projectile slots at X offsets `-8/+8`;
+the runtime emits two parallel bullets. A single A or B press still emits one
+diagonal bullet from the corresponding side.
 
 The first active enemy wave appears around gameplay frame 195 in the verified
 Round 1 trace, which maps to roughly 146 world pixels at the calibrated 45

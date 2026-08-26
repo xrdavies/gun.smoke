@@ -44,6 +44,10 @@ export const WORLD_DIAGONAL_BULLET_X = NES_DIAGONAL_BULLET_X * NES_WORLD_Y_SCALE
 export const WORLD_DIAGONAL_BULLET_Y = NES_DIAGONAL_BULLET_Y * NES_WORLD_Y_SCALE;
 export const PISTOL_BULLET_LIFETIME = 15 / NES_FRAME_RATE;
 export const RIFLE_BULLET_SPEED_MULTIPLIER = 4 / 3;
+
+export function pistolShots(left: boolean, right: boolean): readonly { direction: number; offset: number }[] {
+  return left && right ? [{ direction: 0, offset: -8 }, { direction: 0, offset: 8 }] : [{ direction: left ? -1 : 1, offset: left ? -10 : 10 }];
+}
 export const BOMBER_FIRST_THROW_DELAY = 198 / NES_FRAME_RATE;
 export const BOMBER_THROW_INTERVAL = 106 / NES_FRAME_RATE;
 export const DYNAMITE_AIRBORNE_DURATION = 212 / NES_FRAME_RATE;

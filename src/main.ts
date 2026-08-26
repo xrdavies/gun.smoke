@@ -18,6 +18,7 @@ import { GUNMAN_BULLET_SPEED, GUNMAN_FIRST_SHOT_DELAY, GUNMAN_LIFETIME } from ".
 import { BANDIT_BILL_BULLET_SPEED, BANDIT_BILL_FIRST_VOLLEY_DELAY } from "./game-constants";
 import { banditBillCooldown } from "./game-constants";
 import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "./game-constants";
+import { pistolShots } from "./game-constants";
 import { roundCollisionBlocks } from "./round-collision";
 import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
 
@@ -616,7 +617,9 @@ class GunSmokeGame {
     }
     const direction = left && right ? 0 : left ? -1 : 1;
     if (this.weapon !== "pistol") this.ammo = Math.max(0, this.ammo - 1);
-    if (this.weapon === "shotgun") {
+    if (this.weapon === "pistol") {
+      for (const shot of pistolShots(left, right)) this.spawnBullet(shot.direction, weapon.damage, shot.offset);
+    } else if (this.weapon === "shotgun") {
       this.spawnBullet(direction, weapon.damage);
       if (direction !== 0) this.spawnBulletVelocity(direction * WORLD_BULLET_SPEED, 0, weapon.damage);
     } else {
@@ -1041,8 +1044,8 @@ class GunSmokeGame {
     return unit;
   }
 
-  private spawnBullet(direction: number, damage: number): void {
-    const unit = this.spawnUnit("bullet", this.player.x + direction * 10, this.player.y - 32, 1);
+  private spawnBullet(direction: number, damage: number, offset = direction * 10): void {
+    const unit = this.spawnUnit("bullet", this.player.x + offset, this.player.y - 32, 1);
     const speedFactor = this.weapon === "magnum" ? MAGNUM_BULLET_SPEED / WORLD_BULLET_SPEED : this.weapon === "pistol" && this.powerups.rifle > 0 ? RIFLE_BULLET_SPEED_MULTIPLIER : 1;
     unit.vx = direction * WORLD_DIAGONAL_BULLET_X * speedFactor;
     unit.vy = Math.abs(direction) < 0.01 ? -WORLD_BULLET_SPEED * speedFactor : -WORLD_DIAGONAL_BULLET_Y * speedFactor;

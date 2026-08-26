@@ -5,6 +5,7 @@ import { BANDIT_BILL_BULLET_SPEED, BANDIT_BILL_FIRST_VOLLEY_DELAY, BANDIT_BILL_S
 import { banditBillCooldown } from "../src/game-constants";
 import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "../src/game-constants";
 import { RIFLE_BULLET_SPEED_MULTIPLIER } from "../src/game-constants";
+import { pistolShots } from "../src/game-constants";
 import { roundCollisionBlocks, ROUND_COLLISION_ROW_COUNTS } from "../src/round-collision";
 import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_ENEMY_SLOT_CAPACITY, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_OBJECT_SLOT_CAPACITY, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_ENEMY_EVENT_COUNTS, ROUND_ROM_OBJECT_EVENTS, ROUND_ROM_OBJECT_EVENT_COUNTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY } from "../src/rom-event-data";
 
@@ -39,6 +40,12 @@ describe("Gun.Smoke vertical slice", () => {
     expect(clamp(12, 0, 10)).toBe(10);
     expect(clamp(-2, 0, 10)).toBe(0);
     expect(distance({ x: 0, y: 0 }, { x: 3, y: 4 })).toBe(5);
+  });
+
+  it("matches the NES two-gun pistol directions", () => {
+    expect(pistolShots(true, false)).toEqual([{ direction: -1, offset: -10 }]);
+    expect(pistolShots(false, true)).toEqual([{ direction: 1, offset: 10 }]);
+    expect(pistolShots(true, true)).toEqual([{ direction: 0, offset: -8 }, { direction: 0, offset: 8 }]);
   });
 
   it("loops a stage only when the wanted poster is missing", () => {

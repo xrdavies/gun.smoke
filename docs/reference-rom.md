@@ -362,8 +362,11 @@ slots.
 The weapon selector table at `$F1DD` stores codes `5/2/4/3/0` in `$88`. A fresh
 game uses code `0` for Pistol; `$B821-$B825` changes that to code `1` when Rifle
 stock is active. Isolated traces identify code `5` as Shotgun, code `2` as
-Machine Gun and code `4` as Magnum; code `3` remains unidentified. Shotgun fire
-creates five dispatch `0x01` projectiles: a single-side shot uses NES velocity
+Machine Gun and code `4` as Magnum. Code `3` is the armed Smart Bomb state:
+`$EE1C-$EE29` selects the Pistol/Rifle firing template, `$EECF-$EED7` skips
+special-ammo consumption, and `$CAE2-$CAEC` selects the lethal-hit bomb branch
+only for that code before `$F294-$F2BB` clears it back to Pistol/Rifle. Shotgun
+fire creates five dispatch `0x01` projectiles: a single-side shot uses NES velocity
 pairs from `(0,-12)` through `(12,0)`, while A+B uses the symmetric
 `(-8,-8)..(8,-8)` fan. Magnum shots use dispatch `0x37-$0x3a` for 34 frames and
 the same measured movement speed as base Pistol shots; Shotgun projectiles live

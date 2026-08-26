@@ -58,8 +58,8 @@ const activeEntities = () => Array.from({ length: 32 }, (_, slot) => slot)
     state: nes.cpu.mem[0x400 + slot],
     dispatchType: nes.cpu.mem[0x420 + slot],
     variant: nes.cpu.mem[0x480 + slot],
-    x: nes.cpu.mem[0x5c0 + slot],
-    y: nes.cpu.mem[0x5e0 + slot],
+    x: nes.cpu.mem[0x5e0 + slot],
+    y: nes.cpu.mem[0x5c0 + slot],
     scriptFlags: nes.cpu.mem[0x560 + slot],
   }));
 const hudScore = () => {

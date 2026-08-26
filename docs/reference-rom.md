@@ -273,7 +273,8 @@ deterministic continuous-fire comparison is needed. The trace contains
 observations only; it does not include ROM bytes or extracted graphics.
 Detailed scene samples also list active entity slots from the parallel arrays
 at `$0400/$0420/$0480/$0560/$05C0/$05E0`. The trace labels only the verified
-slot state, dispatch type, variant, script flags and X/Y values; it does not
+slot state, dispatch type, variant, script flags and coordinates; `$05C0` is
+NES Y and `$05E0` is NES X. It does not
 assign gameplay names before a dispatch routine is identified.
 Both trace modes include the verified zero-based Round index at `$41`, the
 `$5A/$5B` map-ring pointer, `$5E/$5F` map end, raw `$5C/$5D` map page/scroll

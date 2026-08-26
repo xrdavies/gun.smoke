@@ -47,7 +47,7 @@ const roundState = () => ({
 const activeEntity = (slot) => {
   const memory = nes.cpu.mem;
   return (memory[0x400 + slot] ?? 0) & 0x80
-    ? { state: memory[0x400 + slot], dispatch: memory[0x420 + slot], variant: memory[0x480 + slot], x: memory[0x5c0 + slot], y: memory[0x5e0 + slot] }
+    ? { state: memory[0x400 + slot], dispatch: memory[0x420 + slot], variant: memory[0x480 + slot], x: memory[0x5e0 + slot], y: memory[0x5c0 + slot] }
     : undefined;
 };
 

@@ -47,6 +47,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(WANTED_X_OFFSETS[4]).toBeGreaterThan(0);
     expect(ROUND_ENEMY_TYPES).toHaveLength(MAX_STAGE);
     expect(ROUND_ENEMY_TYPES[0]).toContain("backstabber");
+    expect(ROUND_ENEMY_TYPES[0]).toContain("shotgunner");
     expect(ROUND_ENEMY_TYPES[2]).toContain("spear");
     expect(ROUND_ENEMY_TYPES[2]).toContain("firebreather");
     expect(ROUND_ENEMY_TYPES[2]).toContain("hatchet");

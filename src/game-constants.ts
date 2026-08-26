@@ -42,7 +42,7 @@ export const WORLD_PLAYER_SPEED = NES_PLAYER_SPEED * NES_WORLD_Y_SCALE;
 export const BOOTS_SPEED_MULTIPLIER = 4 / 3;
 export const NES_BULLET_SPEED = 6 * NES_FRAME_RATE;
 export const WORLD_BULLET_SPEED = NES_BULLET_SPEED * NES_WORLD_Y_SCALE;
-export const MAGNUM_BULLET_SPEED = WORLD_BULLET_SPEED * 0.75;
+export const MAGNUM_BULLET_SPEED = WORLD_BULLET_SPEED;
 export const MAGNUM_BULLET_LIFETIME = 0.8;
 export const NES_DIAGONAL_BULLET_X = 2.5 * NES_FRAME_RATE;
 export const NES_DIAGONAL_BULLET_Y = 5 * NES_FRAME_RATE;
@@ -53,6 +53,12 @@ export const RIFLE_BULLET_SPEED_MULTIPLIER = 4 / 3;
 
 export function pistolShots(left: boolean, right: boolean): readonly { direction: number; offset: number }[] {
   return left && right ? [{ direction: 0, offset: -8 }, { direction: 0, offset: 8 }] : [{ direction: left ? -1 : 1, offset: left ? -10 : 10 }];
+}
+
+export function shotgunVelocities(left: boolean, right: boolean): readonly (readonly [number, number])[] {
+  if (left && right) return [[-8, -8], [-4, -11], [0, -12], [4, -11], [8, -8]];
+  if (left) return [[-12, 0], [-11, -4], [-8, -8], [-4, -11], [0, -12]];
+  return [[0, -12], [4, -11], [8, -8], [11, -4], [12, 0]];
 }
 export const BOMBER_FIRST_THROW_DELAY = 198 / NES_FRAME_RATE;
 export const BOMBER_THROW_INTERVAL = 106 / NES_FRAME_RATE;

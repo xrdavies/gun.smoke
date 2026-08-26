@@ -92,12 +92,12 @@ independently, while the equipped special weapon is lost on an unshielded
 death; Select opens the inventory to equip any owned weapon, and a Bullet
 pickup refills every owned special weapon by its own amount.
 
-Shotgun side fire emits one normal diagonal shot and one horizontal shot, and
-consumes one round per trigger. Magnum bullets use their own projectile state,
-travel at 75% of the base speed for 0.8 seconds with a larger collision body,
-and can pierce multiple enemies without depending on which weapon is selected
-after the shot was fired. The Magnum speed factor remains a calibration
-parameter until a ROM projectile trace is captured.
+Shotgun fire emits five projectiles and consumes one round per trigger. A
+single-side shot spans straight ahead through horizontal fire on that side;
+A+B emits a symmetric five-way forward fan. Magnum bullets use their own
+projectile state, travel at the measured base Pistol speed with a larger
+collision body, and can pierce multiple enemies without depending on which
+weapon is selected after the shot was fired.
 
 The runtime now exercises the engine's animation binding for player/enemy/Boss
 sprites, WebGPU `Renderer2D` batches, `AudioManager` buses, `ActionMap` keyboard

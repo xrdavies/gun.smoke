@@ -351,6 +351,13 @@ Straight A+B fire occupies both player projectile slots at X offsets `-8/+8`;
 the runtime emits two parallel bullets. A single A or B press still emits one
 diagonal bullet from the corresponding side.
 
+The weapon menu stores Shotgun/Machine Gun/Magnum/Pistol codes `5/2/4/3` in
+`$88`. Isolated code `5` fire creates five dispatch `0x01` projectiles: a
+single-side shot uses NES velocity pairs from `(0,-12)` through `(12,0)`, while
+A+B uses the symmetric `(-8,-8)..(8,-8)` fan. Code `4` Magnum shots use dispatch
+`0x37-$0x3a` and the same measured movement speed as base Pistol shots; the web
+runtime preserves that speed while retaining its self-generated piercing body.
+
 The first active enemy wave appears around gameplay frame 195 in the verified
 Round 1 trace, which maps to roughly 146 world pixels at the calibrated 45
 world-pixel/second scroll speed. OAM activity changes at approximately gameplay

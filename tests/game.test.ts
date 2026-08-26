@@ -5,7 +5,7 @@ import { BANDIT_BILL_BULLET_SPEED, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_ENTRY
 import { banditBillCooldown } from "../src/game-constants";
 import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "../src/game-constants";
 import { RIFLE_BULLET_SPEED_MULTIPLIER } from "../src/game-constants";
-import { pistolShots } from "../src/game-constants";
+import { pistolShots, shotgunVelocities } from "../src/game-constants";
 import { MAX_POWERUP_STOCK, POWERUP_OVERFLOW_SCORE, storedPowerupPickup } from "../src/game-constants";
 import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_MOVEMENT_SPEED, FATMAN_JOE_VOLLEY_INTERVAL, FATMAN_JOE_VOLLEY_SIZE } from "../src/game-constants";
 import { WINGATE_BULLET_SPEED, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_FIRST_VOLLEY_GAP, WINGATE_FIRST_VOLLEY_SIZE, WINGATE_MOVEMENT_SPEED, WINGATE_SECOND_FIRST_SHOT_DELAY, WINGATE_SECOND_VOLLEY_GAP, WINGATE_SECOND_VOLLEY_SIZE, WINGATE_SHOT_INTERVAL, wingateCombatY, wingateShotCooldown } from "../src/game-constants";
@@ -40,7 +40,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(WORLD_DIAGONAL_BULLET_Y).toBeCloseTo(676.1025, 6);
     expect(PISTOL_BULLET_LIFETIME).toBeCloseTo(15 / 60.098, 9);
     expect(RIFLE_BULLET_SPEED_MULTIPLIER).toBeCloseTo(4 / 3, 9);
-    expect({ speed: MAGNUM_BULLET_SPEED, lifetime: MAGNUM_BULLET_LIFETIME }).toEqual({ speed: WORLD_BULLET_SPEED * 0.75, lifetime: 0.8 });
+    expect({ speed: MAGNUM_BULLET_SPEED, lifetime: MAGNUM_BULLET_LIFETIME }).toEqual({ speed: WORLD_BULLET_SPEED, lifetime: 0.8 });
   });
 
   it("keeps collision helpers bounded and Euclidean", () => {
@@ -53,6 +53,12 @@ describe("Gun.Smoke vertical slice", () => {
     expect(pistolShots(true, false)).toEqual([{ direction: -1, offset: -10 }]);
     expect(pistolShots(false, true)).toEqual([{ direction: 1, offset: 10 }]);
     expect(pistolShots(true, true)).toEqual([{ direction: 0, offset: -8 }, { direction: 0, offset: 8 }]);
+  });
+
+  it("matches the traced five-way Shotgun fans", () => {
+    expect(shotgunVelocities(false, true)).toEqual([[0, -12], [4, -11], [8, -8], [11, -4], [12, 0]]);
+    expect(shotgunVelocities(true, false)).toEqual([[-12, 0], [-11, -4], [-8, -8], [-4, -11], [0, -12]]);
+    expect(shotgunVelocities(true, true)).toEqual([[-8, -8], [-4, -11], [0, -12], [4, -11], [8, -8]]);
   });
 
   it("loops a stage only when the wanted poster is missing", () => {

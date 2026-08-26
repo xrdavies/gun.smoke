@@ -574,7 +574,7 @@ class GunSmokeGame {
     }
     this.enemyFireClock -= delta;
     if (this.enemyFireClock > 0) return;
-    const shooters = this.units.filter((unit) => unit.kind === "enemy" && unit.hp > 0 && unit.y < this.player.y);
+    const shooters = this.units.filter((unit) => unit.kind === "enemy" && unit.enemyType !== "rifleman" && unit.enemyType !== "sniper" && unit.enemyType !== "bomber" && unit.enemyType !== "shotgunner" && unit.enemyType !== "spear" && unit.enemyType !== "firebreather" && unit.hp > 0 && unit.y < this.player.y);
     const shooter = shooters[Math.floor(this.nextRandom() * shooters.length)];
     if (shooter) {
       const angle = Math.atan2(this.player.y - shooter.y, this.player.x - shooter.x);
@@ -761,7 +761,7 @@ class GunSmokeGame {
       vy: isBoss || isPickup || kind === "barrel" ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : small ? 7 : 19,
       value: isBoss ? 5_000 : kind === "coin" ? 200 : kind === "ammo" || kind === "item" ? 0 : kind === "barrel" ? 50 : kind === "wanted" ? 1_000 : 100,
-      age: 0, phase: this.nextRandom() * Math.PI * 2, damage: 1, fired: false, turnRate: 0, maxAge: 18, invulnerableUntil: 0,
+      age: 0, phase: this.nextRandom() * Math.PI * 2, damage: kind === "enemy" && enemyType === "rifleman" ? 0 : 1, fired: false, turnRate: 0, maxAge: 18, invulnerableUntil: 0,
     };
     this.units.push(unit);
     return unit;
@@ -788,6 +788,13 @@ class GunSmokeGame {
       } else if (unit.enemyType === "rifleman") {
         unit.x += unit.vx * delta;
         unit.y += (unit.age < 1.2 ? unit.vy : -unit.vy * 0.75) * delta;
+        if (unit.age > 0.72 && unit.age < 1.18 && Math.floor((unit.age - 0.72) / 0.2) > unit.damage - 1) {
+          unit.damage += 1;
+          const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
+          const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y + 12, 1);
+          projectile.vx = Math.cos(angle) * 138;
+          projectile.vy = Math.sin(angle) * 138;
+        }
       } else if (unit.enemyType === "sniper") {
         if (!unit.fired && unit.age > 0.8) {
           unit.fired = true;

@@ -196,6 +196,10 @@ export function obstacleBlocks(obstacle: RoundObstacle, x: number, y: number, ra
     x >= obstacle.x - obstacle.width / 2 - radius && x <= obstacle.x + obstacle.width / 2 + radius;
 }
 
+export function unitMaxAge(kind: "boss" | "enemy" | "pickup" | "projectile"): number {
+  return kind === "boss" ? Number.POSITIVE_INFINITY : kind === "projectile" ? 2.5 : 18;
+}
+
 export function nextExtraLifeScore(currentThreshold: number): number {
   return currentThreshold === 30_000 ? 100_000 : currentThreshold + 100_000;
 }

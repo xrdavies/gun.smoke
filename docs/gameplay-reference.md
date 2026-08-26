@@ -6,12 +6,12 @@ names are cross-checked against the public NES walkthrough on
 
 | Round | Terrain cue | Boss | Current web status |
 | --- | --- | --- | --- |
-| 1 | Hicksville / western road | Bandit Bill | round gate, wanted poster, shop, boss |
-| 2 | Rocky pass / cliffs | Cutter | round gate, wanted poster, shop, boss |
-| 3 | Native village | Devil Hawk | round gate, wanted poster, shop, boss |
-| 4 | Cliff valley | Ninja | round gate, wanted poster, shop, boss |
-| 5 | Forest / bridges | Fatman Joe | round gate, wanted poster, shop, boss |
-| 6 | Wingate town / cemetery | Wingate (two encounters) | round gate, wanted poster, shop, two-phase boss |
+| 1 | Hicksville / western road | Bandit Bill | gate, poster, shop, measured entrance and volley |
+| 2 | Rocky pass / cliffs | Cutter | gate, poster, shop, measured entrance, attack approximation |
+| 3 | Native village | Devil Hawk | gate, poster, shop, attack approximation |
+| 4 | Cliff valley | Ninja | gate, poster, shop, attack approximation |
+| 5 | Forest / bridges | Fatman Joe | gate, poster, shop, attack approximation |
+| 6 | Wingate town / cemetery | Wingate (two encounters) | gate, poster, shop, two-phase approximation |
 
 The NES version's stage rule is important: the wanted poster for the round's
 outlaw must be collected before the boss gate can resolve. The web build uses

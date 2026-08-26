@@ -423,8 +423,7 @@ class GunSmokeGame {
     }
     const scrollDelta = this.bossSpawned ? 0 : WORLD_SCROLL_SPEED * delta;
     this.scroll += scrollDelta;
-    const scrolledPlayerY = this.player.y + scrollDelta;
-    if (!this.isPlayerBlocked(this.player.x, scrolledPlayerY)) this.player.y = scrolledPlayerY;
+    this.player.y += scrollDelta;
     if (shouldLoopStage(this.scroll, this.hasWanted)) this.loopStage();
     this.maybeOpenShop();
     if (this.shopOpen) return;

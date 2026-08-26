@@ -127,7 +127,8 @@ but the locked arena does not create extra ambient barrels or loose pickups.
 
 Devil Hawk enters from the top on one of the measured NES X lanes
 (`x=128/168/208`) before using a long jump arc and firing a five-shot or side-aimed three-shot
-fireball fan, Fatman Joe uses short hops and a delayed dynamite bomb gun,
+fireball fan, while the Ninja enters from measured NES lanes near `x=176/192`,
+Fatman Joe uses short hops and a delayed dynamite bomb gun,
 Wingate rushes forward, and the Ninja enters a smoke/invulnerability phase and
 teleports after each lost health bar.
 Fatman Joe's measured opening volley begins at frame 205, emits five projectiles

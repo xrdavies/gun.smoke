@@ -185,10 +185,10 @@ with later position-dependent attacks using three; a common repeat interval is
 this measured opening, 5/3 fan, timing, and speed; later jump trajectories
 remain approximations.
 The same campaign reaches Round 4 and identifies its Ninja Boss as dispatch
-`0xaa`, variant `0x6b`, with a measured entry near NES `(x=64, y=192)`. The
-runtime uses that initial position; smoke, teleport, and damage timing remain
-an approximation until the Boss slot can be isolated without the research
-cleanup used to cross the earlier gates.
+`0xaa`, variant `0x6b`, with measured entry lanes near NES `x=176/192` and
+`y=64/128`. The runtime selects one horizontal and one vertical lane; smoke,
+teleport, and damage timing remain an approximation until the Boss slot can be
+isolated without the research cleanup used to cross the earlier gates.
 The isolated Ninja routine first creates a low-slot smoke/prepare entity at
 frame 140, then emits four `0x30` shuriken bullets at frame 179; subsequent
 volleys commonly recur after 60 frames. Their diagonal path measures about

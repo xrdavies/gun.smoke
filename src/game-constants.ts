@@ -138,10 +138,10 @@ export const DEVIL_HAWK_FIREBALL_SPEED = 3 * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
 export function devilHawkOpeningY(age: number): number {
   return Math.max(0, Math.min(1, age / DEVIL_HAWK_ENTRY_DURATION)) * DEVIL_HAWK_ENTRY_END_Y;
 }
-export const NINJA_BOSS_ENTRY_X_NES = 64;
-export const NINJA_BOSS_ENTRY_X = NINJA_BOSS_ENTRY_X_NES * NES_WORLD_X_SCALE;
-export const NINJA_BOSS_ENTRY_Y_NES = 192;
-export const NINJA_BOSS_ENTRY_Y = NINJA_BOSS_ENTRY_Y_NES * NES_WORLD_Y_SCALE;
+export const NINJA_BOSS_ENTRY_X_NES = [176, 192] as const;
+export const NINJA_BOSS_ENTRY_X_LANES = NINJA_BOSS_ENTRY_X_NES.map((value) => value * NES_WORLD_X_SCALE);
+export const NINJA_BOSS_ENTRY_Y_NES = [64, 128] as const;
+export const NINJA_BOSS_ENTRY_Y_LANES = NINJA_BOSS_ENTRY_Y_NES.map((value) => value * NES_WORLD_Y_SCALE);
 export const NINJA_BOSS_FIRST_ATTACK_DELAY = 179 / NES_FRAME_RATE;
 export const NINJA_BOSS_ATTACK_INTERVAL = 60 / NES_FRAME_RATE;
 export const NINJA_BOSS_SHURIKEN_COUNT = 4;

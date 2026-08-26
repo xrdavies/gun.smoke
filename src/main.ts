@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, bossReward, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, shouldLoopStage, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, scoreExtraLives, spendPoints, STAGE_LENGTH, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, bossReward, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, shouldLoopStage, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, scoreExtraLives, spendPoints, STAGE_LENGTH, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -783,11 +783,6 @@ class GunSmokeGame {
       enemy.vy = entersFromBehind ? -100 : enemyType === "sniper" ? 0 : 24 + this.stage * 6;
     }
     if (!bossEncounter && this.nextRandom() < 0.28) this.spawnUnit("moneyBag", clamp(center + (this.nextRandom() - 0.5) * 260, 60, 900), y + 55, 1);
-    if (!bossEncounter && this.nextRandom() < 0.1) {
-      const itemTypes = ROUND_ITEM_TYPES[this.stage - 1] ?? ROUND_ITEM_TYPES[0]!;
-      const itemType = itemTypes[Math.floor(this.nextRandom() * itemTypes.length)] ?? "money";
-      this.spawnUnit("barrel", clamp(center + (this.nextRandom() - 0.5) * 300, 60, 900), y + 90, 1, undefined, itemType);
-    }
     if (!bossEncounter && this.ownedWeapons.size > 1 && this.nextRandom() < 0.18) this.spawnUnit("ammo", clamp(center + (this.nextRandom() - 0.5) * 220, 60, 900), y + 120, 1);
     this.spawnClock = segment.interval;
   }

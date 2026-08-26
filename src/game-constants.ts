@@ -103,15 +103,6 @@ export const ROUND_SEGMENTS: readonly (readonly RoundSegment[])[] = [
   [{ at: 146, formation: "cross", enemyTypes: ["gunman", "sniper"], interval: 1, landmark: "cemetery" }, { at: 420, formation: "rear", enemyTypes: ["bomber", "backstabber"], interval: 0.86, landmark: "open" }, { at: 980, formation: "wedge", enemyTypes: ["sniper", "gunman"], interval: 0.74, landmark: "cemetery" }, { at: 1_500, formation: "cross", enemyTypes: ["bomber", "backstabber"], interval: 0.64, landmark: "open" }],
 ];
 
-export const ROUND_ITEM_TYPES: readonly (readonly ItemType[])[] = [
-  ["rifle", "money", "boots", "pow", "horse", "blueYashichi", "redYashichi"],
-  ["money", "skull", "blueYashichi", "redYashichi", "horse", "pow"],
-  ["pow", "redYashichi", "skull", "blueYashichi", "horse", "ammo"],
-  ["blueYashichi", "redYashichi", "pow", "ammo", "horse"],
-  ["blueYashichi", "redYashichi", "pow", "skull", "horse", "ammo"],
-  ["pow", "blueYashichi", "redYashichi", "horse", "ammo", "money"],
-];
-
 export const ROUND_ITEM_EVENTS: readonly (readonly RoundItemEvent[])[] = [
   [{ at: 220, xOffset: 170, item: "rifle" }, { at: 360, xOffset: -150, item: "money" }, { at: 720, xOffset: 0, item: "boots" }, { at: 900, xOffset: 140, item: "money" }, { at: 1_180, xOffset: 170, item: "horse" }, { at: 1_480, xOffset: -170, item: "pow" }, { at: 1_600, xOffset: 120, item: "blueYashichi" }, { at: 1_700, xOffset: -130, item: "redYashichi" }, { at: 1_780, xOffset: -40, item: "pow" }],
   [{ at: 260, xOffset: 140, item: "skull" }, { at: 520, xOffset: -140, item: "blueYashichi" }, { at: 780, xOffset: 160, item: "redYashichi" }, { at: 920, xOffset: -150, item: "skull" }, { at: 1_160, xOffset: -120, item: "horse" }, { at: 1_520, xOffset: 0, item: "pow" }],

@@ -13,6 +13,12 @@ const rom = fs.readFileSync(filename).toString("binary");
 let lastFrame;
 const nes = new NES({ onFrame: (frame) => { lastFrame = frame; }, onAudioSample: () => {} });
 nes.loadROM(rom);
+let mapperBank = 0;
+const mapperWrite = nes.mmap.write.bind(nes.mmap);
+nes.mmap.write = (address, value) => {
+  if (address >= 0x8000) mapperBank = value % nes.rom.romCount;
+  return mapperWrite(address, value);
+};
 
 const checkpoints = [];
 const activeSprites = () => {
@@ -49,7 +55,8 @@ const checkpoint = (label, gameFrame) => {
       "0x69": nes.cpu.mem[0x69],
       "0x7a": nes.cpu.mem[0x7a],
     },
-    eventCursor: { slot: nes.cpu.mem[0x6a], delay: nes.cpu.mem[0x6b], bank: nes.cpu.mem[0xa3] },
+    eventCursor: { slot: nes.cpu.mem[0x6a], delay: nes.cpu.mem[0x6b], ramA3: nes.cpu.mem[0xa3] },
+    mapperBank,
     eventPairs: Array.from(nes.cpu.mem.slice(0x780, 0x7c0)),
     hudScore: hudScore(),
     ppu: {

@@ -69,9 +69,10 @@ Both trace formats also decode `hudScore` from the six visible OAM digit tiles
 at `y=16`: runtime tiles 88 through 97 map directly to digits 0 through 9.
 This gives a verified score observation without assigning semantics to an
 unknown RAM address.
-They also record the event cursor (`$6A/$6B/$A3`) and the live `$0780-$07BF`
-event-pair buffer, so a later Round trace can distinguish script data loaded
-into RAM from the fixed-bank loader itself.
+They also record the event cursor (`$6A/$6B`), raw `$A3`, the live
+`$0780-$07BF` event-pair buffer, and the actual Mapper 2 bank selected through
+writes at `$8000+`. This keeps observed mapper state separate from unknown RAM
+semantics while locating the switchable-bank script data.
 `--pulse-fire` alternates short A/B presses every four frames, producing a
 repeatable diagonal-fire trace for score and hit timing. Unlike `--hold-ab`, it
 continues to trigger the semi-automatic Pistol after the first shot.

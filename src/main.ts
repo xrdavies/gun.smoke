@@ -15,6 +15,7 @@ import "./style.css";
 import type { ButtonKey } from "jsnes";
 import { AMMO_GAIN, bossReward, BOOTS_SPEED_MULTIPLIER, clamp, distance, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_BOSS_TRIGGERS, ROUND_ITEM_EVENTS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, shouldLoopStage, shouldRevealWanted, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, worldEventEnteredView, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
 import { roundCollisionBlocks } from "./round-collision";
+import { ROUND_ROM_ENEMY_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY } from "./rom-event-data";
 
 type GameAction =
   | "left"
@@ -57,6 +58,9 @@ interface Unit {
   hitTargets?: Set<Unit>;
   shopIndex?: number;
   animation?: SpriteAnimationBinding;
+  romBehavior?: number;
+  romEntityCode?: number;
+  romFlags?: number;
 }
 
 const actions = new ActionMap<GameAction>();
@@ -218,6 +222,8 @@ class GunSmokeGame {
   hasWanted = false;
   posterPropSpawned = false;
   itemEventCursor = 0;
+  romEventCursor = 0;
+  readonly romEventMode = true;
   stageLoopCount = 0;
   currentLandmark: LandmarkType = "town";
   wingatePhase = 0;
@@ -639,6 +645,7 @@ class GunSmokeGame {
 
   private updateSpawns(delta: number): void {
     this.spawnClock -= delta;
+    this.spawnRomEnemyEvents();
     this.spawnRoundItemEvents();
     if (shouldRevealWanted(this.scroll, this.stage, this.hasWanted, this.posterPropSpawned)) {
       const wantedX = clamp(480 + (WANTED_X_OFFSETS[this.stage - 1] ?? 0), 70, 890);
@@ -647,6 +654,7 @@ class GunSmokeGame {
       this.showMessage("SHOOT THE BARREL");
     }
     if (this.scroll >= (ROUND_BOSS_TRIGGERS[this.stage - 1] ?? ROUND_BOSS_TRIGGERS[0]!) && this.hasWanted && !this.bossSpawned) this.spawnBoss();
+    if (this.romEventMode) return;
     if (this.spawnClock <= 0) {
       const segments = ROUND_SEGMENTS[this.stage - 1] ?? ROUND_SEGMENTS[0]!;
       const nextSegment = this.bossSpawned ? undefined : segments.find((segment) => this.scroll < segment.at);
@@ -655,6 +663,29 @@ class GunSmokeGame {
         return;
       }
       this.spawnFormation(this.bossSpawned);
+    }
+  }
+
+  private spawnRomEnemyEvents(): void {
+    if (this.bossSpawned) return;
+    const events = ROUND_ROM_ENEMY_EVENTS[this.stage - 1] ?? [];
+    while (this.romEventCursor < events.length) {
+      const event = events[this.romEventCursor];
+      if (!event || romEventWorldAt(event) > this.scroll) break;
+      const enemyType = ROM_BEHAVIOR_ENEMY_TYPES[event.behavior] ?? "gunman";
+      const enemy = this.spawnUnit(
+        "enemy",
+        clamp(romEventWorldX(event), 40, 920),
+        this.scroll + romEventWorldY(event),
+        1 + Number(this.stage >= 4),
+        enemyType,
+      );
+      enemy.romBehavior = event.behavior;
+      enemy.romEntityCode = event.entityCode;
+      enemy.romFlags = event.flags;
+      enemy.vx = enemyType === "sniper" ? 0 : (this.nextRandom() - 0.5) * (42 + this.stage * 6);
+      enemy.vy = enemyType === "backstabber" ? -100 : enemyType === "sniper" ? 0 : 24 + this.stage * 6;
+      this.romEventCursor += 1;
     }
   }
 
@@ -920,7 +951,7 @@ class GunSmokeGame {
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: frameDuration },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined,
+      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined,
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
@@ -1296,6 +1327,7 @@ class GunSmokeGame {
     this.wingatePhase = 0;
     this.posterPropSpawned = false;
     this.itemEventCursor = 0;
+    this.romEventCursor = 0;
     this.stageLoopCount = 0;
     this.shopIndex = 0;
     this.shopSpawnCursor = 0;
@@ -1315,6 +1347,7 @@ class GunSmokeGame {
     this.player.sprite.position = { x: this.player.x, y: this.player.y };
     this.posterPropSpawned = false;
     this.itemEventCursor = 0;
+    this.romEventCursor = 0;
     this.shopIndex = 0;
     this.shopSpawnCursor = 0;
     this.spawnClock = 0.8;

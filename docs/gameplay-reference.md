@@ -157,6 +157,11 @@ crossings to match the Round 5 traversal cue; water remains passable in this
 first approximation, while trees are the blocking geometry. Cemetery segments
 also draw grouped center gravestones between the side buildings.
 
+Enemy spawning now consumes decoded Round event streams for records with a
+verified behavior routine. Each runtime enemy retains its behavior and entity
+codes for trace comparison; the visible enemy type is an explicit procedural
+approximation until that routine's full state machine is identified.
+
 Important barrel contents are represented as ordered world events per Round,
 so every Boots, Rifle, POW, Yashichi, Skull and Horse barrel is stable rather
 than supplemented by random barrels. Each event is authored in world-space and

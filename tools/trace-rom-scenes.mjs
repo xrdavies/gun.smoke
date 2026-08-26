@@ -25,9 +25,15 @@ let lastFrame;
 const nes = new NES({ onFrame: (frame) => { lastFrame = frame; }, onAudioSample: () => {} });
 nes.loadROM(rom);
 let mapperBank = 0;
+let mapperWriteCount = 0;
+const mapperBanksSeen = new Set([mapperBank]);
 const mapperWrite = nes.mmap.write.bind(nes.mmap);
 nes.mmap.write = (address, value) => {
-  if (address >= 0x8000) mapperBank = value % nes.rom.romCount;
+  if (address >= 0x8000) {
+    mapperBank = value % nes.rom.romCount;
+    mapperBanksSeen.add(mapperBank);
+    mapperWriteCount += 1;
+  }
   return mapperWrite(address, value);
 };
 const sha = (value) => crypto.createHash("sha256").update(value).digest("hex").slice(0, 16);
@@ -57,7 +63,7 @@ const hudScore = () => {
 };
 const sample = (frame) => {
   const oam = activeOam();
-  return {
+  const value = {
     frame,
     gameFrame: Math.max(0, frame - 825),
     ram: {
@@ -70,6 +76,8 @@ const sample = (frame) => {
     },
     eventCursor: { slot: nes.cpu.mem[0x6a], delay: nes.cpu.mem[0x6b], ramA3: nes.cpu.mem[0xa3] },
     mapperBank,
+    mapperBanksSeen: [...mapperBanksSeen].sort((left, right) => left - right),
+    mapperWriteCount,
     eventPairs: Array.from(nes.cpu.mem.slice(0x780, 0x7c0)),
     hudScore: hudScore(),
     ppu: {
@@ -85,6 +93,10 @@ const sample = (frame) => {
     frameHash: lastFrame ? sha(Buffer.from(lastFrame.buffer)) : undefined,
     nameTableHashes: nameTableHashes(),
   };
+  mapperBanksSeen.clear();
+  mapperBanksSeen.add(mapperBank);
+  mapperWriteCount = 0;
+  return value;
 };
 
 for (let frame = 0; frame < 180; frame += 1) nes.frame();
@@ -96,6 +108,9 @@ if (holdFire) {
   nes.buttonDown(1, Controller.BUTTON_A);
   nes.buttonDown(1, Controller.BUTTON_B);
 }
+mapperBanksSeen.clear();
+mapperBanksSeen.add(mapperBank);
+mapperWriteCount = 0;
 
 const samples = [];
 for (let frame = 0; frame < frames; frame += 1) {

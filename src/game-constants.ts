@@ -185,6 +185,21 @@ export const NINJA_BOSS_ENTRY_INVULNERABILITY = 44 / NES_FRAME_RATE;
 export const NINJA_BOSS_ATTACK_INTERVAL = 60 / NES_FRAME_RATE;
 export const NINJA_BOSS_SHURIKEN_COUNT = 4;
 export const NINJA_BOSS_SHURIKEN_SPEED = 405;
+const NINJA_BOSS_COMBAT_PATH_NES = [[0, 128], [26, 165], [51, 103], [67, 104], [126, 110], [196, 94], [253, 140], [296, 164], [386, 64], [431, 64], [448, 88], [474, 88], [508, 72], [534, 72], [551, 41]] as const;
+
+export function ninjaBossCombatY(age: number, entryY = 128 * NES_WORLD_Y_SCALE): number {
+  const frame = Math.max(0, age * NES_FRAME_RATE - NINJA_BOSS_ENTRY_INVULNERABILITY * NES_FRAME_RATE);
+  const laneOffset = entryY / NES_WORLD_Y_SCALE - 128;
+  const first = NINJA_BOSS_COMBAT_PATH_NES[0]!;
+  if (frame <= first[0]) return (first[1] + laneOffset) * NES_WORLD_Y_SCALE;
+  const last = NINJA_BOSS_COMBAT_PATH_NES.at(-1)!;
+  if (frame >= last[0]) return (last[1] + laneOffset) * NES_WORLD_Y_SCALE;
+  const nextIndex = NINJA_BOSS_COMBAT_PATH_NES.findIndex(([at]) => at >= frame);
+  const previous = NINJA_BOSS_COMBAT_PATH_NES[nextIndex - 1]!;
+  const next = NINJA_BOSS_COMBAT_PATH_NES[nextIndex]!;
+  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  return (previous[1] + (next[1] - previous[1]) * amount + laneOffset) * NES_WORLD_Y_SCALE;
+}
 export const FATMAN_JOE_ENTRY_X_NES = 152;
 export const FATMAN_JOE_ENTRY_X = FATMAN_JOE_ENTRY_X_NES * NES_WORLD_X_SCALE;
 export const FATMAN_JOE_ENTRY_Y_NES = 0;

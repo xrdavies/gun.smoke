@@ -198,8 +198,9 @@ The isolated Ninja routine first creates a low-slot smoke/prepare entity at
 frame 140, remains in its entry smoke state for about 44 frames, then emits
 four `0x30` shuriken bullets at frame 179; subsequent volleys commonly recur
 after 60 frames. Their diagonal path measures about 405 world pixels/s. The
-runtime uses the entry invulnerability, four-shot opening and interval while
-keeping the smoke and teleport visuals procedural.
+runtime uses the entry invulnerability, the measured multi-height combat
+profile, four-shot opening and interval while keeping the smoke and teleport
+visuals procedural.
 Round 5's gate identifies Fatman Joe as dispatch `0x80`, variant `0x51`. He
 enters from the top at NES `(x=152, y=0)`, keeps that horizontal lane for the
 first 170 frames and reaches about `y=112`. The first five-shot `0x3f` fan starts

@@ -51,6 +51,17 @@ const activeOam = () => {
   return entries;
 };
 const nameTableHashes = () => nes.ppu.nameTable.map((table) => sha(Buffer.from(table.tile.slice(0, 32 * 30))));
+const activeEntities = () => Array.from({ length: 32 }, (_, slot) => slot)
+  .filter((slot) => (nes.cpu.mem[0x400 + slot] ?? 0) & 0x80)
+  .map((slot) => ({
+    slot,
+    state: nes.cpu.mem[0x400 + slot],
+    dispatchType: nes.cpu.mem[0x420 + slot],
+    variant: nes.cpu.mem[0x480 + slot],
+    x: nes.cpu.mem[0x5c0 + slot],
+    y: nes.cpu.mem[0x5e0 + slot],
+    scriptFlags: nes.cpu.mem[0x560 + slot],
+  }));
 const hudScore = () => {
   const digits = [];
   for (let index = 0; index < nes.ppu.spriteMem.length; index += 4) {
@@ -113,6 +124,7 @@ const sample = (frame) => {
       rawVramAddress: nes.ppu.vramAddress,
     },
     activeSprites: oam.length,
+    activeEntities: activeEntities(),
     oamHash: sha(Buffer.from(oam.flat())),
     frameHash: lastFrame ? sha(Buffer.from(lastFrame.buffer)) : undefined,
     nameTableHashes: nameTableHashes(),

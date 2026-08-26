@@ -686,6 +686,9 @@ class GunSmokeGame {
         // Open clearings deliberately omit side landmarks.
       } else if (landmark === "town" || landmark === "cemetery") {
         for (const x of [edge - 48, 960 - edge + 48]) this.backgrounds.push(new Sprite({ texture: this.textures.landmark, sampler: this.sampler, position: { x, y: y + 90 }, size: { x: 86, y: 130 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -18 }));
+        if (landmark === "cemetery") {
+          for (const x of [360, 480, 600]) this.backgrounds.push(new Sprite({ texture: this.textures.landmark, sampler: this.sampler, position: { x, y: y + 90 }, size: { x: 28, y: 48 }, anchor: { x: 0.5, y: 0.5 }, color: [0.68, 0.68, 0.75, 1], layer: -17.5 }));
+        }
       } else if (landmark === "rock" || landmark === "cliff") {
         for (const x of [edge - 30, 960 - edge + 30]) this.backgrounds.push(new Sprite({ texture: this.textures.landmark, sampler: this.sampler, position: { x, y: y + 90 }, size: { x: 52, y: 170 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -18 }));
       } else if (landmark === "village") {

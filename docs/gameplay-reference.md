@@ -111,7 +111,8 @@ so a diagonal input can follow a narrow path around an obstacle. The blocker
 coordinates remain explicit approximation data until each stage has a matching
 ROM trace. Forest segments additionally alternate blue water with brown bridge
 crossings to match the Round 5 traversal cue; water remains passable in this
-first approximation, while trees are the blocking geometry.
+first approximation, while trees are the blocking geometry. Cemetery segments
+also draw grouped center gravestones between the side buildings.
 
 Important barrel contents are represented as ordered world events per Round,
 so the notable boots, rifle, POW, Yashichi, Skull and Horse sequence is stable;

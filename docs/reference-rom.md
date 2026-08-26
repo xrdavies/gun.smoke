@@ -128,6 +128,10 @@ same one-shot timing and a 300-world-pixel/s self-generated projectile.
 An isolated `$B8F4` Hatchet Thrower emits its dispatch `0x32` projectile at age
 78 frames and aims it toward Billy at roughly 230 world pixels/s. The runtime
 uses that measured delay and speed.
+An isolated `$BB29` Firebreather entity emits one dispatch `0x34` fireball at
+age 156 frames, aimed toward Billy at roughly 250 world pixels/s. ROM-tagged
+Firebreathers use this single-shot timing; the procedural fallback remains a
+three-way spread for non-ROM formations.
 
 Current behavior map:
 
@@ -144,7 +148,7 @@ Current behavior map:
 | `$B82F` | Backstabber | Round 5 roster elimination |
 | `$B8F4` | Hatchet Thrower | isolated dispatch/OAM timing trace |
 | `$BA51` | Spear Thrower | Native Village roster elimination |
-| `$BB29` | Firebreather | Native Village roster elimination |
+| `$BB29` | Firebreather | isolated dispatch/OAM timing trace |
 
 The elimination entries remain behavior approximations until their complete
 state machines are traced; the runtime stores the original routine and entity

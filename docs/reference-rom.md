@@ -142,6 +142,10 @@ The `$B82F` Round 5 Backstabber variant is an ambush actor rather than a
 projectile shooter: its X remains fixed, it descends roughly 85 NES pixels, and
 its slot is released after about 407 frames. The runtime keeps this state
 separate from the `$B46E` movement variant.
+The `$B46E` Backstabber variant is a mirrored side raid. Left/right traces both
+live for 369 frames; during the first 160 frames the actor crosses 174 NES
+pixels while following the same measured vertical bends. The runtime
+interpolates seven mirrored checkpoints instead of sending it straight upward.
 
 Current behavior map:
 
@@ -150,7 +154,7 @@ Current behavior map:
 | `$B080` | Sniper | isolated slot/OAM timing trace |
 | `$B0E5` | Shotgunner | three projectile slots and two measured volleys |
 | `$B284` | Gunman | Round 1 roster elimination after the measured routines |
-| `$B46E` | Backstabber | Round 1 roster elimination |
+| `$B46E` | Backstabber side raid | mirrored movement/lifetime trace |
 | `$B501` | Bomber | isolated delayed dynamite state |
 | `$B5BF` | falling rock hazard | isolated contact/state trace |
 | `$B671` | Ninja | isolated dispatch/OAM timing trace |

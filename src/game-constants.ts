@@ -73,6 +73,18 @@ export const SPEAR_PROJECTILE_SPEED = 250;
 export const BACKSTABBER_AMBUSH_DROP_SPEED = 45;
 export const BACKSTABBER_AMBUSH_DEPTH = 191;
 export const BACKSTABBER_AMBUSH_LIFETIME = 407 / NES_FRAME_RATE;
+export const BACKSTABBER_RAID_PATH = [[0, 0, 0], [40, 66, -15], [80, 103, 42], [120, 129, 44], [160, 174, 89], [200, 184, 83], [368, 213, 74]] as const;
+export const BACKSTABBER_RAID_LIFETIME = 369 / NES_FRAME_RATE;
+
+export function backstabberRaidOffset(frame: number): readonly [number, number] {
+  const nextIndex = BACKSTABBER_RAID_PATH.findIndex(([at]) => at >= frame);
+  if (nextIndex < 0) return [BACKSTABBER_RAID_PATH.at(-1)![1], BACKSTABBER_RAID_PATH.at(-1)![2]];
+  if (nextIndex === 0) return [BACKSTABBER_RAID_PATH[0][1], BACKSTABBER_RAID_PATH[0][2]];
+  const previous = BACKSTABBER_RAID_PATH[nextIndex - 1]!;
+  const next = BACKSTABBER_RAID_PATH[nextIndex]!;
+  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  return [previous[1] + (next[1] - previous[1]) * amount, previous[2] + (next[2] - previous[2]) * amount];
+}
 
 export const SHOP_CHECKPOINTS: readonly (readonly number[])[] = [
   [560, 1_180],

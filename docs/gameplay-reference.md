@@ -27,6 +27,9 @@ segment with shops and the hidden barrel available again. Once the poster is
 owned, scrolling stops at the Boss arena.
 Round 2 also adds its free Horse barrel near the left cactus only after such a
 loop; it is not present on the first pass.
+On the first pass, its right Skull, hidden Blue Yashichi, right Red Yashichi,
+left Skull/Wanted area, and final POW remain ordered after the first weapon
+shop as described by the NES walkthrough.
 
 The web build also models the resource loop with Money Bag pickups, round-specific
 trading-post checkpoints, Shotgun, Machine Gun, Magnum, finite ammunition,

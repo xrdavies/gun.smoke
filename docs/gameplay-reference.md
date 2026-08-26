@@ -150,7 +150,8 @@ The six decoded ROM collision rings now provide the base 16-pixel terrain mask.
 The player lookup follows the verified `$5A-$5D` map pointer/page/fine-scroll
 formula and keeps axis sliding, so diagonal input can follow a blocked edge.
 Rocky Pass, Cliff Valley, Forest, and Wingate Town retain their authored
-boulder, tree, and grave zones as additional procedural scenery blockers.
+boulder, tree, and grave zones as visual scenery, while movement collision
+comes only from the decoded ROM mask.
 Forest segments additionally alternate blue water with brown bridge
 crossings to match the Round 5 traversal cue; water remains passable in this
 first approximation, while trees are the blocking geometry. Cemetery segments

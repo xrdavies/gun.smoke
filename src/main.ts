@@ -880,8 +880,7 @@ class GunSmokeGame {
   }
 
   private isPlayerBlocked(x: number, y: number): boolean {
-    return roundCollisionBlocks(this.stage, this.scroll, x, y) ||
-      (ROUND_OBSTACLES[this.stage - 1] ?? []).some((obstacle) => obstacleBlocks(obstacle, x, y));
+    return roundCollisionBlocks(this.stage, this.scroll, x, y);
   }
 
   private spawnFormation(bossEncounter = false): void {

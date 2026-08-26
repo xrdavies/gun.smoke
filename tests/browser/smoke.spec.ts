@@ -69,6 +69,14 @@ test("accepts gamepad Start from the title flow", async ({ page }) => {
   await page.waitForTimeout(100);
   await page.evaluate(() => (window as unknown as { __setStartPressed: (pressed: boolean) => void }).__setStartPressed(true));
   await expect(page.locator("#hud")).toBeVisible();
+  await page.evaluate(() => (window as unknown as { __setStartPressed: (pressed: boolean) => void }).__setStartPressed(false));
+  await page.waitForTimeout(100);
+  await page.evaluate(() => (window as unknown as { __setStartPressed: (pressed: boolean) => void }).__setStartPressed(true));
+  await expect(page.locator("#pause-screen")).toBeVisible();
+  await page.evaluate(() => (window as unknown as { __setStartPressed: (pressed: boolean) => void }).__setStartPressed(false));
+  await page.waitForTimeout(100);
+  await page.evaluate(() => (window as unknown as { __setStartPressed: (pressed: boolean) => void }).__setStartPressed(true));
+  await expect(page.locator("#pause-screen")).toBeHidden();
 });
 
 test("reaches the first trading post", async ({ page }) => {

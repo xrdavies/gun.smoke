@@ -45,6 +45,19 @@ const hudScore = () => {
   }
   return digits.length === 6 && digits.filter(Number.isInteger).length === 6 ? Number(digits.join("")) : undefined;
 };
+const ppuUpdate = () => {
+  const control = nes.cpu.mem[0x36c] ?? 0;
+  const length = (control & 0x3f) || 64;
+  const repeat = Boolean(control & 0x40);
+  return {
+    address: ((nes.cpu.mem[0x36a] ?? 0) << 8) | (nes.cpu.mem[0x36b] ?? 0),
+    control,
+    length,
+    repeat,
+    vertical: Boolean(control & 0x80),
+    payload: Array.from(nes.cpu.mem.slice(0x36d, 0x36d + (repeat ? 1 : length))),
+  };
+};
 const checkpoint = (label, gameFrame) => {
   const frameHash = lastFrame
     ? crypto.createHash("sha256").update(Buffer.from(lastFrame.buffer)).digest("hex").slice(0, 16)
@@ -62,11 +75,7 @@ const checkpoint = (label, gameFrame) => {
       "0x7a": nes.cpu.mem[0x7a],
     },
     eventCursor: { slot: nes.cpu.mem[0x6a], delay: nes.cpu.mem[0x6b], ramA3: nes.cpu.mem[0xa3] },
-    sceneRuntime: {
-      pointer: (nes.cpu.mem[0x36a] ?? 0) | ((nes.cpu.mem[0x36b] ?? 0) << 8),
-      count: nes.cpu.mem[0x36c],
-      records: Array.from(nes.cpu.mem.slice(0x36d, 0x394)),
-    },
+    ppuUpdate: ppuUpdate(),
     mapperBank,
     mapperBanksSeen: [...mapperBanksSeen].sort((left, right) => left - right),
     mapperWriteCount,

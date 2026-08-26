@@ -9,7 +9,7 @@
     "inspect:rom": "node tools/inspect-rom.mjs",
     "disassemble:rom": "node tools/disassemble-rom.mjs",
     "extract:rom-assets": "node tools/extract-rom-assets.mjs",
-    "extract:rom-scene-script": "node tools/extract-rom-scene-script.mjs",
+    "extract:rom-opening-script": "node tools/extract-rom-opening-script.mjs",
     "trace:rom": "node tools/trace-rom.mjs",
     "trace:rom:timeline": "node tools/trace-rom.mjs --timeline",
     "trace:rom:scenes": "node tools/trace-rom-scenes.mjs",

@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const filename = process.argv[2] ?? "Gun.Smoke.ZH.NES";
-const output = process.argv[3] ?? ".rom-traces/bank1-scene-script.json";
+const output = process.argv[3] ?? ".rom-traces/bank1-opening-nametable.json";
 if (!fs.existsSync(filename)) {
   console.log(`Reference ROM not found: ${filename}`);
   process.exit(0);
@@ -20,23 +20,23 @@ const prg = data.subarray(16 + trainerBytes, 16 + trainerBytes + prgBytes);
 const bank = prg.subarray(0x4000, 0x8000);
 const read = (cpuAddress) => bank[cpuAddress - 0x8000];
 const hex = (value, width = 2) => value.toString(16).padStart(width, "0");
-const blocks = Array.from({ length: 22 }, (_, index) => {
+const tileRuns = Array.from({ length: 22 }, (_, index) => {
   const address = (read(0xb79d + index) << 8) | read(0xb787 + index);
   const bytes = [];
   for (let offset = 0; offset < 0x100; offset += 1) {
     const value = read(address + offset);
-    if (value === undefined) throw new Error(`Scene block ${index} leaves bank 1`);
+    if (value === undefined) throw new Error(`Tile run ${index} leaves bank 1`);
     bytes.push(value);
     if (value === 0xff) break;
   }
-  if (bytes.at(-1) !== 0xff) throw new Error(`Scene block ${index} has no terminator`);
-  return { index, address: `$${hex(address, 4)}`, bytes, hex: bytes.map((value) => hex(value)).join(" ") };
+  if (bytes.at(-1) !== 0xff) throw new Error(`Tile run ${index} has no terminator`);
+  const tiles = bytes.slice(0, -1);
+  return { index, address: `$${hex(address, 4)}`, tiles, paddedTiles: [...tiles, ...Array(Math.max(0, 25 - tiles.length)).fill(0xf4)].slice(0, 25) };
 });
-const rowParameters = Array.from({ length: 3 }, (_, index) => ({
-  index,
-  high: read(0xb7b3 + index),
-  low: read(0xb7b6 + index),
-}));
+const ppuRowTargets = Array.from({ length: 3 }, (_, index) => {
+  const address = (read(0xb7b6 + index) << 8) | read(0xb7b3 + index);
+  return { index, address: `$${hex(address, 4)}`, row: Math.floor((address & 0x03ff) / 32), column: address & 31 };
+});
 fs.mkdirSync(path.dirname(output), { recursive: true });
 fs.writeFileSync(output, JSON.stringify({
   source: filename,
@@ -44,8 +44,8 @@ fs.writeFileSync(output, JSON.stringify({
   mapper,
   bank: 1,
   pointerTables: { low: "$b787", high: "$b79d" },
-  rowParameterTables: { high: "$b7b3", low: "$b7b6" },
-  rowParameters,
-  blocks,
+  ppuRowTargetTables: { low: "$b7b3", high: "$b7b6" },
+  ppuRowTargets,
+  tileRuns,
 }, null, 2));
-console.log(`Extracted ${blocks.length} bank 1 scene blocks to ${output}`);
+console.log(`Extracted ${tileRuns.length} bank 1 opening tile runs to ${output}`);

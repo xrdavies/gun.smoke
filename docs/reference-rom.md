@@ -40,12 +40,12 @@ non-Mapper-2 files, truncated PRG payloads and addresses outside cartridge
 space. The output is a local
 analysis aid and is not committed as reconstructed Capcom source.
 
-Bank 1 code at `$B312-$B3F8` reads a 22-entry pointer table from `$B787/$B79D`
-and three row-parameter pairs from `$B7B3/$B7B6`. Running
-`npm run extract:rom-scene-script` follows those pointers, validates each
-`0xFF`-terminated block, and writes the candidate scene script to the ignored
-`.rom-traces/bank1-scene-script.json`. This preserves addresses and bytes for
-analysis without committing extracted ROM data.
+Bank 1 opening code at `$B312-$B3F8` reads 22 tile-run pointers from
+`$B787/$B79D` and three PPU row targets from `$B7B3/$B7B6`. Running
+`npm run extract:rom-opening-script` follows those pointers, validates each
+`0xFF`-terminated run, and writes the nametable script to the ignored
+`.rom-traces/bank1-opening-nametable.json`. Bank 1 is observed during the
+title/opening flow; this data is not labeled as a Round gameplay script.
 
 Pattern-table previews remain grayscale for bitplane inspection; nametable
 previews apply each tile's expanded attribute and the live NES background
@@ -82,8 +82,10 @@ writes at `$8000+`. Each sample also reports every bank seen and the number of
 bank writes during that interval, because the game can switch several times
 inside one video frame. This keeps observed mapper state separate from unknown
 RAM semantics while locating the switchable-bank script data.
-The `sceneRuntime` sample contains the live `$036A-$036D` pointer/count/record
-buffer used by the bank 1 loader, even when the buffer is currently idle.
+The `ppuUpdate` sample decodes the live `$036A+` command consumed by
+`$C0DF-$C133`: `$036A/$036B` are the big-endian PPU address, `$036C` contains
+vertical/repeat/length flags, and `$036D+` is the tile payload. A zero six-bit
+length means 64 writes.
 `--pulse-fire` alternates short A/B presses every four frames, producing a
 repeatable diagonal-fire trace for score and hit timing. Unlike `--hold-ab`, it
 continues to trigger the semi-automatic Pistol after the first shot.

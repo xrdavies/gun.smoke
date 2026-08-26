@@ -17,7 +17,7 @@ test("starts the WebGPU stage and renders gameplay", async ({ page }) => {
   await expect(page.locator("#hud")).toBeVisible();
   await expect(page.locator("#stage-label")).toHaveText("ROUND 1 HICKSVILLE");
   await expect(page.locator("#boss-label")).toBeHidden();
-  await page.keyboard.press("p");
+  await page.keyboard.press("Enter");
   await expect(page.locator("#pause-screen")).toBeVisible();
   await page.locator("#resume-button").click();
   await expect(page.locator("#pause-screen")).toBeHidden();

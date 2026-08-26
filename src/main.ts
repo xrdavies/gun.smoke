@@ -1508,6 +1508,7 @@ window.addEventListener("keydown", (event) => {
   if (game?.mode === "title") game.start();
   else if (game?.mode === "intro") game.continueFromIntro();
   else if (game?.mode === "briefing") game.continueFromBriefing();
+  else if (game?.mode === "playing" || game?.mode === "paused") game.togglePause();
   else if (game?.mode === "gameover" || game?.mode === "ending") window.location.reload();
 });
 try {

@@ -78,6 +78,15 @@ export const BACKSTABBER_RAID_LIFETIME = 369 / NES_FRAME_RATE;
 export const GUNMAN_FIRST_SHOT_DELAY = 39 / NES_FRAME_RATE;
 export const GUNMAN_BULLET_SPEED = 266;
 export const GUNMAN_LIFETIME = 289 / NES_FRAME_RATE;
+export const BANDIT_BILL_FIRST_VOLLEY_DELAY = 107 / NES_FRAME_RATE;
+export const BANDIT_BILL_SHOT_INTERVAL = 12 / NES_FRAME_RATE;
+export const BANDIT_BILL_VOLLEY_GAP = 72 / NES_FRAME_RATE;
+export const BANDIT_BILL_SHOTS_PER_VOLLEY = 4;
+export const BANDIT_BILL_BULLET_SPEED = 444;
+
+export function banditBillCooldown(shotsFired: number): number {
+  return shotsFired % BANDIT_BILL_SHOTS_PER_VOLLEY === 0 ? BANDIT_BILL_VOLLEY_GAP : BANDIT_BILL_SHOT_INTERVAL;
+}
 
 export function backstabberRaidOffset(frame: number): readonly [number, number] {
   const nextIndex = BACKSTABBER_RAID_PATH.findIndex(([at]) => at >= frame);

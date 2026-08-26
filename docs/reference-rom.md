@@ -151,6 +151,11 @@ pixels while following the same measured vertical bends. The runtime
 interpolates seven mirrored checkpoints instead of sending it straight upward.
 Neither isolated Backstabber routine creates a projectile, so only Gunmen
 remain eligible for the runtime's generic field-enemy firing clock.
+An early Boss-gate trace identifies Bandit Bill as dispatch `0x88`, variant
+`0x56`. His first four-shot volley starts at age 107, repeats every 12 frames,
+and the next volley starts 72 frames after the fourth shot. Dispatch `0x30`
+projectiles travel at roughly 444 world pixels/s; Round 1 uses these measured
+values instead of its former single slow shot.
 
 Current behavior map:
 

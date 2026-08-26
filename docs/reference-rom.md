@@ -31,6 +31,13 @@ all four nametable/attribute buffers and rendered nametable previews, VRAM,
 sprite OAM and selected 256x240 frames. `nametable-summary.json` records hashes,
 dominant tiles and occupied bounds without bundling the raw assets. The output is ignored by Git and
 is intended only for private inspection against the supplied reference file.
+
+`npm run disassemble:rom -- --start=0xc180 --end=0xc220` uses the opcode table
+from the pinned JSNES dependency to emit a linear 6502 disassembly. Mapper 2
+PRG banking is handled explicitly: `$C000-$FFFF` maps to the fixed final PRG
+bank and `$8000-$BFFF` maps to the selected `--bank`. The output is a local
+analysis aid and is not committed as reconstructed Capcom source.
+
 Pattern-table previews remain grayscale for bitplane inspection; nametable
 previews apply each tile's expanded attribute and the live NES background
 palette so terrain colors match the captured scene.

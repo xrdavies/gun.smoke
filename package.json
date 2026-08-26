@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "inspect:rom": "node tools/inspect-rom.mjs",
+    "disassemble:rom": "node tools/disassemble-rom.mjs",
     "extract:rom-assets": "node tools/extract-rom-assets.mjs",
     "trace:rom": "node tools/trace-rom.mjs",
     "trace:rom:timeline": "node tools/trace-rom.mjs --timeline",

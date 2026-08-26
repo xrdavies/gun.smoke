@@ -44,6 +44,7 @@ can be run with:
 
 ```sh
 npm run inspect:rom
+npm run disassemble:rom -- --start=0xc180 --end=0xc220
 npm run trace:rom
 npm run trace:rom:timeline
 npm run trace:rom:scenes -- --frames=12000 --every=60

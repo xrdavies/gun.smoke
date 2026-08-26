@@ -132,7 +132,7 @@ Throwers; individual routine names remain explicit approximations until their
 full state machines are traced.
 Snipers are edge-mounted static shooters that aim once and retreat into their
 window/tee-pee cover instead of walking with field enemies. Riflemen advance,
-fire a two-shot burst, and retreat toward the top of the playfield.
+fire a five-shot vertical volley, and retreat toward the top of the playfield.
 
 Round 1 Bomber dynamite has explicit flight, landed, defusable, and delayed
 explosion phases. Boss and enemy projectiles are typed separately as bullets,
@@ -162,8 +162,8 @@ unit retains its behavior, entity code and pool for trace comparison; the
 visible type is an explicit procedural approximation until its state machine
 is identified. The pools are capped independently at seven enemy slots and
 six object slots, matching the ROM allocator. The all-object `$B5BF` Round 4
-records are currently withheld from enemy rendering rather than misclassified;
-they remain in the research stream for a later scene-object implementation.
+records are rendered as falling rock hazards with their own object-pool
+capacity and player collision, rather than being misclassified as enemies.
 Object-pool dispatch `0x07` records are the exception: ROM screenshots show
 them as field enemies, so the runtime renders them as generic gunmen while
 retaining their original entity codes.

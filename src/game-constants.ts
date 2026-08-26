@@ -200,6 +200,8 @@ export const CUTTER_ENTRY_SPEED_Y = (136 / 324) * NES_FRAME_RATE * NES_WORLD_Y_S
 export const CUTTER_FIRST_ATTACK_DELAY = 350 / NES_FRAME_RATE;
 export const CUTTER_ATTACK_INTERVAL = 256 / NES_FRAME_RATE;
 export const CUTTER_BOOMERANG_SPEED = Math.hypot(63 * NES_WORLD_X_SCALE, 40 * NES_WORLD_Y_SCALE) * NES_FRAME_RATE / 29;
+export const CUTTER_BOOMERANG_SPAWN_NES = [[-3, 3], [3, 2]] as const;
+export const CUTTER_BOOMERANG_VELOCITIES_NES = [[2.16, 1.35], [-2, 1.77]] as const;
 export const CUTTER_MOVEMENT_SPEED = (31 / 18) * NES_FRAME_RATE * NES_WORLD_X_SCALE;
 
 export function cutterOpeningY(age: number): number {

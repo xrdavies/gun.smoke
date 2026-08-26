@@ -23,7 +23,7 @@ import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, pistolBulle
 import { storedPowerupPickup } from "./game-constants";
 import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_MOVEMENT_SPEED, FATMAN_JOE_SHOT_INTERVAL, FATMAN_JOE_VOLLEY_GAP, FATMAN_JOE_VOLLEY_SIZE, fatmanJoeCombatY } from "./game-constants";
 import { WINGATE_BULLET_SPEED, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateCombatY, wingateShotCooldown } from "./game-constants";
-import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPEED, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
+import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_VELOCITIES_NES, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { CUTTER_ENTRY_DURATION, CUTTER_MOVEMENT_SPEED, cutterCombatY, cutterOpeningY } from "./game-constants";
 import { DEVIL_HAWK_ENTRY_DURATION, DEVIL_HAWK_FIREBALL_FAN_NES, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_POST_ENTRY_X_HOLD, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY } from "./game-constants";
 import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_ATTACK_DELAY, NINJA_BOSS_SHURIKEN_LIFETIME, NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES, NINJA_BOSS_SHURIKEN_VELOCITIES_NES, ninjaBossCombatY } from "./game-constants";
@@ -848,6 +848,23 @@ class GunSmokeGame {
       this.beep(258, 0.045);
       return;
     }
+    if (this.stage === 2) {
+      for (let index = 0; index < CUTTER_BOOMERANG_SPAWN_NES.length; index += 1) {
+        const [spawnX, spawnY] = CUTTER_BOOMERANG_SPAWN_NES[index]!;
+        const [velocityX, velocityY] = CUTTER_BOOMERANG_VELOCITIES_NES[index]!;
+        const projectile = this.spawnEnemyProjectile(boss.x + spawnX * NES_WORLD_X_SCALE, boss.y + spawnY * NES_WORLD_Y_SCALE, true);
+        if (!projectile) break;
+        projectile.projectileType = "boomerang";
+        projectile.vx = velocityX * NES_FRAME_RATE * NES_WORLD_X_SCALE;
+        projectile.vy = velocityY * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
+        projectile.turnRate = index === 0 ? -1.1 : 1.1;
+        projectile.radius = 7;
+      }
+      boss.fired = true;
+      this.bossFireClock = CUTTER_ATTACK_INTERVAL;
+      this.beep(186, 0.045);
+      return;
+    }
     if (this.stage === 5) {
       const shotInVolley = boss.volleysFired + 1;
       const projectile = this.spawnEnemyProjectile(boss.x, boss.y + 24, true);
@@ -884,7 +901,6 @@ class GunSmokeGame {
     }
     const patterns: Record<number, { count: number; spread: number; speed: number; cooldown: number; turnRate: number }> = {
       1: { count: 1, spread: 0, speed: 125, cooldown: 1.1, turnRate: 0 },
-      2: { count: 2, spread: 0.24, speed: CUTTER_BOOMERANG_SPEED, cooldown: CUTTER_ATTACK_INTERVAL, turnRate: 1.1 },
       3: { count: 5, spread: 0.18, speed: DEVIL_HAWK_FIREBALL_SPEED, cooldown: DEVIL_HAWK_VOLLEY_INTERVAL, turnRate: 0 },
     };
     let pattern = patterns[this.stage] ?? patterns[1]!;

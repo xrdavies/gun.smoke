@@ -60,22 +60,75 @@ function writeScene(name) {
   });
 }
 
+function writeNameTables() {
+  const baseTile = nes.ppu.f_bgPatternTable === 0 ? 0 : 256;
+  const palette = [0, 96, 176, 255];
+  for (let tableIndex = 0; tableIndex < nes.ppu.nameTable.length; tableIndex += 1) {
+    const table = nes.ppu.nameTable[tableIndex];
+    fs.writeFileSync(path.join(output, `nametable-${tableIndex}.bin`), Buffer.from(table.tile));
+    fs.writeFileSync(path.join(output, `attributes-${tableIndex}.bin`), Buffer.from(table.attrib));
+    writeRgbaPng(`nametable-${tableIndex}.png`, 256, 240, (x, y) => {
+      const tileX = Math.floor(x / 8);
+      const tileY = Math.floor(y / 8);
+      const tileIndex = table.tile[tileY * 32 + tileX] ?? 0;
+      const row = y % 8;
+      const column = 7 - (x % 8);
+      const address = (baseTile + tileIndex) * 16;
+      const low = nes.ppu.vramMem[address + row] ?? 0;
+      const high = nes.ppu.vramMem[address + row + 8] ?? 0;
+      const value = ((high >> column) & 1) * 2 + ((low >> column) & 1);
+      const color = palette[value] ?? 0;
+      return [color, color, color, 255];
+    });
+  }
+}
+
+function nameTableSummary() {
+  return nes.ppu.nameTable.map((table, index) => {
+    const tiles = Array.from(table.tile.slice(0, 32 * 30));
+    const counts = new Map();
+    for (const tile of tiles) counts.set(tile, (counts.get(tile) ?? 0) + 1);
+    const dominantTile = [...counts.entries()].sort((left, right) => right[1] - left[1])[0]?.[0] ?? 0;
+    const occupied = [];
+    for (let tileY = 0; tileY < 30; tileY += 1) {
+      for (let tileX = 0; tileX < 32; tileX += 1) {
+        if (tiles[tileY * 32 + tileX] !== dominantTile) occupied.push([tileX, tileY]);
+      }
+    }
+    return {
+      index,
+      sha256: crypto.createHash("sha256").update(Buffer.from(tiles)).digest("hex"),
+      dominantTile,
+      uniqueTileCount: counts.size,
+      nonDominantBounds: occupied.length === 0 ? null : {
+        left: Math.min(...occupied.map(([x]) => x)),
+        top: Math.min(...occupied.map(([, y]) => y)),
+        right: Math.max(...occupied.map(([x]) => x)),
+        bottom: Math.max(...occupied.map(([, y]) => y)),
+      },
+    };
+  });
+}
+
 for (let frame = 0; frame < 180; frame += 1) nes.frame();
 writeScene("title.png");
-nes.buttonDown(1, Controller.BUTTON_A);
+nes.buttonDown(1, Controller.BUTTON_START);
+for (let frame = 0; frame < 5; frame += 1) nes.frame();
+nes.buttonUp(1, Controller.BUTTON_START);
+for (let frame = 0; frame < 415; frame += 1) nes.frame();
+writeScene("wanted-screen.png");
 for (let frame = 0; frame < 600; frame += 1) nes.frame();
-nes.buttonUp(1, Controller.BUTTON_A);
-writeScene("intro.png");
-for (let frame = 0; frame < 900; frame += 1) nes.frame();
-writeScene("scene.png");
+writeScene("round-1.png");
 
 writePatternTable();
+writeNameTables();
 fs.writeFileSync(path.join(output, "vram.bin"), Buffer.from(nes.ppu.vramMem));
 fs.writeFileSync(path.join(output, "sprite-oam.bin"), Buffer.from(nes.ppu.spriteMem));
+fs.writeFileSync(path.join(output, "nametable-summary.json"), JSON.stringify(nameTableSummary(), null, 2));
 fs.writeFileSync(path.join(output, "manifest.json"), JSON.stringify({
   source: filename,
   sourceSha256: crypto.createHash("sha256").update(romData).digest("hex"),
-  outputFiles: ["title.png", "intro.png", "scene.png", "pattern-table.png", "pattern-table-full.png", "vram.bin", "sprite-oam.bin"],
+  outputFiles: ["title.png", "wanted-screen.png", "round-1.png", "pattern-table.png", "pattern-table-full.png", "nametable-{0..3}.png", "nametable-{0..3}.bin", "attributes-{0..3}.bin", "nametable-summary.json", "vram.bin", "sprite-oam.bin"],
   note: "Local analysis output. Do not redistribute or commit extracted assets.",
 }, null, 2));
 console.log(`Extracted local reference assets to ${output}`);

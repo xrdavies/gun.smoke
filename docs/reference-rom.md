@@ -27,7 +27,9 @@ than an exact ROM conversion.
 
 `npm run extract:rom-assets` can locally dump both runtime CHR-RAM pattern
 tables,
-VRAM, sprite OAM and selected 256x240 frames. The output is ignored by Git and
+all four nametable/attribute buffers and rendered nametable previews, VRAM,
+sprite OAM and selected 256x240 frames. `nametable-summary.json` records hashes,
+dominant tiles and occupied bounds without bundling the raw assets. The output is ignored by Git and
 is intended only for private inspection against the supplied reference file.
 
 `npm run trace:rom:timeline` presses Start before the attract timer begins,

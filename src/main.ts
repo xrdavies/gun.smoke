@@ -386,6 +386,7 @@ class GunSmokeGame {
     briefingScreen.hidden = true;
     hud.hidden = false;
     this.startMusic();
+    void this.audio?.resume();
     this.showMessage("RIDE OUT");
     if (this.pausePollHandle !== undefined) {
       window.cancelAnimationFrame(this.pausePollHandle);
@@ -403,6 +404,7 @@ class GunSmokeGame {
     briefingBoss.textContent = definition.boss;
     briefingScreen.hidden = false;
     hud.hidden = true;
+    void this.audio?.pause();
     if (this.engine.status === "running") this.engine.pause();
     this.pollPausedGamepad();
   }
@@ -411,6 +413,7 @@ class GunSmokeGame {
     if (this.mode === "playing") {
       this.mode = "paused";
       this.engine.pause();
+      void this.audio?.pause();
       pauseScreen.hidden = false;
       this.pollPausedGamepad();
     } else if (this.mode === "paused") {
@@ -422,6 +425,7 @@ class GunSmokeGame {
         this.pausePollHandle = undefined;
       }
       this.engine.resume();
+      void this.audio?.resume();
     }
   }
 
@@ -798,6 +802,7 @@ class GunSmokeGame {
     this.shopIndex = checkpoint;
     this.shopOpen = true;
     shop.hidden = false;
+    void this.audio?.pause();
     const shopType = SHOP_TYPES[this.stage - 1]?.[this.shopIndex - 1] ?? "supplies";
     shopTitle.textContent = `${shopType === "weapons" ? "WEAPON SHOP" : "SUPPLY SHOP"} / ROUND ${this.stage}`;
     shopMessage.textContent = `POINTS ${String(this.score).padStart(6, "0")}`;
@@ -853,6 +858,7 @@ class GunSmokeGame {
     this.shopOpen = false;
     shop.hidden = true;
     canvas.focus();
+    void this.audio?.resume();
     this.showMessage("RIDE ON");
   }
 

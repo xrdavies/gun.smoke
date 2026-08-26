@@ -71,6 +71,10 @@ test("runs a locally supplied reference ROM through the engine", async ({ page }
   expect(referenceHeight).toBeCloseTo(240, 0);
   expect(referenceWidth / referenceHeight).toBeCloseTo(958 / 538, 2);
   const first = await page.locator("#game-canvas").screenshot();
+  await page.keyboard.press("Enter");
+  await page.waitForTimeout(500);
+  const afterStart = await page.locator("#game-canvas").screenshot();
+  expect(crypto.createHash("sha256").update(first).digest("hex")).not.toBe(crypto.createHash("sha256").update(afterStart).digest("hex"));
   await page.waitForTimeout(300);
   const second = await page.locator("#game-canvas").screenshot();
   expect(crypto.createHash("sha256").update(first).digest("hex")).not.toBe(crypto.createHash("sha256").update(second).digest("hex"));

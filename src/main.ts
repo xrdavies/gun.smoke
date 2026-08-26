@@ -20,7 +20,7 @@ import { BANDIT_BILL_BULLET_SPEED, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST
 import { banditBillCooldown } from "./game-constants";
 import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "./game-constants";
 import { pistolShots } from "./game-constants";
-import { NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, shotgunVelocities, weaponCanRepeat } from "./game-constants";
+import { NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
 import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_MOVEMENT_SPEED, FATMAN_JOE_VOLLEY_INTERVAL, FATMAN_JOE_VOLLEY_SIZE, fatmanJoeCombatY } from "./game-constants";
 import { WINGATE_BULLET_SPEED, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateCombatY, wingateShotCooldown } from "./game-constants";
@@ -649,7 +649,7 @@ class GunSmokeGame {
       for (const shot of pistolShots(left, right)) this.spawnBullet(shot.direction, weapon.damage, shot.offset);
     } else if (this.weapon === "shotgun") {
       for (const [x, y] of shotgunVelocities(left, right)) {
-        this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE, weapon.damage);
+        this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE, weapon.damage, weaponBulletLifetime("shotgun"));
       }
     } else {
       this.spawnBullet(direction, weapon.damage);
@@ -1087,7 +1087,7 @@ class GunSmokeGame {
     unit.vx = direction * WORLD_DIAGONAL_BULLET_X * speedFactor;
     unit.vy = Math.abs(direction) < 0.01 ? -WORLD_BULLET_SPEED * speedFactor : -WORLD_DIAGONAL_BULLET_Y * speedFactor;
     unit.damage = damage;
-    unit.maxAge = this.weapon === "pistol" ? PISTOL_BULLET_LIFETIME : this.weapon === "magnum" ? MAGNUM_BULLET_LIFETIME : 0.55;
+    unit.maxAge = weaponBulletLifetime(this.weapon);
     unit.piercing = this.weapon === "magnum";
     unit.hitTargets = unit.piercing ? new Set<Unit>() : undefined;
     if (unit.piercing) {
@@ -1096,12 +1096,12 @@ class GunSmokeGame {
     }
   }
 
-  private spawnBulletVelocity(vx: number, vy: number, damage: number): void {
+  private spawnBulletVelocity(vx: number, vy: number, damage: number, lifetime = 0.55): void {
     const unit = this.spawnUnit("bullet", this.player.x, this.player.y - 32, 1);
     unit.vx = vx;
     unit.vy = vy;
     unit.damage = damage;
-    unit.maxAge = 0.55;
+    unit.maxAge = lifetime;
   }
 
   private updateUnit(unit: Unit, delta: number): void {

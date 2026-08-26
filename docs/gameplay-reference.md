@@ -95,7 +95,8 @@ pickup refills every owned special weapon by its own amount.
 Shotgun fire emits five projectiles and consumes one round per trigger. A
 single-side shot spans straight ahead through horizontal fire on that side;
 A+B emits a symmetric five-way forward fan. Magnum bullets use their own
-projectile state, travel at the measured base Pistol speed with a larger
+projectile state, travel at the measured base Pistol speed for 34 NES frames
+with a larger
 collision body, and can pierce multiple enemies without depending on which
 weapon is selected after the shot was fired. Pistol, Shotgun, and Magnum require
 fresh button presses; only Machine Gun repeats while fire is held.

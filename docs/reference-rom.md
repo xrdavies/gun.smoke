@@ -355,8 +355,9 @@ The weapon menu stores Shotgun/Machine Gun/Magnum/Pistol codes `5/2/4/3` in
 `$88`. Isolated code `5` fire creates five dispatch `0x01` projectiles: a
 single-side shot uses NES velocity pairs from `(0,-12)` through `(12,0)`, while
 A+B uses the symmetric `(-8,-8)..(8,-8)` fan. Code `4` Magnum shots use dispatch
-`0x37-$0x3a` and the same measured movement speed as base Pistol shots; the web
-runtime preserves that speed while retaining its self-generated piercing body.
+`0x37-$0x3a` for 34 frames and the same measured movement speed as base Pistol
+shots; Shotgun projectiles live for 11 frames. The web runtime preserves those
+lifetimes while retaining its self-generated Magnum piercing body.
 Held-input traces fire Shotgun and Magnum once, while code `2` Machine Gun
 continues to allocate projectile pairs at its measured cadence.
 

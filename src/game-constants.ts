@@ -43,7 +43,9 @@ export const BOOTS_SPEED_MULTIPLIER = 4 / 3;
 export const NES_BULLET_SPEED = 6 * NES_FRAME_RATE;
 export const WORLD_BULLET_SPEED = NES_BULLET_SPEED * NES_WORLD_Y_SCALE;
 export const MAGNUM_BULLET_SPEED = WORLD_BULLET_SPEED;
-export const MAGNUM_BULLET_LIFETIME = 0.8;
+export const MAGNUM_BULLET_LIFETIME = 34 / NES_FRAME_RATE;
+export const SHOTGUN_BULLET_LIFETIME = 11 / NES_FRAME_RATE;
+export const MACHINE_GUN_BULLET_LIFETIME = 15 / NES_FRAME_RATE;
 export const NES_DIAGONAL_BULLET_X = 2.5 * NES_FRAME_RATE;
 export const NES_DIAGONAL_BULLET_Y = 5 * NES_FRAME_RATE;
 export const WORLD_DIAGONAL_BULLET_X = NES_DIAGONAL_BULLET_X * NES_WORLD_Y_SCALE;
@@ -63,6 +65,10 @@ export function shotgunVelocities(left: boolean, right: boolean): readonly (read
 
 export function weaponCanRepeat(weapon: WeaponName): boolean {
   return weapon === "machinegun";
+}
+
+export function weaponBulletLifetime(weapon: WeaponName): number {
+  return weapon === "shotgun" ? SHOTGUN_BULLET_LIFETIME : weapon === "machinegun" ? MACHINE_GUN_BULLET_LIFETIME : weapon === "magnum" ? MAGNUM_BULLET_LIFETIME : PISTOL_BULLET_LIFETIME;
 }
 export const BOMBER_FIRST_THROW_DELAY = 198 / NES_FRAME_RATE;
 export const BOMBER_THROW_INTERVAL = 106 / NES_FRAME_RATE;

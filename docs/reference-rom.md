@@ -97,6 +97,28 @@ the runtime uses these measured timings at 60.098 Hz.
 An isolated `$B080` Sniper fires at ages 134, 224, 405, 495 and 585 frames,
 then releases its slot at age 732. The routine's 90-frame base cooldown is
 visible directly; the longer middle gap is a missed discrete aiming window.
+
+Current behavior map:
+
+| Routine | Runtime mapping | Evidence |
+| --- | --- | --- |
+| `$B080` | Sniper | isolated slot/OAM timing trace |
+| `$B0E5` | Shotgunner | three projectile slots and two measured volleys |
+| `$B284` | Gunman | Round 1 roster elimination after the measured routines |
+| `$B46E` | Backstabber | Round 1 roster elimination |
+| `$B501` | Bomber | isolated delayed dynamite state |
+| `$B5BF` | object-only scene behavior | 44 Round 4 records all select object pool |
+| `$B671` | Ninja | Round 4 roster elimination after Gunman/Shotgunner |
+| `$B775` | Rifleman | Round 2/Round 5 roster elimination |
+| `$B82F` | Backstabber | Round 5 roster elimination |
+| `$B8F4` | Hatchet Thrower | Native Village roster elimination |
+| `$BA51` | Spear Thrower | Native Village roster elimination |
+| `$BB29` | Firebreather | Native Village roster elimination |
+
+The elimination entries remain behavior approximations until their complete
+state machines are traced; the runtime stores the original routine and entity
+codes alongside each spawned unit for comparison.
+
 The one record per Round carrying entity flag `0x40` occurs before the Boss
 gate and feeds the `$CBDA-$CBDF` interaction path that sets `$49`; its decoded
 NES X positions are `[200,64,216,216,72,216]`, and these are the current

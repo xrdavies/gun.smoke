@@ -77,6 +77,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROUND_ITEM_EVENTS[0]?.map((event) => event.item)).toContain("blueYashichi");
     expect(ROUND_ITEM_EVENTS[2]?.map((event) => event.item)).toContain("skull");
     expect(ROUND_ITEM_EVENTS[1]?.filter((event) => event.loopOnly)).toEqual([{ at: 300, xOffset: -170, item: "horse", loopOnly: true }]);
+    expect(ROUND_ITEM_EVENTS.flatMap((events, round) => events.filter((event) => event.item === "horse").map(() => round + 1))).toEqual([1, 2]);
   });
 
   it("keeps terrain blockers inside their authored world ranges", () => {

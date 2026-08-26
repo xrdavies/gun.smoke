@@ -27,7 +27,7 @@ export function storedPowerupPickup(stock: number): { stock: number; score: numb
   return stock >= MAX_POWERUP_STOCK ? { stock: MAX_POWERUP_STOCK, score: POWERUP_OVERFLOW_SCORE } : { stock: stock + 1, score: 0 };
 }
 export const WORLD_VIEWPORT_HEIGHT = 540;
-const NES_WORLD_Y_SCALE = WORLD_VIEWPORT_HEIGHT / 240;
+export const NES_WORLD_Y_SCALE = WORLD_VIEWPORT_HEIGHT / 240;
 export const NES_WORLD_X_SCALE = 960 / 256;
 export const ROUND_BOSS_GATE_SCROLL_NES = [2_767, 2_799, 4_863, 3_487, 2_879, 4_879] as const;
 export const ROUND_LOOP_SCROLL_NES = [3_087, 3_055, 5_119, 3_839, 3_055, 5_119] as const;
@@ -96,10 +96,18 @@ export const BANDIT_BILL_SHOT_INTERVAL = 12 / NES_FRAME_RATE;
 export const BANDIT_BILL_VOLLEY_GAP = 72 / NES_FRAME_RATE;
 export const BANDIT_BILL_SHOTS_PER_VOLLEY = 4;
 export const BANDIT_BILL_BULLET_SPEED = 444;
-export const BANDIT_BILL_ENTRY_X = 0 * NES_WORLD_X_SCALE;
-export const BANDIT_BILL_ENTRY_Y_NES = [96, 128, 160, 192] as const;
-export const BANDIT_BILL_ENTRY_Y_LANES = BANDIT_BILL_ENTRY_Y_NES.map((value) => value * NES_WORLD_Y_SCALE);
-export const BANDIT_BILL_ENTRY_SPEED_X = (64 / 96) * NES_FRAME_RATE * NES_WORLD_X_SCALE;
+export const BANDIT_BILL_ENTRY_X_NES = [96, 128, 160, 192] as const;
+export const BANDIT_BILL_ENTRY_X_LANES = BANDIT_BILL_ENTRY_X_NES.map((value) => value * NES_WORLD_X_SCALE);
+export const BANDIT_BILL_ENTRY_Y_NES = 0;
+export const BANDIT_BILL_ENTRY_Y = BANDIT_BILL_ENTRY_Y_NES * NES_WORLD_Y_SCALE;
+export const BANDIT_BILL_ENTRY_END_Y_NES = 64;
+export const BANDIT_BILL_ENTRY_END_Y = BANDIT_BILL_ENTRY_END_Y_NES * NES_WORLD_Y_SCALE;
+export const BANDIT_BILL_ENTRY_DURATION = 96 / NES_FRAME_RATE;
+export const BANDIT_BILL_ENTRY_SPEED_Y = (64 / 96) * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
+
+export function banditBillOpeningY(age: number): number {
+  return Math.max(0, Math.min(1, age / BANDIT_BILL_ENTRY_DURATION)) * BANDIT_BILL_ENTRY_END_Y;
+}
 export const CUTTER_ENTRY_X = 0 * NES_WORLD_X_SCALE;
 export const CUTTER_ENTRY_Y_NES = [88, 168] as const;
 export const CUTTER_ENTRY_Y_LANES = CUTTER_ENTRY_Y_NES.map((value) => value * NES_WORLD_Y_SCALE);
@@ -170,7 +178,7 @@ export function wingateShotCooldown(phase: number, shotsFired: number): number {
 }
 
 export const BOSS_ENTRY_SPEED_X = [
-  BANDIT_BILL_ENTRY_SPEED_X,
+  0,
   CUTTER_ENTRY_SPEED_X,
   undefined,
   undefined,

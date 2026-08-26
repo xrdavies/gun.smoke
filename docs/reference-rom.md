@@ -162,11 +162,11 @@ An early Boss-gate trace identifies Bandit Bill as dispatch `0x88`, variant
 and the next volley starts 72 frames after the fourth shot. Dispatch `0x30`
 projectiles travel at roughly 444 world pixels/s; Round 1 uses these measured
 values instead of its former single slow shot.
-The gate traces place his initial entity at the left edge (`x=0`) and observe
-four vertical entry lanes, NES `y=96/128/160/192`; after 96 frames the actor
-reaches approximately `x=64`. The web runtime selects one of those measured
-lanes and uses the corresponding edge-entry speed, while later movement and
-damage phases remain separate Boss approximations.
+The gate traces place his initial entity at the top edge (`y=0`) and observe
+four horizontal entry lanes, NES `x=96/128/160/192`; after 96 frames the actor
+reaches approximately `y=64`. The web runtime selects one of those measured
+lanes and uses the corresponding downward entry speed, while later movement
+and damage phases remain separate Boss approximations.
 The same controlled full-round trace identifies Round 2's Cutter as dispatch
 `0x90`, variant `0x5b`, entering at the left edge. Controlled runs observe NES
 entry lanes `y=88` and `y=168`; one lane reaches about `x=106` after 324 frames.

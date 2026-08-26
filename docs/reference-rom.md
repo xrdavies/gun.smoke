@@ -176,10 +176,12 @@ every 256 frames. Their first 30-frame path converts to roughly 425 world
 pixels/s; the runtime preserves the pair, timing, speed and opposite curves.
 After clearing only ordinary slots at the next real gate, Round 3 produces
 Devil Hawk as dispatch `0x9a`, variant `0x61`, also entering from the left
-edge. Controlled traces observe NES entry lanes `y=128` and `y=168`, with one
-run reaching approximately `x=96` after 143 frames. The web runtime uses those
-measured entry lanes and opening speed; its jump and fire phases remain an
-explicit approximation pending a complete isolated Boss trace.
+edge. Controlled traces observe NES entry lanes `y=128/168/208`; the opening
+holds that lane and reaches approximately `x=96` after 143 frames. At frame
+174 it creates five simultaneous `0xa2` fireballs, with later position-dependent
+attacks using three; a common repeat interval is 125 frames. The center shot
+moves 3 NES pixels per frame. The runtime preserves this measured opening,
+5/3 fan, timing, and speed; later jump trajectories remain approximations.
 The same campaign reaches Round 4 and identifies its Ninja Boss as dispatch
 `0xaa`, variant `0x6b`, with a measured entry near NES `(x=64, y=192)`. The
 runtime uses that initial position; smoke, teleport, and damage timing remain

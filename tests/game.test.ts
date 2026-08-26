@@ -11,6 +11,7 @@ import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_VOLLEY_INTERVAL, FATMAN_JOE_V
 import { WINGATE_BULLET_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_FIRST_VOLLEY_GAP, WINGATE_FIRST_VOLLEY_SIZE, WINGATE_SECOND_FIRST_SHOT_DELAY, WINGATE_SECOND_VOLLEY_GAP, WINGATE_SECOND_VOLLEY_SIZE, WINGATE_SHOT_INTERVAL, wingateShotCooldown } from "../src/game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPEED, CUTTER_FIRST_ATTACK_DELAY } from "../src/game-constants";
 import { BOSS_ENTRY_SPEED_X } from "../src/game-constants";
+import { DEVIL_HAWK_ENTRY_DURATION, DEVIL_HAWK_ENTRY_END_X, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkOpeningX } from "../src/game-constants";
 import { roundCollisionBlocks, ROUND_COLLISION_ROW_COUNTS } from "../src/round-collision";
 import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_ENEMY_SLOT_CAPACITY, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_OBJECT_SLOT_CAPACITY, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_ENEMY_EVENT_COUNTS, ROUND_ROM_OBJECT_EVENTS, ROUND_ROM_OBJECT_EVENT_COUNTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY } from "../src/rom-event-data";
 
@@ -274,9 +275,16 @@ describe("Gun.Smoke vertical slice", () => {
 
   it("matches the traced Devil Hawk entrance", () => {
     expect(DEVIL_HAWK_ENTRY_X).toBe(0);
-    expect(DEVIL_HAWK_ENTRY_Y_NES).toEqual([128, 168]);
-    expect(DEVIL_HAWK_ENTRY_Y_LANES).toEqual([288, 378]);
+    expect(DEVIL_HAWK_ENTRY_Y_NES).toEqual([128, 168, 208]);
+    expect(DEVIL_HAWK_ENTRY_Y_LANES).toEqual([288, 378, 468]);
     expect(DEVIL_HAWK_ENTRY_SPEED_X).toBeCloseTo((96 / 143) * NES_FRAME_RATE * NES_WORLD_X_SCALE, 9);
+    expect(DEVIL_HAWK_ENTRY_END_X).toBe(360);
+    expect(devilHawkOpeningX(0)).toBe(0);
+    expect(devilHawkOpeningX(DEVIL_HAWK_ENTRY_DURATION / 2)).toBe(180);
+    expect(devilHawkOpeningX(DEVIL_HAWK_ENTRY_DURATION)).toBe(360);
+    expect(DEVIL_HAWK_FIRST_VOLLEY_DELAY).toBeCloseTo(174 / NES_FRAME_RATE, 9);
+    expect(DEVIL_HAWK_VOLLEY_INTERVAL).toBeCloseTo(125 / NES_FRAME_RATE, 9);
+    expect(DEVIL_HAWK_FIREBALL_SPEED).toBeCloseTo(3 * NES_FRAME_RATE * NES_WORLD_X_SCALE, 9);
   });
 
   it("matches the traced Ninja Boss entrance", () => {
@@ -329,8 +337,8 @@ describe("Gun.Smoke vertical slice", () => {
   });
 
   it("does not reuse early Boss entry speeds for later rounds", () => {
-    expect(BOSS_ENTRY_SPEED_X.slice(0, 3)).toEqual([BANDIT_BILL_ENTRY_SPEED_X, CUTTER_ENTRY_SPEED_X, DEVIL_HAWK_ENTRY_SPEED_X]);
-    expect(BOSS_ENTRY_SPEED_X.slice(3)).toEqual([undefined, undefined, undefined]);
+    expect(BOSS_ENTRY_SPEED_X.slice(0, 2)).toEqual([BANDIT_BILL_ENTRY_SPEED_X, CUTTER_ENTRY_SPEED_X]);
+    expect(BOSS_ENTRY_SPEED_X.slice(2)).toEqual([undefined, undefined, undefined, undefined]);
   });
 
   it("awards the Round 6 bounty only after the real Wingate", () => {

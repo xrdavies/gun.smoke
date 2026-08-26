@@ -24,6 +24,7 @@ import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_VOLLEY_INTERVAL, FATMAN_JOE_V
 import { WINGATE_BULLET_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateShotCooldown } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPEED, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { BOSS_ENTRY_SPEED_X } from "./game-constants";
+import { DEVIL_HAWK_ENTRY_DURATION, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkOpeningX } from "./game-constants";
 import { roundCollisionBlocks } from "./round-collision";
 import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
 
@@ -825,7 +826,7 @@ class GunSmokeGame {
     const patterns: Record<number, { count: number; spread: number; speed: number; cooldown: number; turnRate: number }> = {
       1: { count: 1, spread: 0, speed: 125, cooldown: 1.1, turnRate: 0 },
       2: { count: 2, spread: 0.24, speed: CUTTER_BOOMERANG_SPEED, cooldown: CUTTER_ATTACK_INTERVAL, turnRate: 1.1 },
-      3: { count: 5, spread: 0.18, speed: 118, cooldown: 1.4, turnRate: 0 },
+      3: { count: 5, spread: 0.18, speed: DEVIL_HAWK_FIREBALL_SPEED, cooldown: DEVIL_HAWK_VOLLEY_INTERVAL, turnRate: 0 },
       4: { count: 3, spread: 0.3, speed: 168, cooldown: 0.95, turnRate: 0 },
       5: { count: FATMAN_JOE_VOLLEY_SIZE, spread: 0.18, speed: 100, cooldown: FATMAN_JOE_VOLLEY_INTERVAL, turnRate: 0 },
     };
@@ -1015,7 +1016,7 @@ class GunSmokeGame {
 
   private spawnBoss(): void {
     this.bossSpawned = true;
-    this.bossFireClock = this.stage === 1 ? BANDIT_BILL_FIRST_VOLLEY_DELAY : this.stage === 2 ? CUTTER_FIRST_ATTACK_DELAY : this.stage === 5 ? FATMAN_JOE_FIRST_VOLLEY_DELAY : this.stage === MAX_STAGE ? WINGATE_FIRST_SHOT_DELAY : 0.6;
+    this.bossFireClock = this.stage === 1 ? BANDIT_BILL_FIRST_VOLLEY_DELAY : this.stage === 2 ? CUTTER_FIRST_ATTACK_DELAY : this.stage === 3 ? DEVIL_HAWK_FIRST_VOLLEY_DELAY : this.stage === 5 ? FATMAN_JOE_FIRST_VOLLEY_DELAY : this.stage === MAX_STAGE ? WINGATE_FIRST_SHOT_DELAY : 0.6;
     const definition = STAGES[this.stage - 1] ?? STAGES[0]!;
     const isBanditBill = this.stage === 1;
     const isCutter = this.stage === 2;
@@ -1235,7 +1236,8 @@ class GunSmokeGame {
       }
       if (unit.x < 32 || unit.x > 928) unit.vx *= -1;
     } else if (unit.kind === "boss") {
-      if (this.stage === 5 && unit.age <= FATMAN_JOE_ENTRY_DURATION) unit.x = fatmanJoeOpeningX(unit.age);
+      if (this.stage === 3 && unit.age <= DEVIL_HAWK_ENTRY_DURATION) unit.x = devilHawkOpeningX(unit.age);
+      else if (this.stage === 5 && unit.age <= FATMAN_JOE_ENTRY_DURATION) unit.x = fatmanJoeOpeningX(unit.age);
       else if (this.stage === 6 && unit.bossEntryY !== undefined && unit.age <= WINGATE_ENTRY_DURATION) unit.x = wingateOpeningX(unit.age);
       else unit.x += unit.vx * delta;
       const edgeEntryBoss = this.stage === 1 || this.stage === 2 || this.stage === 3 || (this.stage === 6 && unit.bossEntryY !== undefined);
@@ -1244,7 +1246,7 @@ class GunSmokeGame {
       if (unit.x < minBossX || unit.x > maxBossX) unit.vx *= -1;
       if (this.stage === 1) unit.y = this.scroll + (unit.age < unit.invulnerableUntil ? 430 : unit.bossEntryY ?? 360);
       else if (this.stage === 2) unit.y = this.scroll + (unit.bossEntryY ?? CUTTER_ENTRY_Y_LANES[0] ?? 198);
-      else if (this.stage === 3) unit.y = this.scroll + (unit.bossEntryY ?? DEVIL_HAWK_ENTRY_Y_LANES[0] ?? 288) + Math.abs(Math.sin(unit.age * 2.1)) * 145;
+      else if (this.stage === 3) unit.y = this.scroll + (unit.bossEntryY ?? DEVIL_HAWK_ENTRY_Y_LANES[0] ?? 288) + (unit.age <= DEVIL_HAWK_ENTRY_DURATION ? 0 : Math.abs(Math.sin((unit.age - DEVIL_HAWK_ENTRY_DURATION) * 2.1)) * 145);
       else if (this.stage === 4) unit.y = this.scroll + 92 + Math.abs(Math.sin(unit.age * 3)) * 55;
       else if (this.stage === 5) unit.y = this.scroll + (unit.bossEntryY ?? FATMAN_JOE_ENTRY_Y) + (unit.age <= FATMAN_JOE_ENTRY_DURATION ? 0 : Math.abs(Math.sin((unit.age - FATMAN_JOE_ENTRY_DURATION) * 3.6)) * 32);
       else if (this.stage === 6 && unit.bossEntryY !== undefined) unit.y = this.scroll + unit.bossEntryY + (unit.age <= WINGATE_ENTRY_DURATION ? 0 : Math.min((unit.age - WINGATE_ENTRY_DURATION) * 110, 170));

@@ -108,9 +108,18 @@ export const CUTTER_FIRST_ATTACK_DELAY = 350 / NES_FRAME_RATE;
 export const CUTTER_ATTACK_INTERVAL = 256 / NES_FRAME_RATE;
 export const CUTTER_BOOMERANG_SPEED = 425;
 export const DEVIL_HAWK_ENTRY_X = 0 * NES_WORLD_X_SCALE;
-export const DEVIL_HAWK_ENTRY_Y_NES = [128, 168] as const;
+export const DEVIL_HAWK_ENTRY_Y_NES = [128, 168, 208] as const;
 export const DEVIL_HAWK_ENTRY_Y_LANES = DEVIL_HAWK_ENTRY_Y_NES.map((value) => value * NES_WORLD_Y_SCALE);
 export const DEVIL_HAWK_ENTRY_SPEED_X = (96 / 143) * NES_FRAME_RATE * NES_WORLD_X_SCALE;
+export const DEVIL_HAWK_ENTRY_END_X = 96 * NES_WORLD_X_SCALE;
+export const DEVIL_HAWK_ENTRY_DURATION = 143 / NES_FRAME_RATE;
+export const DEVIL_HAWK_FIRST_VOLLEY_DELAY = 174 / NES_FRAME_RATE;
+export const DEVIL_HAWK_VOLLEY_INTERVAL = 125 / NES_FRAME_RATE;
+export const DEVIL_HAWK_FIREBALL_SPEED = 3 * NES_FRAME_RATE * NES_WORLD_X_SCALE;
+
+export function devilHawkOpeningX(age: number): number {
+  return Math.max(0, Math.min(1, age / DEVIL_HAWK_ENTRY_DURATION)) * DEVIL_HAWK_ENTRY_END_X;
+}
 export const NINJA_BOSS_ENTRY_X_NES = 64;
 export const NINJA_BOSS_ENTRY_X = NINJA_BOSS_ENTRY_X_NES * NES_WORLD_X_SCALE;
 export const NINJA_BOSS_ENTRY_Y_NES = 192;
@@ -159,7 +168,7 @@ export function wingateShotCooldown(phase: number, shotsFired: number): number {
 export const BOSS_ENTRY_SPEED_X = [
   BANDIT_BILL_ENTRY_SPEED_X,
   CUTTER_ENTRY_SPEED_X,
-  DEVIL_HAWK_ENTRY_SPEED_X,
+  undefined,
   undefined,
   undefined,
   undefined,

@@ -8,7 +8,7 @@ names are cross-checked against the public NES walkthrough on
 | --- | --- | --- | --- |
 | 1 | Hicksville / western road | Bandit Bill | gate, poster, shop, measured entrance and volley |
 | 2 | Rocky pass / cliffs | Cutter | gate, poster, shop, measured entrance, attack approximation |
-| 3 | Native village | Devil Hawk | gate, poster, shop, attack approximation |
+| 3 | Native village | Devil Hawk | gate, poster, shop, measured entrance and opening fan |
 | 4 | Cliff valley | Ninja | gate, poster, shop, attack approximation |
 | 5 | Forest / bridges | Fatman Joe | gate, poster, shop, measured entrance, attack approximation |
 | 6 | Wingate town / cemetery | Wingate (two encounters) | gate, poster, shop, measured first entrance, two-phase approximation |

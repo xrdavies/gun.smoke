@@ -659,9 +659,10 @@ class GunSmokeGame {
     for (const offset of offsets) {
       const enemyType = types[Math.floor(this.nextRandom() * types.length)] ?? "gunman";
       const entryY = enemyType === "backstabber" ? this.scroll + 520 : y - Math.abs(offset) * 22;
-      const enemy = this.spawnUnit("enemy", clamp(center + offset * 66, 54, 906), entryY, 1 + Number(this.stage >= 4), enemyType);
+      const sniperX = offset <= 0 ? 480 - roadHalf + 22 : 480 + roadHalf - 22;
+      const enemy = this.spawnUnit("enemy", enemyType === "sniper" ? sniperX : clamp(center + offset * 66, 54, 906), entryY, 1 + Number(this.stage >= 4), enemyType);
       enemy.vx = segment.formation === "cross" ? offset * 32 : (this.nextRandom() - 0.5) * (55 + this.stage * 8);
-      enemy.vy = enemyType === "backstabber" ? -100 : 24 + this.stage * 6;
+      enemy.vy = enemyType === "backstabber" ? -100 : enemyType === "sniper" ? 0 : 24 + this.stage * 6;
     }
     if (this.nextRandom() < 0.28) this.spawnUnit("coin", clamp(center + (this.nextRandom() - 0.5) * 260, 60, 900), y + 55, 1);
     if (this.nextRandom() < 0.1) {
@@ -788,7 +789,16 @@ class GunSmokeGame {
         unit.x += unit.vx * delta;
         unit.y += (unit.age < 1.2 ? unit.vy : -unit.vy * 0.75) * delta;
       } else if (unit.enemyType === "sniper") {
-        unit.y += unit.vy * 0.45 * delta;
+        if (!unit.fired && unit.age > 0.8) {
+          unit.fired = true;
+          const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
+          const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y + 8, 1);
+          projectile.projectileType = "bullet";
+          projectile.vx = Math.cos(angle) * 150;
+          projectile.vy = Math.sin(angle) * 150;
+          unit.invulnerableUntil = unit.age + 0.45;
+        }
+        unit.sprite.visible = unit.age >= unit.invulnerableUntil;
       } else if (unit.enemyType === "bomber") {
         unit.x += unit.vx * delta;
         unit.y += unit.vy * 0.7 * delta;

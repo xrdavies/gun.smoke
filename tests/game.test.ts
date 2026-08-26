@@ -128,6 +128,7 @@ describe("Gun.Smoke vertical slice", () => {
   it("keeps the ROM enemy event streams ordered and bounded", () => {
     expect(ROUND_ROM_ENEMY_EVENT_COUNTS).toEqual([128, 137, 275, 299, 185, 313]);
     expect(ROM_BEHAVIOR_ENEMY_TYPES).toHaveLength(12);
+    expect(ROM_BEHAVIOR_ENEMY_TYPES[1]).toBe("shotgunner");
     expect(ROM_ENEMY_SLOT_CAPACITY).toBe(7);
     expect(ROM_OBJECT_SLOT_CAPACITY).toBe(6);
     expect(canSpawnRomPool("enemy", 6)).toBe(true);

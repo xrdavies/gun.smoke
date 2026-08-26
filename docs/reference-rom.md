@@ -76,6 +76,9 @@ committed compressed runtime event stream from that manifest. Position-byte
 bit 5 selects the six-slot object pool at `$0402-$0407`; clear bit 5 selects
 the seven-slot enemy pool at `$0410-$0416`. Both pools remain in the runtime
 event stream with separate capacities.
+Behavior routine `$B0E5` allocates three projectile slots at `$B24B-$B281`
+and emits adjacent direction values, identifying it as the Shotgunner spread
+attack used by the runtime behavior map.
 The one record per Round carrying entity flag `0x40` occurs before the Boss
 gate and feeds the `$CBDA-$CBDF` interaction path that sets `$49`; its decoded
 NES X positions are `[200,64,216,216,72,216]`, and these are the current

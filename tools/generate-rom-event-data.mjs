@@ -58,7 +58,7 @@ const source = [
   "",
   "// Behavior routines are mechanically identified; these names are gameplay approximations until each routine is fully traced.",
   "export const ROM_BEHAVIOR_ENEMY_TYPES = [",
-  '  "sniper", "backstabber", "gunman", "shotgunner", "bomber", "rifleman",',
+  '  "sniper", "shotgunner", "gunman", "shotgunner", "bomber", "rifleman",',
   '  "ninja", "rifleman", "backstabber", "hatchet", "spear", "firebreather",',
   "] as const;",
   "",

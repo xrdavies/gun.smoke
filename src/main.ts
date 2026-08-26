@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, bossReward, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, shouldLoopStage, shouldRevealWanted, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, scoreExtraLives, spendPoints, STAGE_LENGTH, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, bossReward, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, shouldLoopStage, shouldRevealWanted, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, scoreExtraLives, spendPoints, STAGE_LENGTH, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -27,9 +27,9 @@ type GameAction =
   | "inventory"
   | "start";
 type GameMode = "title" | "intro" | "briefing" | "playing" | "paused" | "gameover" | "ending";
-type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "moneyBag" | "ammo" | "barrel" | "item" | "wanted";
+type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "moneyBag" | "ammo" | "barrel" | "item" | "wanted" | "shopkeeper";
 type ProjectileType = "bullet" | "dynamite" | "grenade" | "boomerang" | "fireball" | "shuriken" | "spear" | "hatchet";
-type TextureName = "player" | "horse" | "bullet" | "moneyBag" | "ammo" | "barrel" | "wanted" | "terrain" | "road" | "landmark";
+type TextureName = "player" | "horse" | "shopkeeper" | "bullet" | "moneyBag" | "ammo" | "barrel" | "wanted" | "terrain" | "road" | "landmark";
 type Rgba = [number, number, number, number];
 
 interface Unit {
@@ -54,6 +54,7 @@ interface Unit {
   invulnerableUntil: number;
   piercing: boolean;
   hitTargets?: Set<Unit>;
+  shopIndex?: number;
   animation?: SpriteAnimationBinding;
 }
 
@@ -226,6 +227,7 @@ class GunSmokeGame {
   }
   shopOpen = false;
   shopIndex = 0;
+  shopSpawnCursor = 0;
   musicTimer: number | undefined;
   musicStep = 0;
   randomState = 0x6d2b79f5;
@@ -264,6 +266,11 @@ class GunSmokeGame {
         ".......ttt....", ".....ttkktt...", "....tkkkkkkt..", ".t..tkkkkkkkt.",
         ".tttkkkkkkkktt", "..tkkkkkkkkkt.", "...ttkkkktt...", "....tkkkktt...",
         "....tkkkkt....", "...tt...tt....", "...tt...tt....", "...t.....t....",
+      ], palette),
+      shopkeeper: pixelTexture(engine, [
+        "....oooo....", "...okkkko...", "..ookkkkoo..", ".ookkkkkkoo.",
+        "..okwwwwko..", "...okkkko...", "....oooo....", "...tttttt...",
+        "..ttkkkktt..", ".ttkkkkkktt.", "..tttttttt..", "...tt..tt...",
       ], palette),
       bullet: pixelTexture(engine, [".o.", ".o.", ".o.", ".o.", ".o.", ".o."], palette),
       moneyBag: pixelTexture(engine, ["..oo..", ".oooo.", "ookkoo", "okkkko", "okkkko", ".oooo."], palette),
@@ -464,7 +471,7 @@ class GunSmokeGame {
     this.scroll += scrollDelta;
     this.player.y += scrollDelta;
     if (shouldLoopStage(this.scroll, this.hasWanted)) this.loopStage();
-    this.maybeOpenShop();
+    this.updateShopSpawns();
     if (this.shopOpen) return;
     this.camera.position.y = this.scroll + 270;
     this.invulnerable = Math.max(0, this.invulnerable - delta);
@@ -790,15 +797,21 @@ class GunSmokeGame {
     this.spawnClock = segment.interval;
   }
 
-  private maybeOpenShop(): void {
+  private updateShopSpawns(): void {
     const checkpoints = SHOP_CHECKPOINTS[this.stage - 1] ?? [];
-    let checkpoint = 0;
-    for (let index = 0; index < checkpoints.length; index += 1) {
-      if (this.scroll >= (checkpoints[index] ?? Number.POSITIVE_INFINITY)) checkpoint = index + 1;
+    while (this.shopSpawnCursor < checkpoints.length && this.scroll >= (checkpoints[this.shopSpawnCursor] ?? Number.POSITIVE_INFINITY)) {
+      const offset = SHOP_X_OFFSETS[this.stage - 1]?.[this.shopSpawnCursor] ?? 0;
+      const keeper = this.spawnUnit("shopkeeper", clamp(480 + offset, 70, 890), this.scroll + 500, 1);
+      keeper.shopIndex = this.shopSpawnCursor + 1;
+      this.shopSpawnCursor += 1;
     }
-    if (checkpoint === 0 || checkpoint <= this.shopIndex) return;
-    this.shopIndex = checkpoint;
+  }
+
+  private openShop(index: number): void {
+    if (this.shopOpen) return;
+    this.shopIndex = index;
     this.shopOpen = true;
+    for (const unit of this.units) if (unit.kind === "shopkeeper") unit.hp = 0;
     shop.hidden = false;
     void this.audio?.pause();
     const shopType = SHOP_TYPES[this.stage - 1]?.[this.shopIndex - 1] ?? "supplies";
@@ -875,7 +888,7 @@ class GunSmokeGame {
   }
 
   private spawnUnit(kind: UnitKind, x: number, y: number, hp: number, enemyType?: EnemyType, itemType?: ItemType): Unit {
-    const textureName: TextureName = kind === "enemyBullet" || kind === "enemy" || kind === "boss" ? "bullet" : kind === "item" ? "ammo" : kind === "bullet" || kind === "moneyBag" || kind === "ammo" || kind === "barrel" || kind === "wanted" ? kind : "bullet";
+    const textureName: TextureName = kind === "enemyBullet" || kind === "enemy" || kind === "boss" ? "bullet" : kind === "item" ? "ammo" : kind === "bullet" || kind === "moneyBag" || kind === "ammo" || kind === "barrel" || kind === "wanted" || kind === "shopkeeper" ? kind : "bullet";
     const isBoss = kind === "boss";
     const isPickup = kind === "moneyBag" || kind === "ammo" || kind === "item" || kind === "wanted";
     const small = kind === "bullet" || kind === "enemyBullet";
@@ -885,18 +898,18 @@ class GunSmokeGame {
     };
     const bossColors: readonly [number, number, number, number][] = [[1, 0.55, 0.42, 1], [0.55, 0.75, 1, 1], [1, 0.72, 0.34, 1], [0.78, 0.58, 1, 1], [1, 0.82, 0.42, 1], [1, 0.96, 0.72, 1]];
     const itemColors: Record<ItemType, [number, number, number, number]> = { boots: [0.45, 0.8, 1, 1], rifle: [0.7, 0.9, 0.5, 1], ammo: [0.5, 0.7, 1, 1], money: [1, 0.85, 0.35, 1], pow: [1, 0.35, 0.35, 1], skull: [0.75, 0.75, 0.75, 1], horse: [0.8, 0.55, 0.3, 1], blueYashichi: [0.35, 0.65, 1, 1], redYashichi: [1, 0.3, 0.35, 1] };
-    const color: [number, number, number, number] = isBoss ? bossColors[this.stage - 1] ?? bossColors[0]! : kind === "enemy" && enemyType ? colors[enemyType] : kind === "item" && itemType ? itemColors[itemType] : [1, 1, 1, 1];
+    const color: [number, number, number, number] = isBoss ? bossColors[this.stage - 1] ?? bossColors[0]! : kind === "enemy" && enemyType ? colors[enemyType] : kind === "item" && itemType ? itemColors[itemType] : kind === "shopkeeper" ? [1, 0.9, 0.55, 1] : [1, 1, 1, 1];
     const texture = isBoss ? this.bossTextures[this.stage - 1] ?? this.bossTextures[0]! : kind === "enemy" && enemyType ? this.enemyTextures[enemyType] : kind === "item" && itemType ? this.itemTextures[itemType] : this.textures[textureName];
-    const sprite = new Sprite({ texture, sampler: this.sampler, frame: kind === "enemy" || isBoss ? { x: 0, y: 0, width: 0.5, height: 1 } : undefined, position: { x, y }, size: { x: isBoss ? 110 : isPickup ? 28 : small ? 9 : 34, y: isBoss ? 68 : isPickup ? 28 : small ? 25 : 34 }, anchor: { x: 0.5, y: 0.5 }, color, layer: isBoss ? 15 : small ? 12 : isPickup ? 11 : 10 });
+    const sprite = new Sprite({ texture, sampler: this.sampler, frame: kind === "enemy" || isBoss ? { x: 0, y: 0, width: 0.5, height: 1 } : undefined, position: { x, y }, size: { x: isBoss ? 110 : isPickup ? 28 : small ? 9 : 34, y: isBoss ? 68 : isPickup ? 28 : small ? 25 : kind === "shopkeeper" ? 46 : 34 }, anchor: { x: 0.5, y: 0.5 }, color, layer: isBoss ? 15 : small ? 12 : isPickup ? 11 : 10 });
     const animation = kind === "enemy" || isBoss ? new SpriteAnimationBinding(sprite, new AnimationPlayer().play(new SpriteFrameClip([
       { x: 0, y: 0, width: 0.5, height: 1, duration: 0.14 },
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: 0.14 },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation,
-      vx: isBoss ? 42 : kind === "barrel" ? 0 : (this.nextRandom() - 0.5) * 70,
-      vy: isBoss || isPickup || kind === "barrel" ? 0 : kind === "enemyBullet" ? 0 : 45,
-      hp, radius: isBoss ? 48 : isPickup ? 17 : small ? 7 : 19,
+      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined,
+      vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
+      vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" ? 0 : kind === "enemyBullet" ? 0 : 45,
+      hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
       value: isBoss ? bossReward(this.stage, this.wingatePhase) : kind === "moneyBag" ? 200 : kind === "ammo" || kind === "item" || kind === "wanted" ? 0 : kind === "barrel" ? 50 : 100,
       age: 0, phase: this.nextRandom() * Math.PI * 2, damage: kind === "enemy" && enemyType === "rifleman" ? 0 : 1, fired: false, turnRate: 0, maxAge: isBoss ? unitMaxAge("boss") : small ? unitMaxAge("projectile") : isPickup || kind === "barrel" ? unitMaxAge("pickup") : unitMaxAge("enemy"), invulnerableUntil: 0, piercing: false,
     };
@@ -1036,6 +1049,8 @@ class GunSmokeGame {
       else if (this.stage === 6) unit.y = this.scroll + 92 + Math.min(unit.age * 110, 170);
       else unit.y = this.scroll + 92 + Math.sin(unit.age * 2) * 18;
       unit.sprite.visible = unit.age >= unit.invulnerableUntil;
+    } else if (unit.kind === "shopkeeper") {
+      // Shopkeepers stay in world space until Billy walks up to them.
     } else if (unit.kind === "moneyBag" || unit.kind === "item" || unit.kind === "ammo" || unit.kind === "wanted") {
       unit.y += 40 * delta;
       unit.x += Math.sin(unit.age * 4 + unit.phase) * 14 * delta;
@@ -1103,6 +1118,9 @@ class GunSmokeGame {
           }
           this.beep(unit.kind === "moneyBag" ? 980 : unit.kind === "wanted" ? 520 : 620, 0.08);
         }
+      } else if (unit.kind === "shopkeeper" && distance(unit, this.player) <= unit.radius + 22) {
+        this.openShop(unit.shopIndex ?? this.shopSpawnCursor);
+        break;
       } else if (unit.kind === "enemyBullet" && unit.projectileType === "dynamite" && unit.age >= 0.75 && unit.age < 2.2 && distance(unit, this.player) <= unit.radius + 20) {
         unit.hp = 0;
         this.showMessage("DYNAMITE DEFUSED");
@@ -1266,6 +1284,7 @@ class GunSmokeGame {
     this.itemEventCursor = 0;
     this.stageLoopCount = 0;
     this.shopIndex = 0;
+    this.shopSpawnCursor = 0;
     this.units.length = 0;
     this.buildBackground();
     this.player.x = 480;
@@ -1283,6 +1302,7 @@ class GunSmokeGame {
     this.posterPropSpawned = false;
     this.itemEventCursor = 0;
     this.shopIndex = 0;
+    this.shopSpawnCursor = 0;
     this.spawnClock = 0.8;
     this.enemyFireClock = 1.2;
     this.units.length = 0;

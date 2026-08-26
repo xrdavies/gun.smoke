@@ -37,7 +37,9 @@ Smart Bomb 8,000, and Horse 20,000. Enemy placement, terrain art, audio and
 exact frame timing are intentionally parameters rather than claims of
 byte-identical reproduction.
 
-Weapon and supply shops are separate checkpoints: the first shop in each Round
+Weapon and supply shops are separate roadside encounters rather than automatic
+dialogs. A shopkeeper appears at each checkpoint and freezes the action only
+when Billy walks up; riding past skips that shop. The first shop in each Round
 sells the three special guns and Smart Bomb, later supply shops sell Horse,
 Bullet refills, and Wanted posters, and Rounds 3 and 6 receive a later
 weapon-shop revisit.

@@ -55,6 +55,14 @@ export const SHOP_TYPES: readonly (readonly ShopType[])[] = [
   ["weapons", "supplies"],
   ["weapons", "supplies", "weapons"],
 ];
+export const SHOP_X_OFFSETS: readonly (readonly number[])[] = [
+  [180, -180],
+  [180, -180],
+  [-180, 180, 0],
+  [-180, 180],
+  [180, -180],
+  [180, -180, 0],
+];
 
 export const ROAD_WIDTHS = [730, 450, 430, 500, 650, 540] as const;
 export const WANTED_COSTS = [20_000, 24_000, 50_000, 40_000, 40_000, 60_000] as const;

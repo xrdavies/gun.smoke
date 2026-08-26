@@ -260,6 +260,10 @@ and single-button diagonal shots moving about 2.5 horizontal / 5 vertical
 pixels per frame. Normal pistol shots persist for roughly 15 frames. These map
 to 811.323 straight, 338.05125/676.1025 diagonal world pixels per second and a
 15/60.098-second base lifetime in the procedural world.
+With `$79/$88` set for an active Rifle stock, the straight A+B projectile moves
+8 pixels per frame but still persists for 15 frames. The runtime therefore
+applies a non-stacking `4 / 3` speed multiplier to Pistol shots rather than
+extending their lifetime.
 
 The first active enemy wave appears around gameplay frame 195 in the verified
 Round 1 trace, which maps to roughly 146 world pixels at the calibrated 45

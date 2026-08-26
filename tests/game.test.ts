@@ -4,6 +4,7 @@ import { GUNMAN_BULLET_SPEED, GUNMAN_FIRST_SHOT_DELAY, GUNMAN_LIFETIME } from ".
 import { BANDIT_BILL_BULLET_SPEED, BANDIT_BILL_FIRST_VOLLEY_DELAY, BANDIT_BILL_SHOT_INTERVAL, BANDIT_BILL_SHOTS_PER_VOLLEY, BANDIT_BILL_VOLLEY_GAP } from "../src/game-constants";
 import { banditBillCooldown } from "../src/game-constants";
 import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "../src/game-constants";
+import { RIFLE_BULLET_SPEED_MULTIPLIER } from "../src/game-constants";
 import { roundCollisionBlocks, ROUND_COLLISION_ROW_COUNTS } from "../src/round-collision";
 import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_ENEMY_SLOT_CAPACITY, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_OBJECT_SLOT_CAPACITY, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_ENEMY_EVENT_COUNTS, ROUND_ROM_OBJECT_EVENTS, ROUND_ROM_OBJECT_EVENT_COUNTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY } from "../src/rom-event-data";
 
@@ -30,6 +31,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(WORLD_DIAGONAL_BULLET_X).toBeCloseTo(338.05125, 6);
     expect(WORLD_DIAGONAL_BULLET_Y).toBeCloseTo(676.1025, 6);
     expect(PISTOL_BULLET_LIFETIME).toBeCloseTo(15 / 60.098, 9);
+    expect(RIFLE_BULLET_SPEED_MULTIPLIER).toBeCloseTo(4 / 3, 9);
     expect({ speed: MAGNUM_BULLET_SPEED, lifetime: MAGNUM_BULLET_LIFETIME }).toEqual({ speed: WORLD_BULLET_SPEED * 0.75, lifetime: 0.8 });
   });
 

@@ -746,6 +746,7 @@ class GunSmokeGame {
     for (const item of shopItems) {
       const key = item.dataset.shopItem as WeaponName | "horse" | "ammo" | "wanted" | "smartBomb" | undefined;
       const cost = key === "horse" ? SHOP_COSTS.horse : key === "ammo" ? SHOP_COSTS.ammo : key === "smartBomb" ? SHOP_COSTS.smartBomb : key === "wanted" ? WANTED_COSTS[this.stage - 1] ?? 50_000 : key ? WEAPONS[key].cost : 0;
+      if (key === "wanted") item.textContent = `Wanted poster $${String(cost).padStart(5, "0")}`;
       item.disabled = key === "horse" ? this.hasHorse || this.money < cost : key === "ammo" ? !this.canRefillAmmo() || this.money < cost : key === "wanted" ? this.shopIndex < 2 || this.hasWanted || this.money < cost : key === "smartBomb" ? this.smartBombs >= 5 || this.money < cost : key ? this.ownedWeapons.has(key) || this.money < cost : true;
     }
   }

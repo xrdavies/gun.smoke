@@ -53,6 +53,7 @@ test("reaches the first trading post", async ({ page }) => {
   await expect(page.locator('[data-shop-item="shotgun"]')).toContainText("$06000");
   await expect(page.locator('[data-shop-item="horse"]')).toContainText("$20000");
   await expect(page.locator('[data-shop-item="ammo"]')).toContainText("$01500");
+  await expect(page.locator('[data-shop-item="wanted"]')).toContainText("$20000");
   await expect(page.locator('[data-shop-item="magnum"]')).toBeDisabled();
   await expect(page.locator('[data-shop-item="wanted"]')).toBeDisabled();
   await page.locator("#shop-close").click();

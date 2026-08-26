@@ -33,12 +33,12 @@ export function roundCollisionBlocks(round: number, scroll: number, x: number, y
   const mapRows = rows.length / 2;
   const scrollNes = Math.max(0, Math.floor(scroll * NES_VIEW_HEIGHT / WORLD_HEIGHT));
   const fineScroll = (16 + scrollNes) & 31;
-  const page = fineScroll < 16 ? 1 : 0;
+  const mapPage = fineScroll < 16 ? 1 : 0;
   const pointerStorageRow = (INITIAL_STORAGE_ROW + Math.floor(scrollNes / NES_MAP_ROW_PIXELS)) % mapRows;
   const screenX = Math.max(0, Math.min(NES_MAP_WIDTH - 1, Math.round(x * NES_MAP_WIDTH / WORLD_WIDTH + 8)));
   const screenY = Math.max(0, Math.min(255, Math.round((y - scroll) * NES_VIEW_HEIGHT / WORLD_HEIGHT + 6)));
   const relativeY = (screenY - fineScroll + 256) & 255;
-  const byteOffset = ((relativeY & 0xe0) >> 2) + 8 + (page ? 8 : 0);
+  const byteOffset = ((relativeY & 0xe0) >> 2) + 8 + (mapPage === 0 ? 8 : 0);
   const storageRow = (pointerStorageRow - byteOffset / 8 + mapRows) % mapRows;
   const traversalRow = (storageRow - INITIAL_STORAGE_ROW + mapRows) % mapRows;
   const row = traversalRow * 2 + Number(Boolean(relativeY & 0x10));

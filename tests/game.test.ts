@@ -120,6 +120,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROUND_COLLISION_ROW_COUNTS).toEqual([192, 192, 320, 240, 192, 320]);
     expect(roundCollisionBlocks(1, 45, 480, 455)).toBe(false);
     expect(roundCollisionBlocks(1, 45, 0, 455)).toBe(true);
+    expect(roundCollisionBlocks(1, 2.25, 810, 60.75)).toBe(false);
+    expect(roundCollisionBlocks(1, 2.25, 810, 114.75)).toBe(true);
   });
 
   it("keeps Boss units alive until their health reaches zero", () => {

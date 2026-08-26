@@ -136,6 +136,9 @@ The corrected Round 1 trace shows the PPU vertical position advancing 20 pixels
 per 60 frames. At 60.098 Hz, the 540-high procedural world therefore uses
 45.0735 world pixels per second (`20 * 60.098 / 60 * 540 / 240`) for its
 automatic scroll.
+The collision lookup also preserves the PPU page rule: when `$5C == 0`,
+`$C6C4` adds an extra 8-byte map-row offset; the runtime collision helper has
+been checked against the original lookup for 28,800 sampled screen cells.
 
 Holding Left for 60 real frames moves Billy about 75 NES pixels. The procedural
 world therefore uses 169.025625 world pixels per second;

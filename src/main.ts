@@ -669,6 +669,19 @@ class GunSmokeGame {
       for (const candidate of segments) if (y >= candidate.at) landmark = candidate.landmark;
       this.backgrounds.push(new Sprite({ texture: terrain, sampler: this.sampler, position: { x: 480, y: y + 90 }, size: { x: 960, y: 180 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -20 }));
       this.backgrounds.push(new Sprite({ texture: road, sampler: this.sampler, position: { x: 480, y: y + 90 }, size: { x: roadWidth, y: 180 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -19 }));
+      if (this.stage === 5) {
+        const forestSegment = Math.floor(y / 180);
+        const bridge = forestSegment % 3 === 1;
+        this.backgrounds.push(new Sprite({
+          texture: road,
+          sampler: this.sampler,
+          position: { x: 480, y: y + 90 },
+          size: { x: roadWidth, y: bridge ? 28 : 180 },
+          anchor: { x: 0.5, y: 0.5 },
+          color: bridge ? [0.55, 0.32, 0.18, 1] : [0.12, 0.42, 0.78, 1],
+          layer: -18.5,
+        }));
+      }
       if (landmark === "open") {
         // Open clearings deliberately omit side landmarks.
       } else if (landmark === "town" || landmark === "cemetery") {
@@ -677,8 +690,6 @@ class GunSmokeGame {
         for (const x of [edge - 30, 960 - edge + 30]) this.backgrounds.push(new Sprite({ texture: this.textures.landmark, sampler: this.sampler, position: { x, y: y + 90 }, size: { x: 52, y: 170 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -18 }));
       } else if (landmark === "village") {
         for (const x of [edge - 36, 960 - edge + 36]) this.backgrounds.push(new Sprite({ texture: this.textures.landmark, sampler: this.sampler, position: { x, y: y + 90 }, size: { x: 68, y: 92 }, anchor: { x: 0.5, y: 0.5 }, color: [1, 0.78, 0.6, 1], layer: -18 }));
-      } else if (landmark === "forest" && Math.floor(y / 180) % 3 === 1) {
-        this.backgrounds.push(new Sprite({ texture: this.textures.landmark, sampler: this.sampler, position: { x: 480, y: y + 90 }, size: { x: roadWidth, y: 26 }, anchor: { x: 0.5, y: 0.5 }, color: [0.75, 0.5, 0.28, 1], layer: -18 }));
       }
     }
     const obstacleColors = { boulder: [0.45, 0.5, 0.56, 1] as Rgba, tree: [0.2, 0.48, 0.28, 1] as Rgba, grave: [0.68, 0.68, 0.74, 1] as Rgba };

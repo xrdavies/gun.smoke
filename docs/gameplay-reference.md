@@ -109,7 +109,9 @@ blockers rather than decoration-only scenery. Boulder, tree, and grave zones
 are tested against the player's world-space position and support axis sliding,
 so a diagonal input can follow a narrow path around an obstacle. The blocker
 coordinates remain explicit approximation data until each stage has a matching
-ROM trace.
+ROM trace. Forest segments additionally alternate blue water with brown bridge
+crossings to match the Round 5 traversal cue; water remains passable in this
+first approximation, while trees are the blocking geometry.
 
 Important barrel contents are represented as ordered world events per Round,
 so the notable boots, rifle, POW, Yashichi, Skull and Horse sequence is stable;

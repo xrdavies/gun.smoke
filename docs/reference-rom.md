@@ -252,8 +252,8 @@ been checked against the original lookup for 28,800 sampled screen cells.
 
 Holding Left for 60 real frames moves Billy about 75 NES pixels. The procedural
 world therefore uses 169.025625 world pixels per second;
-the Boots speed increase remains an explicit multiplier pending a verified ROM
-measurement.
+with `$78` set to any nonzero Boots stock and `$45=2`, the same trace moves 100
+pixels. The runtime therefore uses a non-stacking `4 / 3` Boots multiplier.
 
 OAM projectile traces show straight A+B pistol shots moving 6 pixels per frame,
 and single-button diagonal shots moving about 2.5 horizontal / 5 vertical

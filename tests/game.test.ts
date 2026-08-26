@@ -22,7 +22,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(WORLD_SCROLL_SPEED).toBeCloseTo(45.0735, 6);
     expect(NES_PLAYER_SPEED).toBeCloseTo(75.1225, 6);
     expect(WORLD_PLAYER_SPEED).toBeCloseTo(169.025625, 6);
-    expect(BOOTS_SPEED_MULTIPLIER).toBe(1.2);
+    expect(BOOTS_SPEED_MULTIPLIER).toBeCloseTo(4 / 3, 9);
     expect(NES_BULLET_SPEED).toBeCloseTo(360.588, 6);
     expect(WORLD_BULLET_SPEED).toBeCloseTo(811.323, 6);
     expect(NES_DIAGONAL_BULLET_X).toBeCloseTo(150.245, 6);

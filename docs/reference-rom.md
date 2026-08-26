@@ -168,11 +168,11 @@ reaches approximately `x=64`. The web runtime selects one of those measured
 lanes and uses the corresponding edge-entry speed, while later movement and
 damage phases remain separate Boss approximations.
 The same controlled full-round trace identifies Round 2's Cutter as dispatch
-`0x90`, variant `0x5b`, entering at the left edge with NES `y=88`; its first
-observed position reaches about `x=106` after 324 frames. The web runtime now
-uses that edge entry and calibrated opening speed; Cutter's internal attack
-dispatches remain documented observations until their complete projectile
-state machine is isolated.
+`0x90`, variant `0x5b`, entering at the left edge. Controlled runs observe NES
+entry lanes `y=88` and `y=168`; one lane reaches about `x=106` after 324 frames.
+The web runtime selects one measured lane and uses the calibrated opening
+speed; Cutter's internal attack dispatches remain documented observations until
+their complete projectile state machine is isolated.
 
 Current behavior map:
 

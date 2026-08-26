@@ -101,8 +101,8 @@ export const BANDIT_BILL_ENTRY_Y_NES = [96, 128, 160, 192] as const;
 export const BANDIT_BILL_ENTRY_Y_LANES = BANDIT_BILL_ENTRY_Y_NES.map((value) => value * NES_WORLD_Y_SCALE);
 export const BANDIT_BILL_ENTRY_SPEED_X = (64 / 96) * NES_FRAME_RATE * NES_WORLD_X_SCALE;
 export const CUTTER_ENTRY_X = 0 * NES_WORLD_X_SCALE;
-export const CUTTER_ENTRY_Y_NES = 88;
-export const CUTTER_ENTRY_Y = CUTTER_ENTRY_Y_NES * NES_WORLD_Y_SCALE;
+export const CUTTER_ENTRY_Y_NES = [88, 168] as const;
+export const CUTTER_ENTRY_Y_LANES = CUTTER_ENTRY_Y_NES.map((value) => value * NES_WORLD_Y_SCALE);
 export const CUTTER_ENTRY_SPEED_X = (106 / 324) * NES_FRAME_RATE * NES_WORLD_X_SCALE;
 
 export function banditBillCooldown(shotsFired: number): number {

@@ -84,6 +84,21 @@ test("reaches the first trading post", async ({ page }) => {
   await expect(page.locator("#hud")).toBeVisible();
 });
 
+test("switches from the weapon shop to the supply shop", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#start-button").click();
+  await page.locator("#continue-button").click();
+  await page.locator("#briefing-button").click();
+  await page.waitForTimeout(12_800);
+  await expect(page.locator("#shop-title")).toHaveText("WEAPON SHOP / ROUND 1");
+  await page.locator("#shop-close").click();
+  await page.waitForTimeout(13_500);
+  await expect(page.locator("#shop-title")).toHaveText("SUPPLY SHOP / ROUND 1");
+  await expect(page.locator('[data-shop-item="shotgun"]')).toBeDisabled();
+  await expect(page.locator('[data-shop-item="horse"]')).toBeDisabled();
+  await expect(page.locator('[data-shop-item="wanted"]')).toBeDisabled();
+});
+
 test("runs a locally supplied reference ROM through the engine", async ({ page }) => {
   const romPath = path.resolve(process.cwd(), "Gun.Smoke.ZH.NES");
   test.skip(!fs.existsSync(romPath), "Reference ROM is intentionally not present in clean clones");

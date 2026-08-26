@@ -1409,7 +1409,7 @@ class GunSmokeGame {
       if (this.stage === MAX_STAGE && this.wingatePhase === 0) {
         this.wingatePhase = 1;
         this.wingateRespawnClock = WINGATE_SECOND_SPAWN_DELAY;
-        for (const unit of this.units) if (unit.kind === "enemyBullet") unit.hp = 0;
+        this.clearEnemyProjectiles();
         this.showMessage("DECOY DOWN");
         return;
       }
@@ -1456,8 +1456,8 @@ class GunSmokeGame {
     } else if (item === "pow") {
       for (const target of [...this.units]) {
         if (target.kind === "enemy" && target.hp > 0) this.defeatTarget(target);
-        else if (target.kind === "enemyBullet") target.hp = 0;
       }
+      this.clearEnemyProjectiles();
     } else if (item === "skull") {
       this.powerups.boots = Math.max(0, this.powerups.boots - 1);
       this.powerups.rifle = Math.max(0, this.powerups.rifle - 1);
@@ -1480,7 +1480,7 @@ class GunSmokeGame {
       this.invulnerable = 1;
       this.beep(170, 0.12);
       this.showMessage(this.hasHorse ? `HORSE ${this.horseHealth}` : "HORSE DOWN");
-      for (const unit of this.units) if (unit.kind === "enemyBullet") unit.hp = 0;
+      this.clearEnemyProjectiles();
       this.updateHud();
       return;
     }
@@ -1489,8 +1489,8 @@ class GunSmokeGame {
       this.smartBombArmed = false;
       for (const unit of [...this.units]) {
         if (unit.kind === "enemy" && unit.hp > 0) this.defeatTarget(unit);
-        else if (unit.kind === "enemyBullet") unit.hp = 0;
       }
+      this.clearEnemyProjectiles();
       this.invulnerable = 1;
       this.beep(75, 0.35);
       this.showMessage("SMART BOMB");
@@ -1509,8 +1509,12 @@ class GunSmokeGame {
     this.invulnerable = 2;
     this.beep(120, 0.16);
     this.showMessage(this.lives > 0 ? "HIT!" : "OUT OF LIVES");
-    for (const unit of this.units) if (unit.kind === "enemyBullet") unit.hp = 0;
+    this.clearEnemyProjectiles();
     if (this.lives <= 0) this.finish(false);
+  }
+
+  private clearEnemyProjectiles(): void {
+    for (const unit of this.units) if (unit.kind === "enemyBullet" && unit.projectileType !== "rock") unit.hp = 0;
   }
 
   private awardScoreLife(): void {

@@ -79,7 +79,8 @@ weapon ammo, money, POW, Cattle Skull, Horse, and Blue/Red Yashichi. Stored
 Boots/Rifle are capped at four and each loses one stock on death; Blue Yashichi
 grants contact damage and temporary invulnerability, while Magnum bullets can
 destroy enemy projectiles. POW clears regular enemies and their projectiles but
-does not damage the low-slot Boss actor. Smart Bomb is armed from the inventory and triggers
+does not damage the low-slot Boss actor or clear object-pool falling rocks.
+Smart Bomb is armed from the inventory and triggers
 on a lethal hit, clearing regular enemies and enemy bullets while consuming
 one bomb; it does not damage bosses. Arming it selects the unlimited Pistol,
 and equipping another weapon disarms the bomb without consuming it. Only one

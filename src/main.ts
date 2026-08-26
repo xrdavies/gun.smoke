@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, BOMBER_FIRST_THROW_DELAY, BOMBER_THROW_INTERVAL, bossReward, BOOTS_SPEED_MULTIPLIER, clamp, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, DYNAMITE_LIFETIME, DYNAMITE_WORLD_SPEED, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_BOSS_TRIGGERS, ROUND_ITEM_EVENTS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_VOLLEY_INTERVAL, shouldLoopStage, shouldRevealWanted, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, worldEventEnteredView, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, BOMBER_FIRST_THROW_DELAY, BOMBER_THROW_INTERVAL, bossReward, BOOTS_SPEED_MULTIPLIER, clamp, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, DYNAMITE_LIFETIME, DYNAMITE_WORLD_SPEED, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_BOSS_TRIGGERS, ROUND_ITEM_EVENTS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_VOLLEY_INTERVAL, shouldLoopStage, shouldRevealWanted, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, worldEventEnteredView, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
 import { roundCollisionBlocks } from "./round-collision";
 import { canSpawnRomPool, ROUND_ROM_ENEMY_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY } from "./rom-event-data";
 
@@ -693,6 +693,7 @@ class GunSmokeGame {
       enemy.romEntityCode = event.entityCode;
       enemy.romFlags = event.flags;
       enemy.romPool = event.pool;
+      if (event.behavior === 0) enemy.maxAge = SNIPER_LIFETIME;
       if (event.behavior === 1) enemy.maxAge = SHOTGUNNER_LIFETIME;
       enemy.vx = enemyType === "sniper" ? 0 : (this.nextRandom() - 0.5) * (42 + this.stage * 6);
       enemy.vy = enemyType === "backstabber" ? -100 : enemyType === "sniper" ? 0 : 24 + this.stage * 6;
@@ -1017,8 +1018,13 @@ class GunSmokeGame {
           projectile.vy = Math.sin(angle) * 138;
         }
       } else if (unit.enemyType === "sniper") {
-        if (!unit.fired && unit.age > 0.8) {
+        const nextShotFrame = unit.romBehavior === 0 ? SNIPER_SHOT_FRAMES[unit.volleysFired] : undefined;
+        const shouldFire = unit.romBehavior === 0
+          ? nextShotFrame !== undefined && unit.age >= nextShotFrame / NES_FRAME_RATE
+          : !unit.fired && unit.age > 0.8;
+        if (shouldFire) {
           unit.fired = true;
+          unit.volleysFired += 1;
           const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
           const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y + 8, 1);
           projectile.projectileType = "bullet";

@@ -52,6 +52,8 @@ export const DYNAMITE_AIM_FACTOR = 0.045;
 export const SHOTGUNNER_FIRST_VOLLEY_DELAY = 108 / NES_FRAME_RATE;
 export const SHOTGUNNER_VOLLEY_INTERVAL = 51 / NES_FRAME_RATE;
 export const SHOTGUNNER_LIFETIME = 228 / NES_FRAME_RATE;
+export const SNIPER_SHOT_FRAMES = [134, 224, 405, 495, 585] as const;
+export const SNIPER_LIFETIME = 732 / NES_FRAME_RATE;
 
 export const SHOP_CHECKPOINTS: readonly (readonly number[])[] = [
   [560, 1_180],

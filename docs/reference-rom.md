@@ -84,6 +84,9 @@ An isolated `$B501` actor first creates its `0x72`/dispatch `0x2F` dynamite
 after 198 frames and repeats after 106 frames. The projectile remains airborne
 for 212 frames, changes to landed dispatch `0x3E` for 53 frames, then clears;
 the runtime uses these measured timings at 60.098 Hz.
+An isolated `$B080` Sniper fires at ages 134, 224, 405, 495 and 585 frames,
+then releases its slot at age 732. The routine's 90-frame base cooldown is
+visible directly; the longer middle gap is a missed discrete aiming window.
 The one record per Round carrying entity flag `0x40` occurs before the Boss
 gate and feeds the `$CBDA-$CBDF` interaction path that sets `$49`; its decoded
 NES X positions are `[200,64,216,216,72,216]`, and these are the current

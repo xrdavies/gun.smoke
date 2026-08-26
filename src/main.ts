@@ -813,7 +813,7 @@ class GunSmokeGame {
       const key = item.dataset.shopItem as WeaponName | "horse" | "ammo" | "wanted" | "smartBomb" | undefined;
       const cost = key === "horse" ? SHOP_COSTS.horse : key === "ammo" ? SHOP_COSTS.ammo : key === "smartBomb" ? SHOP_COSTS.smartBomb : key === "wanted" ? WANTED_COSTS[this.stage - 1] ?? 50_000 : key ? WEAPONS[key].cost : 0;
       if (key === "wanted") item.textContent = `Wanted poster $${String(cost).padStart(5, "0")}`;
-      const isWeapon = key === "shotgun" || key === "machinegun" || key === "magnum";
+      const isWeapon = key === "shotgun" || key === "machinegun" || key === "magnum" || key === "smartBomb";
       const available = shopType === "weapons" ? isWeapon : !isWeapon;
       item.hidden = !available;
       item.disabled = !available || key === "horse" ? !available || this.hasHorse || this.score < cost : key === "ammo" ? !available || !this.canRefillAmmo() || this.score < cost : key === "wanted" ? !available || this.shopIndex < 2 || this.hasWanted || this.score < cost : key === "smartBomb" ? !available || this.smartBombs >= SMART_BOMB_CAPACITY || this.score < cost : key ? !available || this.ownedWeapons.has(key) || this.score < cost : true;
@@ -823,7 +823,7 @@ class GunSmokeGame {
   buyShopItem(item: string): void {
     const key = item as WeaponName | "horse" | "ammo" | "wanted" | "smartBomb";
     const shopType: ShopType = SHOP_TYPES[this.stage - 1]?.[this.shopIndex - 1] ?? "supplies";
-    const isWeapon = key === "shotgun" || key === "machinegun" || key === "magnum";
+    const isWeapon = key === "shotgun" || key === "machinegun" || key === "magnum" || key === "smartBomb";
     if ((shopType === "weapons") !== isWeapon) {
       shopMessage.textContent = "NOT SOLD HERE";
       return;

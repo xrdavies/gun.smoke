@@ -385,8 +385,9 @@ only for that code before `$F294-$F2BB` clears it back to Pistol/Rifle. Shotgun
 fire creates five dispatch `0x01` projectiles: a single-side shot uses NES velocity
 pairs from `(0,-12)` through `(12,0)`, while A+B uses the symmetric
 `(-8,-8)..(8,-8)` fan. Magnum shots use dispatch `0x37-$0x3a` for 34 frames and
-the same measured movement speed as base Pistol shots; Shotgun projectiles live
-for 11 frames. Projectile byte `$0540` is `1` for Pistol, Shotgun and Machine
+the same measured movement speed as base Pistol shots; Magnum also emits the
+same two-gun pair as Pistol for each trigger. Shotgun projectiles live for 11
+frames. Projectile byte `$0540` is `1` for Pistol, Shotgun and Machine
 Gun and `3` for Magnum, matching the runtime damage values. The web runtime
 preserves those lifetimes while retaining its self-generated Magnum piercing
 body.

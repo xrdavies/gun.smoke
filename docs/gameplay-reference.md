@@ -96,7 +96,7 @@ pickup refills every owned special weapon by its own amount.
 
 Shotgun fire emits five projectiles and consumes one round per trigger. A
 single-side shot spans straight ahead through horizontal fire on that side;
-A+B emits a symmetric five-way forward fan. Both Pistol and Machine Gun fire
+A+B emits a symmetric five-way forward fan. Pistol, Machine Gun and Magnum fire
 two gun barrels for every single-side or A+B trigger; Machine Gun rounds use a
 faster measured diagonal/straight velocity set. Magnum bullets use their own
 projectile state, travel at the measured base Pistol speed for 34 NES frames

@@ -18,7 +18,7 @@ export const STAGES: readonly StageDefinition[] = [
 
 export const STAGE_LENGTH = 2_200;
 export const BOSS_TRIGGER = 1_820;
-export const WANTED_REVEAL_AT = [1_320, 920, 1_450, 1_500, 1_450, 1_500] as const;
+export const WANTED_REVEAL_AT = [1_320, 920, 1_450, 1_740, 1_450, 1_500] as const;
 export const MAX_STAGE = STAGES.length;
 export const NES_FRAME_RATE = 60.098;
 export const WORLD_VIEWPORT_HEIGHT = 540;
@@ -118,7 +118,7 @@ export const ROUND_ITEM_EVENTS: readonly (readonly RoundItemEvent[])[] = [
   [{ at: 220, xOffset: 170, item: "rifle" }, { at: 300, xOffset: 140, item: "money" }, { at: 380, xOffset: 0, item: "boots" }, { at: 440, xOffset: 140, item: "money" }, { at: 500, xOffset: 0, item: "pow" }, { at: 800, xOffset: 170, item: "horse" }, { at: 1_280, xOffset: -170, item: "money" }, { at: 1_450, xOffset: 120, item: "blueYashichi" }, { at: 1_620, xOffset: -130, item: "redYashichi" }, { at: 1_750, xOffset: -40, item: "pow" }],
   [{ at: 300, xOffset: -170, item: "horse", loopOnly: true }, { at: 620, xOffset: 150, item: "skull" }, { at: 700, xOffset: 0, item: "blueYashichi" }, { at: 820, xOffset: 160, item: "redYashichi" }, { at: 900, xOffset: -150, item: "skull" }, { at: 1_520, xOffset: 0, item: "pow" }],
   [{ at: 520, xOffset: -150, item: "pow" }, { at: 580, xOffset: 150, item: "redYashichi" }, { at: 640, xOffset: 150, item: "skull" }, { at: 780, xOffset: -150, item: "blueYashichi" }, { at: 1_380, xOffset: -150, item: "skull" }, { at: 1_520, xOffset: -120, item: "skull" }, { at: 1_600, xOffset: 0, item: "redYashichi" }, { at: 1_680, xOffset: 120, item: "skull" }],
-  [{ at: 300, xOffset: -160, item: "blueYashichi" }, { at: 680, xOffset: 150, item: "redYashichi" }, { at: 900, xOffset: -150, item: "redYashichi" }, { at: 1_040, xOffset: -120, item: "pow" }, { at: 1_300, xOffset: 140, item: "blueYashichi" }, { at: 1_440, xOffset: 120, item: "redYashichi" }],
+  [{ at: 650, xOffset: -160, item: "blueYashichi" }, { at: 1_280, xOffset: 150, item: "blueYashichi" }, { at: 1_400, xOffset: -150, item: "redYashichi" }, { at: 1_500, xOffset: 150, item: "redYashichi" }, { at: 1_600, xOffset: -160, item: "skull" }, { at: 1_660, xOffset: -100, item: "pow" }, { at: 1_720, xOffset: -40, item: "skull" }],
   [{ at: 240, xOffset: -150, item: "blueYashichi" }, { at: 700, xOffset: 140, item: "redYashichi" }, { at: 1_020, xOffset: -100, item: "pow" }, { at: 1_240, xOffset: 160, item: "skull" }, { at: 1_440, xOffset: 120, item: "skull" }],
   [{ at: 260, xOffset: 0, item: "pow" }, { at: 620, xOffset: -150, item: "blueYashichi" }, { at: 1_000, xOffset: 140, item: "redYashichi" }, { at: 1_420, xOffset: 0, item: "redYashichi" }, { at: 1_560, xOffset: -80, item: "pow" }],
 ];

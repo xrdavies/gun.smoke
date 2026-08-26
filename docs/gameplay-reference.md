@@ -33,6 +33,9 @@ shop as described by the NES walkthrough.
 Round 3 similarly orders the left POW, right Red Yashichi/Skull pair and left
 Blue Yashichi after its first shop; its lone left Skull marks the later hidden
 Wanted area before the closing Skull/Red/Skull barrels.
+Round 4 places its first Blue Yashichi after the first shop, the crevice Blue
+after the second shop, then two Red Yashichi barrels and the final
+Skull/POW/Skull group immediately before the left-side Wanted spot.
 
 The web build also models the resource loop with Money Bag pickups, round-specific
 trading-post checkpoints, Shotgun, Machine Gun, Magnum, finite ammunition,

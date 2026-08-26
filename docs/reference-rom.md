@@ -117,9 +117,11 @@ Boots and Rifle compare `$78/$79` against `4` before incrementing. At that cap,
 contact leaves the stock unchanged and awards 100 points; the runtime preserves
 both the four-item cap and overflow reward.
 Behavior routine `$B0E5` allocates three projectile slots at `$B24B-$B281`
-and emits adjacent direction values, identifying it as the Shotgunner spread
-attack used by the runtime behavior map. An isolated instance fires at age 108
-and 159 frames, then exits at age 228; the runtime preserves both volleys.
+and emits a fixed downward fan. An isolated instance fires at age 108 and 159
+frames, then exits at age 228; the three shots begin at the actor coordinate,
+move about one NES Y pixel per frame, and use approximately `-1/8, 0, +1/8`
+NES X velocity. The runtime preserves both volleys and this ROM-tagged fan;
+non-ROM fallback formations retain their procedural aim.
 The shared allocator at `$E454-$E460` scans ordinary enemy projectile slots
 `$0418-$041f`, giving field bullets and dynamite a common eight-slot limit.
 `$B24B-$B25F` first requires three free slots before a Shotgunner volley; the

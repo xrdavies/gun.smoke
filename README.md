@@ -51,6 +51,7 @@ npm run trace:rom:scenes -- --frames=12000 --every=60
 npm run trace:rom:scenes -- --frames=600 --every=60 --pulse-fire
 npm run extract:rom-assets
 npm run extract:rom-opening-script
+npm run extract:rom-round-maps
 ```
 
 `trace:rom:scenes` writes structured state/OAM/PPU samples to the ignored

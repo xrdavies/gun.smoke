@@ -47,6 +47,14 @@ Bank 1 opening code at `$B312-$B3F8` reads 22 tile-run pointers from
 `.rom-traces/bank1-opening-nametable.json`. Bank 1 is observed during the
 title/opening flow; this data is not labeled as a Round gameplay script.
 
+The verified Round initializer stores a per-Round map-end pointer from
+`$E875` in `$5E/$5F`; collision lookup at `$C6C4` indexes the current Round
+bank from a common `$8440` start in eight 32-pixel columns. Running
+`npm run extract:rom-round-maps` extracts the six cell grids, their five-byte
+cell definitions, and self-generated ID-color previews into the ignored
+`.rom-traces/round-maps/` directory. The previews visualize structure without
+reusing the original tile artwork.
+
 Pattern-table previews remain grayscale for bitplane inspection; nametable
 previews apply each tile's expanded attribute and the live NES background
 palette so terrain colors match the captured scene.

@@ -10,6 +10,7 @@
     "disassemble:rom": "node tools/disassemble-rom.mjs",
     "extract:rom-assets": "node tools/extract-rom-assets.mjs",
     "extract:rom-opening-script": "node tools/extract-rom-opening-script.mjs",
+    "extract:rom-round-maps": "node tools/extract-rom-round-maps.mjs",
     "trace:rom": "node tools/trace-rom.mjs",
     "trace:rom:timeline": "node tools/trace-rom.mjs --timeline",
     "trace:rom:scenes": "node tools/trace-rom-scenes.mjs",

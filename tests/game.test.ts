@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { AMMO_GAIN, bossReward, BOSS_REWARDS, BOOTS_SPEED_MULTIPLIER, clamp, distance, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_BULLET_SPEED, NES_DIAGONAL_BULLET_X, NES_DIAGONAL_BULLET_Y, NES_FRAME_RATE, NES_PLAYER_SPEED, NES_SCROLL_SPEED, obstacleBlocks, PISTOL_BULLET_LIFETIME, ROAD_WIDTHS, ROUND_BOSS_GATE_SCROLL_NES, ROUND_BOSS_TRIGGERS, ROUND_ENEMY_TYPES, ROUND_ITEM_EVENTS, ROUND_LENGTHS, ROUND_LOOP_SCROLL_NES, ROUND_OBSTACLES, ROUND_SEGMENTS, ROUND_WANTED_SCROLL_NES, ROUND_WANTED_X_NES, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, segmentDelay, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_REVEAL_AT, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, worldEventEnteredView, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, nextExtraLifeScore, scoreExtraLives, shouldLoopStage, shouldRevealWanted } from "../src/game-constants";
 import { roundCollisionBlocks, ROUND_COLLISION_ROW_COUNTS } from "../src/round-collision";
-import { canSpawnRomEnemy, ROM_ENEMY_SLOT_CAPACITY, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_ENEMY_EVENT_COUNTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY } from "../src/rom-event-data";
+import { canSpawnRomPool, ROM_ENEMY_SLOT_CAPACITY, ROM_OBJECT_SLOT_CAPACITY, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_ENEMY_EVENT_COUNTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY } from "../src/rom-event-data";
 
 describe("Gun.Smoke vertical slice", () => {
   it("keeps the NES-inspired stage constants stable", () => {
@@ -126,11 +126,14 @@ describe("Gun.Smoke vertical slice", () => {
   });
 
   it("keeps the ROM enemy event streams ordered and bounded", () => {
-    expect(ROUND_ROM_ENEMY_EVENT_COUNTS).toEqual([105, 94, 211, 233, 157, 245]);
-    expect(ROM_BEHAVIOR_ENEMY_TYPES).toHaveLength(10);
+    expect(ROUND_ROM_ENEMY_EVENT_COUNTS).toEqual([128, 137, 275, 299, 185, 313]);
+    expect(ROM_BEHAVIOR_ENEMY_TYPES).toHaveLength(12);
     expect(ROM_ENEMY_SLOT_CAPACITY).toBe(7);
-    expect(canSpawnRomEnemy(6)).toBe(true);
-    expect(canSpawnRomEnemy(7)).toBe(false);
+    expect(ROM_OBJECT_SLOT_CAPACITY).toBe(6);
+    expect(canSpawnRomPool("enemy", 6)).toBe(true);
+    expect(canSpawnRomPool("enemy", 7)).toBe(false);
+    expect(canSpawnRomPool("object", 5)).toBe(true);
+    expect(canSpawnRomPool("object", 6)).toBe(false);
     for (const stream of ROUND_ROM_ENEMY_EVENTS) {
       expect(stream.every((event, index) => index === 0 || romEventWorldAt(event) >= romEventWorldAt(stream[index - 1]!))).toBe(true);
       expect(stream.every((event) => romEventWorldX(event) >= 0 && romEventWorldX(event) <= 960 && romEventWorldY(event) >= 0 && romEventWorldY(event) <= 540)).toBe(true);

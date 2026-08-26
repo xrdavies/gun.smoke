@@ -9,14 +9,14 @@ if (!fs.existsSync(manifestFilename)) {
 
 const manifest = JSON.parse(fs.readFileSync(manifestFilename, "utf8"));
 const routines = [...new Set(manifest.rounds.flatMap((round) => round.records
-  .filter((record) => record.command === "spawn" && record.slotPool === "enemy" && record.behaviorRoutine)
+  .filter((record) => record.command === "spawn" && record.behaviorRoutine)
   .map((record) => record.behaviorRoutine)))].sort();
 const routineIds = Object.fromEntries(routines.map((routine, index) => [routine, index]));
 const streams = manifest.rounds.map((round) => {
   const bytes = [];
-  for (const record of round.records.filter((candidate) => candidate.command === "spawn" && candidate.slotPool === "enemy" && candidate.behaviorRoutine)) {
+  for (const record of round.records.filter((candidate) => candidate.command === "spawn" && candidate.behaviorRoutine)) {
     const at = record.nesScrollAt;
-    bytes.push(at & 0xff, at >> 8, record.x ?? 0, record.y ?? 0, routineIds[record.behaviorRoutine], record.entityCode ?? 0, record.entityFlags ?? 0);
+    bytes.push(at & 0xff, at >> 8, record.x ?? 0, record.y ?? 0, routineIds[record.behaviorRoutine], record.entityCode ?? 0, record.entityFlags ?? 0, record.slotPool === "object" ? 1 : 0);
   }
   return Buffer.from(bytes).toString("base64");
 });
@@ -25,7 +25,7 @@ const source = [
   "// Generated from .rom-traces/round-events/manifest.json. Runtime keeps data only, not ROM code/assets.",
   `export const ROM_BEHAVIOR_ROUTINES = ${JSON.stringify(routines)} as const;`,
   "",
-  "export type RomEnemyEvent = { at: number; x: number; y: number; behavior: number; entityCode: number; flags: number };",
+  "export type RomEnemyEvent = { at: number; x: number; y: number; behavior: number; entityCode: number; flags: number; pool: \"enemy\" | \"object\" };",
   "",
   `const ROUND_EVENT_STREAMS = ${JSON.stringify(streams, null, 2)} as const;`,
   "const WORLD_PER_NES_PIXEL = 540 / 240;",
@@ -33,7 +33,7 @@ const source = [
   "const decodeStream = (encoded: string): readonly RomEnemyEvent[] => {",
   "  const bytes = Uint8Array.from(atob(encoded), (character) => character.charCodeAt(0));",
   "  const events: RomEnemyEvent[] = [];",
-  "  for (let offset = 0; offset + 6 < bytes.length; offset += 7) {",
+  "  for (let offset = 0; offset + 7 < bytes.length; offset += 8) {",
   "    events.push({",
   "      at: (bytes[offset] ?? 0) | ((bytes[offset + 1] ?? 0) << 8),",
   "      x: bytes[offset + 2] ?? 0,",
@@ -41,6 +41,7 @@ const source = [
   "      behavior: bytes[offset + 4] ?? 0,",
   "      entityCode: bytes[offset + 5] ?? 0,",
   "      flags: bytes[offset + 6] ?? 0,",
+  "      pool: bytes[offset + 7] === 1 ? \"object\" : \"enemy\",",
   "    });",
   "  }",
   "  return events;",
@@ -49,15 +50,16 @@ const source = [
   "export const ROUND_ROM_ENEMY_EVENTS: readonly (readonly RomEnemyEvent[])[] = ROUND_EVENT_STREAMS.map(decodeStream);",
   "export const ROUND_ROM_ENEMY_EVENT_COUNTS = ROUND_ROM_ENEMY_EVENTS.map((events) => events.length);",
   "export const ROM_ENEMY_SLOT_CAPACITY = 7;",
-  "export const canSpawnRomEnemy = (activeEnemies: number): boolean => activeEnemies < ROM_ENEMY_SLOT_CAPACITY;",
+  "export const ROM_OBJECT_SLOT_CAPACITY = 6;",
+  "export const canSpawnRomPool = (pool: RomEnemyEvent[\"pool\"], active: number): boolean => active < (pool === \"object\" ? ROM_OBJECT_SLOT_CAPACITY : ROM_ENEMY_SLOT_CAPACITY);",
   "export const romEventWorldAt = (event: RomEnemyEvent): number => event.at * WORLD_PER_NES_PIXEL;",
   "export const romEventWorldX = (event: RomEnemyEvent): number => event.x * (960 / 256);",
   "export const romEventWorldY = (event: RomEnemyEvent): number => event.y * WORLD_PER_NES_PIXEL;",
   "",
   "// Behavior routines are mechanically identified; these names are gameplay approximations until each routine is fully traced.",
   "export const ROM_BEHAVIOR_ENEMY_TYPES = [",
-  '  "sniper", "backstabber", "gunman", "bomber", "ninja",',
-  '  "rifleman", "backstabber", "hatchet", "spear", "firebreather",',
+  '  "sniper", "backstabber", "gunman", "shotgunner", "bomber", "rifleman",',
+  '  "ninja", "rifleman", "backstabber", "hatchet", "spear", "firebreather",',
   "] as const;",
   "",
 ].join("\n");

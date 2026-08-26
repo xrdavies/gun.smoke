@@ -156,13 +156,12 @@ crossings to match the Round 5 traversal cue; water remains passable in this
 first approximation, while trees are the blocking geometry. Cemetery segments
 also draw grouped center gravestones between the side buildings.
 
-Enemy spawning now consumes decoded Round event records that select the NES
-enemy-slot pool and have a verified behavior routine. Object-pool records stay
-separate instead of being misclassified as enemies. Each runtime enemy retains
-its behavior and entity codes for trace comparison; the visible enemy type is
-an explicit procedural approximation until that routine's state machine is
-identified. The event pool is capped at the NES limit of seven active enemies;
-records reached while all seven slots are occupied are skipped.
+Enemy spawning now consumes decoded Round event records with a verified
+behavior routine and preserves the NES enemy/object pool bit. Each runtime
+unit retains its behavior, entity code and pool for trace comparison; the
+visible type is an explicit procedural approximation until its state machine
+is identified. The pools are capped independently at seven enemy slots and
+six object slots, matching the ROM allocator.
 
 Important barrel contents are represented as ordered world events per Round,
 so every Boots, Rifle, POW, Yashichi, Skull and Horse barrel is stable rather

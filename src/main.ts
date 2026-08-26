@@ -15,7 +15,7 @@ import "./style.css";
 import type { ButtonKey } from "jsnes";
 import { AMMO_GAIN, bossReward, BOOTS_SPEED_MULTIPLIER, clamp, distance, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_BOSS_TRIGGERS, ROUND_ITEM_EVENTS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, shouldLoopStage, shouldRevealWanted, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, worldEventEnteredView, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
 import { roundCollisionBlocks } from "./round-collision";
-import { canSpawnRomEnemy, ROUND_ROM_ENEMY_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY } from "./rom-event-data";
+import { canSpawnRomPool, ROUND_ROM_ENEMY_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY } from "./rom-event-data";
 
 type GameAction =
   | "left"
@@ -61,6 +61,7 @@ interface Unit {
   romBehavior?: number;
   romEntityCode?: number;
   romFlags?: number;
+  romPool?: "enemy" | "object";
 }
 
 const actions = new ActionMap<GameAction>();
@@ -669,12 +670,15 @@ class GunSmokeGame {
   private spawnRomEnemyEvents(): void {
     if (this.bossSpawned) return;
     const events = ROUND_ROM_ENEMY_EVENTS[this.stage - 1] ?? [];
-    let activeEnemies = this.units.filter((unit) => unit.kind === "enemy" && unit.romBehavior !== undefined && unit.hp > 0).length;
+    const activePools = { enemy: 0, object: 0 };
+    for (const unit of this.units) {
+      if (unit.kind === "enemy" && unit.romBehavior !== undefined && unit.hp > 0) activePools[unit.romPool ?? "enemy"] += 1;
+    }
     while (this.romEventCursor < events.length) {
       const event = events[this.romEventCursor];
       if (!event || romEventWorldAt(event) > this.scroll) break;
       this.romEventCursor += 1;
-      if (!canSpawnRomEnemy(activeEnemies)) continue;
+      if (!canSpawnRomPool(event.pool, activePools[event.pool])) continue;
       const enemyType = ROM_BEHAVIOR_ENEMY_TYPES[event.behavior] ?? "gunman";
       const enemy = this.spawnUnit(
         "enemy",
@@ -686,9 +690,10 @@ class GunSmokeGame {
       enemy.romBehavior = event.behavior;
       enemy.romEntityCode = event.entityCode;
       enemy.romFlags = event.flags;
+      enemy.romPool = event.pool;
       enemy.vx = enemyType === "sniper" ? 0 : (this.nextRandom() - 0.5) * (42 + this.stage * 6);
       enemy.vy = enemyType === "backstabber" ? -100 : enemyType === "sniper" ? 0 : 24 + this.stage * 6;
-      activeEnemies += 1;
+      activePools[event.pool] += 1;
     }
   }
 
@@ -954,7 +959,7 @@ class GunSmokeGame {
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: frameDuration },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined,
+      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined, romPool: undefined,
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,

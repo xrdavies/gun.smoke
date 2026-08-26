@@ -35,7 +35,9 @@ is intended only for private inspection against the supplied reference file.
 `npm run disassemble:rom -- --start=0xc180 --end=0xc220` uses the opcode table
 from the pinned JSNES dependency to emit a linear 6502 disassembly. Mapper 2
 PRG banking is handled explicitly: `$C000-$FFFF` maps to the fixed final PRG
-bank and `$8000-$BFFF` maps to the selected `--bank`. The output is a local
+bank and `$8000-$BFFF` maps to the selected `--bank`. The tool rejects
+non-Mapper-2 files, truncated PRG payloads and addresses outside cartridge
+space. The output is a local
 analysis aid and is not committed as reconstructed Capcom source.
 
 Pattern-table previews remain grayscale for bitplane inspection; nametable

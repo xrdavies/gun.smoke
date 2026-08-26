@@ -18,12 +18,16 @@ if (!fs.existsSync(filename)) {
   console.log(`Reference ROM not found: ${filename}`);
   process.exit(0);
 }
+if (start < 0x8000 || end < 0x8000) throw new Error("CPU addresses must be in cartridge space ($8000-$FFFF)");
 if (end < start) throw new Error("--end must be >= --start");
 const data = fs.readFileSync(filename);
 if (data.subarray(0, 4).toString("ascii") !== "NES\x1a") throw new Error("Not an iNES ROM");
 const flags6 = data[6] ?? 0;
+const mapper = (flags6 >> 4) | ((data[7] ?? 0) & 0xf0);
+if (mapper !== 2) throw new Error(`Expected Mapper 2 / UxROM, received Mapper ${mapper}`);
 const trainerBytes = flags6 & 0x04 ? 512 : 0;
 const prgBytes = (data[4] ?? 0) * 16 * 1024;
+if (data.length < 16 + trainerBytes + prgBytes) throw new Error("Truncated iNES PRG data");
 const prg = data.subarray(16 + trainerBytes, 16 + trainerBytes + prgBytes);
 const bankCount = Math.floor(prg.length / 0x4000);
 if (bankCount === 0) throw new Error("ROM has no PRG data");
@@ -64,7 +68,7 @@ const operand = (mode, cpuAddress, size, bytes) => {
   }
 };
 
-console.log(`; ${filename} / Mapper ${(flags6 >> 4) | ((data[7] ?? 0) & 0xf0)} / PRG ${prgBytes} bytes`);
+console.log(`; ${filename} / Mapper ${mapper} / PRG ${prgBytes} bytes`);
 console.log(`; CPU range $${hex(start, 4)}-$${hex(end, 4)} / UxROM bank ${selectedBank} for $8000-$BFFF`);
 let cpuAddress = start;
 while (cpuAddress <= end) {

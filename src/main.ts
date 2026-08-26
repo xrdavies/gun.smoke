@@ -1367,12 +1367,7 @@ class GunSmokeGame {
     } else if (item === "pow") {
       for (const target of [...this.units]) {
         if (target.kind === "enemy" && target.hp > 0) this.defeatTarget(target);
-        else if (target.kind === "boss" && target.hp > 0) {
-          const previousHp = target.hp;
-          target.hp -= 4;
-          if (target.hp <= 0) this.defeatTarget(target);
-          else this.handleBossDamage(target, previousHp);
-        }
+        else if (target.kind === "enemyBullet") target.hp = 0;
       }
     } else if (item === "skull") {
       this.powerups.boots = Math.max(0, this.powerups.boots - 1);

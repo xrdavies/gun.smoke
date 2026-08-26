@@ -233,9 +233,9 @@ profile is sampled from the Boss trace; later short jumps repeat as a measured
 121-frame cycle approximation.
 The same campaign reaches Round 4 and identifies its Ninja Boss as dispatch
 `0xaa`, variant `0x6b`, with measured entry lanes near NES `x=176/192` and
-`y=64/128`. The runtime selects one horizontal and one vertical lane; smoke,
-teleport, and damage timing remain an approximation until the Boss slot can be
-isolated without the research cleanup used to cross the earlier gates.
+`y=64/128`. The runtime selects one horizontal and one vertical lane; the low
+slot is now isolated for its shuriken attack, while smoke preparation, teleport,
+and damage timing remain approximations.
 The isolated Ninja routine first creates a low-slot smoke/prepare entity at
 frame 140, remains in its entry smoke state for about 44 frames, then emits
 four `0x30` shuriken bullets at frame 179; subsequent volleys commonly recur

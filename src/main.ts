@@ -26,7 +26,7 @@ import { WINGATE_BULLET_SPEED, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_S
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPEED, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { CUTTER_ENTRY_DURATION, CUTTER_MOVEMENT_SPEED, cutterCombatY, cutterOpeningY } from "./game-constants";
 import { DEVIL_HAWK_ENTRY_DURATION, DEVIL_HAWK_FIREBALL_FAN_NES, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_POST_ENTRY_X_HOLD, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY } from "./game-constants";
-import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_ATTACK_DELAY, NINJA_BOSS_SHURIKEN_COUNT, NINJA_BOSS_SHURIKEN_SPEED, ninjaBossCombatY } from "./game-constants";
+import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_ATTACK_DELAY, NINJA_BOSS_SHURIKEN_LIFETIME, NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES, NINJA_BOSS_SHURIKEN_VELOCITIES_NES, ninjaBossCombatY } from "./game-constants";
 import { canSpawnEnemyProjectile } from "./game-constants";
 import { canSpawnBossProjectile } from "./game-constants";
 import { romEnemyDrop } from "./game-constants";
@@ -864,11 +864,28 @@ class GunSmokeGame {
       this.beep(150 + this.stage * 18, 0.045);
       return;
     }
+    if (this.stage === 4) {
+      const spawnX = this.player.x + NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES[0] * NES_WORLD_X_SCALE;
+      const spawnY = this.player.y + NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES[1] * NES_WORLD_Y_SCALE;
+      for (const [x, y] of NINJA_BOSS_SHURIKEN_VELOCITIES_NES) {
+        const projectile = this.spawnEnemyProjectile(spawnX, spawnY, true);
+        if (!projectile) break;
+        projectile.projectileType = "shuriken";
+        projectile.vx = x * NES_FRAME_RATE * NES_WORLD_X_SCALE;
+        projectile.vy = y * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
+        projectile.maxAge = NINJA_BOSS_SHURIKEN_LIFETIME;
+        projectile.radius = 8;
+        projectile.sprite.size = { x: 16, y: 16 };
+      }
+      boss.fired = true;
+      this.bossFireClock = NINJA_BOSS_ATTACK_INTERVAL;
+      this.beep(222, 0.045);
+      return;
+    }
     const patterns: Record<number, { count: number; spread: number; speed: number; cooldown: number; turnRate: number }> = {
       1: { count: 1, spread: 0, speed: 125, cooldown: 1.1, turnRate: 0 },
       2: { count: 2, spread: 0.24, speed: CUTTER_BOOMERANG_SPEED, cooldown: CUTTER_ATTACK_INTERVAL, turnRate: 1.1 },
       3: { count: 5, spread: 0.18, speed: DEVIL_HAWK_FIREBALL_SPEED, cooldown: DEVIL_HAWK_VOLLEY_INTERVAL, turnRate: 0 },
-      4: { count: NINJA_BOSS_SHURIKEN_COUNT, spread: 0.3, speed: NINJA_BOSS_SHURIKEN_SPEED, cooldown: NINJA_BOSS_ATTACK_INTERVAL, turnRate: 0 },
     };
     let pattern = patterns[this.stage] ?? patterns[1]!;
     if (this.stage === 3 && Math.abs(this.player.x - boss.x) > 120) pattern = { ...pattern, count: 3 };

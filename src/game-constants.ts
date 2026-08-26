@@ -278,7 +278,9 @@ export const NINJA_BOSS_FIRST_ATTACK_DELAY = 179 / NES_FRAME_RATE;
 export const NINJA_BOSS_ENTRY_INVULNERABILITY = 44 / NES_FRAME_RATE;
 export const NINJA_BOSS_ATTACK_INTERVAL = 60 / NES_FRAME_RATE;
 export const NINJA_BOSS_SHURIKEN_COUNT = 4;
-export const NINJA_BOSS_SHURIKEN_SPEED = 405;
+export const NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES = [6, -34] as const;
+export const NINJA_BOSS_SHURIKEN_VELOCITIES_NES = [[1.25, -1.5], [1.25, 1.5], [-1.25, 1.5], [-1.25, -1.5]] as const;
+export const NINJA_BOSS_SHURIKEN_LIFETIME = 40 / NES_FRAME_RATE;
 const NINJA_BOSS_COMBAT_PATH_NES = [[0, 128], [26, 165], [51, 103], [67, 104], [126, 110], [196, 94], [253, 140], [296, 164], [386, 64], [431, 64], [448, 88], [474, 88], [508, 72], [534, 72], [551, 41]] as const;
 
 export function ninjaBossCombatY(age: number, entryY = 128 * NES_WORLD_Y_SCALE): number {

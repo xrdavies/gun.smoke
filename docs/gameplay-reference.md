@@ -145,8 +145,9 @@ Fatman Joe's measured opening volley begins at frame 205, emits five stationary
 grenade traps four NES frames apart, and repeats after roughly 131 frames; each
 trap lasts about 30 NES frames. His multi-hop vertical profile follows the
 measured Boss trace.
-Ninja's measured first shuriken volley appears at frame 179 with four diagonal
-shots and a common 60-frame repeat interval; smoke preparation remains
+Ninja's measured first shuriken volley appears at frame 179 as a four-way
+diagonal cross spawned just above Billy; each shot lasts about 40 frames and the
+attack uses a common 60-frame repeat interval. Smoke preparation remains
 procedural.
 
 The ROM event stream is data-driven per Round. Its behavior routines currently

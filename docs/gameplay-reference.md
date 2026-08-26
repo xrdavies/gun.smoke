@@ -212,8 +212,8 @@ drop a Money Bag; unmarked enemies do not drop either pickup.
 
 After the second Wingate encounter the web recreation enters a separate ending
 and credits state instead of treating the win as Game Over.
-The first Wingate defeat leaves a measured 264-frame pause before the real
-Wingate enters from its lower NES lane; the second encounter alone grants the
+The first Wingate defeat clears both projectile pools and leaves a measured
+264-frame pause before the real Wingate enters from its lower NES lane; the second encounter alone grants the
 Round 6 bounty.
 The decoy fires six-shot sequential volleys; the real Wingate opens with a
 three-shot sequence after a longer delay. Neither phase emits its volley as one

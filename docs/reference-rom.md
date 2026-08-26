@@ -250,7 +250,8 @@ encounter opening without reusing it for the second, real Wingate. After the
 opening, both encounters use a short roughly 176 world-pixel/s horizontal rush,
 then settle to about 123 world pixels/s; their later attack phases remain
 approximations pending isolated traces.
-The first encounter clears into a 264-frame empty interval. The real Wingate
+The first encounter clears both ordinary and low-slot projectile actors before
+entering a 264-frame empty interval. The real Wingate
 then reuses dispatch `0xa3`, variant `0x65` and the same 151-frame vertical
 opening, but enters on NES lane `x=192`; `$BA=1` distinguishes this second
 encounter. The runtime preserves the delay, separate entry lane, and the

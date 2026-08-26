@@ -1440,6 +1440,7 @@ class GunSmokeGame {
         this.wingatePhase = 1;
         this.wingateRespawnClock = WINGATE_SECOND_SPAWN_DELAY;
         this.clearEnemyProjectiles();
+        this.clearBossProjectiles();
         this.showMessage("DECOY DOWN");
         return;
       }
@@ -1544,6 +1545,10 @@ class GunSmokeGame {
 
   private clearEnemyProjectiles(): void {
     for (const unit of this.units) if (unit.kind === "enemyBullet" && unit.projectileType !== "rock" && !unit.bossProjectile) unit.hp = 0;
+  }
+
+  private clearBossProjectiles(): void {
+    for (const unit of this.units) if (unit.kind === "enemyBullet" && unit.bossProjectile) unit.hp = 0;
   }
 
   private awardScoreLife(): void {

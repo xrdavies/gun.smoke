@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { AMMO_GAIN, bossReward, BOSS_REWARDS, BOOTS_SPEED_MULTIPLIER, clamp, distance, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_BULLET_SPEED, NES_DIAGONAL_BULLET_X, NES_DIAGONAL_BULLET_Y, NES_FRAME_RATE, NES_PLAYER_SPEED, NES_SCROLL_SPEED, obstacleBlocks, PISTOL_BULLET_LIFETIME, ROAD_WIDTHS, ROUND_BOSS_GATE_SCROLL_NES, ROUND_BOSS_TRIGGERS, ROUND_ENEMY_TYPES, ROUND_ITEM_EVENTS, ROUND_LENGTHS, ROUND_LOOP_SCROLL_NES, ROUND_OBSTACLES, ROUND_SEGMENTS, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, segmentDelay, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_REVEAL_AT, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, worldEventEnteredView, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, nextExtraLifeScore, scoreExtraLives, shouldLoopStage, shouldRevealWanted } from "../src/game-constants";
+import { AMMO_GAIN, bossReward, BOSS_REWARDS, BOOTS_SPEED_MULTIPLIER, clamp, distance, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_BULLET_SPEED, NES_DIAGONAL_BULLET_X, NES_DIAGONAL_BULLET_Y, NES_FRAME_RATE, NES_PLAYER_SPEED, NES_SCROLL_SPEED, obstacleBlocks, PISTOL_BULLET_LIFETIME, ROAD_WIDTHS, ROUND_BOSS_GATE_SCROLL_NES, ROUND_BOSS_TRIGGERS, ROUND_ENEMY_TYPES, ROUND_ITEM_EVENTS, ROUND_LENGTHS, ROUND_LOOP_SCROLL_NES, ROUND_OBSTACLES, ROUND_SEGMENTS, ROUND_WANTED_SCROLL_NES, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, segmentDelay, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_REVEAL_AT, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, worldEventEnteredView, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, nextExtraLifeScore, scoreExtraLives, shouldLoopStage, shouldRevealWanted } from "../src/game-constants";
 import { roundCollisionBlocks, ROUND_COLLISION_ROW_COUNTS } from "../src/round-collision";
 
 describe("Gun.Smoke vertical slice", () => {
@@ -7,6 +7,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect({ frameRate: NES_FRAME_RATE, rounds: MAX_STAGE }).toEqual({ frameRate: 60.098, rounds: 6 });
     expect(ROUND_BOSS_GATE_SCROLL_NES).toEqual([2_767, 2_799, 4_863, 3_487, 2_879, 4_879]);
     expect(ROUND_LOOP_SCROLL_NES).toEqual([3_087, 3_055, 5_119, 3_839, 3_055, 5_119]);
+    expect(ROUND_WANTED_SCROLL_NES).toEqual([1_695, 1_455, 2_031, 1_471, 1_631, 1_951]);
     expect(ROUND_BOSS_TRIGGERS[0]).toBe(6_225.75);
     expect(ROUND_LENGTHS[5]).toBe(11_517.75);
     expect(NES_SCROLL_SPEED).toBeCloseTo(20.032667, 6);
@@ -33,10 +34,10 @@ describe("Gun.Smoke vertical slice", () => {
   it("loops a stage only when the wanted poster is missing", () => {
     expect(shouldLoopStage(ROUND_LENGTHS[0]!, 1, false)).toBe(true);
     expect(shouldLoopStage(ROUND_LENGTHS[0]!, 1, true)).toBe(false);
-    expect(shouldRevealWanted(WANTED_REVEAL_AT[0] - 1, 1, false, false)).toBe(false);
-    expect(shouldRevealWanted(WANTED_REVEAL_AT[0], 1, false, false)).toBe(true);
-    expect(shouldRevealWanted(WANTED_REVEAL_AT[0], 1, true, false)).toBe(false);
-    expect(shouldRevealWanted(WANTED_REVEAL_AT[0], 1, false, true)).toBe(false);
+    expect(shouldRevealWanted(WANTED_REVEAL_AT[0]! - 1, 1, false, false)).toBe(false);
+    expect(shouldRevealWanted(WANTED_REVEAL_AT[0]!, 1, false, false)).toBe(true);
+    expect(shouldRevealWanted(WANTED_REVEAL_AT[0]!, 1, true, false)).toBe(false);
+    expect(shouldRevealWanted(WANTED_REVEAL_AT[0]!, 1, false, true)).toBe(false);
   });
 
   it("matches the NES score-life thresholds", () => {

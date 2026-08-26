@@ -134,9 +134,23 @@ export const WINGATE_ENTRY_DURATION = 151 / NES_FRAME_RATE;
 export const WINGATE_SECOND_ENTRY_Y_NES = 192;
 export const WINGATE_SECOND_ENTRY_Y = WINGATE_SECOND_ENTRY_Y_NES * NES_WORLD_Y_SCALE;
 export const WINGATE_SECOND_SPAWN_DELAY = 264 / NES_FRAME_RATE;
+export const WINGATE_FIRST_SHOT_DELAY = 4 / NES_FRAME_RATE;
+export const WINGATE_SECOND_FIRST_SHOT_DELAY = 277 / NES_FRAME_RATE;
+export const WINGATE_SHOT_INTERVAL = 12 / NES_FRAME_RATE;
+export const WINGATE_FIRST_VOLLEY_GAP = 24 / NES_FRAME_RATE;
+export const WINGATE_SECOND_VOLLEY_GAP = 680 / NES_FRAME_RATE;
+export const WINGATE_FIRST_VOLLEY_SIZE = 6;
+export const WINGATE_SECOND_VOLLEY_SIZE = 3;
+export const WINGATE_BULLET_SPEED = 2 * NES_FRAME_RATE * NES_WORLD_X_SCALE;
 
 export function wingateOpeningX(age: number): number {
   return Math.max(0, Math.min(1, age / WINGATE_ENTRY_DURATION)) * WINGATE_ENTRY_END_X;
+}
+
+export function wingateShotCooldown(phase: number, shotsFired: number): number {
+  const volleySize = phase === 0 ? WINGATE_FIRST_VOLLEY_SIZE : WINGATE_SECOND_VOLLEY_SIZE;
+  if (shotsFired % volleySize !== 0) return WINGATE_SHOT_INTERVAL;
+  return phase === 0 ? WINGATE_FIRST_VOLLEY_GAP : WINGATE_SECOND_VOLLEY_GAP;
 }
 
 export function banditBillCooldown(shotsFired: number): number {

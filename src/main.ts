@@ -21,6 +21,7 @@ import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "./game-constants";
 import { pistolShots } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
 import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_VOLLEY_INTERVAL, FATMAN_JOE_VOLLEY_SIZE } from "./game-constants";
+import { WINGATE_BULLET_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateShotCooldown } from "./game-constants";
 import { roundCollisionBlocks } from "./round-collision";
 import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
 
@@ -497,7 +498,7 @@ class GunSmokeGame {
       if (this.wingateRespawnClock <= 0) {
         const boss = this.spawnUnit("boss", WINGATE_ENTRY_X, this.scroll + WINGATE_SECOND_ENTRY_Y, (STAGES[MAX_STAGE - 1]?.bossHp ?? 6) * 4);
         boss.bossEntryY = WINGATE_SECOND_ENTRY_Y;
-        this.bossFireClock = 0.35;
+        this.bossFireClock = WINGATE_SECOND_FIRST_SHOT_DELAY;
         this.showMessage("THE REAL WINGATE");
       }
     }
@@ -808,13 +809,23 @@ class GunSmokeGame {
       this.beep(168, 0.045);
       return;
     }
+    if (this.stage === MAX_STAGE) {
+      const projectile = this.spawnUnit("enemyBullet", boss.x, boss.y + 24, 1);
+      projectile.projectileType = "bullet";
+      projectile.vx = Math.cos(angle) * WINGATE_BULLET_SPEED;
+      projectile.vy = Math.sin(angle) * WINGATE_BULLET_SPEED;
+      boss.fired = true;
+      boss.volleysFired += 1;
+      this.bossFireClock = wingateShotCooldown(this.wingatePhase, boss.volleysFired);
+      this.beep(258, 0.045);
+      return;
+    }
     const patterns: Record<number, { count: number; spread: number; speed: number; cooldown: number; turnRate: number }> = {
       1: { count: 1, spread: 0, speed: 125, cooldown: 1.1, turnRate: 0 },
       2: { count: 2, spread: 0.24, speed: 150, cooldown: 1.25, turnRate: 1.1 },
       3: { count: 5, spread: 0.18, speed: 118, cooldown: 1.4, turnRate: 0 },
       4: { count: 3, spread: 0.3, speed: 168, cooldown: 0.95, turnRate: 0 },
       5: { count: FATMAN_JOE_VOLLEY_SIZE, spread: 0.18, speed: 100, cooldown: FATMAN_JOE_VOLLEY_INTERVAL, turnRate: 0 },
-      6: { count: this.wingatePhase ? 5 : 3, spread: 0.1, speed: 190, cooldown: this.wingatePhase ? 0.42 : 0.7, turnRate: 0 },
     };
     let pattern = patterns[this.stage] ?? patterns[1]!;
     if (this.stage === 3 && Math.abs(this.player.x - boss.x) > 120) pattern = { ...pattern, count: 3 };
@@ -1002,7 +1013,7 @@ class GunSmokeGame {
 
   private spawnBoss(): void {
     this.bossSpawned = true;
-    this.bossFireClock = this.stage === 1 ? BANDIT_BILL_FIRST_VOLLEY_DELAY : this.stage === 5 ? FATMAN_JOE_FIRST_VOLLEY_DELAY : 0.6;
+    this.bossFireClock = this.stage === 1 ? BANDIT_BILL_FIRST_VOLLEY_DELAY : this.stage === 5 ? FATMAN_JOE_FIRST_VOLLEY_DELAY : this.stage === MAX_STAGE ? WINGATE_FIRST_SHOT_DELAY : 0.6;
     const definition = STAGES[this.stage - 1] ?? STAGES[0]!;
     const isBanditBill = this.stage === 1;
     const isCutter = this.stage === 2;

@@ -185,6 +185,9 @@ and credits state instead of treating the win as Game Over.
 The first Wingate defeat leaves a measured 264-frame pause before the real
 Wingate enters from its lower NES lane; the second encounter alone grants the
 Round 6 bounty.
+The decoy fires six-shot sequential volleys; the real Wingate opens with a
+three-shot sequence after a longer delay. Neither phase emits its volley as one
+simultaneous fan.
 
 Each Round begins with a Wanted briefing for its named Boss. Later-Round
 briefings pause the engine loop until the player rides out, matching the

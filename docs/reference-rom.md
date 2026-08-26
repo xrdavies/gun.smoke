@@ -120,6 +120,10 @@ the runtime uses these measured timings at 60.098 Hz.
 An isolated `$B080` Sniper fires at ages 134, 224, 405, 495 and 585 frames,
 then releases its slot at age 732. The routine's 90-frame base cooldown is
 visible directly; the longer middle gap is a missed discrete aiming window.
+An isolated `$B284` Gunman fires one dispatch `0x30` bullet at age 39 frames
+and releases its slot at age 289. The projectile's measured 20-frame travel
+maps to roughly 266 world pixels/s; ROM-tagged Gunmen use this per-actor timing
+instead of the procedural global firing clock.
 An isolated `$B775` Rifleman enters its attack state at age 80 frames, emits
 five dispatch `0x30` shots at ages 96, 112, 128, 144 and 160, then returns to
 its movement state. The runtime preserves that five-shot vertical volley and
@@ -155,7 +159,7 @@ Current behavior map:
 | --- | --- | --- |
 | `$B080` | Sniper | isolated slot/OAM timing trace |
 | `$B0E5` | Shotgunner | three projectile slots and two measured volleys |
-| `$B284` | Gunman | Round 1 roster elimination after the measured routines |
+| `$B284` | Gunman | isolated dispatch/OAM timing trace |
 | `$B46E` | Backstabber side raid | mirrored movement/lifetime trace |
 | `$B501` | Bomber | isolated delayed dynamite state |
 | `$B5BF` | falling rock hazard | isolated contact/state trace |

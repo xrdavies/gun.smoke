@@ -75,6 +75,9 @@ export const BACKSTABBER_AMBUSH_DEPTH = 191;
 export const BACKSTABBER_AMBUSH_LIFETIME = 407 / NES_FRAME_RATE;
 export const BACKSTABBER_RAID_PATH = [[0, 0, 0], [40, 66, -15], [80, 103, 42], [120, 129, 44], [160, 174, 89], [200, 184, 83], [368, 213, 74]] as const;
 export const BACKSTABBER_RAID_LIFETIME = 369 / NES_FRAME_RATE;
+export const GUNMAN_FIRST_SHOT_DELAY = 39 / NES_FRAME_RATE;
+export const GUNMAN_BULLET_SPEED = 266;
+export const GUNMAN_LIFETIME = 289 / NES_FRAME_RATE;
 
 export function backstabberRaidOffset(frame: number): readonly [number, number] {
   const nextIndex = BACKSTABBER_RAID_PATH.findIndex(([at]) => at >= frame);

@@ -146,6 +146,8 @@ The `$B46E` Backstabber variant is a mirrored side raid. Left/right traces both
 live for 369 frames; during the first 160 frames the actor crosses 174 NES
 pixels while following the same measured vertical bends. The runtime
 interpolates seven mirrored checkpoints instead of sending it straight upward.
+Neither isolated Backstabber routine creates a projectile, so only Gunmen
+remain eligible for the runtime's generic field-enemy firing clock.
 
 Current behavior map:
 

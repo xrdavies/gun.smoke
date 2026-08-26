@@ -85,7 +85,9 @@ parameter until a ROM projectile trace is captured.
 The runtime now exercises the engine's animation binding for player/enemy/Boss
 sprites, WebGPU `Renderer2D` batches, `AudioManager` buses, `ActionMap` keyboard
 and Gamepad input, deterministic seeded randomness, and per-round terrain/road
-data.
+data. Destroying or replacing the procedural runtime also releases its raw
+GPU textures, so switching into Reference ROM mode does not retain old round
+assets.
 
 Boss encounters include phase gating: Bandit Bill becomes invulnerable and
 crawls for a short interval after each lost health bar, while Cutter and Devil

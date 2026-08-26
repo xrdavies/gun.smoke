@@ -1396,6 +1396,15 @@ class GunSmokeGame {
     this.stopMusic();
     if (this.pausePollHandle !== undefined) window.cancelAnimationFrame(this.pausePollHandle);
     this.audio?.dispose();
+    const textures = new Set<GPUTexture>([
+      ...Object.values(this.textures),
+      ...Object.values(this.itemTextures),
+      ...Object.values(this.enemyTextures),
+      ...this.bossTextures,
+      ...this.terrainTextures,
+      ...this.roadTextures,
+    ]);
+    for (const texture of textures) texture.destroy();
   }
 
   private pollPausedGamepad(): void {

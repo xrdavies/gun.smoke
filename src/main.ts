@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, bossReward, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, shouldLoopStage, shouldRevealWanted, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, scoreExtraLives, spendPoints, STAGE_LENGTH, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, bossReward, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, shouldLoopStage, shouldRevealWanted, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, scoreExtraLives, spendPoints, STAGE_LENGTH, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -816,7 +816,7 @@ class GunSmokeGame {
       const isWeapon = key === "shotgun" || key === "machinegun" || key === "magnum";
       const available = shopType === "weapons" ? isWeapon : !isWeapon;
       item.hidden = !available;
-      item.disabled = !available || key === "horse" ? !available || this.hasHorse || this.score < cost : key === "ammo" ? !available || !this.canRefillAmmo() || this.score < cost : key === "wanted" ? !available || this.shopIndex < 2 || this.hasWanted || this.score < cost : key === "smartBomb" ? !available || this.smartBombs >= 5 || this.score < cost : key ? !available || this.ownedWeapons.has(key) || this.score < cost : true;
+      item.disabled = !available || key === "horse" ? !available || this.hasHorse || this.score < cost : key === "ammo" ? !available || !this.canRefillAmmo() || this.score < cost : key === "wanted" ? !available || this.shopIndex < 2 || this.hasWanted || this.score < cost : key === "smartBomb" ? !available || this.smartBombs >= SMART_BOMB_CAPACITY || this.score < cost : key ? !available || this.ownedWeapons.has(key) || this.score < cost : true;
     }
   }
 
@@ -829,8 +829,13 @@ class GunSmokeGame {
       return;
     }
     const cost = key === "horse" ? SHOP_COSTS.horse : key === "ammo" ? SHOP_COSTS.ammo : key === "smartBomb" ? SHOP_COSTS.smartBomb : key === "wanted" ? WANTED_COSTS[this.stage - 1] ?? 50_000 : WEAPONS[key]?.cost;
+    const alreadyOwned = key === "horse" ? this.hasHorse : key === "wanted" ? this.hasWanted : key === "smartBomb" ? this.smartBombs >= SMART_BOMB_CAPACITY : isWeapon ? this.ownedWeapons.has(key) : false;
+    if (alreadyOwned) {
+      shopMessage.textContent = "ALREADY OWNED";
+      return;
+    }
     const remainingPoints = cost === undefined ? undefined : spendPoints(this.score, cost);
-    if (remainingPoints === undefined || (key === "horse" && this.hasHorse)) {
+    if (remainingPoints === undefined) {
       shopMessage.textContent = "NOT ENOUGH POINTS";
       return;
     }
@@ -841,7 +846,7 @@ class GunSmokeGame {
     }
     else if (key === "ammo") this.refillAmmo(4);
     else if (key === "wanted") this.hasWanted = true;
-    else if (key === "smartBomb") this.smartBombs = Math.min(5, this.smartBombs + 1);
+    else if (key === "smartBomb") this.smartBombs = Math.min(SMART_BOMB_CAPACITY, this.smartBombs + 1);
     else {
       this.ownedWeapons.add(key);
       this.weapon = key;

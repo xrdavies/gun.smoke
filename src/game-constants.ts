@@ -154,6 +154,7 @@ export const SHOP_COSTS = {
   ammo: 1_500,
   smartBomb: 8_000,
 } as const;
+export const SMART_BOMB_CAPACITY = 1;
 
 export const WEAPONS: Record<WeaponName, { cost: number; interval: number; damage: number; maxAmmo: number }> = {
   pistol: { cost: 0, interval: 0.16, damage: 1, maxAmmo: Number.POSITIVE_INFINITY },

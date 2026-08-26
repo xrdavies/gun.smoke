@@ -591,7 +591,7 @@ class GunSmokeGame {
     }
     this.enemyFireClock -= delta;
     if (this.enemyFireClock > 0) return;
-    const shooters = this.units.filter((unit) => unit.kind === "enemy" && unit.enemyType !== "rifleman" && unit.enemyType !== "sniper" && unit.enemyType !== "bomber" && unit.enemyType !== "shotgunner" && unit.enemyType !== "spear" && unit.enemyType !== "firebreather" && unit.hp > 0 && unit.y < this.player.y);
+    const shooters = this.units.filter((unit) => unit.kind === "enemy" && unit.enemyType !== "rifleman" && unit.enemyType !== "sniper" && unit.enemyType !== "bomber" && unit.enemyType !== "shotgunner" && unit.enemyType !== "spear" && unit.enemyType !== "firebreather" && unit.enemyType !== "hatchet" && unit.hp > 0 && unit.y < this.player.y);
     const shooter = shooters[Math.floor(this.nextRandom() * shooters.length)];
     if (shooter) {
       const angle = Math.atan2(this.player.y - shooter.y, this.player.x - shooter.x);
@@ -691,7 +691,7 @@ class GunSmokeGame {
     const types = segment.enemyTypes;
     for (const offset of offsets) {
       const enemyType = types[Math.floor(this.nextRandom() * types.length)] ?? "gunman";
-      const entryY = enemyType === "backstabber" ? this.scroll + 520 : y - Math.abs(offset) * 22;
+      const entryY = enemyType === "backstabber" || segment.formation === "rear" ? this.scroll + 520 : y - Math.abs(offset) * 22;
       const sniperX = offset <= 0 ? 480 - roadHalf + 22 : 480 + roadHalf - 22;
       const enemy = this.spawnUnit("enemy", enemyType === "sniper" ? sniperX : clamp(center + offset * 66, 54, 906), entryY, 1 + Number(this.stage >= 4), enemyType);
       enemy.vx = segment.formation === "cross" ? offset * 32 : (this.nextRandom() - 0.5) * (55 + this.stage * 8);
@@ -883,6 +883,17 @@ class GunSmokeGame {
           projectile.projectileType = "shuriken";
           projectile.vx = Math.cos(angle) * 150;
           projectile.vy = Math.sin(angle) * 150;
+        }
+      } else if (unit.enemyType === "hatchet") {
+        unit.x += Math.sin(unit.age * 3.4 + unit.phase) * 42 * delta;
+        unit.y += unit.vy * delta;
+        if (!unit.fired && unit.age > 0.7) {
+          unit.fired = true;
+          const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
+          const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y + 12, 1);
+          projectile.projectileType = "shuriken";
+          projectile.vx = Math.cos(angle) * 165;
+          projectile.vy = Math.sin(angle) * 165;
         }
       } else if (unit.enemyType === "firebreather") {
         unit.x += Math.sin(unit.age * 4 + unit.phase) * 55 * delta;

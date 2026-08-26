@@ -44,6 +44,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROUND_ENEMY_TYPES[0]).toContain("backstabber");
     expect(ROUND_ENEMY_TYPES[2]).toContain("spear");
     expect(ROUND_ENEMY_TYPES[2]).toContain("firebreather");
+    expect(ROUND_ENEMY_TYPES[2]).toContain("hatchet");
     expect(ROUND_SEGMENTS).toHaveLength(MAX_STAGE);
     expect(ROUND_SEGMENTS.every((segments) => segments[0]?.at === 146)).toBe(true);
     expect(ROUND_SEGMENTS[0]?.map((segment) => segment.at)).toEqual([146, 416, 551, 731]);
@@ -53,6 +54,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROUND_ITEM_TYPES[1]).toContain("skull");
     expect(ROUND_ITEM_EVENTS).toHaveLength(MAX_STAGE);
     expect(ROUND_ITEM_EVENTS.every((events) => events.every((event, index) => index === 0 || event.at > (events[index - 1]?.at ?? -1)))).toBe(true);
+    expect(ROUND_ITEM_EVENTS[0]?.map((event) => event.item)).toContain("blueYashichi");
+    expect(ROUND_ITEM_EVENTS[2]?.map((event) => event.item)).toContain("skull");
   });
 
   it("keeps terrain blockers inside their authored world ranges", () => {

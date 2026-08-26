@@ -28,6 +28,7 @@ import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPEED, CUTTER_FIRST_ATTACK_DEL
 import { CUTTER_ENTRY_DURATION, CUTTER_MOVEMENT_SPEED, cutterCombatY, cutterOpeningY } from "./game-constants";
 import { DEVIL_HAWK_ENTRY_DURATION, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_POST_ENTRY_X_HOLD, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY } from "./game-constants";
 import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_ATTACK_DELAY, NINJA_BOSS_SHURIKEN_COUNT, NINJA_BOSS_SHURIKEN_SPEED, ninjaBossCombatY } from "./game-constants";
+import { canSpawnEnemyProjectile } from "./game-constants";
 import { roundCollisionBlocks, ROUND_COLLISION_ROWS } from "./round-collision";
 import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
 
@@ -807,11 +808,12 @@ class GunSmokeGame {
     const shooter = shooters[Math.floor(this.nextRandom() * shooters.length)];
     if (shooter) {
       const angle = Math.atan2(this.player.y - shooter.y, this.player.x - shooter.x);
-      const projectile = this.spawnUnit("enemyBullet", shooter.x, shooter.y + 12, 1);
-      projectile.projectileType = "bullet";
-      projectile.vx = Math.cos(angle) * (90 + this.stage * 7);
-      projectile.vy = Math.sin(angle) * (90 + this.stage * 7);
-      projectile.radius = 7;
+      const projectile = this.spawnEnemyProjectile(shooter.x, shooter.y + 12);
+      if (projectile) {
+        projectile.vx = Math.cos(angle) * (90 + this.stage * 7);
+        projectile.vy = Math.sin(angle) * (90 + this.stage * 7);
+        projectile.radius = 7;
+      }
     }
     this.enemyFireClock = Math.max(0.6, 1.75 - this.stage * 0.18);
   }
@@ -819,20 +821,22 @@ class GunSmokeGame {
   private fireBoss(boss: Unit): void {
     const angle = Math.atan2(this.player.y - boss.y, this.player.x - boss.x);
     if (this.stage === 1) {
-      const projectile = this.spawnUnit("enemyBullet", boss.x, boss.y + 24, 1);
-      projectile.projectileType = "bullet";
-      projectile.vx = Math.cos(angle) * BANDIT_BILL_BULLET_SPEED;
-      projectile.vy = Math.sin(angle) * BANDIT_BILL_BULLET_SPEED;
+      const projectile = this.spawnEnemyProjectile(boss.x, boss.y + 24);
+      if (projectile) {
+        projectile.vx = Math.cos(angle) * BANDIT_BILL_BULLET_SPEED;
+        projectile.vy = Math.sin(angle) * BANDIT_BILL_BULLET_SPEED;
+      }
       boss.volleysFired += 1;
       this.bossFireClock = banditBillCooldown(boss.volleysFired);
       this.beep(168, 0.045);
       return;
     }
     if (this.stage === MAX_STAGE) {
-      const projectile = this.spawnUnit("enemyBullet", boss.x, boss.y + 24, 1);
-      projectile.projectileType = "bullet";
-      projectile.vx = 0;
-      projectile.vy = WINGATE_BULLET_SPEED;
+      const projectile = this.spawnEnemyProjectile(boss.x, boss.y + 24);
+      if (projectile) {
+        projectile.vx = 0;
+        projectile.vy = WINGATE_BULLET_SPEED;
+      }
       boss.fired = true;
       boss.volleysFired += 1;
       this.bossFireClock = wingateShotCooldown(this.wingatePhase, boss.volleysFired);
@@ -850,7 +854,8 @@ class GunSmokeGame {
     if (this.stage === 3 && Math.abs(this.player.x - boss.x) > 120) pattern = { ...pattern, count: 3 };
     const center = (pattern.count - 1) / 2;
     for (let index = 0; index < pattern.count; index += 1) {
-      const projectile = this.spawnUnit("enemyBullet", boss.x, boss.y + 24, 1);
+      const projectile = this.spawnEnemyProjectile(boss.x, boss.y + 24);
+      if (!projectile) break;
       projectile.projectileType = this.stage === 2 ? "boomerang" : this.stage === 3 ? "fireball" : this.stage === 4 ? "shuriken" : this.stage === 5 ? "grenade" : "bullet";
       const shotAngle = angle + (index - center) * pattern.spread;
       projectile.vx = Math.cos(shotAngle) * pattern.speed;
@@ -1111,6 +1116,11 @@ class GunSmokeGame {
     return canSpawnPlayerBullet(active) ? this.spawnUnit("bullet", x, this.player.y - 32, 1) : undefined;
   }
 
+  private spawnEnemyProjectile(x: number, y: number): Unit | undefined {
+    const active = this.units.filter((unit) => unit.kind === "enemyBullet" && unit.projectileType !== "rock" && unit.hp > 0).length;
+    return canSpawnEnemyProjectile(active) ? this.spawnUnit("enemyBullet", x, y, 1) : undefined;
+  }
+
   private updateUnit(unit: Unit, delta: number): void {
     unit.age += delta;
     unit.animation?.update(delta);
@@ -1132,12 +1142,14 @@ class GunSmokeGame {
         if (!unit.fired && unit.age >= NINJA_FIRST_SHOT_DELAY) {
           unit.fired = true;
           const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
-          const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y, 1);
-          projectile.projectileType = "shuriken";
-          projectile.vx = Math.cos(angle) * NINJA_PROJECTILE_SPEED;
-          projectile.vy = Math.sin(angle) * NINJA_PROJECTILE_SPEED;
-          projectile.radius = 8;
-          projectile.sprite.size = { x: 16, y: 16 };
+          const projectile = this.spawnEnemyProjectile(unit.x, unit.y);
+          if (projectile) {
+            projectile.projectileType = "shuriken";
+            projectile.vx = Math.cos(angle) * NINJA_PROJECTILE_SPEED;
+            projectile.vy = Math.sin(angle) * NINJA_PROJECTILE_SPEED;
+            projectile.radius = 8;
+            projectile.sprite.size = { x: 16, y: 16 };
+          }
         }
       } else if (unit.enemyType === "rifleman") {
         unit.x += unit.vx * delta;
@@ -1146,9 +1158,11 @@ class GunSmokeGame {
         if (unit.age >= unit.nextFireAt && unit.volleysFired < RIFLEMAN_SHOTS_PER_VOLLEY) {
           unit.nextFireAt += RIFLEMAN_SHOT_INTERVAL;
           unit.volleysFired += 1;
-          const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y + 12, 1);
-          projectile.vx = 0;
-          projectile.vy = RIFLEMAN_BULLET_SPEED;
+          const projectile = this.spawnEnemyProjectile(unit.x, unit.y + 12);
+          if (projectile) {
+            projectile.vx = 0;
+            projectile.vy = RIFLEMAN_BULLET_SPEED;
+          }
         }
       } else if (unit.enemyType === "sniper") {
         const nextShotFrame = unit.romBehavior === 0 ? SNIPER_SHOT_FRAMES[unit.volleysFired] : undefined;
@@ -1159,10 +1173,11 @@ class GunSmokeGame {
           unit.fired = true;
           unit.volleysFired += 1;
           const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
-          const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y + 8, 1);
-          projectile.projectileType = "bullet";
-          projectile.vx = Math.cos(angle) * 150;
-          projectile.vy = Math.sin(angle) * 150;
+          const projectile = this.spawnEnemyProjectile(unit.x, unit.y + 8);
+          if (projectile) {
+            projectile.vx = Math.cos(angle) * 150;
+            projectile.vy = Math.sin(angle) * 150;
+          }
           unit.invulnerableUntil = unit.age + 0.45;
         }
         unit.sprite.visible = unit.age >= unit.invulnerableUntil;
@@ -1172,25 +1187,28 @@ class GunSmokeGame {
         if (unit.nextFireAt === 0) unit.nextFireAt = BOMBER_FIRST_THROW_DELAY;
         if (unit.age >= unit.nextFireAt) {
           unit.nextFireAt += BOMBER_THROW_INTERVAL;
-          const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y + 12, 1);
-          projectile.projectileType = "dynamite";
-          projectile.vx = (this.player.x - unit.x) * DYNAMITE_AIM_FACTOR;
-          projectile.vy = DYNAMITE_WORLD_SPEED;
-          projectile.maxAge = DYNAMITE_LIFETIME;
+          const projectile = this.spawnEnemyProjectile(unit.x, unit.y + 12);
+          if (projectile) {
+            projectile.projectileType = "dynamite";
+            projectile.vx = (this.player.x - unit.x) * DYNAMITE_AIM_FACTOR;
+            projectile.vy = DYNAMITE_WORLD_SPEED;
+            projectile.maxAge = DYNAMITE_LIFETIME;
+          }
         }
       } else if (unit.enemyType === "shotgunner") {
         unit.x += unit.vx * delta;
         unit.y += unit.vy * 0.65 * delta;
         const tracedSpread = unit.romBehavior === 1;
         if (unit.nextFireAt === 0) unit.nextFireAt = tracedSpread ? SHOTGUNNER_FIRST_VOLLEY_DELAY : 0.8;
-        if (unit.age >= unit.nextFireAt && (tracedSpread ? unit.volleysFired < 2 : !unit.fired)) {
+        const activeProjectiles = this.units.filter((candidate) => candidate.kind === "enemyBullet" && candidate.projectileType !== "rock" && candidate.hp > 0).length;
+        if (unit.age >= unit.nextFireAt && (tracedSpread ? unit.volleysFired < 2 : !unit.fired) && (!tracedSpread || canSpawnEnemyProjectile(activeProjectiles, 3))) {
           unit.fired = true;
           unit.volleysFired += 1;
           if (tracedSpread) unit.nextFireAt += SHOTGUNNER_VOLLEY_INTERVAL;
           const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
           for (const spread of [-0.2, 0, 0.2]) {
-            const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y + 12, 1);
-            projectile.projectileType = "bullet";
+            const projectile = this.spawnEnemyProjectile(unit.x, unit.y + 12);
+            if (!projectile) break;
             projectile.vx = Math.cos(angle + spread) * 145;
             projectile.vy = Math.sin(angle + spread) * 145;
           }
@@ -1202,12 +1220,14 @@ class GunSmokeGame {
         if (!unit.fired && unit.age >= (tracedSpear ? SPEAR_FIRST_SHOT_DELAY : 0.65)) {
           unit.fired = true;
           const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
-          const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y + 12, 1);
-          projectile.projectileType = "spear";
-          const speed = tracedSpear ? SPEAR_PROJECTILE_SPEED : 150;
-          projectile.vx = Math.cos(angle) * speed;
-          projectile.vy = Math.sin(angle) * speed;
-          projectile.sprite.size = { x: 7, y: 34 };
+          const projectile = this.spawnEnemyProjectile(unit.x, unit.y + 12);
+          if (projectile) {
+            projectile.projectileType = "spear";
+            const speed = tracedSpear ? SPEAR_PROJECTILE_SPEED : 150;
+            projectile.vx = Math.cos(angle) * speed;
+            projectile.vy = Math.sin(angle) * speed;
+            projectile.sprite.size = { x: 7, y: 34 };
+          }
         }
       } else if (unit.enemyType === "hatchet") {
         unit.x += Math.sin(unit.age * 3.4 + unit.phase) * 42 * delta;
@@ -1215,12 +1235,14 @@ class GunSmokeGame {
         if (!unit.fired && unit.age >= HATCHET_FIRST_SHOT_DELAY) {
           unit.fired = true;
           const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
-          const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y + 12, 1);
-          projectile.projectileType = "hatchet";
-          projectile.vx = Math.cos(angle) * HATCHET_PROJECTILE_SPEED;
-          projectile.vy = Math.sin(angle) * HATCHET_PROJECTILE_SPEED;
-          projectile.radius = 9;
-          projectile.sprite.size = { x: 16, y: 16 };
+          const projectile = this.spawnEnemyProjectile(unit.x, unit.y + 12);
+          if (projectile) {
+            projectile.projectileType = "hatchet";
+            projectile.vx = Math.cos(angle) * HATCHET_PROJECTILE_SPEED;
+            projectile.vy = Math.sin(angle) * HATCHET_PROJECTILE_SPEED;
+            projectile.radius = 9;
+            projectile.sprite.size = { x: 16, y: 16 };
+          }
         }
       } else if (unit.enemyType === "firebreather") {
         unit.x += Math.sin(unit.age * 4 + unit.phase) * 55 * delta;
@@ -1231,7 +1253,8 @@ class GunSmokeGame {
           const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
           const spreads = tracedFirebreather ? [0] : [-0.22, 0, 0.22];
           for (const spread of spreads) {
-            const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y + 12, 1);
+            const projectile = this.spawnEnemyProjectile(unit.x, unit.y + 12);
+            if (!projectile) break;
             projectile.projectileType = "fireball";
             const speed = tracedFirebreather ? FIREBREATHER_PROJECTILE_SPEED : 115;
             projectile.vx = Math.cos(angle + spread) * speed;
@@ -1245,10 +1268,11 @@ class GunSmokeGame {
         if (unit.romBehavior === 2 && !unit.fired && unit.age >= GUNMAN_FIRST_SHOT_DELAY) {
           unit.fired = true;
           const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
-          const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y, 1);
-          projectile.projectileType = "bullet";
-          projectile.vx = Math.cos(angle) * GUNMAN_BULLET_SPEED;
-          projectile.vy = Math.sin(angle) * GUNMAN_BULLET_SPEED;
+          const projectile = this.spawnEnemyProjectile(unit.x, unit.y);
+          if (projectile) {
+            projectile.vx = Math.cos(angle) * GUNMAN_BULLET_SPEED;
+            projectile.vy = Math.sin(angle) * GUNMAN_BULLET_SPEED;
+          }
         }
       }
       if (unit.x < 32 || unit.x > 928) unit.vx *= -1;

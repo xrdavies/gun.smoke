@@ -43,6 +43,7 @@ export const BOOTS_SPEED_MULTIPLIER = 4 / 3;
 export const NES_BULLET_SPEED = 6 * NES_FRAME_RATE;
 export const WORLD_BULLET_SPEED = NES_BULLET_SPEED * NES_WORLD_Y_SCALE;
 export const PLAYER_BULLET_CAPACITY = 6;
+export const ENEMY_PROJECTILE_CAPACITY = 8;
 export const MAGNUM_BULLET_SPEED = WORLD_BULLET_SPEED;
 export const MAGNUM_BULLET_LIFETIME = 34 / NES_FRAME_RATE;
 export const SHOTGUN_BULLET_LIFETIME = 11 / NES_FRAME_RATE;
@@ -56,6 +57,10 @@ export const RIFLE_BULLET_SPEED_MULTIPLIER = 4 / 3;
 
 export function canSpawnPlayerBullet(active: number): boolean {
   return active < PLAYER_BULLET_CAPACITY;
+}
+
+export function canSpawnEnemyProjectile(active: number, requested = 1): boolean {
+  return active + requested <= ENEMY_PROJECTILE_CAPACITY;
 }
 
 export function pistolShots(left: boolean, right: boolean): readonly { direction: number; offset: number }[] {

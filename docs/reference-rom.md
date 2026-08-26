@@ -114,6 +114,11 @@ Behavior routine `$B0E5` allocates three projectile slots at `$B24B-$B281`
 and emits adjacent direction values, identifying it as the Shotgunner spread
 attack used by the runtime behavior map. An isolated instance fires at age 108
 and 159 frames, then exits at age 228; the runtime preserves both volleys.
+The shared allocator at `$E454-$E460` scans enemy projectile slots
+`$0418-$041f`, giving bullets, dynamite and Boss weapons a common eight-slot
+limit. `$B24B-$B25F` first requires three free slots before a Shotgunner volley;
+the runtime keeps that all-or-nothing reservation while falling rocks continue
+to use their separate object pool.
 Round 1 uses exactly five behavior routines: `$B080`, `$B0E5`, `$B501`,
 `$B284` and `$B46E`. After the first four are identified as Sniper,
 Shotgunner, Bomber and Gunman, the remaining `$B46E` routine is the verified

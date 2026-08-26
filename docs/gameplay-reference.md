@@ -9,7 +9,7 @@ names are cross-checked against the public NES walkthrough on
 | 1 | Hicksville / western road | Bandit Bill | gate, poster, shop, measured entrance and volley |
 | 2 | Rocky pass / cliffs | Cutter | gate, poster, shop, measured entrance, attack approximation |
 | 3 | Native village | Devil Hawk | gate, poster, shop, measured entrance and opening fan |
-| 4 | Cliff valley | Ninja | gate, poster, shop, attack approximation |
+| 4 | Cliff valley | Ninja | gate, poster, shop, measured entrance and shuriken volley |
 | 5 | Forest / bridges | Fatman Joe | gate, poster, shop, measured entrance, attack approximation |
 | 6 | Wingate town / cemetery | Wingate (two encounters) | gate, poster, shop, measured first entrance, two-phase approximation |
 
@@ -129,6 +129,9 @@ Wingate rushes forward, and the Ninja enters a smoke/invulnerability phase and
 teleports after each lost health bar.
 Fatman Joe's measured opening volley begins at frame 205, emits five projectiles
 and repeats after roughly 131 frames; projectile arcs remain procedural.
+Ninja's measured first shuriken volley appears at frame 179 with four diagonal
+shots and a common 60-frame repeat interval; smoke preparation remains
+procedural.
 
 The ROM event stream is data-driven per Round. Its behavior routines currently
 map to the recognizable roster of gunmen, bombers, snipers, back-stabbers,

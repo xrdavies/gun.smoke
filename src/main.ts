@@ -25,6 +25,7 @@ import { WINGATE_BULLET_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_SECOND_FIRST_SH
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPEED, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { BOSS_ENTRY_SPEED_X } from "./game-constants";
 import { DEVIL_HAWK_ENTRY_DURATION, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkOpeningX } from "./game-constants";
+import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_FIRST_ATTACK_DELAY, NINJA_BOSS_SHURIKEN_COUNT, NINJA_BOSS_SHURIKEN_SPEED } from "./game-constants";
 import { roundCollisionBlocks } from "./round-collision";
 import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
 
@@ -827,7 +828,7 @@ class GunSmokeGame {
       1: { count: 1, spread: 0, speed: 125, cooldown: 1.1, turnRate: 0 },
       2: { count: 2, spread: 0.24, speed: CUTTER_BOOMERANG_SPEED, cooldown: CUTTER_ATTACK_INTERVAL, turnRate: 1.1 },
       3: { count: 5, spread: 0.18, speed: DEVIL_HAWK_FIREBALL_SPEED, cooldown: DEVIL_HAWK_VOLLEY_INTERVAL, turnRate: 0 },
-      4: { count: 3, spread: 0.3, speed: 168, cooldown: 0.95, turnRate: 0 },
+      4: { count: NINJA_BOSS_SHURIKEN_COUNT, spread: 0.3, speed: NINJA_BOSS_SHURIKEN_SPEED, cooldown: NINJA_BOSS_ATTACK_INTERVAL, turnRate: 0 },
       5: { count: FATMAN_JOE_VOLLEY_SIZE, spread: 0.18, speed: 100, cooldown: FATMAN_JOE_VOLLEY_INTERVAL, turnRate: 0 },
     };
     let pattern = patterns[this.stage] ?? patterns[1]!;
@@ -1016,7 +1017,7 @@ class GunSmokeGame {
 
   private spawnBoss(): void {
     this.bossSpawned = true;
-    this.bossFireClock = this.stage === 1 ? BANDIT_BILL_FIRST_VOLLEY_DELAY : this.stage === 2 ? CUTTER_FIRST_ATTACK_DELAY : this.stage === 3 ? DEVIL_HAWK_FIRST_VOLLEY_DELAY : this.stage === 5 ? FATMAN_JOE_FIRST_VOLLEY_DELAY : this.stage === MAX_STAGE ? WINGATE_FIRST_SHOT_DELAY : 0.6;
+    this.bossFireClock = this.stage === 1 ? BANDIT_BILL_FIRST_VOLLEY_DELAY : this.stage === 2 ? CUTTER_FIRST_ATTACK_DELAY : this.stage === 3 ? DEVIL_HAWK_FIRST_VOLLEY_DELAY : this.stage === 4 ? NINJA_BOSS_FIRST_ATTACK_DELAY : this.stage === 5 ? FATMAN_JOE_FIRST_VOLLEY_DELAY : this.stage === MAX_STAGE ? WINGATE_FIRST_SHOT_DELAY : 0.6;
     const definition = STAGES[this.stage - 1] ?? STAGES[0]!;
     const isBanditBill = this.stage === 1;
     const isCutter = this.stage === 2;

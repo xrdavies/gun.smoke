@@ -187,6 +187,11 @@ The same campaign reaches Round 4 and identifies its Ninja Boss as dispatch
 runtime uses that initial position; smoke, teleport, and damage timing remain
 an approximation until the Boss slot can be isolated without the research
 cleanup used to cross the earlier gates.
+The isolated Ninja routine first creates a low-slot smoke/prepare entity at
+frame 140, then emits four `0x30` shuriken bullets at frame 179; subsequent
+volleys commonly recur after 60 frames. Their diagonal path measures about
+405 world pixels/s. The runtime uses the four-shot opening and interval while
+keeping the smoke and teleport visuals procedural.
 Round 5's gate identifies Fatman Joe as dispatch `0x80`, variant `0x51`. He
 enters from NES `(x=0, y=152)`, keeps that vertical lane for the first 170
 frames and reaches about `x=112`. The first five-shot `0x3f` fan starts at

@@ -76,6 +76,10 @@ committed compressed runtime event stream from that manifest. Position-byte
 bit 5 selects the six-slot object pool at `$0402-$0407`; clear bit 5 selects
 the seven-slot enemy pool at `$0410-$0416`. Both pools remain in the runtime
 event stream with separate capacities.
+The generated `ROUND_ROM_OBJECT_EVENTS` stream retains no-behavior object
+records. The runtime consumes the single `wantedTrigger` per Round to place
+the poster barrel; `sceneObject` and `stateControl` records remain available
+for later scene-system work.
 Round 4's 44 `$B5BF` records all select the object pool and remain unclassified
 scene objects; they are deliberately not rendered as enemy proxies until their
 visual and interaction state is decoded.

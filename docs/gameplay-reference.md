@@ -171,6 +171,9 @@ than supplemented by random barrels. Each event is authored in world-space and
 is spawned when that coordinate enters the 540-unit viewport from the bottom;
 enemy Money Bag
 and ammunition drops remain randomized.
+The Wanted barrel itself now comes from the decoded `wantedTrigger` object
+event, while the older authored item list remains the source for the verified
+pickup contents.
 
 After the second Wingate encounter the web recreation enters a separate ending
 and credits state instead of treating the win as Game Over.

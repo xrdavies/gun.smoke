@@ -20,6 +20,15 @@ const streams = manifest.rounds.map((round) => {
   }
   return Buffer.from(bytes).toString("base64");
 });
+const objectSemanticIds = { sceneObject: 0, wantedTrigger: 1, stateControl: 2 };
+const objectStreams = manifest.rounds.map((round) => {
+  const bytes = [];
+  for (const record of round.records.filter((candidate) => candidate.command === "spawn" && candidate.semantic !== "behaviorEntity")) {
+    const at = record.nesScrollAt;
+    bytes.push(at & 0xff, at >> 8, record.x ?? 0, record.y ?? 0, record.entityCode ?? 0, record.dispatchType ?? 0, record.entityFlags ?? 0, objectSemanticIds[record.semantic] ?? 0);
+  }
+  return Buffer.from(bytes).toString("base64");
+});
 
 const source = [
   "// Generated from .rom-traces/round-events/manifest.json. Runtime keeps data only, not ROM code/assets.",
@@ -28,6 +37,7 @@ const source = [
   "export type RomEnemyEvent = { at: number; x: number; y: number; behavior: number; entityCode: number; flags: number; pool: \"enemy\" | \"object\" };",
   "",
   `const ROUND_EVENT_STREAMS = ${JSON.stringify(streams, null, 2)} as const;`,
+  `const ROUND_OBJECT_STREAMS = ${JSON.stringify(objectStreams, null, 2)} as const;`,
   "const WORLD_PER_NES_PIXEL = 540 / 240;",
   "",
   "const decodeStream = (encoded: string): readonly RomEnemyEvent[] => {",
@@ -49,6 +59,28 @@ const source = [
   "",
   "export const ROUND_ROM_ENEMY_EVENTS: readonly (readonly RomEnemyEvent[])[] = ROUND_EVENT_STREAMS.map(decodeStream);",
   "export const ROUND_ROM_ENEMY_EVENT_COUNTS = ROUND_ROM_ENEMY_EVENTS.map((events) => events.length);",
+  "export type RomObjectEvent = { at: number; x: number; y: number; entityCode: number; dispatchType: number; flags: number; semantic: \"sceneObject\" | \"wantedTrigger\" | \"stateControl\" };",
+  "const decodeObjectStream = (encoded: string): readonly RomObjectEvent[] => {",
+  "  const bytes = Uint8Array.from(atob(encoded), (character) => character.charCodeAt(0));",
+  "  const events: RomObjectEvent[] = [];",
+  "  for (let offset = 0; offset + 7 < bytes.length; offset += 8) {",
+  "    events.push({",
+  "      at: (bytes[offset] ?? 0) | ((bytes[offset + 1] ?? 0) << 8),",
+  "      x: bytes[offset + 2] ?? 0,",
+  "      y: bytes[offset + 3] ?? 0,",
+  "      entityCode: bytes[offset + 4] ?? 0,",
+  "      dispatchType: bytes[offset + 5] ?? 0,",
+  "      flags: bytes[offset + 6] ?? 0,",
+  "      semantic: (bytes[offset + 7] ?? 0) === 1 ? \"wantedTrigger\" : (bytes[offset + 7] ?? 0) === 2 ? \"stateControl\" : \"sceneObject\",",
+  "    });",
+  "  }",
+  "  return events;",
+  "};",
+  "export const ROUND_ROM_OBJECT_EVENTS: readonly (readonly RomObjectEvent[])[] = ROUND_OBJECT_STREAMS.map(decodeObjectStream);",
+  "export const ROUND_ROM_OBJECT_EVENT_COUNTS = ROUND_ROM_OBJECT_EVENTS.map((events) => events.length);",
+  "export const romObjectWorldAt = (event: RomObjectEvent): number => event.at * WORLD_PER_NES_PIXEL;",
+  "export const romObjectWorldX = (event: RomObjectEvent): number => event.x * (960 / 256);",
+  "export const romObjectWorldY = (event: RomObjectEvent): number => event.y * WORLD_PER_NES_PIXEL;",
   "export const ROM_ENEMY_SLOT_CAPACITY = 7;",
   "export const ROM_OBJECT_SLOT_CAPACITY = 6;",
   "export const ROM_NON_ENEMY_OBJECT_BEHAVIORS = [5] as const; // $B5BF remains an unclassified scene object.",

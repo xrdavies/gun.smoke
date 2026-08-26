@@ -30,6 +30,9 @@ loop; it is not present on the first pass.
 On the first pass, its right Skull, hidden Blue Yashichi, right Red Yashichi,
 left Skull/Wanted area, and final POW remain ordered after the first weapon
 shop as described by the NES walkthrough.
+Round 3 similarly orders the left POW, right Red Yashichi/Skull pair and left
+Blue Yashichi after its first shop; its lone left Skull marks the later hidden
+Wanted area before the closing Skull/Red/Skull barrels.
 
 The web build also models the resource loop with Money Bag pickups, round-specific
 trading-post checkpoints, Shotgun, Machine Gun, Magnum, finite ammunition,

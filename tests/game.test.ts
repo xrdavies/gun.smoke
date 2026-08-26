@@ -130,8 +130,9 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROM_BEHAVIOR_ENEMY_TYPES).toHaveLength(12);
     for (const stream of ROUND_ROM_ENEMY_EVENTS) {
       expect(stream.every((event, index) => index === 0 || romEventWorldAt(event) >= romEventWorldAt(stream[index - 1]!))).toBe(true);
-      expect(stream.every((event) => romEventWorldX(event) >= 0 && romEventWorldX(event) <= 960 && romEventWorldY(event) >= 55)).toBe(true);
+      expect(stream.every((event) => romEventWorldX(event) >= 0 && romEventWorldX(event) <= 960 && romEventWorldY(event) >= 0 && romEventWorldY(event) <= 540)).toBe(true);
     }
+    expect(romEventWorldY(ROUND_ROM_ENEMY_EVENTS[0]![0]!)).toBe(0);
   });
 
   it("keeps Boss units alive until their health reaches zero", () => {

@@ -33,7 +33,7 @@ export const ROUND_ROM_ENEMY_EVENTS: readonly (readonly RomEnemyEvent[])[] = ROU
 export const ROUND_ROM_ENEMY_EVENT_COUNTS = ROUND_ROM_ENEMY_EVENTS.map((events) => events.length);
 export const romEventWorldAt = (event: RomEnemyEvent): number => event.at * WORLD_PER_NES_PIXEL;
 export const romEventWorldX = (event: RomEnemyEvent): number => event.x * (960 / 256);
-export const romEventWorldY = (event: RomEnemyEvent): number => Math.max(55, event.y * WORLD_PER_NES_PIXEL);
+export const romEventWorldY = (event: RomEnemyEvent): number => event.y * WORLD_PER_NES_PIXEL;
 
 // Behavior routines are mechanically identified; these names are gameplay approximations until each routine is fully traced.
 export const ROM_BEHAVIOR_ENEMY_TYPES = [

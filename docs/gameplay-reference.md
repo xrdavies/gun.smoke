@@ -36,6 +36,8 @@ Wanted area before the closing Skull/Red/Skull barrels.
 Round 4 places its first Blue Yashichi after the first shop, the crevice Blue
 after the second shop, then two Red Yashichi barrels and the final
 Skull/POW/Skull group immediately before the left-side Wanted spot.
+Round 5 places its tree-side Blue and dock-side Red between the two shops, then
+the left POW and closing Skull group before the Wanted spot to their right.
 
 The web build also models the resource loop with Money Bag pickups, round-specific
 trading-post checkpoints, Shotgun, Machine Gun, Magnum, finite ammunition,

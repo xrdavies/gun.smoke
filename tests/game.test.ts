@@ -108,6 +108,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROAD_WIDTHS[0]).toBe(730);
     expect(ROAD_WIDTHS[2]).toBeLessThan(ROAD_WIDTHS[4]);
     expect(WEAPONS.shotgun.maxAmmo).toBe(120);
+    expect([WEAPONS.pistol.interval, WEAPONS.shotgun.interval, WEAPONS.machinegun.interval, WEAPONS.magnum.interval]).toEqual([4, 12, 5, 4].map((frames) => frames / NES_FRAME_RATE));
     expect(WEAPONS.magnum.damage).toBeGreaterThan(WEAPONS.pistol.damage);
     expect(AMMO_GAIN.pistol).toBe(0);
     expect(AMMO_GAIN.magnum).toBeLessThan(AMMO_GAIN.machinegun);

@@ -443,10 +443,10 @@ export const SHOP_COSTS = {
 export const SMART_BOMB_CAPACITY = 1;
 
 export const WEAPONS: Record<WeaponName, { cost: number; interval: number; damage: number; maxAmmo: number }> = {
-  pistol: { cost: 0, interval: 0.16, damage: 1, maxAmmo: Number.POSITIVE_INFINITY },
-  shotgun: { cost: SHOP_COSTS.shotgun, interval: 0.2, damage: 1, maxAmmo: 120 },
-  machinegun: { cost: SHOP_COSTS.machinegun, interval: 0.08, damage: 1, maxAmmo: 400 },
-  magnum: { cost: SHOP_COSTS.magnum, interval: 0.24, damage: 3, maxAmmo: 100 },
+  pistol: { cost: 0, interval: 4 / NES_FRAME_RATE, damage: 1, maxAmmo: Number.POSITIVE_INFINITY },
+  shotgun: { cost: SHOP_COSTS.shotgun, interval: 12 / NES_FRAME_RATE, damage: 1, maxAmmo: 120 },
+  machinegun: { cost: SHOP_COSTS.machinegun, interval: 5 / NES_FRAME_RATE, damage: 1, maxAmmo: 400 },
+  magnum: { cost: SHOP_COSTS.magnum, interval: 4 / NES_FRAME_RATE, damage: 3, maxAmmo: 100 },
 };
 
 export const AMMO_GAIN: Record<WeaponName, number> = {

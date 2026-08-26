@@ -637,7 +637,7 @@ class GunSmokeGame {
     this.fireMask = mask;
     if (mask === 0) return;
     if (!weaponCanRepeat(this.weapon) && newlyPressed === 0) return;
-    if (this.weapon !== "pistol" && this.fireClock > 0) return;
+    if (this.fireClock > 0) return;
     if (this.weapon !== "pistol" && this.ammo <= 0) {
       this.weapon = "pistol";
       weapon = WEAPONS.pistol;

@@ -359,7 +359,9 @@ A+B uses the symmetric `(-8,-8)..(8,-8)` fan. Code `4` Magnum shots use dispatch
 shots; Shotgun projectiles live for 11 frames. The web runtime preserves those
 lifetimes while retaining its self-generated Magnum piercing body.
 Held-input traces fire Shotgun and Magnum once, while code `2` Machine Gun
-continues to allocate projectile pairs at its measured cadence.
+continues to allocate projectile pairs at its measured cadence. Rapid pulse
+traces measure Pistol/Shotgun/Machine Gun/Magnum trigger intervals of
+`4/12/5/4` frames.
 
 The first active enemy wave appears around gameplay frame 195 in the verified
 Round 1 trace, which maps to roughly 146 world pixels at the calibrated 45

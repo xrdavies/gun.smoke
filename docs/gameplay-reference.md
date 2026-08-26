@@ -99,7 +99,8 @@ projectile state, travel at the measured base Pistol speed for 34 NES frames
 with a larger
 collision body, and can pierce multiple enemies without depending on which
 weapon is selected after the shot was fired. Pistol, Shotgun, and Magnum require
-fresh button presses; only Machine Gun repeats while fire is held.
+fresh button presses; only Machine Gun repeats while fire is held. Their traced
+minimum trigger intervals are 4, 12, 5, and 4 NES frames respectively.
 
 The runtime now exercises the engine's animation binding for player/enemy/Boss
 sprites, WebGPU `Renderer2D` batches, `AudioManager` buses, `ActionMap` keyboard

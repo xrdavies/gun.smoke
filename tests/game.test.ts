@@ -284,7 +284,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(cutterOpeningY(CUTTER_ENTRY_DURATION)).toBe(306);
     expect(CUTTER_FIRST_ATTACK_DELAY).toBeCloseTo(350 / NES_FRAME_RATE, 9);
     expect(CUTTER_ATTACK_INTERVAL).toBeCloseTo(256 / NES_FRAME_RATE, 9);
-    expect(CUTTER_BOOMERANG_SPEED).toBe(425);
+    expect(CUTTER_BOOMERANG_SPEED).toBeCloseTo(Math.hypot(63 * NES_WORLD_X_SCALE, 40 * (540 / 240)) * NES_FRAME_RATE / 29, 9);
   });
 
   it("matches the traced Devil Hawk entrance", () => {

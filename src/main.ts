@@ -29,7 +29,7 @@ type GameAction =
 type GameMode = "title" | "intro" | "briefing" | "playing" | "paused" | "gameover" | "ending";
 type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "moneyBag" | "ammo" | "barrel" | "item" | "wanted";
 type ProjectileType = "bullet" | "dynamite" | "grenade" | "boomerang" | "fireball" | "shuriken" | "spear" | "hatchet";
-type TextureName = "player" | "enemy" | "boss" | "bullet" | "moneyBag" | "powerup" | "ammo" | "barrel" | "wanted" | "terrain" | "road" | "landmark";
+type TextureName = "player" | "horse" | "enemy" | "boss" | "bullet" | "moneyBag" | "powerup" | "ammo" | "barrel" | "wanted" | "terrain" | "road" | "landmark";
 type Rgba = [number, number, number, number];
 
 interface Unit {
@@ -221,6 +221,7 @@ class GunSmokeGame {
   musicStep = 0;
   randomState = 0x6d2b79f5;
   player = { entity: 0, x: 480, y: 410, sprite: undefined as unknown as Sprite };
+  horseSprite: Sprite;
   playerAnimation: SpriteAnimationBinding | undefined;
 
   private constructor(engine: Engine) {
@@ -250,6 +251,11 @@ class GunSmokeGame {
         "...wwkkkkww...", "..wkkrrrrkkw..", ".wkkrrrrrrkkw.", ".wkkkkkkkkkkw.",
         "..wkkwwwwkkw..", "..wkkwwwwkkw..", "...wkkkkkkw...", "....wwwwww....",
       ]), palette),
+      horse: pixelTexture(engine, [
+        ".......ttt....", ".....ttkktt...", "....tkkkkkkt..", ".t..tkkkkkkkt.",
+        ".tttkkkkkkkktt", "..tkkkkkkkkkt.", "...ttkkkktt...", "....tkkkktt...",
+        "....tkkkkt....", "...tt...tt....", "...tt...tt....", "...t.....t....",
+      ], palette),
       enemy: pixelTexture(engine, atlasRows([
         "....rrrr....", "..rrkkkkrr..", ".rrkkkkkkrr.", "rrkkrrrrkkrr", "rrkrrrrrrkrr",
         "rrkkkkkkkkrr", ".rrkkkkkkrr.", "..rrkkkkrr..", "...rrrrrr...", "...rkkkkr...",
@@ -297,6 +303,7 @@ class GunSmokeGame {
       this.roadTextures.push(pixelTexture(engine, proceduralRows(64, 64, index + 4, roadPatterns[index] ?? roadPatterns[0]!), palette));
     }
     this.player.entity = this.world.createEntity();
+    this.horseSprite = new Sprite({ texture: this.textures.horse, sampler: this.sampler, position: { x: 480, y: 426 }, size: { x: 64, y: 54 }, anchor: { x: 0.5, y: 0.5 }, layer: 19, visible: false });
     this.player.sprite = new Sprite({ texture: this.textures.player, sampler: this.sampler, frame: { x: 0, y: 0, width: 0.5, height: 1 }, position: { x: 480, y: 410 }, size: { x: 45, y: 54 }, anchor: { x: 0.5, y: 0.5 }, layer: 20 });
     this.playerAnimation = new SpriteAnimationBinding(this.player.sprite, new AnimationPlayer().play(new SpriteFrameClip([
       { x: 0, y: 0, width: 0.5, height: 1, duration: 0.12 },
@@ -441,6 +448,8 @@ class GunSmokeGame {
       if (!this.isPlayerBlocked(this.player.x, nextY)) this.player.y = nextY;
     }
     this.player.sprite.position = { x: this.player.x, y: this.player.y };
+    this.horseSprite.position = { x: this.player.x, y: this.player.y + 16 };
+    this.horseSprite.visible = this.hasHorse;
     this.playerAnimation?.update(delta);
     this.player.sprite.visible = this.invulnerable <= 0 || Math.floor(this.time * 14) % 2 === 0;
     this.updatePlayerFire(delta);
@@ -661,7 +670,7 @@ class GunSmokeGame {
   }
 
   private render(): void {
-    const renderItems = [this.player.sprite, ...this.backgrounds, ...this.units.map((unit) => unit.sprite)];
+    const renderItems = [this.horseSprite, this.player.sprite, ...this.backgrounds, ...this.units.map((unit) => unit.sprite)];
     this.renderer.render(renderItems, this.camera, { staticItems: false });
   }
 

@@ -58,6 +58,15 @@ cell definitions, and self-generated ID-color/collision previews into the ignore
 reusing the original tile artwork. Collision is decoded from bit 6 of each
 definition quadrant, matching the player collision test at `$C733-$C77F`.
 
+The fixed-bank scheduler at `$FA30-$FAE5` reads three-byte records from `$8C00`
+in the current Round bank. Each record contains a map-row trigger, a position
+index/map-phase byte, and an entity code/flags byte. Position indexes resolve
+through the X/Y tables at `$FB09/$FB71`; position byte `0x00` is the Boss gate
+guarded by `$49`, while `0xFF` resets the script to `$8C00` and increments the
+loop counter. `npm run extract:rom-round-events` validates and extracts all six
+scripts into ignored `.rom-traces/round-events/manifest.json`, retaining raw
+entity codes until their dispatch routines are individually identified.
+
 Pattern-table previews remain grayscale for bitplane inspection; nametable
 previews apply each tile's expanded attribute and the live NES background
 palette so terrain colors match the captured scene.

@@ -36,10 +36,10 @@ function writeRgbaPng(name, width, height, readPixel) {
 function writePatternTable() {
   const bytes = nes.ppu.vramMem;
   const palette = [0, 76, 166, 255];
-  const pixel = (x, y) => {
+  const pixel = (x, y, columns) => {
     const tileX = Math.floor(x / 8);
     const tileY = Math.floor(y / 8);
-    const tile = tileY * 16 + tileX;
+    const tile = tileY * columns + tileX;
     const row = y % 8;
     const column = 7 - (x % 8);
     const low = bytes[tile * 16 + row] ?? 0;
@@ -48,8 +48,8 @@ function writePatternTable() {
     const color = palette[value] ?? 0;
     return [color, color, color, 255];
   };
-  writeRgbaPng("pattern-table.png", 128, 128, pixel);
-  writeRgbaPng("pattern-table-full.png", 256, 128, (x, y) => pixel(x, y));
+  writeRgbaPng("pattern-table.png", 128, 128, (x, y) => pixel(x, y, 16));
+  writeRgbaPng("pattern-table-full.png", 256, 128, (x, y) => pixel(x, y, 32));
 }
 
 function writeScene(name) {

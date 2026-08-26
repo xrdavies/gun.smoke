@@ -56,12 +56,14 @@ export const ROUND_ENEMY_TYPES: readonly (readonly EnemyType[])[] = [
 ];
 
 export type Formation = "line" | "wedge" | "cross" | "rear";
+export type LandmarkType = "town" | "rock" | "village" | "cliff" | "forest" | "cemetery" | "open";
 
 export interface RoundSegment {
   at: number;
   formation: Formation;
   enemyTypes: readonly EnemyType[];
   interval: number;
+  landmark: LandmarkType;
 }
 
 export interface RoundItemEvent {
@@ -71,12 +73,12 @@ export interface RoundItemEvent {
 }
 
 export const ROUND_SEGMENTS: readonly (readonly RoundSegment[])[] = [
-  [{ at: 146, formation: "line", enemyTypes: ["gunman", "bomber"], interval: 1.1 }, { at: 420, formation: "wedge", enemyTypes: ["sniper", "backstabber"], interval: 1 }, { at: 980, formation: "line", enemyTypes: ["gunman", "bomber"], interval: 0.9 }, { at: 1_500, formation: "cross", enemyTypes: ["gunman", "sniper"], interval: 0.8 }],
-  [{ at: 146, formation: "wedge", enemyTypes: ["gunman", "rifleman"], interval: 1 }, { at: 500, formation: "line", enemyTypes: ["backstabber", "rifleman"], interval: 0.9 }, { at: 1_050, formation: "cross", enemyTypes: ["gunman", "shotgunner"], interval: 0.8 }, { at: 1_500, formation: "wedge", enemyTypes: ["rifleman", "backstabber"], interval: 0.75 }],
-  [{ at: 146, formation: "line", enemyTypes: ["gunman", "sniper"], interval: 1 }, { at: 420, formation: "cross", enemyTypes: ["hatchet", "firebreather"], interval: 0.9 }, { at: 980, formation: "wedge", enemyTypes: ["sniper", "firebreather"], interval: 0.8 }, { at: 1_480, formation: "line", enemyTypes: ["gunman", "hatchet"], interval: 0.72 }],
-  [{ at: 146, formation: "rear", enemyTypes: ["gunman", "ninja"], interval: 1 }, { at: 480, formation: "wedge", enemyTypes: ["ninja", "shotgunner"], interval: 0.86 }, { at: 1_020, formation: "cross", enemyTypes: ["sniper", "gunman"], interval: 0.78 }, { at: 1_520, formation: "rear", enemyTypes: ["gunman", "shotgunner"], interval: 0.7 }],
-  [{ at: 146, formation: "line", enemyTypes: ["gunman", "rifleman"], interval: 1 }, { at: 420, formation: "wedge", enemyTypes: ["bomber", "backstabber"], interval: 0.9 }, { at: 980, formation: "line", enemyTypes: ["rifleman", "bomber"], interval: 0.78 }, { at: 1_480, formation: "cross", enemyTypes: ["gunman", "backstabber"], interval: 0.68 }],
-  [{ at: 146, formation: "cross", enemyTypes: ["gunman", "sniper"], interval: 1 }, { at: 420, formation: "rear", enemyTypes: ["bomber", "backstabber"], interval: 0.86 }, { at: 980, formation: "wedge", enemyTypes: ["sniper", "gunman"], interval: 0.74 }, { at: 1_500, formation: "cross", enemyTypes: ["bomber", "backstabber"], interval: 0.64 }],
+  [{ at: 146, formation: "line", enemyTypes: ["gunman", "bomber"], interval: 1.1, landmark: "town" }, { at: 420, formation: "wedge", enemyTypes: ["sniper", "backstabber"], interval: 1, landmark: "town" }, { at: 980, formation: "line", enemyTypes: ["gunman", "bomber"], interval: 0.9, landmark: "open" }, { at: 1_500, formation: "cross", enemyTypes: ["gunman", "sniper"], interval: 0.8, landmark: "town" }],
+  [{ at: 146, formation: "wedge", enemyTypes: ["gunman", "rifleman"], interval: 1, landmark: "rock" }, { at: 500, formation: "line", enemyTypes: ["backstabber", "rifleman"], interval: 0.9, landmark: "rock" }, { at: 1_050, formation: "cross", enemyTypes: ["gunman", "shotgunner"], interval: 0.8, landmark: "rock" }, { at: 1_500, formation: "wedge", enemyTypes: ["rifleman", "backstabber"], interval: 0.75, landmark: "rock" }],
+  [{ at: 146, formation: "line", enemyTypes: ["gunman", "sniper"], interval: 1, landmark: "village" }, { at: 420, formation: "cross", enemyTypes: ["hatchet", "firebreather"], interval: 0.9, landmark: "village" }, { at: 980, formation: "wedge", enemyTypes: ["sniper", "firebreather"], interval: 0.8, landmark: "village" }, { at: 1_480, formation: "line", enemyTypes: ["gunman", "hatchet"], interval: 0.72, landmark: "village" }],
+  [{ at: 146, formation: "rear", enemyTypes: ["gunman", "ninja"], interval: 1, landmark: "cliff" }, { at: 480, formation: "wedge", enemyTypes: ["ninja", "shotgunner"], interval: 0.86, landmark: "open" }, { at: 1_020, formation: "cross", enemyTypes: ["sniper", "gunman"], interval: 0.78, landmark: "cliff" }, { at: 1_520, formation: "rear", enemyTypes: ["gunman", "shotgunner"], interval: 0.7, landmark: "open" }],
+  [{ at: 146, formation: "line", enemyTypes: ["gunman", "rifleman"], interval: 1, landmark: "forest" }, { at: 420, formation: "wedge", enemyTypes: ["bomber", "backstabber"], interval: 0.9, landmark: "forest" }, { at: 980, formation: "line", enemyTypes: ["rifleman", "bomber"], interval: 0.78, landmark: "forest" }, { at: 1_480, formation: "cross", enemyTypes: ["gunman", "backstabber"], interval: 0.68, landmark: "forest" }],
+  [{ at: 146, formation: "cross", enemyTypes: ["gunman", "sniper"], interval: 1, landmark: "cemetery" }, { at: 420, formation: "rear", enemyTypes: ["bomber", "backstabber"], interval: 0.86, landmark: "open" }, { at: 980, formation: "wedge", enemyTypes: ["sniper", "gunman"], interval: 0.74, landmark: "cemetery" }, { at: 1_500, formation: "cross", enemyTypes: ["bomber", "backstabber"], interval: 0.64, landmark: "open" }],
 ];
 
 export const ROUND_ITEM_TYPES: readonly (readonly ItemType[])[] = [

@@ -77,6 +77,8 @@ boomerangs, fireballs, shuriken, or dynamite.
 Encounter timing is also represented as four deterministic segments per Round,
 with explicit formation shape and interval data; this replaces the earlier
 single random cadence and provides a stable target for ROM trace comparison.
+Each segment also carries a landmark type (`town`, `rock`, `village`, `cliff`,
+`forest`, `cemetery`, or `open`) so side geometry changes with the event script.
 
 Important barrel contents are represented as ordered world events per Round,
 so the notable boots, rifle, POW, Yashichi, Skull and Horse sequence is stable;

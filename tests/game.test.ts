@@ -44,6 +44,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROUND_ENEMY_TYPES[2]).toContain("firebreather");
     expect(ROUND_SEGMENTS).toHaveLength(MAX_STAGE);
     expect(ROUND_SEGMENTS.every((segments) => segments[0]?.at === 146)).toBe(true);
+    expect(ROUND_SEGMENTS[0]?.some((segment) => segment.landmark === "open")).toBe(true);
     expect(ROUND_ITEM_TYPES).toHaveLength(MAX_STAGE);
     expect(ROUND_ITEM_TYPES[0]).toContain("horse");
     expect(ROUND_ITEM_TYPES[1]).toContain("skull");

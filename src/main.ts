@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, MAX_STAGE, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, shouldLoopStage, SHOP_CHECKPOINTS, SHOP_COSTS, scoreExtraLives, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, MAX_STAGE, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_SEGMENTS, shouldLoopStage, SHOP_CHECKPOINTS, SHOP_COSTS, scoreExtraLives, STAGE_LENGTH, STAGES, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -196,6 +196,7 @@ class GunSmokeGame {
   hasWanted = false;
   posterPropSpawned = false;
   itemEventCursor = 0;
+  currentLandmark: LandmarkType = "town";
   wingatePhase = 0;
   weapon: WeaponName = "pistol";
   hasHorse = false;
@@ -622,13 +623,15 @@ class GunSmokeGame {
     for (let y = -360; y < STAGE_LENGTH + 650; y += 180) {
       this.backgrounds.push(new Sprite({ texture: terrain, sampler: this.sampler, position: { x: 480, y: y + 90 }, size: { x: 960, y: 180 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -20 }));
       this.backgrounds.push(new Sprite({ texture: road, sampler: this.sampler, position: { x: 480, y: y + 90 }, size: { x: roadWidth, y: 180 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -19 }));
-      if (this.stage === 1 || this.stage === 6) {
+      if (this.currentLandmark === "open") {
+        // Open clearings deliberately omit side landmarks.
+      } else if (this.currentLandmark === "town" || this.currentLandmark === "cemetery") {
         for (const x of [edge - 48, 960 - edge + 48]) this.backgrounds.push(new Sprite({ texture: this.textures.landmark, sampler: this.sampler, position: { x, y: y + 90 }, size: { x: 86, y: 130 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -18 }));
-      } else if (this.stage === 2 || this.stage === 4) {
+      } else if (this.currentLandmark === "rock" || this.currentLandmark === "cliff") {
         for (const x of [edge - 30, 960 - edge + 30]) this.backgrounds.push(new Sprite({ texture: this.textures.landmark, sampler: this.sampler, position: { x, y: y + 90 }, size: { x: 52, y: 170 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -18 }));
-      } else if (this.stage === 3) {
+      } else if (this.currentLandmark === "village") {
         for (const x of [edge - 36, 960 - edge + 36]) this.backgrounds.push(new Sprite({ texture: this.textures.landmark, sampler: this.sampler, position: { x, y: y + 90 }, size: { x: 68, y: 92 }, anchor: { x: 0.5, y: 0.5 }, color: [1, 0.78, 0.6, 1], layer: -18 }));
-      } else if (this.stage === 5 && Math.floor(y / 180) % 3 === 1) {
+      } else if (this.currentLandmark === "forest" && Math.floor(y / 180) % 3 === 1) {
         this.backgrounds.push(new Sprite({ texture: this.textures.landmark, sampler: this.sampler, position: { x: 480, y: y + 90 }, size: { x: roadWidth, y: 26 }, anchor: { x: 0.5, y: 0.5 }, color: [0.75, 0.5, 0.28, 1], layer: -18 }));
       }
     }
@@ -641,6 +644,7 @@ class GunSmokeGame {
     const segments = ROUND_SEGMENTS[this.stage - 1] ?? ROUND_SEGMENTS[0]!;
     let segment = segments[0]!;
     for (const candidate of segments) if (this.scroll >= candidate.at) segment = candidate;
+    this.currentLandmark = segment.landmark;
     const offsets = formationOffsets(segment.formation);
     const types = segment.enemyTypes;
     for (const offset of offsets) {

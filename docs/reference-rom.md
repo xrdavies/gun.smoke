@@ -168,12 +168,13 @@ reaches approximately `y=64`. The web runtime selects one of those measured
 lanes and uses the corresponding downward entry speed, while later movement
 and damage phases remain separate Boss approximations.
 The same controlled full-round trace identifies Round 2's Cutter as dispatch
-`0x90`, variant `0x5b`, entering at the left edge. Controlled runs observe NES
-entry lanes `y=88` and `y=168`; one lane reaches about `x=106` after 324 frames.
-The web runtime selects one measured lane and uses the calibrated opening
-speed. At frame 350 it creates the paired `0x98/0x99` boomerangs, repeating
-every 256 frames. Their first 30-frame path converts to roughly 425 world
-pixels/s; the runtime preserves the pair, timing, speed and opposite curves.
+`0x90`, variant `0x5b`, entering from the top edge (`y=0`). Controlled runs
+observe NES horizontal entry lanes near `x=88/144/168`; one lane reaches about
+`y=136` after 324 frames. The web runtime selects one measured lane and uses
+the calibrated downward opening. At frame 350 it creates the paired `0x98/0x99`
+boomerangs, repeating every 256 frames. Their first 30-frame path converts to
+roughly 425 world pixels/s; the runtime preserves the pair, timing, speed and
+opposite curves.
 After clearing only ordinary slots at the next real gate, Round 3 produces
 Devil Hawk as dispatch `0x9a`, variant `0x61`, also entering from the left
 edge. Controlled traces observe NES entry lanes `y=128/168/208`; the opening

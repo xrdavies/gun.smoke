@@ -115,8 +115,10 @@ crawls for a short interval after each lost health bar, while Cutter and Devil
 Hawk become vulnerable only after their opening attack. Fatman Joe is
 vulnerable before each bomb-gun firing and briefly protected during the launch;
 Cutter's boomerangs also curve in opposite directions.
-Cutter's first paired boomerangs appear at frame 350 and repeat every 256 frames
-at the measured projectile speed.
+Cutter enters from the top edge on one of the measured NES X lanes
+(`x=88/144/168`) and reaches approximately `y=136` after 324 frames. Its first
+paired boomerangs appear at frame 350 and repeat every 256 frames at the
+measured projectile speed.
 
 The decoded enemy event stream runs until the Wanted gate; once the poster is
 owned and the Boss arena locks, scrolling and regular enemy-event spawning

@@ -108,13 +108,21 @@ export const BANDIT_BILL_ENTRY_SPEED_Y = (64 / 96) * NES_FRAME_RATE * NES_WORLD_
 export function banditBillOpeningY(age: number): number {
   return Math.max(0, Math.min(1, age / BANDIT_BILL_ENTRY_DURATION)) * BANDIT_BILL_ENTRY_END_Y;
 }
-export const CUTTER_ENTRY_X = 0 * NES_WORLD_X_SCALE;
-export const CUTTER_ENTRY_Y_NES = [88, 168] as const;
-export const CUTTER_ENTRY_Y_LANES = CUTTER_ENTRY_Y_NES.map((value) => value * NES_WORLD_Y_SCALE);
-export const CUTTER_ENTRY_SPEED_X = (106 / 324) * NES_FRAME_RATE * NES_WORLD_X_SCALE;
+export const CUTTER_ENTRY_X_NES = [88, 144, 168] as const;
+export const CUTTER_ENTRY_X_LANES = CUTTER_ENTRY_X_NES.map((value) => value * NES_WORLD_X_SCALE);
+export const CUTTER_ENTRY_Y_NES = 0;
+export const CUTTER_ENTRY_Y = CUTTER_ENTRY_Y_NES * NES_WORLD_Y_SCALE;
+export const CUTTER_ENTRY_END_Y_NES = 136;
+export const CUTTER_ENTRY_END_Y = CUTTER_ENTRY_END_Y_NES * NES_WORLD_Y_SCALE;
+export const CUTTER_ENTRY_DURATION = 324 / NES_FRAME_RATE;
+export const CUTTER_ENTRY_SPEED_Y = (136 / 324) * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
 export const CUTTER_FIRST_ATTACK_DELAY = 350 / NES_FRAME_RATE;
 export const CUTTER_ATTACK_INTERVAL = 256 / NES_FRAME_RATE;
 export const CUTTER_BOOMERANG_SPEED = 425;
+
+export function cutterOpeningY(age: number): number {
+  return Math.max(0, Math.min(1, age / CUTTER_ENTRY_DURATION)) * CUTTER_ENTRY_END_Y;
+}
 export const DEVIL_HAWK_ENTRY_X = 0 * NES_WORLD_X_SCALE;
 export const DEVIL_HAWK_ENTRY_Y_NES = [128, 168, 208] as const;
 export const DEVIL_HAWK_ENTRY_Y_LANES = DEVIL_HAWK_ENTRY_Y_NES.map((value) => value * NES_WORLD_Y_SCALE);
@@ -177,14 +185,6 @@ export function wingateShotCooldown(phase: number, shotsFired: number): number {
   return phase === 0 ? WINGATE_FIRST_VOLLEY_GAP : WINGATE_SECOND_VOLLEY_GAP;
 }
 
-export const BOSS_ENTRY_SPEED_X = [
-  0,
-  CUTTER_ENTRY_SPEED_X,
-  undefined,
-  undefined,
-  undefined,
-  undefined,
-] as const;
 
 export function banditBillCooldown(shotsFired: number): number {
   return shotsFired % BANDIT_BILL_SHOTS_PER_VOLLEY === 0 ? BANDIT_BILL_VOLLEY_GAP : BANDIT_BILL_SHOT_INTERVAL;

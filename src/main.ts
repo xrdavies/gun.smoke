@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, banditBillOpeningY, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, BOMBER_FIRST_THROW_DELAY, BOMBER_THROW_INTERVAL, bossReward, BOOTS_SPEED_MULTIPLIER, clamp, CUTTER_ENTRY_SPEED_X, CUTTER_ENTRY_X, CUTTER_ENTRY_Y_LANES, DEVIL_HAWK_ENTRY_SPEED_X, DEVIL_HAWK_ENTRY_X, DEVIL_HAWK_ENTRY_Y_LANES, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, DYNAMITE_LIFETIME, DYNAMITE_WORLD_SPEED, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X, FATMAN_JOE_ENTRY_Y, fatmanJoeOpeningX, FIREBREATHER_FIRST_SHOT_DELAY, FIREBREATHER_PROJECTILE_SPEED, formationEntryY, HATCHET_FIRST_SHOT_DELAY, HATCHET_PROJECTILE_SPEED, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_X, NINJA_BOSS_ENTRY_Y, NINJA_FIRST_SHOT_DELAY, NINJA_PROJECTILE_SPEED, PISTOL_BULLET_LIFETIME, RIFLE_BULLET_SPEED_MULTIPLIER, RIFLEMAN_BULLET_SPEED, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_LIFETIME, ROCK_WORLD_SPEED_X, ROCK_WORLD_SPEED_Y, ROAD_WIDTHS, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_VOLLEY_INTERVAL, shouldLoopStage, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, SPEAR_FIRST_SHOT_DELAY, SPEAR_PROJECTILE_SPEED, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_DURATION, WINGATE_ENTRY_X, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, wingateOpeningX, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, banditBillOpeningY, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, BOMBER_FIRST_THROW_DELAY, BOMBER_THROW_INTERVAL, bossReward, BOOTS_SPEED_MULTIPLIER, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_SPEED_X, DEVIL_HAWK_ENTRY_X, DEVIL_HAWK_ENTRY_Y_LANES, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, DYNAMITE_LIFETIME, DYNAMITE_WORLD_SPEED, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X, FATMAN_JOE_ENTRY_Y, fatmanJoeOpeningX, FIREBREATHER_FIRST_SHOT_DELAY, FIREBREATHER_PROJECTILE_SPEED, formationEntryY, HATCHET_FIRST_SHOT_DELAY, HATCHET_PROJECTILE_SPEED, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_X, NINJA_BOSS_ENTRY_Y, NINJA_FIRST_SHOT_DELAY, NINJA_PROJECTILE_SPEED, PISTOL_BULLET_LIFETIME, RIFLE_BULLET_SPEED_MULTIPLIER, RIFLEMAN_BULLET_SPEED, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_LIFETIME, ROCK_WORLD_SPEED_X, ROCK_WORLD_SPEED_Y, ROAD_WIDTHS, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_VOLLEY_INTERVAL, shouldLoopStage, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, SPEAR_FIRST_SHOT_DELAY, SPEAR_PROJECTILE_SPEED, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_DURATION, WINGATE_ENTRY_X, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, wingateOpeningX, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
 import { GUNMAN_BULLET_SPEED, GUNMAN_FIRST_SHOT_DELAY, GUNMAN_LIFETIME } from "./game-constants";
 import { BANDIT_BILL_BULLET_SPEED, BANDIT_BILL_FIRST_VOLLEY_DELAY } from "./game-constants";
 import { banditBillCooldown } from "./game-constants";
@@ -23,7 +23,7 @@ import { storedPowerupPickup } from "./game-constants";
 import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_VOLLEY_INTERVAL, FATMAN_JOE_VOLLEY_SIZE } from "./game-constants";
 import { WINGATE_BULLET_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateShotCooldown } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPEED, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
-import { BOSS_ENTRY_SPEED_X } from "./game-constants";
+import { CUTTER_ENTRY_DURATION, cutterOpeningY } from "./game-constants";
 import { DEVIL_HAWK_ENTRY_DURATION, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkOpeningX } from "./game-constants";
 import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_FIRST_ATTACK_DELAY, NINJA_BOSS_SHURIKEN_COUNT, NINJA_BOSS_SHURIKEN_SPEED } from "./game-constants";
 import { roundCollisionBlocks } from "./round-collision";
@@ -1028,14 +1028,14 @@ class GunSmokeGame {
     const isFirstWingate = this.stage === 6;
     const boss = this.spawnUnit(
       "boss",
-      isBanditBill ? BANDIT_BILL_ENTRY_X_LANES[Math.floor(this.nextRandom() * BANDIT_BILL_ENTRY_X_LANES.length)] ?? 360 : isCutter ? CUTTER_ENTRY_X : isDevilHawk ? DEVIL_HAWK_ENTRY_X : isNinjaBoss ? NINJA_BOSS_ENTRY_X : isFatmanJoe ? FATMAN_JOE_ENTRY_X : isFirstWingate ? WINGATE_ENTRY_X : 480,
-      this.scroll + (isBanditBill ? BANDIT_BILL_ENTRY_Y : isCutter ? CUTTER_ENTRY_Y_LANES[Math.floor(this.nextRandom() * CUTTER_ENTRY_Y_LANES.length)] ?? 378 : isDevilHawk ? DEVIL_HAWK_ENTRY_Y_LANES[Math.floor(this.nextRandom() * DEVIL_HAWK_ENTRY_Y_LANES.length)] ?? 378 : isNinjaBoss ? NINJA_BOSS_ENTRY_Y : isFatmanJoe ? FATMAN_JOE_ENTRY_Y : isFirstWingate ? WINGATE_ENTRY_Y : 90),
+      isBanditBill ? BANDIT_BILL_ENTRY_X_LANES[Math.floor(this.nextRandom() * BANDIT_BILL_ENTRY_X_LANES.length)] ?? 360 : isCutter ? CUTTER_ENTRY_X_LANES[Math.floor(this.nextRandom() * CUTTER_ENTRY_X_LANES.length)] ?? 540 : isDevilHawk ? DEVIL_HAWK_ENTRY_X : isNinjaBoss ? NINJA_BOSS_ENTRY_X : isFatmanJoe ? FATMAN_JOE_ENTRY_X : isFirstWingate ? WINGATE_ENTRY_X : 480,
+      this.scroll + (isBanditBill ? BANDIT_BILL_ENTRY_Y : isCutter ? CUTTER_ENTRY_Y : isDevilHawk ? DEVIL_HAWK_ENTRY_Y_LANES[Math.floor(this.nextRandom() * DEVIL_HAWK_ENTRY_Y_LANES.length)] ?? 378 : isNinjaBoss ? NINJA_BOSS_ENTRY_Y : isFatmanJoe ? FATMAN_JOE_ENTRY_Y : isFirstWingate ? WINGATE_ENTRY_Y : 90),
       definition.bossHp * 4,
     );
     if (isBanditBill || isCutter || isDevilHawk || isNinjaBoss || isFatmanJoe || isFirstWingate) {
       boss.bossEntryX = boss.x;
       boss.bossEntryY = boss.y - this.scroll;
-      boss.vx = BOSS_ENTRY_SPEED_X[this.stage - 1] ?? boss.vx;
+      if (isBanditBill || isCutter) boss.vx = 0;
     }
     this.showMessage(`WANTED: ${definition.boss}`);
     this.beep(180, 0.18);
@@ -1249,7 +1249,7 @@ class GunSmokeGame {
       const maxBossX = edgeEntryBoss ? 960 : 580;
       if (unit.x < minBossX || unit.x > maxBossX) unit.vx *= -1;
       if (this.stage === 1) unit.y = this.scroll + (unit.age < unit.invulnerableUntil ? 430 : banditBillOpeningY(unit.age));
-      else if (this.stage === 2) unit.y = this.scroll + (unit.bossEntryY ?? CUTTER_ENTRY_Y_LANES[0] ?? 198);
+      else if (this.stage === 2) unit.y = this.scroll + cutterOpeningY(unit.age <= CUTTER_ENTRY_DURATION ? unit.age : CUTTER_ENTRY_DURATION);
       else if (this.stage === 3) unit.y = this.scroll + (unit.bossEntryY ?? DEVIL_HAWK_ENTRY_Y_LANES[0] ?? 288) + (unit.age <= DEVIL_HAWK_ENTRY_DURATION ? 0 : Math.abs(Math.sin((unit.age - DEVIL_HAWK_ENTRY_DURATION) * 2.1)) * 145);
       else if (this.stage === 4) unit.y = this.scroll + (unit.bossEntryY ?? NINJA_BOSS_ENTRY_Y) + Math.abs(Math.sin(unit.age * 3)) * 55;
       else if (this.stage === 5) unit.y = this.scroll + (unit.bossEntryY ?? FATMAN_JOE_ENTRY_Y) + (unit.age <= FATMAN_JOE_ENTRY_DURATION ? 0 : Math.abs(Math.sin((unit.age - FATMAN_JOE_ENTRY_DURATION) * 3.6)) * 32);

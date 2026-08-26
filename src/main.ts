@@ -51,6 +51,8 @@ interface Unit {
   turnRate: number;
   maxAge: number;
   invulnerableUntil: number;
+  piercing: boolean;
+  hitTargets?: Set<Unit>;
   animation?: SpriteAnimationBinding;
 }
 
@@ -512,10 +514,13 @@ class GunSmokeGame {
       this.showMessage("OUT OF AMMO");
     }
     const direction = left && right ? 0 : left ? -1 : 1;
-    const ammoCost = this.weapon === "shotgun" ? 3 : 1;
-    if (this.weapon !== "pistol") this.ammo = Math.max(0, this.ammo - ammoCost);
-    if (weapon.spread === 0) this.spawnBullet(direction, weapon.damage);
-    else for (const spread of [-weapon.spread, 0, weapon.spread]) this.spawnBullet(direction + spread, weapon.damage);
+    if (this.weapon !== "pistol") this.ammo = Math.max(0, this.ammo - 1);
+    if (this.weapon === "shotgun") {
+      this.spawnBullet(direction, weapon.damage);
+      if (direction !== 0) this.spawnBulletVelocity(direction * WORLD_BULLET_SPEED, 0, weapon.damage);
+    } else {
+      this.spawnBullet(direction, weapon.damage);
+    }
     this.fireClock = weapon.interval;
     this.beep(740, 0.025);
   }
@@ -785,7 +790,7 @@ class GunSmokeGame {
       vy: isBoss || isPickup || kind === "barrel" ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : small ? 7 : 19,
       value: isBoss ? 5_000 : kind === "coin" ? 200 : kind === "ammo" || kind === "item" ? 0 : kind === "barrel" ? 50 : kind === "wanted" ? 1_000 : 100,
-      age: 0, phase: this.nextRandom() * Math.PI * 2, damage: kind === "enemy" && enemyType === "rifleman" ? 0 : 1, fired: false, turnRate: 0, maxAge: 18, invulnerableUntil: 0,
+      age: 0, phase: this.nextRandom() * Math.PI * 2, damage: kind === "enemy" && enemyType === "rifleman" ? 0 : 1, fired: false, turnRate: 0, maxAge: 18, invulnerableUntil: 0, piercing: false,
     };
     this.units.push(unit);
     return unit;
@@ -797,6 +802,16 @@ class GunSmokeGame {
     unit.vy = Math.abs(direction) < 0.01 ? -WORLD_BULLET_SPEED : -WORLD_DIAGONAL_BULLET_Y;
     unit.damage = damage;
     unit.maxAge = this.weapon === "pistol" ? PISTOL_BULLET_LIFETIME * (this.powerups.rifle > 0 ? RIFLE_RANGE_MULTIPLIER : 1) : 0.55;
+    unit.piercing = this.weapon === "magnum";
+    unit.hitTargets = unit.piercing ? new Set<Unit>() : undefined;
+  }
+
+  private spawnBulletVelocity(vx: number, vy: number, damage: number): void {
+    const unit = this.spawnUnit("bullet", this.player.x, this.player.y - 32, 1);
+    unit.vx = vx;
+    unit.vy = vy;
+    unit.damage = damage;
+    unit.maxAge = 0.55;
   }
 
   private updateUnit(unit: Unit, delta: number): void {
@@ -924,7 +939,7 @@ class GunSmokeGame {
     const bullets = this.units.filter((unit) => unit.kind === "bullet" && unit.hp > 0);
     const targets = this.units.filter((unit) => (unit.kind === "enemy" || unit.kind === "boss" || unit.kind === "barrel") && unit.hp > 0);
     for (const bullet of bullets) {
-      if (this.weapon === "magnum") {
+      if (bullet.piercing) {
         const projectile = this.units.find((candidate) => candidate.kind === "enemyBullet" && candidate.hp > 0 && distance(bullet, candidate) <= bullet.radius + candidate.radius);
         if (projectile) {
           bullet.hp = 0;
@@ -932,10 +947,11 @@ class GunSmokeGame {
           continue;
         }
       }
-      const target = targets.find((candidate) => candidate.hp > 0 && distance(bullet, candidate) <= bullet.radius + candidate.radius);
+      const target = targets.find((candidate) => candidate.hp > 0 && !bullet.hitTargets?.has(candidate) && distance(bullet, candidate) <= bullet.radius + candidate.radius);
       if (!target) continue;
       if (!this.isBossVulnerable(target)) continue;
-      bullet.hp = 0;
+      if (bullet.piercing) bullet.hitTargets?.add(target);
+      else bullet.hp = 0;
       const previousHp = target.hp;
       target.hp -= bullet.damage;
       if (target.hp > 0) {

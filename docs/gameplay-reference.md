@@ -51,9 +51,15 @@ one bomb; it does not damage bosses.
 
 Rifle range applies only to the unlimited pistols. Bullet pickups use
 weapon-specific refill amounts, with Machine Gun receiving more rounds per
-pickup than Magnum. Purchased special weapons and their ammo persist
-independently; Select opens the inventory to equip any owned weapon, and a
-Bullet pickup refills every owned special weapon by its own amount.
+pickup than Magnum. Stored special weapons and their ammo persist
+independently, while the equipped special weapon is lost on an unshielded
+death; Select opens the inventory to equip any owned weapon, and a Bullet
+pickup refills every owned special weapon by its own amount.
+
+Shotgun side fire emits one normal diagonal shot and one horizontal shot, and
+consumes one round per trigger. Magnum bullets use their own projectile state,
+travel farther, and can pierce multiple enemies without depending on which
+weapon is selected after the shot was fired.
 
 The runtime now exercises the engine's animation binding for player/enemy/Boss
 sprites, WebGPU `Renderer2D` batches, `AudioManager` buses, `ActionMap` keyboard

@@ -148,6 +148,10 @@ An isolated `$B284` Gunman fires one dispatch `0x30` bullet at age 39 frames
 and releases its slot at age 289. The projectile's measured 20-frame travel
 maps to roughly 266 world pixels/s; ROM-tagged Gunmen use this per-actor timing
 instead of the procedural global firing clock.
+On defeat, `$CD4E-$CDAA` converts an event's `0x80` flag into dispatch `0x4e`.
+If `$90/$94/$98/$9c` show no special stock, it increments that to `0x4f`;
+the `$E192` conversion table then maps them to Bullet (`0x29`) and Money
+(`0x24`) pickups respectively. Unflagged ROM enemies produce no random drop.
 An isolated `$B775` Rifleman enters its attack state at age 80 frames, emits
 five dispatch `0x30` shots at ages 96, 112, 128, 144 and 160, then returns to
 its movement state. The runtime preserves the 80-frame state transition, the

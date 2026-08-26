@@ -63,6 +63,10 @@ export function canSpawnEnemyProjectile(active: number, requested = 1): boolean 
   return active + requested <= ENEMY_PROJECTILE_CAPACITY;
 }
 
+export function romEnemyDrop(flags: number, hasSpecialStock: boolean): "ammo" | "moneyBag" | undefined {
+  return flags & 0x80 ? hasSpecialStock ? "ammo" : "moneyBag" : undefined;
+}
+
 export function pistolShots(left: boolean, right: boolean): readonly { direction: number; offset: number }[] {
   return left && right ? [{ direction: 0, offset: -8 }, { direction: 0, offset: 8 }] : [{ direction: left ? -1 : 1, offset: left ? -10 : 10 }];
 }

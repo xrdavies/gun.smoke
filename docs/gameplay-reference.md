@@ -193,7 +193,9 @@ so every Boots, Rifle, POW, Money, Yashichi, Skull and Horse barrel uses its
 original Round order and NES coordinate without a second authored barrel list.
 Breakable objects enter at the top edge and descend with the measured ROM
 object speed, keeping the barrel and pickup interaction in the playable area.
-Enemy Money Bag and ammunition drops remain randomized.
+Enemy Money Bag and ammunition drops follow the decoded event flag: marked
+enemies drop Bullet supplies while any special stock remains, otherwise they
+drop a Money Bag; unmarked enemies do not drop either pickup.
 
 After the second Wingate encounter the web recreation enters a separate ending
 and credits state instead of treating the win as Game Over.

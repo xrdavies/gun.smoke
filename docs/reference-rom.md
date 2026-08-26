@@ -83,6 +83,9 @@ Behavior routine `$B0E5` allocates three projectile slots at `$B24B-$B281`
 and emits adjacent direction values, identifying it as the Shotgunner spread
 attack used by the runtime behavior map. An isolated instance fires at age 108
 and 159 frames, then exits at age 228; the runtime preserves both volleys.
+The extractor labels no-behavior `dispatch 30/31` records as `stateControl`,
+the flag `0x40` record as `wantedTrigger`, and other no-behavior records as
+`sceneObject`; these labels are research semantics, not copied ROM code.
 An isolated `$B501` actor first creates its `0x72`/dispatch `0x2F` dynamite
 after 198 frames and repeats after 106 frames. The projectile remains airborne
 for 212 frames, changes to landed dispatch `0x3E` for 53 frames, then clears;

@@ -70,6 +70,7 @@ const rounds = Array.from({ length: 6 }, (_, roundIndex) => {
     const slotPool = command === "spawn" ? positionByte & 0x20 ? "object" : "enemy" : undefined;
     if (command === "spawn" && positionIndex >= positionCount) throw new Error(`Round ${roundIndex + 1} record ${records.length} has an invalid position index`);
     const behavior = command === "spawn" ? initializerFor(typeByte & 0x3f) : undefined;
+    const semantic = command !== "spawn" ? command : typeByte & 0x40 ? "wantedTrigger" : behavior?.dispatchType === 30 || behavior?.dispatchType === 31 ? "stateControl" : behavior?.behaviorRoutine ? "behaviorEntity" : "sceneObject";
     const rowDistance = (mapRow - initialMapRow + mapRows) % mapRows;
     const rawHalfStep = rowDistance * 2 + phase;
     if (command === "spawn" || records.at(-1)?.mapRow !== mapRow) {
@@ -83,6 +84,7 @@ const rounds = Array.from({ length: 6 }, (_, roundIndex) => {
       index: records.length,
       address: hex(0x8000 + offset, 4),
       command,
+      semantic,
       mapRow,
       phase: command === "spawn" ? phase : undefined,
       positionIndex: command === "spawn" ? positionIndex : undefined,

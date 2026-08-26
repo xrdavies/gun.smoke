@@ -704,6 +704,9 @@ class GunSmokeGame {
         this.posterPropSpawned = true;
         const wantedBarrel = this.spawnUnit("barrel", clamp(romObjectWorldX(event), 70, 890), this.scroll + romObjectWorldY(event), 1);
         wantedBarrel.vy = ROM_OBJECT_DROP_SPEED;
+        wantedBarrel.romEntityCode = event.entityCode ?? 0x40;
+        wantedBarrel.romFlags = event.flags;
+        wantedBarrel.romPool = event.pool;
         this.showMessage("SHOOT THE BARREL");
         continue;
       }
@@ -1358,7 +1361,7 @@ class GunSmokeGame {
     this.awardScoreLife();
     if (target.kind === "barrel") {
       if (target.itemType) this.spawnUnit("item", target.x, target.y, 1, undefined, target.itemType);
-      else if (target.romEntityCode === undefined) {
+      else if (target.romEntityCode === undefined || Boolean((target.romFlags ?? 0) & 0x40)) {
         this.spawnUnit("wanted", target.x, target.y, 1);
         this.showMessage("WANTED POSTER FOUND");
       }

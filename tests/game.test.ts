@@ -162,6 +162,7 @@ describe("Gun.Smoke vertical slice", () => {
     }
     expect(romEventWorldY(ROUND_ROM_ENEMY_EVENTS[0]![0]!)).toBe(0);
     expect(ROUND_ROM_OBJECT_EVENTS.every((stream) => stream.filter((event) => event.semantic === "wantedTrigger").length === 1)).toBe(true);
+    expect(ROUND_ROM_OBJECT_EVENTS.flatMap((stream) => stream.filter((event) => event.semantic === "wantedTrigger")).every((event) => (event.flags & 0x40) !== 0)).toBe(true);
     expect(ROUND_ROM_OBJECT_EVENTS.flat().every((event) => event.pool === "enemy" || event.pool === "object")).toBe(true);
   });
 

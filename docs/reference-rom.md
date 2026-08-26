@@ -242,7 +242,9 @@ codes alongside each spawned unit for comparison.
 The one record per Round carrying entity flag `0x40` occurs before the Boss
 gate and feeds the `$CBDA-$CBDF` interaction path that sets `$49`; its decoded
 NES X positions are `[200,64,216,216,72,216]`, and these are the current
-byte-level Wanted-trigger positions used by the web runtime.
+byte-level Wanted-trigger positions used by the web runtime. The web barrel
+keeps that flag and its enemy-pool identity while descending, then converts to
+the Wanted pickup when destroyed.
 
 Pattern-table previews remain grayscale for bitplane inspection; nametable
 previews apply each tile's expanded attribute and the live NES background

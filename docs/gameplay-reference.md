@@ -58,9 +58,10 @@ first shop in each Round sells the three special guns and Smart Bomb, the
 flagged supply shop sells Horse, Bullet refills, and Wanted posters, and Rounds
 3 and 6 receive a later weapon-shop revisit.
 
-The Horse is a three-hit shield rather than a speed bonus. Score awards an
-extra life at 30,000, again at 100,000, and at each later 100,000-point
-threshold.
+The Horse is a three-hit shield rather than a speed bonus. A blocked hit removes
+only its collision source and grants brief protection; it does not clear every
+enemy projectile. Score awards an extra life at 30,000, again at 100,000, and
+at each later 100,000-point threshold.
 
 Shop funds now use the NES point scale: Money Bags are 200 points and the
 Wanted poster prices are 20,000 (Round 1), 24,000 (Round 2), 50,000 (Round 3),

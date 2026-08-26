@@ -123,6 +123,10 @@ Projectile clear routine `$CDD4-$CDE0` only zeros those same eight slots. The
 POW path at `$CDAB-$CDD3` also handles ordinary enemy slots `$0410-$0416`, but
 neither path clears object-pool falling rocks; runtime screen clears preserve
 that boundary.
+On a Horse-protected collision, `$CABC-$CAC5` first removes only the colliding
+ordinary projectile, then `$CAEF-$CB29` decrements Horse health and starts a
+60-frame protection timer without calling the screen-clear routine. The runtime
+does not erase unrelated projectiles on a Horse hit.
 Round 1 uses exactly five behavior routines: `$B080`, `$B0E5`, `$B501`,
 `$B284` and `$B46E`. After the first four are identified as Sniper,
 Shotgunner, Bomber and Gunman, the remaining `$B46E` routine is the verified

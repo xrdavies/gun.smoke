@@ -1480,7 +1480,6 @@ class GunSmokeGame {
       this.invulnerable = 1;
       this.beep(170, 0.12);
       this.showMessage(this.hasHorse ? `HORSE ${this.horseHealth}` : "HORSE DOWN");
-      this.clearEnemyProjectiles();
       this.updateHud();
       return;
     }

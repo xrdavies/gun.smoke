@@ -89,11 +89,10 @@ test("reaches the first trading post", async ({ page }) => {
   await expect(page.locator("#shop-title")).toHaveText("WEAPON SHOP / ROUND 1");
   await expect(page.locator("#shop-message")).toHaveText("POINTS 000000");
   await expect(page.locator('[data-shop-item="shotgun"]')).toContainText("$06000");
-  await expect(page.locator('[data-shop-item="horse"]')).toContainText("$20000");
-  await expect(page.locator('[data-shop-item="ammo"]')).toContainText("$01500");
-  await expect(page.locator('[data-shop-item="wanted"]')).toContainText("$20000");
+  await expect(page.locator('[data-shop-item="horse"]')).toBeHidden();
+  await expect(page.locator('[data-shop-item="ammo"]')).toBeHidden();
+  await expect(page.locator('[data-shop-item="wanted"]')).toBeHidden();
   await expect(page.locator('[data-shop-item="magnum"]')).toBeDisabled();
-  await expect(page.locator('[data-shop-item="wanted"]')).toBeDisabled();
   await page.locator("#shop-close").click();
   await expect(page.locator("#shop")).toBeHidden();
   await expect(page.locator("#hud")).toBeVisible();
@@ -109,8 +108,10 @@ test("switches from the weapon shop to the supply shop", async ({ page }) => {
   await page.locator("#shop-close").click();
   await page.waitForTimeout(13_500);
   await expect(page.locator("#shop-title")).toHaveText("SUPPLY SHOP / ROUND 1");
-  await expect(page.locator('[data-shop-item="shotgun"]')).toBeDisabled();
+  await expect(page.locator('[data-shop-item="shotgun"]')).toBeHidden();
+  await expect(page.locator('[data-shop-item="horse"]')).toBeVisible();
   await expect(page.locator('[data-shop-item="horse"]')).toBeDisabled();
+  await expect(page.locator('[data-shop-item="wanted"]')).toBeVisible();
   await expect(page.locator('[data-shop-item="wanted"]')).toBeDisabled();
 });
 

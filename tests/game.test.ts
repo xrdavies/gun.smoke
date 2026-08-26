@@ -3,11 +3,20 @@ import { AMMO_GAIN, bossReward, BOSS_REWARDS, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGG
 
 describe("Gun.Smoke vertical slice", () => {
   it("keeps the NES-inspired stage constants stable", () => {
-    expect({ frameRate: NES_FRAME_RATE, nesScrollSpeed: NES_SCROLL_SPEED, scrollSpeed: WORLD_SCROLL_SPEED, fireInterval: 0.16, bossTrigger: BOSS_TRIGGER, stageLength: STAGE_LENGTH, rounds: MAX_STAGE }).toEqual({ frameRate: 60.098, nesScrollSpeed: 20, scrollSpeed: 45, fireInterval: 0.16, bossTrigger: 1820, stageLength: 2200, rounds: 6 });
-    expect({ nesPlayerSpeed: NES_PLAYER_SPEED, playerSpeed: WORLD_PLAYER_SPEED, bootsMultiplier: BOOTS_SPEED_MULTIPLIER }).toEqual({ nesPlayerSpeed: 75, playerSpeed: 168.75, bootsMultiplier: 1.2 });
-    expect({ nesBulletSpeed: NES_BULLET_SPEED, bulletSpeed: WORLD_BULLET_SPEED }).toEqual({ nesBulletSpeed: 360, bulletSpeed: 810 });
-    expect({ x: NES_DIAGONAL_BULLET_X, y: NES_DIAGONAL_BULLET_Y, worldX: WORLD_DIAGONAL_BULLET_X, worldY: WORLD_DIAGONAL_BULLET_Y, lifetime: PISTOL_BULLET_LIFETIME }).toEqual({ x: 150, y: 300, worldX: 337.5, worldY: 675, lifetime: 0.25 });
-    expect({ speed: MAGNUM_BULLET_SPEED, lifetime: MAGNUM_BULLET_LIFETIME }).toEqual({ speed: 607.5, lifetime: 0.8 });
+    expect({ frameRate: NES_FRAME_RATE, bossTrigger: BOSS_TRIGGER, stageLength: STAGE_LENGTH, rounds: MAX_STAGE }).toEqual({ frameRate: 60.098, bossTrigger: 1820, stageLength: 2200, rounds: 6 });
+    expect(NES_SCROLL_SPEED).toBeCloseTo(20.032667, 6);
+    expect(WORLD_SCROLL_SPEED).toBeCloseTo(45.0735, 6);
+    expect(NES_PLAYER_SPEED).toBeCloseTo(75.1225, 6);
+    expect(WORLD_PLAYER_SPEED).toBeCloseTo(169.025625, 6);
+    expect(BOOTS_SPEED_MULTIPLIER).toBe(1.2);
+    expect(NES_BULLET_SPEED).toBeCloseTo(360.588, 6);
+    expect(WORLD_BULLET_SPEED).toBeCloseTo(811.323, 6);
+    expect(NES_DIAGONAL_BULLET_X).toBeCloseTo(150.245, 6);
+    expect(NES_DIAGONAL_BULLET_Y).toBeCloseTo(300.49, 6);
+    expect(WORLD_DIAGONAL_BULLET_X).toBeCloseTo(338.05125, 6);
+    expect(WORLD_DIAGONAL_BULLET_Y).toBeCloseTo(676.1025, 6);
+    expect(PISTOL_BULLET_LIFETIME).toBeCloseTo(15 / 60.098, 9);
+    expect({ speed: MAGNUM_BULLET_SPEED, lifetime: MAGNUM_BULLET_LIFETIME }).toEqual({ speed: WORLD_BULLET_SPEED * 0.75, lifetime: 0.8 });
   });
 
   it("keeps collision helpers bounded and Euclidean", () => {

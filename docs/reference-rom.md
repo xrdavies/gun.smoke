@@ -55,19 +55,20 @@ deterministic continuous-fire comparison is needed. The trace contains
 observations only; it does not include ROM bytes or extracted graphics.
 
 The corrected Round 1 trace shows the PPU vertical position advancing 20 pixels
-per 60 frames. The 540-high procedural world therefore uses 45 world pixels per
-second (`20 * 540 / 240`) for its automatic scroll.
+per 60 frames. At 60.098 Hz, the 540-high procedural world therefore uses
+45.0735 world pixels per second (`20 * 60.098 / 60 * 540 / 240`) for its
+automatic scroll.
 
-Holding Left in the real player state moves Billy about 75 NES pixels per
-second. The procedural world therefore uses 168.75 world pixels per second;
+Holding Left for 60 real frames moves Billy about 75 NES pixels. The procedural
+world therefore uses 169.025625 world pixels per second;
 the Boots speed increase remains an explicit multiplier pending a verified ROM
 measurement.
 
 OAM projectile traces show straight A+B pistol shots moving 6 pixels per frame,
 and single-button diagonal shots moving about 2.5 horizontal / 5 vertical
 pixels per frame. Normal pistol shots persist for roughly 15 frames. These map
-to 810 straight, 337.5/675 diagonal world pixels per second and a 0.25-second
-base lifetime in the procedural world.
+to 811.323 straight, 338.05125/676.1025 diagonal world pixels per second and a
+15/60.098-second base lifetime in the procedural world.
 
 The first active enemy wave appears around gameplay frame 195 in the verified
 Round 1 trace, which maps to roughly 146 world pixels at the calibrated 45

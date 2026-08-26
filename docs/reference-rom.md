@@ -184,6 +184,10 @@ The same campaign reaches Round 4 and identifies its Ninja Boss as dispatch
 runtime uses that initial position; smoke, teleport, and damage timing remain
 an approximation until the Boss slot can be isolated without the research
 cleanup used to cross the earlier gates.
+Round 5's gate identifies Fatman Joe as dispatch `0x80`, variant `0x51`. He
+enters from NES `(x=0, y=152)`, keeps that vertical lane for the first 170
+frames and reaches about `x=112`. The runtime preserves this measured opening;
+its later hopping and bomb-gun phases remain explicit approximations.
 
 Current behavior map:
 

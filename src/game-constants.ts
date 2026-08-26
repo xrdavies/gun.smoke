@@ -112,6 +112,16 @@ export const NINJA_BOSS_ENTRY_X_NES = 64;
 export const NINJA_BOSS_ENTRY_X = NINJA_BOSS_ENTRY_X_NES * NES_WORLD_X_SCALE;
 export const NINJA_BOSS_ENTRY_Y_NES = 192;
 export const NINJA_BOSS_ENTRY_Y = NINJA_BOSS_ENTRY_Y_NES * NES_WORLD_Y_SCALE;
+export const FATMAN_JOE_ENTRY_X = 0 * NES_WORLD_X_SCALE;
+export const FATMAN_JOE_ENTRY_Y_NES = 152;
+export const FATMAN_JOE_ENTRY_Y = FATMAN_JOE_ENTRY_Y_NES * NES_WORLD_Y_SCALE;
+export const FATMAN_JOE_ENTRY_END_X_NES = 112;
+export const FATMAN_JOE_ENTRY_END_X = FATMAN_JOE_ENTRY_END_X_NES * NES_WORLD_X_SCALE;
+export const FATMAN_JOE_ENTRY_DURATION = 170 / NES_FRAME_RATE;
+
+export function fatmanJoeOpeningX(age: number): number {
+  return Math.max(0, Math.min(1, age / FATMAN_JOE_ENTRY_DURATION)) * FATMAN_JOE_ENTRY_END_X;
+}
 
 export function banditBillCooldown(shotsFired: number): number {
   return shotsFired % BANDIT_BILL_SHOTS_PER_VOLLEY === 0 ? BANDIT_BILL_VOLLEY_GAP : BANDIT_BILL_SHOT_INTERVAL;

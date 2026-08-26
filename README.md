@@ -8,7 +8,7 @@ fresh clone independent of a sibling `../engine` directory.
 
 The repository contains a playable six-round loop: title screen, automatic
 vertical scrolling, eight-way movement, three-direction shooting, enemy
-formations and projectiles, coins, life pickups, stage bosses, spendable score,
+formations and projectiles, Money Bags, life pickups, stage bosses, spendable score,
 damage recovery, wanted-poster gates, two final Wingate encounters, game over
 and a completion state.
 

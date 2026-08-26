@@ -24,7 +24,7 @@ If the player reaches the end without the poster, the Round loops to its first
 segment with shops and the hidden barrel available again. Once the poster is
 owned, scrolling stops at the Boss arena.
 
-The web build also models the resource loop with money pickups, round-specific
+The web build also models the resource loop with Money Bag pickups, round-specific
 trading-post checkpoints, Shotgun, Machine Gun, Magnum, finite ammunition,
 Smart Bomb inventory, Wanted poster purchases and Horse upgrades. NES shop
 prices and capacities are applied: Shotgun 6,000/120 shots, Machine Gun
@@ -47,6 +47,11 @@ Wanted poster prices are 20,000 (Round 1), 24,000 (Round 2), 50,000 (Round 3),
 The matching Boss rewards are 10,000, 12,000, 25,000, 20,000, 20,000, and
 30,000 points respectively. Round 6 grants its 30,000 only after the real,
 second Wingate; the decoy encounter does not duplicate the bounty.
+
+Score and shop funds are the same NES value rather than separate counters.
+Buying an item subtracts directly from the score shown in the HUD; the next
+extra-life threshold remains monotonic, so spending cannot award a threshold
+twice.
 
 Barrels can reveal the NES item set: stored Boots and Rifle power-ups, special
 weapon ammo, money, POW, Cattle Skull, Horse, and Blue/Red Yashichi. Stored

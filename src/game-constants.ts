@@ -209,6 +209,10 @@ export function formationEntryY(scroll: number, bossEncounter = false): number {
   return scroll + (bossEncounter ? -40 : 55);
 }
 
+export function spendPoints(points: number, cost: number): number | undefined {
+  return points >= cost ? points - cost : undefined;
+}
+
 export function nextExtraLifeScore(currentThreshold: number): number {
   return currentThreshold === 30_000 ? 100_000 : currentThreshold + 100_000;
 }

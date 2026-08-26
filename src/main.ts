@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, bossReward, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, shouldLoopStage, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, scoreExtraLives, STAGE_LENGTH, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, bossReward, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_ITEM_TYPES, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, shouldLoopStage, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, scoreExtraLives, spendPoints, STAGE_LENGTH, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -102,7 +102,6 @@ const romStatus = requireElement<HTMLElement>("#rom-status");
 const finalScore = requireElement<HTMLElement>("#final-score");
 const stageLabel = requireElement<HTMLElement>("#stage-label");
 const scoreLabel = requireElement<HTMLElement>("#score-label");
-const moneyLabel = requireElement<HTMLElement>("#money-label");
 const livesLabel = requireElement<HTMLElement>("#lives-label");
 const weaponLabel = requireElement<HTMLElement>("#weapon-label");
 const bossLabel = requireElement<HTMLElement>("#boss-label");
@@ -178,7 +177,6 @@ class GunSmokeGame {
   stage = 1;
   score = 0;
   nextLifeScore = 30_000;
-  money = 0;
   lives = 3;
   weaponAmmo: Record<WeaponName, number> = { pistol: Number.POSITIVE_INFINITY, shotgun: 0, machinegun: 0, magnum: 0 };
   ownedWeapons = new Set<WeaponName>(["pistol"]);
@@ -766,7 +764,7 @@ class GunSmokeGame {
     shop.hidden = false;
     const shopType = SHOP_TYPES[this.stage - 1]?.[this.shopIndex - 1] ?? "supplies";
     shopTitle.textContent = `${shopType === "weapons" ? "WEAPON SHOP" : "SUPPLY SHOP"} / ROUND ${this.stage}`;
-    shopMessage.textContent = `MONEY $${String(this.money).padStart(6, "0")}`;
+    shopMessage.textContent = `POINTS ${String(this.score).padStart(6, "0")}`;
     this.refreshShopButtons();
   }
 
@@ -778,7 +776,7 @@ class GunSmokeGame {
       if (key === "wanted") item.textContent = `Wanted poster $${String(cost).padStart(5, "0")}`;
       const isWeapon = key === "shotgun" || key === "machinegun" || key === "magnum";
       const available = shopType === "weapons" ? isWeapon : !isWeapon;
-      item.disabled = !available || key === "horse" ? !available || this.hasHorse || this.money < cost : key === "ammo" ? !available || !this.canRefillAmmo() || this.money < cost : key === "wanted" ? !available || this.shopIndex < 2 || this.hasWanted || this.money < cost : key === "smartBomb" ? !available || this.smartBombs >= 5 || this.money < cost : key ? !available || this.ownedWeapons.has(key) || this.money < cost : true;
+      item.disabled = !available || key === "horse" ? !available || this.hasHorse || this.score < cost : key === "ammo" ? !available || !this.canRefillAmmo() || this.score < cost : key === "wanted" ? !available || this.shopIndex < 2 || this.hasWanted || this.score < cost : key === "smartBomb" ? !available || this.smartBombs >= 5 || this.score < cost : key ? !available || this.ownedWeapons.has(key) || this.score < cost : true;
     }
   }
 
@@ -791,11 +789,12 @@ class GunSmokeGame {
       return;
     }
     const cost = key === "horse" ? SHOP_COSTS.horse : key === "ammo" ? SHOP_COSTS.ammo : key === "smartBomb" ? SHOP_COSTS.smartBomb : key === "wanted" ? WANTED_COSTS[this.stage - 1] ?? 50_000 : WEAPONS[key]?.cost;
-    if (cost === undefined || (key === "horse" && this.hasHorse) || this.money < cost) {
-      shopMessage.textContent = "NOT ENOUGH MONEY";
+    const remainingPoints = cost === undefined ? undefined : spendPoints(this.score, cost);
+    if (remainingPoints === undefined || (key === "horse" && this.hasHorse)) {
+      shopMessage.textContent = "NOT ENOUGH POINTS";
       return;
     }
-    this.money -= cost;
+    this.score = remainingPoints;
     if (key === "horse") {
       this.hasHorse = true;
       this.horseHealth = 3;
@@ -1049,10 +1048,9 @@ class GunSmokeGame {
           unit.hp = 0;
           this.score += unit.value;
           this.awardScoreLife();
-          if (unit.kind === "coin") this.money += unit.value;
-          else if (unit.kind === "item" && unit.itemType) this.collectItem(unit.itemType);
+          if (unit.kind === "item" && unit.itemType) this.collectItem(unit.itemType);
           else if (unit.kind === "ammo") this.refillAmmo(1);
-          else {
+          else if (unit.kind === "wanted") {
             this.hasWanted = true;
             this.showMessage("WANTED POSTER FOUND");
           }
@@ -1075,7 +1073,6 @@ class GunSmokeGame {
     target.hp = 0;
     this.score += target.value;
     this.awardScoreLife();
-    this.money += target.value;
     if (target.kind === "barrel") {
       if (target.itemType) this.spawnUnit("item", target.x, target.y, 1, undefined, target.itemType);
       else {
@@ -1130,7 +1127,6 @@ class GunSmokeGame {
       this.refillAmmo(1);
     } else if (item === "money") {
       this.score += 200;
-      this.money += 200;
       this.awardScoreLife();
     } else if (item === "pow") {
       for (const target of [...this.units]) {
@@ -1260,7 +1256,7 @@ class GunSmokeGame {
       gameOver.hidden = false;
       endingScreen.hidden = true;
       gameOver.querySelector("h2")!.textContent = "WANTED: ALIVE";
-      finalScore.textContent = `SCORE ${String(this.score).padStart(6, "0")}  MONEY $${String(this.money).padStart(6, "0")}`;
+      finalScore.textContent = `SCORE ${String(this.score).padStart(6, "0")}`;
     }
   }
 
@@ -1268,7 +1264,6 @@ class GunSmokeGame {
     const definition = STAGES[this.stage - 1] ?? STAGES[0]!;
     stageLabel.textContent = `ROUND ${this.stage} ${definition.name}`;
     scoreLabel.textContent = `SCORE ${String(this.score).padStart(6, "0")}`;
-    moneyLabel.textContent = `$${String(this.money).padStart(6, "0")}`;
     livesLabel.textContent = `LIVES ${this.lives}`;
     const ammo = Number.isFinite(WEAPONS[this.weapon].maxAmmo) ? ` ${this.ammo}` : "";
     weaponLabel.textContent = `${this.weapon.toUpperCase()}${ammo} / BOMB ${this.smartBombs}${this.smartBombArmed ? " ARMED" : ""} / BOOTS ${this.powerups.boots} / RIFLE ${this.powerups.rifle}${this.hasHorse ? ` / HORSE ${this.horseHealth}` : ""} / WANTED ${this.hasWanted ? "YES" : "NO"}`;

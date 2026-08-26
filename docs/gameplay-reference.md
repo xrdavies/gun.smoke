@@ -163,12 +163,13 @@ with explicit formation metadata and a landmark type (`town`, `rock`, `village`,
 `cliff`, `forest`, `cemetery`, or `open`) so side geometry changes with the ROM
 event script. Enemy timing itself comes from the decoded event stream.
 
-The six decoded ROM collision rings now provide the base 16-pixel terrain mask.
+The six decoded ROM collision rings now provide the base 16-pixel terrain mask
+and the geometry for each Round's self-generated map texture.
 The player lookup follows the verified `$5A-$5D` map pointer/page/fine-scroll
 formula and keeps axis sliding, so diagonal input can follow a blocked edge.
 Rocky Pass, Cliff Valley, Forest, and Wingate Town retain their authored
-boulder, tree, and grave zones as visual scenery, while movement collision
-comes only from the decoded ROM mask.
+boulder, tree, and grave overlays, while both the visible base geometry and
+movement collision come from the decoded ROM mask.
 Forest segments additionally alternate blue water with brown bridge
 crossings to match the Round 5 traversal cue; water remains passable in this
 first approximation, while trees are the blocking geometry. Cemetery segments

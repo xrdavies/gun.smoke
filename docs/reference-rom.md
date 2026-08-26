@@ -57,6 +57,9 @@ cell definitions, and self-generated ID-color/collision previews into the ignore
 `.rom-traces/round-maps/` directory. The previews visualize structure without
 reusing the original tile artwork. Collision is decoded from bit 6 of each
 definition quadrant, matching the player collision test at `$C733-$C77F`.
+The web game renders the same 16-pixel mask through self-generated stage colors,
+so visible geometry and collision share one decoded source without copying tile
+art.
 
 The fixed-bank scheduler at `$FA30-$FAE5` reads three-byte records from `$8C00`
 in the current Round bank. Each record contains a map-row trigger, a position

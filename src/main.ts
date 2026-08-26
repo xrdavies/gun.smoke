@@ -27,7 +27,7 @@ import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPEED, CUTTER_FIRST_ATTACK_DEL
 import { CUTTER_ENTRY_DURATION, CUTTER_MOVEMENT_SPEED, cutterCombatY, cutterOpeningY } from "./game-constants";
 import { DEVIL_HAWK_ENTRY_DURATION, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_POST_ENTRY_X_HOLD, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY } from "./game-constants";
 import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_ATTACK_DELAY, NINJA_BOSS_SHURIKEN_COUNT, NINJA_BOSS_SHURIKEN_SPEED, ninjaBossCombatY } from "./game-constants";
-import { roundCollisionBlocks } from "./round-collision";
+import { roundCollisionBlocks, ROUND_COLLISION_ROWS } from "./round-collision";
 import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
 
 type GameAction =
@@ -174,6 +174,13 @@ function proceduralRows(width: number, height: number, seed: number, values: rea
   );
 }
 
+function collisionTextureRows(rows: readonly number[], seed: number): string[] {
+  return rows.map((mask, row) => Array.from({ length: 16 }, (_, column) => {
+    const blocked = Boolean(mask & (1 << (15 - column)));
+    return blocked ? (row + column + seed) % 7 === 0 ? "p" : "d" : (row * 3 + column + seed) % 9 === 0 ? "h" : "q";
+  }).join(""));
+}
+
 function formationOffsets(formation: Formation): readonly number[] {
   if (formation === "wedge") return [-2, -1, 1, 2];
   if (formation === "cross") return [-2, 0, 2];
@@ -211,6 +218,7 @@ class GunSmokeGame {
   readonly bossTextures: GPUTexture[];
   readonly terrainTextures: GPUTexture[] = [];
   readonly roadTextures: GPUTexture[] = [];
+  readonly mapTextures: GPUTexture[] = [];
   audio: AudioManager | undefined;
   mode: GameMode = "title";
   scroll = 0;
@@ -374,6 +382,7 @@ class GunSmokeGame {
     for (let index = 0; index < STAGES.length; index += 1) {
       this.terrainTextures.push(pixelTexture(engine, proceduralRows(64, 64, index + 1, terrainPatterns[index] ?? terrainPatterns[0]!), palette));
       this.roadTextures.push(pixelTexture(engine, proceduralRows(64, 64, index + 4, roadPatterns[index] ?? roadPatterns[0]!), palette));
+      this.mapTextures.push(pixelTexture(engine, collisionTextureRows(ROUND_COLLISION_ROWS[index] ?? [], index + 1), palette));
     }
     this.player.entity = this.world.createEntity();
     this.horseSprite = new Sprite({ texture: this.textures.horse, sampler: this.sampler, position: { x: 480, y: 426 }, size: { x: 64, y: 54 }, anchor: { x: 0.5, y: 0.5 }, layer: 19, visible: false });
@@ -867,16 +876,16 @@ class GunSmokeGame {
     this.backgrounds.length = 0;
     const themes: Rgba[] = [[1, 1, 1, 1], [0.92, 0.98, 1, 1], [1, 0.93, 0.84, 1], [0.9, 0.96, 0.9, 1], [1, 0.86, 0.75, 1], [0.88, 0.9, 1, 1]];
     const tint = themes[(this.stage - 1) % themes.length] ?? [1, 1, 1, 1];
-    const terrain = this.terrainTextures[this.stage - 1] ?? this.textures.terrain;
     const road = this.roadTextures[this.stage - 1] ?? this.textures.road;
+    const roundLength = ROUND_LENGTHS[this.stage - 1] ?? ROUND_LENGTHS[0]!;
+    const mapTexture = this.mapTextures[this.stage - 1] ?? this.textures.terrain;
     const roadWidth = ROAD_WIDTHS[this.stage - 1] ?? 520;
     const edge = (960 - roadWidth) / 2;
     const segments = ROUND_SEGMENTS[this.stage - 1] ?? ROUND_SEGMENTS[0]!;
-    for (let y = -360; y < (ROUND_LENGTHS[this.stage - 1] ?? ROUND_LENGTHS[0]!) + 650; y += 180) {
+    this.backgrounds.push(new Sprite({ texture: mapTexture, sampler: this.sampler, position: { x: 480, y: roundLength / 2 }, size: { x: 960, y: roundLength }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -20 }));
+    for (let y = -360; y < roundLength + 650; y += 180) {
       let landmark = segments[0]?.landmark ?? "town";
       for (const candidate of segments) if (y >= candidate.at) landmark = candidate.landmark;
-      this.backgrounds.push(new Sprite({ texture: terrain, sampler: this.sampler, position: { x: 480, y: y + 90 }, size: { x: 960, y: 180 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -20 }));
-      this.backgrounds.push(new Sprite({ texture: road, sampler: this.sampler, position: { x: 480, y: y + 90 }, size: { x: roadWidth, y: 180 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -19 }));
       if (this.stage === 5) {
         const forestSegment = Math.floor(y / 180);
         const bridge = forestSegment % 3 === 1;
@@ -1664,6 +1673,7 @@ class GunSmokeGame {
       ...this.bossTextures,
       ...this.terrainTextures,
       ...this.roadTextures,
+      ...this.mapTextures,
     ]);
     for (const texture of textures) texture.destroy();
   }

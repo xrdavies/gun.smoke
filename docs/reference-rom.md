@@ -162,10 +162,11 @@ An early Boss-gate trace identifies Bandit Bill as dispatch `0x88`, variant
 and the next volley starts 72 frames after the fourth shot. Dispatch `0x30`
 projectiles travel at roughly 444 world pixels/s; Round 1 uses these measured
 values instead of its former single slow shot.
-The same gate trace places his initial entity at NES `(x=0, y=160)`; after 96
-frames the actor reaches approximately `x=64`. The web runtime uses the
-corresponding world-space edge entry and horizontal speed, while later
-movement and damage phases remain separate Boss approximations.
+The gate traces place his initial entity at the left edge (`x=0`) and observe
+four vertical entry lanes, NES `y=96/128/160/192`; after 96 frames the actor
+reaches approximately `x=64`. The web runtime selects one of those measured
+lanes and uses the corresponding edge-entry speed, while later movement and
+damage phases remain separate Boss approximations.
 
 Current behavior map:
 
@@ -205,6 +206,12 @@ sprite counts for encounter-timing comparisons.
 Each sample also includes `gameFrame`, measured from the verified Round 1 entry
 at ROM frame 825, so timeline samples can be mapped directly onto procedural
 world coordinates.
+
+`npm run trace:rom:boss -- --frames=18000` runs the first Round with a controlled
+poster-gate flag and temporary invulnerability, then records the real Bandit
+Bill slot (`$0400/$0420/$0480`) and projectile-slot changes for 720 frames.
+The output is an ignored observation artifact under `.rom-traces/`; it is not
+runtime game data or copied ROM code.
 
 `npm run trace:rom:scenes -- --frames=12000 --every=60` writes a longer,
 machine-readable trace to `.rom-traces/scenes.json`. In addition to the state

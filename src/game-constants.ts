@@ -97,7 +97,8 @@ export const BANDIT_BILL_VOLLEY_GAP = 72 / NES_FRAME_RATE;
 export const BANDIT_BILL_SHOTS_PER_VOLLEY = 4;
 export const BANDIT_BILL_BULLET_SPEED = 444;
 export const BANDIT_BILL_ENTRY_X = 0 * NES_WORLD_X_SCALE;
-export const BANDIT_BILL_ENTRY_Y = 160 * NES_WORLD_Y_SCALE;
+export const BANDIT_BILL_ENTRY_Y_NES = [96, 128, 160, 192] as const;
+export const BANDIT_BILL_ENTRY_Y_LANES = BANDIT_BILL_ENTRY_Y_NES.map((value) => value * NES_WORLD_Y_SCALE);
 export const BANDIT_BILL_ENTRY_SPEED_X = (64 / 96) * NES_FRAME_RATE * NES_WORLD_X_SCALE;
 
 export function banditBillCooldown(shotsFired: number): number {

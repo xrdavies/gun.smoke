@@ -31,7 +31,7 @@ import { canSpawnEnemyProjectile } from "./game-constants";
 import { canSpawnBossProjectile } from "./game-constants";
 import { romEnemyDrop } from "./game-constants";
 import { roundCollisionBlocks, ROUND_COLLISION_ROWS } from "./round-collision";
-import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
+import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
 
 type GameAction =
   | "left"
@@ -735,7 +735,7 @@ class GunSmokeGame {
       if (event.semantic !== "sceneObject" || !ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES.includes(event.dispatchType as 7)) continue;
       if (!canSpawnRomPool(event.pool, activeObjects)) continue;
       const pickup = ROM_OBJECT_PICKUPS[event.entityCode as keyof typeof ROM_OBJECT_PICKUPS];
-      const container = this.spawnUnit(pickup ? "barrel" : "sceneObject", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), 1, undefined, pickup);
+      const container = this.spawnUnit(pickup || ROM_EMPTY_BARREL_ENTITY_CODES.includes(event.entityCode as 32 | 41) ? "barrel" : "sceneObject", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), 1, undefined, pickup);
       container.vy = ROM_OBJECT_DROP_SPEED;
       container.romEntityCode = event.entityCode;
       container.romFlags = event.flags;

@@ -19,8 +19,7 @@ import { RIFLEMAN_ATTACK_STATE_FRAME } from "./game-constants";
 import { BANDIT_BILL_BULLET_SPEED, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, banditBillCombatX, banditBillCombatY } from "./game-constants";
 import { banditBillCooldown } from "./game-constants";
 import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "./game-constants";
-import { pistolShots } from "./game-constants";
-import { NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
+import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, pistolVelocities, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
 import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_MOVEMENT_SPEED, FATMAN_JOE_SHOT_INTERVAL, FATMAN_JOE_VOLLEY_GAP, FATMAN_JOE_VOLLEY_SIZE, fatmanJoeCombatY } from "./game-constants";
 import { WINGATE_BULLET_SPEED, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateCombatY, wingateShotCooldown } from "./game-constants";
@@ -650,11 +649,13 @@ class GunSmokeGame {
     const direction = left && right ? 0 : left ? -1 : 1;
     if (this.weapon !== "pistol") this.ammo = Math.max(0, this.ammo - 1);
     if (this.weapon === "pistol") {
-      for (const shot of pistolShots(left, right)) this.spawnBullet(shot.direction, weapon.damage, shot.offset);
+      for (const [x, y, offset] of pistolVelocities(left, right)) this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_Y_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE, weapon.damage, weaponBulletLifetime("pistol"), offset * NES_WORLD_X_SCALE);
     } else if (this.weapon === "shotgun") {
       for (const [x, y] of shotgunVelocities(left, right)) {
         this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE, weapon.damage, weaponBulletLifetime("shotgun"));
       }
+    } else if (this.weapon === "machinegun") {
+      for (const [x, y, offset] of machineGunVelocities(left, right)) this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_Y_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE, weapon.damage, weaponBulletLifetime("machinegun"), offset * NES_WORLD_X_SCALE);
     } else {
       this.spawnBullet(direction, weapon.damage);
     }
@@ -1125,8 +1126,8 @@ class GunSmokeGame {
     }
   }
 
-  private spawnBulletVelocity(vx: number, vy: number, damage: number, lifetime = 0.55): void {
-    const unit = this.spawnPlayerBullet(this.player.x);
+  private spawnBulletVelocity(vx: number, vy: number, damage: number, lifetime = 0.55, offset = 0): void {
+    const unit = this.spawnPlayerBullet(this.player.x + offset);
     if (!unit) return;
     unit.vx = vx;
     unit.vy = vy;

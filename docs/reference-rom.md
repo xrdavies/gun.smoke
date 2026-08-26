@@ -368,8 +368,8 @@ With `$79/$88` set for an active Rifle stock, the straight A+B projectile moves
 applies a non-stacking `4 / 3` speed multiplier to Pistol shots rather than
 extending their lifetime.
 Straight A+B fire occupies both player projectile slots at X offsets `-8/+8`;
-the runtime emits two parallel bullets. A single A or B press still emits one
-diagonal bullet from the corresponding side. The allocator scans six player
+the runtime emits two parallel bullets. A single A or B press also emits two
+diagonal bullets from the corresponding side, one per gun barrel. The allocator scans six player
 projectile slots at `$0408-$040d`; the runtime applies the same shared cap to
 all four weapons and allows a multi-projectile shot to fill only the remaining
 slots.
@@ -390,7 +390,9 @@ Gun and `3` for Magnum, matching the runtime damage values. The web runtime
 preserves those lifetimes while retaining its self-generated Magnum piercing
 body.
 Held-input traces fire Shotgun and Magnum once, while code `2` Machine Gun
-continues to allocate projectile pairs at its measured cadence. Rapid pulse
+continues to allocate projectile pairs at its measured cadence. Isolated
+single-side traces measure base Pistol vectors near `(2,-5),(3,-5)` NES pixels
+per frame and Machine Gun vectors near `(4,-9),(7,-7)`; Rapid pulse
 traces measure Pistol/Shotgun/Machine Gun/Magnum trigger intervals of
 `4/12/5/4` frames.
 

@@ -73,7 +73,21 @@ export function romEnemyDrop(flags: number, hasSpecialStock: boolean): "ammo" | 
 }
 
 export function pistolShots(left: boolean, right: boolean): readonly { direction: number; offset: number }[] {
-  return left && right ? [{ direction: 0, offset: -8 }, { direction: 0, offset: 8 }] : [{ direction: left ? -1 : 1, offset: left ? -10 : 10 }];
+  return left && right
+    ? [{ direction: 0, offset: -8 }, { direction: 0, offset: 8 }]
+    : [{ direction: left ? -1 : 1, offset: -8 }, { direction: left ? -1 : 1, offset: 8 }];
+}
+
+export function pistolVelocities(left: boolean, right: boolean): readonly (readonly [number, number, number])[] {
+  if (left && right) return [[0, -6, -8], [0, -6, 8]];
+  if (left) return [[-3, -5, -8], [-2, -5, 8]];
+  return [[2, -5, -8], [3, -5, 8]];
+}
+
+export function machineGunVelocities(left: boolean, right: boolean): readonly (readonly [number, number, number])[] {
+  if (left && right) return [[0, -10, -8], [0, -10, 8]];
+  if (left) return [[-7, -7, -8], [-4, -9, 8]];
+  return [[4, -9, -8], [7, -7, 8]];
 }
 
 export function shotgunVelocities(left: boolean, right: boolean): readonly (readonly [number, number])[] {

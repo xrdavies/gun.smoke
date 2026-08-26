@@ -16,25 +16,28 @@ export const STAGES: readonly StageDefinition[] = [
   { name: "WINGATE TOWN", boss: "WINGATE", bossHp: 6 },
 ];
 
-export const STAGE_LENGTH = 2_200;
-export const BOSS_TRIGGER = 1_820;
-export const WANTED_REVEAL_AT = [1_320, 920, 1_450, 1_740, 1_580, 1_600] as const;
 export const MAX_STAGE = STAGES.length;
 export const NES_FRAME_RATE = 60.098;
 export const WORLD_VIEWPORT_HEIGHT = 540;
+const NES_WORLD_Y_SCALE = WORLD_VIEWPORT_HEIGHT / 240;
+export const ROUND_BOSS_GATE_SCROLL_NES = [2_767, 2_799, 4_863, 3_487, 2_879, 4_879] as const;
+export const ROUND_LOOP_SCROLL_NES = [3_087, 3_055, 5_119, 3_839, 3_055, 5_119] as const;
+export const ROUND_BOSS_TRIGGERS = ROUND_BOSS_GATE_SCROLL_NES.map((value) => value * NES_WORLD_Y_SCALE);
+export const ROUND_LENGTHS = ROUND_LOOP_SCROLL_NES.map((value) => value * NES_WORLD_Y_SCALE);
+export const WANTED_REVEAL_AT = [1_320, 920, 1_450, 1_740, 1_580, 1_600] as const;
 export const NES_SCROLL_SPEED = 20 * (NES_FRAME_RATE / 60);
-export const WORLD_SCROLL_SPEED = NES_SCROLL_SPEED * (540 / 240);
+export const WORLD_SCROLL_SPEED = NES_SCROLL_SPEED * NES_WORLD_Y_SCALE;
 export const NES_PLAYER_SPEED = 75 * (NES_FRAME_RATE / 60);
-export const WORLD_PLAYER_SPEED = NES_PLAYER_SPEED * (540 / 240);
+export const WORLD_PLAYER_SPEED = NES_PLAYER_SPEED * NES_WORLD_Y_SCALE;
 export const BOOTS_SPEED_MULTIPLIER = 1.2;
 export const NES_BULLET_SPEED = 6 * NES_FRAME_RATE;
-export const WORLD_BULLET_SPEED = NES_BULLET_SPEED * (540 / 240);
+export const WORLD_BULLET_SPEED = NES_BULLET_SPEED * NES_WORLD_Y_SCALE;
 export const MAGNUM_BULLET_SPEED = WORLD_BULLET_SPEED * 0.75;
 export const MAGNUM_BULLET_LIFETIME = 0.8;
 export const NES_DIAGONAL_BULLET_X = 2.5 * NES_FRAME_RATE;
 export const NES_DIAGONAL_BULLET_Y = 5 * NES_FRAME_RATE;
-export const WORLD_DIAGONAL_BULLET_X = NES_DIAGONAL_BULLET_X * (540 / 240);
-export const WORLD_DIAGONAL_BULLET_Y = NES_DIAGONAL_BULLET_Y * (540 / 240);
+export const WORLD_DIAGONAL_BULLET_X = NES_DIAGONAL_BULLET_X * NES_WORLD_Y_SCALE;
+export const WORLD_DIAGONAL_BULLET_Y = NES_DIAGONAL_BULLET_Y * NES_WORLD_Y_SCALE;
 export const PISTOL_BULLET_LIFETIME = 15 / NES_FRAME_RATE;
 export const RIFLE_RANGE_MULTIPLIER = 1.6;
 
@@ -187,12 +190,12 @@ export function distance(a: { x: number; y: number }, b: { x: number; y: number 
   return Math.hypot(a.x - b.x, a.y - b.y);
 }
 
-export function shouldLoopStage(scroll: number, hasWanted: boolean): boolean {
-  return scroll >= STAGE_LENGTH && !hasWanted;
+export function shouldLoopStage(scroll: number, round: number, hasWanted: boolean): boolean {
+  return scroll >= (ROUND_LENGTHS[round - 1] ?? ROUND_LENGTHS[0]!) && !hasWanted;
 }
 
 export function shouldRevealWanted(scroll: number, round: number, hasWanted: boolean, spawned: boolean): boolean {
-  return !hasWanted && !spawned && scroll >= (WANTED_REVEAL_AT[round - 1] ?? BOSS_TRIGGER);
+  return !hasWanted && !spawned && scroll >= (WANTED_REVEAL_AT[round - 1] ?? ROUND_BOSS_TRIGGERS[round - 1] ?? ROUND_BOSS_TRIGGERS[0]!);
 }
 
 export function segmentDelay(scroll: number, at: number, speed: number): number {

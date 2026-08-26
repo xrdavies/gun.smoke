@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, bossReward, BOOTS_SPEED_MULTIPLIER, BOSS_TRIGGER, clamp, distance, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_ITEM_EVENTS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, shouldLoopStage, shouldRevealWanted, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, scoreExtraLives, spendPoints, STAGE_LENGTH, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, worldEventEnteredView, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, bossReward, BOOTS_SPEED_MULTIPLIER, clamp, distance, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_BOSS_TRIGGERS, ROUND_ITEM_EVENTS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, shouldLoopStage, shouldRevealWanted, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, worldEventEnteredView, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
 
 type GameAction =
   | "left"
@@ -480,7 +480,7 @@ class GunSmokeGame {
     const scrollDelta = this.bossSpawned ? 0 : WORLD_SCROLL_SPEED * delta;
     this.scroll += scrollDelta;
     this.player.y += scrollDelta;
-    if (shouldLoopStage(this.scroll, this.hasWanted)) this.loopStage();
+    if (shouldLoopStage(this.scroll, this.stage, this.hasWanted)) this.loopStage();
     this.updateShopSpawns();
     if (this.shopOpen) return;
     this.camera.position.y = this.scroll + 270;
@@ -645,7 +645,7 @@ class GunSmokeGame {
       this.spawnUnit("barrel", wantedX, this.scroll + 170, 1);
       this.showMessage("SHOOT THE BARREL");
     }
-    if (this.scroll >= BOSS_TRIGGER && this.hasWanted && !this.bossSpawned) this.spawnBoss();
+    if (this.scroll >= (ROUND_BOSS_TRIGGERS[this.stage - 1] ?? ROUND_BOSS_TRIGGERS[0]!) && this.hasWanted && !this.bossSpawned) this.spawnBoss();
     if (this.spawnClock <= 0) {
       const segments = ROUND_SEGMENTS[this.stage - 1] ?? ROUND_SEGMENTS[0]!;
       const nextSegment = this.bossSpawned ? undefined : segments.find((segment) => this.scroll < segment.at);
@@ -736,7 +736,7 @@ class GunSmokeGame {
     const roadWidth = ROAD_WIDTHS[this.stage - 1] ?? 520;
     const edge = (960 - roadWidth) / 2;
     const segments = ROUND_SEGMENTS[this.stage - 1] ?? ROUND_SEGMENTS[0]!;
-    for (let y = -360; y < STAGE_LENGTH + 650; y += 180) {
+    for (let y = -360; y < (ROUND_LENGTHS[this.stage - 1] ?? ROUND_LENGTHS[0]!) + 650; y += 180) {
       let landmark = segments[0]?.landmark ?? "town";
       for (const candidate of segments) if (y >= candidate.at) landmark = candidate.landmark;
       this.backgrounds.push(new Sprite({ texture: terrain, sampler: this.sampler, position: { x: 480, y: y + 90 }, size: { x: 960, y: 180 }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -20 }));

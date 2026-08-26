@@ -25,6 +25,9 @@ the alternate purchase route described by the NES walkthrough.
 If the player reaches the end without the poster, the Round loops to its first
 segment with shops and the hidden barrel available again. Once the poster is
 owned, scrolling stops at the Boss arena.
+Boss gates and loop points now use the six values decoded from the ROM's `$8C00`
+Round scripts rather than one shared stage length; positions are scaled from
+NES pixels into the procedural world's 540-pixel viewport.
 Round 2 also adds its free Horse barrel near the left cactus only after such a
 loop; it is not present on the first pass.
 On the first pass, its right Skull, hidden Blue Yashichi, right Red Yashichi,

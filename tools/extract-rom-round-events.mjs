@@ -24,11 +24,11 @@ const scriptAddress = 0x8c00;
 const scriptOffset = scriptAddress - 0x8000;
 const initialMapRow = 8;
 const columns = 8;
-const positionXAddress = 0xfb09;
-const positionYAddress = 0xfb71;
-const positionCount = positionYAddress - positionXAddress;
-const positionX = Array.from({ length: positionCount }, (_, index) => fixedByte(positionXAddress + index));
+const positionYAddress = 0xfb09;
+const positionXAddress = 0xfb71;
+const positionCount = positionXAddress - positionYAddress;
 const positionY = Array.from({ length: positionCount }, (_, index) => fixedByte(positionYAddress + index));
+const positionX = Array.from({ length: positionCount }, (_, index) => fixedByte(positionXAddress + index));
 const behaviorBank = prg.subarray(6 * 0x4000, 7 * 0x4000);
 const initializerFor = (entityCode) => {
   // $FA94-$FAC1 normalizes item codes before calling $C796.

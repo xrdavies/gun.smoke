@@ -61,7 +61,9 @@ definition quadrant, matching the player collision test at `$C733-$C77F`.
 The fixed-bank scheduler at `$FA30-$FAE5` reads three-byte records from `$8C00`
 in the current Round bank. Each record contains a map-row trigger, a position
 index/map-phase byte, and an entity code/flags byte. Position indexes resolve
-through the X/Y tables at `$FB09/$FB71`; position byte `0x00` is the Boss gate
+through the Y/X tables at `$FB09/$FB71`; `$FB09` feeds the vertical `$05C0`
+coordinate and `$FB71` feeds the horizontal `$05E0` coordinate. Position byte
+`0x00` is the Boss gate
 guarded by `$49`, while `0xFF` resets the script to `$8C00` and increments the
 loop counter. `npm run extract:rom-round-events` validates and extracts all six
 scripts into ignored `.rom-traces/round-events/manifest.json`, retaining raw

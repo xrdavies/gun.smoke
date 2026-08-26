@@ -164,16 +164,14 @@ is identified. The pools are capped independently at seven enemy slots and
 six object slots, matching the ROM allocator. The all-object `$B5BF` Round 4
 records are rendered as falling rock hazards with their own object-pool
 capacity and player collision, rather than being misclassified as enemies.
-Object-pool dispatch `0x07` records are the exception: ROM screenshots show
-them as field enemies, so the runtime renders them as generic gunmen while
-retaining their original entity codes.
+Dispatch `0x07` records with verified pickup conversions render as breakable
+barrels while unresolved variants remain non-interactive scene proxies. Their
+original entity codes and pool selection remain attached for comparison.
 
-Important barrel contents are represented as ordered world events per Round,
-so every Boots, Rifle, POW, Yashichi, Skull and Horse barrel is stable rather
-than supplemented by random barrels. Each event is authored in world-space and
-is spawned when that coordinate enters the 540-unit viewport from the bottom;
-enemy Money Bag
-and ammunition drops remain randomized.
+Important barrel contents now come directly from the decoded ROM object stream,
+so every Boots, Rifle, POW, Money, Yashichi, Skull and Horse barrel uses its
+original Round order and NES coordinate without a second authored barrel list.
+Enemy Money Bag and ammunition drops remain randomized.
 The Wanted barrel itself now comes from the decoded `wantedTrigger` object
 event, while the older authored item list remains the source for the verified
 pickup contents.

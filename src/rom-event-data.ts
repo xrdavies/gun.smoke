@@ -40,7 +40,7 @@ const decodeStream = (encoded: string): readonly RomEnemyEvent[] => {
 
 export const ROUND_ROM_ENEMY_EVENTS: readonly (readonly RomEnemyEvent[])[] = ROUND_EVENT_STREAMS.map(decodeStream);
 export const ROUND_ROM_ENEMY_EVENT_COUNTS = ROUND_ROM_ENEMY_EVENTS.map((events) => events.length);
-export type RomObjectEvent = { at: number; x: number; y: number; entityCode: number; dispatchType: number; flags: number; semantic: "sceneObject" | "wantedTrigger" | "stateControl" };
+export type RomObjectEvent = { at: number; x: number; y: number; entityCode: number; dispatchType: number; flags: number; pool: "enemy" | "object"; semantic: "sceneObject" | "wantedTrigger" | "stateControl" };
 const decodeObjectStream = (encoded: string): readonly RomObjectEvent[] => {
   const bytes = Uint8Array.from(atob(encoded), (character) => character.charCodeAt(0));
   const events: RomObjectEvent[] = [];
@@ -52,7 +52,8 @@ const decodeObjectStream = (encoded: string): readonly RomObjectEvent[] => {
       entityCode: bytes[offset + 4] ?? 0,
       dispatchType: bytes[offset + 5] ?? 0,
       flags: bytes[offset + 6] ?? 0,
-      semantic: (bytes[offset + 7] ?? 0) === 1 ? "wantedTrigger" : (bytes[offset + 7] ?? 0) === 2 ? "stateControl" : "sceneObject",
+      pool: (bytes[offset + 7] ?? 0) & 0x80 ? "object" : "enemy",
+      semantic: ((bytes[offset + 7] ?? 0) & 0x7f) === 1 ? "wantedTrigger" : ((bytes[offset + 7] ?? 0) & 0x7f) === 2 ? "stateControl" : "sceneObject",
     });
   }
   return events;
@@ -64,10 +65,10 @@ export const romObjectWorldX = (event: RomObjectEvent): number => event.x * (960
 export const romObjectWorldY = (event: RomObjectEvent): number => event.y * WORLD_PER_NES_PIXEL;
 export const ROM_ENEMY_SLOT_CAPACITY = 7;
 export const ROM_OBJECT_SLOT_CAPACITY = 6;
-export const ROM_SCENE_ENEMY_DISPATCH_TYPES = [7] as const;
+export const ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES = [7] as const;
 export const ROM_SCENE_PROP_DISPATCH_TYPES = [8] as const;
 export const ROM_NON_ENEMY_OBJECT_BEHAVIORS = [5] as const; // $B5BF is handled as a falling object hazard.
-export const ROM_OBJECT_PICKUPS = { 33: "boots", 34: "rifle", 35: "pow", 37: "horse", 38: "redYashichi", 39: "skull", 42: "blueYashichi" } as const;
+export const ROM_OBJECT_PICKUPS = { 33: "boots", 34: "rifle", 35: "pow", 36: "money", 37: "horse", 38: "redYashichi", 39: "skull", 42: "blueYashichi" } as const;
 export const canSpawnRomPool = (pool: RomEnemyEvent["pool"], active: number): boolean => active < (pool === "object" ? ROM_OBJECT_SLOT_CAPACITY : ROM_ENEMY_SLOT_CAPACITY);
 export const romEventWorldAt = (event: RomEnemyEvent): number => event.at * WORLD_PER_NES_PIXEL;
 export const romEventWorldX = (event: RomEnemyEvent): number => event.x * (960 / 256);

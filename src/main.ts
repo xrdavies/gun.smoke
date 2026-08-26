@@ -16,7 +16,7 @@ import type { ButtonKey } from "jsnes";
 import { AMMO_GAIN, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, BOMBER_FIRST_THROW_DELAY, BOMBER_THROW_INTERVAL, bossReward, BOOTS_SPEED_MULTIPLIER, clamp, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, DYNAMITE_LIFETIME, DYNAMITE_WORLD_SPEED, FIREBREATHER_FIRST_SHOT_DELAY, FIREBREATHER_PROJECTILE_SPEED, formationEntryY, HATCHET_FIRST_SHOT_DELAY, HATCHET_PROJECTILE_SPEED, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, NINJA_FIRST_SHOT_DELAY, NINJA_PROJECTILE_SPEED, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLEMAN_BULLET_SPEED, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, RIFLE_RANGE_MULTIPLIER, ROCK_IMPACT_DELAY, ROCK_LIFETIME, ROCK_WORLD_SPEED_X, ROCK_WORLD_SPEED_Y, ROAD_WIDTHS, ROUND_BOSS_TRIGGERS, ROUND_ITEM_EVENTS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_VOLLEY_INTERVAL, shouldLoopStage, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, SPEAR_FIRST_SHOT_DELAY, SPEAR_PROJECTILE_SPEED, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, worldEventEnteredView, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
 import { GUNMAN_BULLET_SPEED, GUNMAN_FIRST_SHOT_DELAY, GUNMAN_LIFETIME } from "./game-constants";
 import { roundCollisionBlocks } from "./round-collision";
-import { canSpawnRomPool, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_ENEMY_DISPATCH_TYPES, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
+import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
 
 type GameAction =
   | "left"
@@ -654,7 +654,6 @@ class GunSmokeGame {
     this.spawnClock -= delta;
     this.spawnRomEnemyEvents();
     this.spawnRomObjectEvents();
-    this.spawnRoundItemEvents();
     if (this.scroll >= (ROUND_BOSS_TRIGGERS[this.stage - 1] ?? ROUND_BOSS_TRIGGERS[0]!) && this.hasWanted && !this.bossSpawned) this.spawnBoss();
     if (this.romEventMode) return;
     if (this.spawnClock <= 0) {
@@ -681,24 +680,23 @@ class GunSmokeGame {
         this.showMessage("SHOOT THE BARREL");
         continue;
       }
-      const activeObjects = this.units.filter((unit) => unit.romPool === "object" && unit.romEntityCode !== undefined && unit.hp > 0).length;
+      const activeObjects = this.units.filter((unit) => unit.romPool === event.pool && unit.romEntityCode !== undefined && unit.hp > 0).length;
       if (event.semantic === "sceneObject" && ROM_SCENE_PROP_DISPATCH_TYPES.includes(event.dispatchType as 8)) {
-        if (!canSpawnRomPool("object", activeObjects)) continue;
+        if (!canSpawnRomPool(event.pool, activeObjects)) continue;
         const prop = this.spawnUnit("sceneObject", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), 1);
         prop.romEntityCode = event.entityCode;
         prop.romFlags = event.flags;
-        prop.romPool = "object";
+        prop.romPool = event.pool;
         prop.sprite.color = [0.58 + ((event.entityCode - 44) % 3) * 0.08, 0.68, 0.78, 1];
         continue;
       }
-      if (event.semantic !== "sceneObject" || !ROM_SCENE_ENEMY_DISPATCH_TYPES.includes(event.dispatchType as 7)) continue;
-      if (!canSpawnRomPool("object", activeObjects)) continue;
-      const enemy = this.spawnUnit("enemy", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), 1 + Number(this.stage >= 4), "gunman");
-      enemy.romEntityCode = event.entityCode;
-      enemy.romFlags = event.flags;
-      enemy.romPool = "object";
-      enemy.vx = (this.nextRandom() - 0.5) * (42 + this.stage * 6);
-      enemy.vy = 24 + this.stage * 6;
+      if (event.semantic !== "sceneObject" || !ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES.includes(event.dispatchType as 7)) continue;
+      if (!canSpawnRomPool(event.pool, activeObjects)) continue;
+      const pickup = ROM_OBJECT_PICKUPS[event.entityCode as keyof typeof ROM_OBJECT_PICKUPS];
+      const container = this.spawnUnit(pickup ? "barrel" : "sceneObject", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), 1, undefined, pickup);
+      container.romEntityCode = event.entityCode;
+      container.romFlags = event.flags;
+      container.romPool = event.pool;
     }
   }
 
@@ -707,7 +705,7 @@ class GunSmokeGame {
     const events = ROUND_ROM_ENEMY_EVENTS[this.stage - 1] ?? [];
     const activePools = { enemy: 0, object: 0 };
     for (const unit of this.units) {
-      if ((unit.kind === "enemy" || (unit.kind === "enemyBullet" && unit.projectileType === "rock")) && unit.romEntityCode !== undefined && unit.hp > 0) activePools[unit.romPool ?? "enemy"] += 1;
+      if (unit.romEntityCode !== undefined && unit.hp > 0) activePools[unit.romPool ?? "enemy"] += 1;
     }
     while (this.romEventCursor < events.length) {
       const event = events[this.romEventCursor];
@@ -1301,16 +1299,11 @@ class GunSmokeGame {
     this.awardScoreLife();
     if (target.kind === "barrel") {
       if (target.itemType) this.spawnUnit("item", target.x, target.y, 1, undefined, target.itemType);
-      else {
+      else if (target.romEntityCode === undefined) {
         this.spawnUnit("wanted", target.x, target.y, 1);
         this.showMessage("WANTED POSTER FOUND");
       }
     } else if (target.kind === "enemy") {
-      const objectPickup = target.romPool === "object" ? ROM_OBJECT_PICKUPS[target.romEntityCode as keyof typeof ROM_OBJECT_PICKUPS] : undefined;
-      if (objectPickup) {
-        this.spawnUnit("item", target.x, target.y, 1, undefined, objectPickup);
-        return;
-      }
       const drop = this.nextRandom();
       if (drop < 0.22) this.spawnUnit("moneyBag", target.x, target.y, 1);
       else if (this.ownedWeapons.size > 1 && drop < 0.38) this.spawnUnit("ammo", target.x, target.y, 1);

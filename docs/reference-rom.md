@@ -79,29 +79,28 @@ event stream with separate capacities.
 The generated `ROUND_ROM_OBJECT_EVENTS` stream retains no-behavior object
 records. The runtime consumes the single `wantedTrigger` per Round to place
 the poster barrel, renders dispatch `0x08` scene props, and preserves dispatch
-`0x07` scene enemies; only `stateControl` records remain deferred for later
-scene-system work.
+`0x07` breakable-container variants; only `stateControl` records remain
+deferred for later scene-system work.
 Round 4's 44 `$B5BF` records all select the object pool. Isolated contact
 verification identifies them as falling rock hazards: they travel toward the
 road center for about 24 frames, remain at the impact point for another 25
 frames, and touching one costs a life. The runtime renders a self-generated
 rock proxy and preserves the separate six-slot object capacity.
-In contrast, `sceneObject` records with dispatch type `0x07` render as generic
-field enemies in the ROM. The runtime now preserves those events as object-pool
-gunmen. Dispatch `0x08` records are static scene props; the runtime renders a
-self-generated landmark proxy for them, while state-control records remain
-deferred.
+Dispatch `0x07` records with a verified pickup conversion now render as
+self-generated breakable barrels instead of enemy proxies. Unresolved variants
+`32` and `41` remain non-interactive scene proxies. Dispatch `0x08` records are
+static scene props and use the same original landmark texture family.
 Contact verification confirms object codes `33` and `34` drop Boots and Rifle
 respectively after destruction. The same isolated contact trace shows code
-`35` converting to dispatch `0x22` (the ROM's all-enemy effect), code `37`
+`35` converting to dispatch `0x22` (the ROM's all-enemy effect), code `36`
+converting to dispatch `0x23` and adding 200 points on contact, code `37`
 creating the horse actor, code `38` converting to dispatch `0x25` and
 increasing the life counter, code `39` converting to dispatch `0x27` (Skull),
 and code `42` converting to dispatch `0x26` (the Blue Yashichi invulnerability
-branch). The runtime therefore enables deterministic POW, Horse, Life, Skull,
-and Blue Yashichi drops for those codes. Code `40` does not occur in the six
-decoded scripts. Code `36` converts to dispatch `0x23`, whose contact path has
-no stable gameplay state change; code `41` remains a dispatch `0x07` scene
-enemy and is cleared without a pickup conversion in the controlled trace.
+branch). The runtime therefore enables deterministic POW, Money, Horse, Life,
+Skull, and Blue Yashichi drops for those codes. Code `40` does not occur in the
+six decoded scripts; code `41` remains dispatch `0x07` and is cleared without
+a pickup conversion in the controlled trace.
 Behavior routine `$B0E5` allocates three projectile slots at `$B24B-$B281`
 and emits adjacent direction values, identifying it as the Shotgunner spread
 attack used by the runtime behavior map. An isolated instance fires at age 108

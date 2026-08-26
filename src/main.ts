@@ -782,8 +782,6 @@ class GunSmokeGame {
       enemy.vx = segment.formation === "cross" ? offset * 32 : (this.nextRandom() - 0.5) * (55 + this.stage * 8);
       enemy.vy = entersFromBehind ? -100 : enemyType === "sniper" ? 0 : 24 + this.stage * 6;
     }
-    if (!bossEncounter && this.nextRandom() < 0.28) this.spawnUnit("moneyBag", clamp(center + (this.nextRandom() - 0.5) * 260, 60, 900), y + 55, 1);
-    if (!bossEncounter && this.ownedWeapons.size > 1 && this.nextRandom() < 0.18) this.spawnUnit("ammo", clamp(center + (this.nextRandom() - 0.5) * 220, 60, 900), y + 120, 1);
     this.spawnClock = segment.interval;
   }
 

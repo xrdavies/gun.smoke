@@ -76,6 +76,9 @@ committed compressed runtime event stream from that manifest. Position-byte
 bit 5 selects the six-slot object pool at `$0402-$0407`; clear bit 5 selects
 the seven-slot enemy pool at `$0410-$0416`. Both pools remain in the runtime
 event stream with separate capacities.
+Round 4's 44 `$B5BF` records all select the object pool and remain unclassified
+scene objects; they are deliberately not rendered as enemy proxies until their
+visual and interaction state is decoded.
 Behavior routine `$B0E5` allocates three projectile slots at `$B24B-$B281`
 and emits adjacent direction values, identifying it as the Shotgunner spread
 attack used by the runtime behavior map. An isolated instance fires at age 108

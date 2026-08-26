@@ -161,7 +161,9 @@ behavior routine and preserves the NES enemy/object pool bit. Each runtime
 unit retains its behavior, entity code and pool for trace comparison; the
 visible type is an explicit procedural approximation until its state machine
 is identified. The pools are capped independently at seven enemy slots and
-six object slots, matching the ROM allocator.
+six object slots, matching the ROM allocator. The all-object `$B5BF` Round 4
+records are currently withheld from enemy rendering rather than misclassified;
+they remain in the research stream for a later scene-object implementation.
 
 Important barrel contents are represented as ordered world events per Round,
 so every Boots, Rifle, POW, Yashichi, Skull and Horse barrel is stable rather

@@ -41,6 +41,13 @@ Each sample also includes `gameFrame`, measured from the verified Round 1 entry
 at ROM frame 825, so timeline samples can be mapped directly onto procedural
 world coordinates.
 
+`npm run trace:rom:scenes -- --frames=12000 --every=60` writes a longer,
+machine-readable trace to `.rom-traces/scenes.json`. In addition to the state
+bytes it records raw PPU coarse/fine scroll, nametable hashes, an OAM activity
+hash, frame hashes, and score/life bytes. Add `--hold-ab` when a deterministic
+continuous-fire comparison is needed. The trace contains observations only;
+it does not include ROM bytes or extracted graphics.
+
 The corrected Round 1 trace shows the PPU vertical position advancing 20 pixels
 per 60 frames. The 540-high procedural world therefore uses 45 world pixels per
 second (`20 * 540 / 240`) for its automatic scroll.

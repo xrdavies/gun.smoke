@@ -10,6 +10,7 @@
     "extract:rom-assets": "node tools/extract-rom-assets.mjs",
     "trace:rom": "node tools/trace-rom.mjs",
     "trace:rom:timeline": "node tools/trace-rom.mjs --timeline",
+    "trace:rom:scenes": "node tools/trace-rom-scenes.mjs",
     "check": "tsc --noEmit",
     "test": "vitest run",
     "test:browser": "playwright test"

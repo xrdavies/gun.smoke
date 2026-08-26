@@ -46,9 +46,11 @@ can be run with:
 npm run inspect:rom
 npm run trace:rom
 npm run trace:rom:timeline
+npm run trace:rom:scenes -- --frames=12000 --every=60
 npm run extract:rom-assets
 ```
 
-The extractor writes only to the ignored `.rom-assets/` directory. Those files
-are for local inspection and comparison and must not be committed or
-redistributed.
+`trace:rom:scenes` writes structured state/OAM/PPU samples to the ignored
+`.rom-traces/` directory. The extractor writes only to the ignored
+`.rom-assets/` directory. Those files are for local inspection and comparison
+and must not be committed or redistributed.

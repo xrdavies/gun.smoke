@@ -202,7 +202,8 @@ Round 5's gate identifies Fatman Joe as dispatch `0x80`, variant `0x51`. He
 enters from the top at NES `(x=152, y=0)`, keeps that horizontal lane for the
 first 170 frames and reaches about `y=112`. The first five-shot `0x3f` fan starts
 at frame 205, and the next fan begins about 131 frames later. The runtime
-preserves that opening delay, count, and interval while retaining self-generated
+preserves that opening delay, count, interval, and the measured post-entry
+horizontal movement while retaining self-generated
 grenade physics. The stored Boss trace now drives the measured multi-hop
 vertical profile; later bomb-gun trajectories remain approximations.
 Round 6's first Wingate encounter is dispatch `0xa3`, variant `0x65`. It enters

@@ -170,10 +170,10 @@ formula and keeps axis sliding, so diagonal input can follow a blocked edge.
 Rocky Pass, Cliff Valley, Forest, and Wingate Town retain their authored
 boulder, tree, and grave overlays, while both the visible base geometry and
 movement collision come from the decoded ROM mask.
-Forest segments additionally alternate blue water with brown bridge
-crossings to match the Round 5 traversal cue; water remains passable in this
-first approximation, while trees are the blocking geometry. Cemetery segments
-also draw grouped center gravestones between the side buildings.
+Forest segments additionally overlay blue water and brown bridge crossings to
+match the Round 5 traversal cue; traversal remains governed by the decoded ROM
+mask. Cemetery segments also draw grouped center gravestones between the side
+buildings.
 
 Enemy spawning now consumes decoded Round event records with a verified
 behavior routine and preserves the NES enemy/object pool bit. Each runtime

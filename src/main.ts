@@ -1370,6 +1370,7 @@ class GunSmokeGame {
       if (this.stage === MAX_STAGE && this.wingatePhase === 0) {
         this.wingatePhase = 1;
         this.wingateRespawnClock = WINGATE_SECOND_SPAWN_DELAY;
+        for (const unit of this.units) if (unit.kind === "enemyBullet") unit.hp = 0;
         this.showMessage("DECOY DOWN");
         return;
       }

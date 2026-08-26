@@ -146,18 +146,19 @@ export const NINJA_BOSS_FIRST_ATTACK_DELAY = 179 / NES_FRAME_RATE;
 export const NINJA_BOSS_ATTACK_INTERVAL = 60 / NES_FRAME_RATE;
 export const NINJA_BOSS_SHURIKEN_COUNT = 4;
 export const NINJA_BOSS_SHURIKEN_SPEED = 405;
-export const FATMAN_JOE_ENTRY_X = 0 * NES_WORLD_X_SCALE;
-export const FATMAN_JOE_ENTRY_Y_NES = 152;
+export const FATMAN_JOE_ENTRY_X_NES = 152;
+export const FATMAN_JOE_ENTRY_X = FATMAN_JOE_ENTRY_X_NES * NES_WORLD_X_SCALE;
+export const FATMAN_JOE_ENTRY_Y_NES = 0;
 export const FATMAN_JOE_ENTRY_Y = FATMAN_JOE_ENTRY_Y_NES * NES_WORLD_Y_SCALE;
-export const FATMAN_JOE_ENTRY_END_X_NES = 112;
-export const FATMAN_JOE_ENTRY_END_X = FATMAN_JOE_ENTRY_END_X_NES * NES_WORLD_X_SCALE;
+export const FATMAN_JOE_ENTRY_END_Y_NES = 112;
+export const FATMAN_JOE_ENTRY_END_Y = FATMAN_JOE_ENTRY_END_Y_NES * NES_WORLD_Y_SCALE;
 export const FATMAN_JOE_ENTRY_DURATION = 170 / NES_FRAME_RATE;
 export const FATMAN_JOE_FIRST_VOLLEY_DELAY = 205 / NES_FRAME_RATE;
 export const FATMAN_JOE_VOLLEY_INTERVAL = 131 / NES_FRAME_RATE;
 export const FATMAN_JOE_VOLLEY_SIZE = 5;
 
-export function fatmanJoeOpeningX(age: number): number {
-  return Math.max(0, Math.min(1, age / FATMAN_JOE_ENTRY_DURATION)) * FATMAN_JOE_ENTRY_END_X;
+export function fatmanJoeOpeningY(age: number): number {
+  return Math.max(0, Math.min(1, age / FATMAN_JOE_ENTRY_DURATION)) * FATMAN_JOE_ENTRY_END_Y;
 }
 export const WINGATE_ENTRY_X = 0 * NES_WORLD_X_SCALE;
 export const WINGATE_ENTRY_Y_NES = 152;

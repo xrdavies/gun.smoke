@@ -195,11 +195,11 @@ volleys commonly recur after 60 frames. Their diagonal path measures about
 405 world pixels/s. The runtime uses the four-shot opening and interval while
 keeping the smoke and teleport visuals procedural.
 Round 5's gate identifies Fatman Joe as dispatch `0x80`, variant `0x51`. He
-enters from NES `(x=0, y=152)`, keeps that vertical lane for the first 170
-frames and reaches about `x=112`. The first five-shot `0x3f` fan starts at
-frame 205, and the next fan begins about 131 frames later. The runtime preserves
-that opening delay, count, and interval while retaining self-generated grenade
-physics; later hopping and bomb-gun trajectories remain approximations.
+enters from the top at NES `(x=152, y=0)`, keeps that horizontal lane for the
+first 170 frames and reaches about `y=112`. The first five-shot `0x3f` fan starts
+at frame 205, and the next fan begins about 131 frames later. The runtime
+preserves that opening delay, count, and interval while retaining self-generated
+grenade physics; later hopping and bomb-gun trajectories remain approximations.
 Round 6's first Wingate encounter is dispatch `0xa3`, variant `0x65`. It enters
 from NES `(x=0, y=152)`, holds that lane and reaches approximately `x=98`
 after 151 frames. The runtime preserves this first-encounter opening without

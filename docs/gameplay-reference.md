@@ -115,21 +115,21 @@ Hawk become vulnerable only after their opening attack. Fatman Joe is
 vulnerable before each bomb-gun firing and briefly protected during the launch;
 Cutter's boomerangs also curve in opposite directions.
 
-The final Round segment continues spawning regular enemy formations during
-each Boss encounter. Boss reinforcements can still drop money or ammunition
-when defeated, but the formation scheduler does not create extra ambient
-barrels or loose pickups inside the locked arena.
+The decoded enemy event stream runs until the Wanted gate; once the poster is
+owned and the Boss arena locks, scrolling and regular enemy-event spawning
+stop. Boss reinforcements can still drop money or ammunition when defeated,
+but the locked arena does not create extra ambient barrels or loose pickups.
 
 Devil Hawk uses a long jump arc and fires a five-shot or side-aimed three-shot
 fireball fan, Fatman Joe uses short hops and a delayed dynamite bomb gun,
 Wingate rushes forward, and the Ninja enters a smoke/invulnerability phase and
 teleports after each lost health bar.
 
-The procedural enemy roster is data-driven per Round: early town stages include
-gunmen, bombers, snipers, back-stabbers and later Shotgunners; Rocky Pass adds
-riflemen; Native Village adds spear throwers, firebreathers and Hatchet
-Throwers; Cliff Valley adds ninjas and shotgunners; the final rounds return to
-gunmen, riflemen, bombers and snipers.
+The ROM event stream is data-driven per Round. Its behavior routines currently
+map to the recognizable roster of gunmen, bombers, snipers, back-stabbers,
+riflemen, ninjas, shotgunners, spear throwers, firebreathers and Hatchet
+Throwers; individual routine names remain explicit approximations until their
+full state machines are traced.
 Snipers are edge-mounted static shooters that aim once and retreat into their
 window/tee-pee cover instead of walking with field enemies. Riflemen advance,
 fire a two-shot burst, and retreat toward the top of the playfield.
@@ -141,11 +141,10 @@ hatchet projectiles also use distinct proportions and rotation behavior rather
 than sharing the Ninja shuriken representation. Fatman Joe's grenades share the
 delayed explosion physics but cannot be defused like Bomber dynamite.
 
-Encounter timing is also represented as four deterministic segments per Round,
-with explicit formation shape and interval data; this replaces the earlier
-single random cadence and provides a stable target for ROM trace comparison.
-Each segment also carries a landmark type (`town`, `rock`, `village`, `cliff`,
-`forest`, `cemetery`, or `open`) so side geometry changes with the event script.
+Landmark timing remains represented as four deterministic segments per Round,
+with explicit formation metadata and a landmark type (`town`, `rock`, `village`,
+`cliff`, `forest`, `cemetery`, or `open`) so side geometry changes with the ROM
+event script. Enemy timing itself comes from the decoded event stream.
 
 The six decoded ROM collision rings now provide the base 16-pixel terrain mask.
 The player lookup follows the verified `$5A-$5D` map pointer/page/fine-scroll

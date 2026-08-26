@@ -87,3 +87,24 @@ test("rejects non-iNES reference files", async ({ page }) => {
   await expect(page.locator("#rom-status")).toContainText("Could not load ROM");
   await expect(page.locator("#title-screen")).toBeVisible();
 });
+
+test("survives a sustained gameplay run", async ({ page }) => {
+  const pageErrors: Error[] = [];
+  page.on("pageerror", (error) => pageErrors.push(error));
+  await page.goto("/");
+  await page.locator("#start-button").click();
+  await page.locator("#continue-button").click();
+  await page.locator("#briefing-button").click();
+  await page.keyboard.down("z");
+  await page.keyboard.down("x");
+  await page.keyboard.down("ArrowLeft");
+  await page.waitForTimeout(20_000);
+  await page.keyboard.up("ArrowLeft");
+  await page.keyboard.up("x");
+  await page.keyboard.up("z");
+  const canvasSize = await page.locator("#game-canvas").evaluate((element) => ({ width: (element as HTMLCanvasElement).width, height: (element as HTMLCanvasElement).height }));
+  expect(canvasSize.width).toBeGreaterThan(0);
+  expect(canvasSize.height).toBeGreaterThan(0);
+  await expect(page.locator("#hud")).toBeVisible();
+  expect(pageErrors).toEqual([]);
+});

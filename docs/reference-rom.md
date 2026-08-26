@@ -179,6 +179,11 @@ edge. Controlled traces observe NES entry lanes `y=128` and `y=168`, with one
 run reaching approximately `x=96` after 143 frames. The web runtime uses those
 measured entry lanes and opening speed; its jump and fire phases remain an
 explicit approximation pending a complete isolated Boss trace.
+The same campaign reaches Round 4 and identifies its Ninja Boss as dispatch
+`0xaa`, variant `0x6b`, with a measured entry near NES `(x=64, y=192)`. The
+runtime uses that initial position; smoke, teleport, and damage timing remain
+an approximation until the Boss slot can be isolated without the research
+cleanup used to cross the earlier gates.
 
 Current behavior map:
 

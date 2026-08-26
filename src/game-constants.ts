@@ -108,6 +108,10 @@ export const DEVIL_HAWK_ENTRY_X = 0 * NES_WORLD_X_SCALE;
 export const DEVIL_HAWK_ENTRY_Y_NES = [128, 168] as const;
 export const DEVIL_HAWK_ENTRY_Y_LANES = DEVIL_HAWK_ENTRY_Y_NES.map((value) => value * NES_WORLD_Y_SCALE);
 export const DEVIL_HAWK_ENTRY_SPEED_X = (96 / 143) * NES_FRAME_RATE * NES_WORLD_X_SCALE;
+export const NINJA_BOSS_ENTRY_X_NES = 64;
+export const NINJA_BOSS_ENTRY_X = NINJA_BOSS_ENTRY_X_NES * NES_WORLD_X_SCALE;
+export const NINJA_BOSS_ENTRY_Y_NES = 192;
+export const NINJA_BOSS_ENTRY_Y = NINJA_BOSS_ENTRY_Y_NES * NES_WORLD_Y_SCALE;
 
 export function banditBillCooldown(shotsFired: number): number {
   return shotsFired % BANDIT_BILL_SHOTS_PER_VOLLEY === 0 ? BANDIT_BILL_VOLLEY_GAP : BANDIT_BILL_SHOT_INTERVAL;

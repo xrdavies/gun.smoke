@@ -1062,7 +1062,8 @@ class GunSmokeGame {
         unit.hp = 0;
         this.showMessage("DYNAMITE DEFUSED");
       } else if ((unit.kind === "enemy" || unit.kind === "enemyBullet") && this.invulnerable > 0 && distance(unit, this.player) <= unit.radius + 20) {
-        unit.hp = 0;
+        if (unit.kind === "enemy") this.defeatTarget(unit);
+        else unit.hp = 0;
       } else if ((unit.kind === "enemy" || unit.kind === "boss" || unit.kind === "enemyBullet") && this.invulnerable <= 0 && distance(unit, this.player) <= unit.radius + 20) {
         this.takeHit();
         if (unit.kind !== "boss") unit.hp = 0;

@@ -133,6 +133,9 @@ test("runs a locally supplied reference ROM through the engine", async ({ page }
   const referenceHeight = viewportParts[1] ?? 0;
   expect(referenceHeight).toBeCloseTo(240, 0);
   expect(referenceWidth / referenceHeight).toBeCloseTo(958 / 538, 2);
+  const referenceScale = Number(await page.locator("#game-canvas").getAttribute("data-reference-scale"));
+  expect(referenceScale).toBeGreaterThan(2);
+  expect(referenceScale).toBeCloseTo(538 / 240, 2);
   const first = await page.locator("#game-canvas").screenshot();
   await page.keyboard.press("Enter");
   await page.waitForTimeout(500);

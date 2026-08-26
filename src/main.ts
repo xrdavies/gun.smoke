@@ -1586,6 +1586,7 @@ class ReferenceRomGame {
     this.camera.position = { x: worldWidth / 2, y: worldHeight / 2 };
     this.sprite.position = { x: worldWidth / 2, y: worldHeight / 2 };
     canvas.dataset.referenceViewport = `${worldWidth.toFixed(3)}x${worldHeight.toFixed(3)}`;
+    canvas.dataset.referenceScale = scale.toFixed(3);
   }
 
   private onInput(event: NormalizedInputEvent): void {

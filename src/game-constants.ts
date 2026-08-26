@@ -60,6 +60,10 @@ export const RIFLEMAN_SHOTS_PER_VOLLEY = 5;
 export const RIFLEMAN_BULLET_SPEED = 0.375 * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
 export const NINJA_FIRST_SHOT_DELAY = 103 / NES_FRAME_RATE;
 export const NINJA_PROJECTILE_SPEED = 300;
+export const ROCK_WORLD_SPEED_X = 230;
+export const ROCK_WORLD_SPEED_Y = 236;
+export const ROCK_IMPACT_DELAY = 24 / NES_FRAME_RATE;
+export const ROCK_LIFETIME = 49 / NES_FRAME_RATE;
 
 export const SHOP_CHECKPOINTS: readonly (readonly number[])[] = [
   [560, 1_180],

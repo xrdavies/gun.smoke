@@ -80,9 +80,11 @@ The generated `ROUND_ROM_OBJECT_EVENTS` stream retains no-behavior object
 records. The runtime consumes the single `wantedTrigger` per Round to place
 the poster barrel; `sceneObject` and `stateControl` records remain available
 for later scene-system work.
-Round 4's 44 `$B5BF` records all select the object pool and remain unclassified
-scene objects; they are deliberately not rendered as enemy proxies until their
-visual and interaction state is decoded.
+Round 4's 44 `$B5BF` records all select the object pool. Isolated contact
+verification identifies them as falling rock hazards: they travel toward the
+road center for about 24 frames, remain at the impact point for another 25
+frames, and touching one costs a life. The runtime renders a self-generated
+rock proxy and preserves the separate six-slot object capacity.
 In contrast, `sceneObject` records with dispatch type `0x07` render as generic
 field enemies in the ROM. The runtime now preserves those events as object-pool
 gunmen, while dispatch `0x08` and state-control records remain deferred.
@@ -131,7 +133,7 @@ Current behavior map:
 | `$B284` | Gunman | Round 1 roster elimination after the measured routines |
 | `$B46E` | Backstabber | Round 1 roster elimination |
 | `$B501` | Bomber | isolated delayed dynamite state |
-| `$B5BF` | object-only scene behavior | 44 Round 4 records all select object pool |
+| `$B5BF` | falling rock hazard | isolated contact/state trace |
 | `$B671` | Ninja | isolated dispatch/OAM timing trace |
 | `$B775` | Rifleman | isolated state/OAM timing trace |
 | `$B82F` | Backstabber | Round 5 roster elimination |

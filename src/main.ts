@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, BOMBER_FIRST_THROW_DELAY, BOMBER_THROW_INTERVAL, bossReward, BOOTS_SPEED_MULTIPLIER, clamp, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, DYNAMITE_LIFETIME, DYNAMITE_WORLD_SPEED, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, NINJA_FIRST_SHOT_DELAY, NINJA_PROJECTILE_SPEED, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLEMAN_BULLET_SPEED, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_BOSS_TRIGGERS, ROUND_ITEM_EVENTS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_VOLLEY_INTERVAL, shouldLoopStage, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, worldEventEnteredView, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, BOMBER_FIRST_THROW_DELAY, BOMBER_THROW_INTERVAL, bossReward, BOOTS_SPEED_MULTIPLIER, clamp, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, DYNAMITE_LIFETIME, DYNAMITE_WORLD_SPEED, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, NINJA_FIRST_SHOT_DELAY, NINJA_PROJECTILE_SPEED, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLEMAN_BULLET_SPEED, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, RIFLE_RANGE_MULTIPLIER, ROCK_IMPACT_DELAY, ROCK_LIFETIME, ROCK_WORLD_SPEED_X, ROCK_WORLD_SPEED_Y, ROAD_WIDTHS, ROUND_BOSS_TRIGGERS, ROUND_ITEM_EVENTS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_VOLLEY_INTERVAL, shouldLoopStage, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, worldEventEnteredView, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
 import { roundCollisionBlocks } from "./round-collision";
 import { canSpawnRomPool, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_ENEMY_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
 
@@ -30,7 +30,7 @@ type GameAction =
   | "start";
 type GameMode = "title" | "intro" | "briefing" | "playing" | "paused" | "gameover" | "ending";
 type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "moneyBag" | "ammo" | "barrel" | "item" | "wanted" | "shopkeeper";
-type ProjectileType = "bullet" | "dynamite" | "grenade" | "boomerang" | "fireball" | "shuriken" | "spear" | "hatchet";
+type ProjectileType = "bullet" | "dynamite" | "grenade" | "boomerang" | "fireball" | "shuriken" | "spear" | "hatchet" | "rock";
 type TextureName = "player" | "horse" | "shopkeeper" | "bullet" | "moneyBag" | "ammo" | "barrel" | "wanted" | "terrain" | "road" | "landmark";
 type Rgba = [number, number, number, number];
 
@@ -695,13 +695,29 @@ class GunSmokeGame {
     const events = ROUND_ROM_ENEMY_EVENTS[this.stage - 1] ?? [];
     const activePools = { enemy: 0, object: 0 };
     for (const unit of this.units) {
-      if (unit.kind === "enemy" && unit.romEntityCode !== undefined && unit.hp > 0) activePools[unit.romPool ?? "enemy"] += 1;
+      if ((unit.kind === "enemy" || (unit.kind === "enemyBullet" && unit.projectileType === "rock")) && unit.romEntityCode !== undefined && unit.hp > 0) activePools[unit.romPool ?? "enemy"] += 1;
     }
     while (this.romEventCursor < events.length) {
       const event = events[this.romEventCursor];
       if (!event || romEventWorldAt(event) > this.scroll) break;
       this.romEventCursor += 1;
-      if (event.pool === "object" && ROM_NON_ENEMY_OBJECT_BEHAVIORS.includes(event.behavior as 5)) continue;
+      if (event.pool === "object" && ROM_NON_ENEMY_OBJECT_BEHAVIORS.includes(event.behavior as 5)) {
+        if (!canSpawnRomPool("object", activePools.object)) continue;
+        const rock = this.spawnUnit("enemyBullet", clamp(romEventWorldX(event), 40, 920), this.scroll + romEventWorldY(event), 1);
+        rock.projectileType = "rock";
+        rock.romBehavior = event.behavior;
+        rock.romEntityCode = event.entityCode;
+        rock.romFlags = event.flags;
+        rock.romPool = "object";
+        rock.vx = (event.x < 128 ? 1 : -1) * ROCK_WORLD_SPEED_X;
+        rock.vy = ROCK_WORLD_SPEED_Y;
+        rock.maxAge = ROCK_LIFETIME;
+        rock.radius = 15;
+        rock.sprite.size = { x: 24, y: 24 };
+        rock.sprite.color = [0.55, 0.58, 0.62, 1];
+        activePools.object += 1;
+        continue;
+      }
       if (!canSpawnRomPool(event.pool, activePools[event.pool])) continue;
       const enemyType = ROM_BEHAVIOR_ENEMY_TYPES[event.behavior] ?? "gunman";
       const enemy = this.spawnUnit(
@@ -1155,6 +1171,9 @@ class GunSmokeGame {
       unit.y += 40 * delta;
       unit.x += Math.sin(unit.age * 4 + unit.phase) * 14 * delta;
     } else {
+      if (unit.kind === "enemyBullet" && unit.projectileType === "rock") {
+        if (unit.age >= ROCK_IMPACT_DELAY) unit.vx = unit.vy = 0;
+      }
       if (unit.kind === "enemyBullet" && (unit.projectileType === "dynamite" || unit.projectileType === "grenade")) {
         const airborneDuration = unit.projectileType === "dynamite" ? DYNAMITE_AIRBORNE_DURATION : 0.75;
         const explosionAt = unit.projectileType === "dynamite" ? DYNAMITE_LIFETIME : 2.2;

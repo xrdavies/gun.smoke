@@ -54,7 +54,8 @@ Boots/Rifle are capped at five and each loses one stock on death; Blue Yashichi
 grants contact damage and temporary invulnerability, while Magnum bullets can
 destroy enemy projectiles. Smart Bomb is armed from the inventory and triggers
 on a lethal hit, clearing regular enemies and enemy bullets while consuming
-one bomb; it does not damage bosses.
+one bomb; it does not damage bosses. Arming it selects the unlimited Pistol,
+and equipping another weapon disarms the bomb without consuming it.
 
 Rifle range applies only to the unlimited pistols. Bullet pickups use
 weapon-specific refill amounts, with Machine Gun receiving more rounds per

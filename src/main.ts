@@ -498,6 +498,7 @@ class GunSmokeGame {
 
   equipWeapon(weapon: WeaponName): void {
     if (!this.ownedWeapons.has(weapon) || (weapon !== "pistol" && this.weaponAmmo[weapon] <= 0)) return;
+    this.smartBombArmed = false;
     this.weapon = weapon;
     this.inventoryWeaponIndex = (["pistol", "shotgun", "machinegun", "magnum"] as const).indexOf(weapon);
     this.updateInventory();
@@ -558,15 +559,20 @@ class GunSmokeGame {
     }
     if (this.bombLatch || this.smartBombs <= 0) return;
     this.bombLatch = true;
-    this.smartBombArmed = !this.smartBombArmed;
-    this.showMessage(this.smartBombArmed ? "SMART BOMB ARMED" : "SMART BOMB OFF");
-    this.updateInventory();
-    this.updateHud();
+    this.toggleSmartBombArmed();
   }
 
   toggleSmartBomb(): void {
     if (this.smartBombs <= 0) return;
+    this.toggleSmartBombArmed();
+  }
+
+  private toggleSmartBombArmed(): void {
     this.smartBombArmed = !this.smartBombArmed;
+    if (this.smartBombArmed) {
+      this.weapon = "pistol";
+      this.inventoryWeaponIndex = 0;
+    }
     this.updateInventory();
     this.updateHud();
     this.showMessage(this.smartBombArmed ? "SMART BOMB ARMED" : "SMART BOMB OFF");

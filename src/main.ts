@@ -645,6 +645,7 @@ class GunSmokeGame {
       projectile.radius = 7;
     }
     boss.fired = true;
+    if (this.stage === 5) boss.invulnerableUntil = boss.age + 0.75;
     this.bossFireClock = pattern.cooldown;
     this.beep(150 + this.stage * 18, 0.045);
   }
@@ -1063,7 +1064,8 @@ class GunSmokeGame {
     if (unit.kind !== "boss") return true;
     if (unit.age < unit.invulnerableUntil) return false;
     if (this.stage === 1) return true;
-    if (this.stage === 2 || this.stage === 3 || this.stage === 5) return unit.fired;
+    if (this.stage === 2 || this.stage === 3) return unit.fired;
+    if (this.stage === 5) return unit.age >= unit.invulnerableUntil;
     return true;
   }
 

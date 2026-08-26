@@ -28,7 +28,7 @@ type GameAction =
   | "start";
 type GameMode = "title" | "intro" | "briefing" | "playing" | "paused" | "gameover" | "ending";
 type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "coin" | "ammo" | "barrel" | "item" | "wanted";
-type ProjectileType = "bullet" | "dynamite" | "boomerang" | "fireball" | "shuriken";
+type ProjectileType = "bullet" | "dynamite" | "boomerang" | "fireball" | "shuriken" | "spear" | "hatchet";
 type TextureName = "player" | "enemy" | "boss" | "bullet" | "coin" | "powerup" | "ammo" | "barrel" | "wanted" | "terrain" | "road" | "landmark";
 type Rgba = [number, number, number, number];
 
@@ -941,9 +941,10 @@ class GunSmokeGame {
           unit.fired = true;
           const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
           const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y + 12, 1);
-          projectile.projectileType = "shuriken";
+          projectile.projectileType = "spear";
           projectile.vx = Math.cos(angle) * 150;
           projectile.vy = Math.sin(angle) * 150;
+          projectile.sprite.size = { x: 7, y: 34 };
         }
       } else if (unit.enemyType === "hatchet") {
         unit.x += Math.sin(unit.age * 3.4 + unit.phase) * 42 * delta;
@@ -952,9 +953,11 @@ class GunSmokeGame {
           unit.fired = true;
           const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
           const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y + 12, 1);
-          projectile.projectileType = "shuriken";
+          projectile.projectileType = "hatchet";
           projectile.vx = Math.cos(angle) * 165;
           projectile.vy = Math.sin(angle) * 165;
+          projectile.radius = 9;
+          projectile.sprite.size = { x: 16, y: 16 };
         }
       } else if (unit.enemyType === "firebreather") {
         unit.x += Math.sin(unit.age * 4 + unit.phase) * 55 * delta;
@@ -1006,6 +1009,7 @@ class GunSmokeGame {
         unit.vx = Math.cos(angle) * speed;
         unit.vy = Math.sin(angle) * speed;
       }
+      if (unit.kind === "enemyBullet" && (unit.projectileType === "shuriken" || unit.projectileType === "hatchet")) unit.sprite.rotation += delta * 10;
       unit.x += unit.vx * delta;
       unit.y += unit.vy * delta;
     }

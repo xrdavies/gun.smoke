@@ -320,7 +320,9 @@ class GunSmokeGame {
 
   static async create(): Promise<GunSmokeGame> {
     const engine = await Engine.create({ canvas, autoStart: false });
-    return new GunSmokeGame(engine);
+    const game = new GunSmokeGame(engine);
+    engine.start();
+    return game;
   }
 
   start(): void {
@@ -400,7 +402,10 @@ class GunSmokeGame {
     if (!startActive) this.startLatch = false;
     else if (!this.startLatch) {
       this.startLatch = true;
-      if (this.mode === "playing") this.togglePause();
+      if (this.mode === "title") this.start();
+      else if (this.mode === "intro") this.continueFromIntro();
+      else if (this.mode === "briefing") this.continueFromBriefing();
+      else if (this.mode === "playing") this.togglePause();
     }
     if (this.mode !== "playing") return;
     this.updateInventoryInput();

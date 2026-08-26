@@ -57,7 +57,10 @@ candidate bytes it records raw PPU coarse/fine scroll, nametable hashes, an OAM
 activity hash, and frame hashes. Zero-page values are keyed by their literal
 addresses (`0x4c`, `0x4f`, `0x62`, `0x68`, `0x69`, and `0x7a`) rather than
 unverified semantic names. In particular, `0x62` changes inside a single Round
-and must not be treated as a stable stage number. Add `--hold-ab` when a
+and must not be treated as a stable stage number. The fixed-bank disassembly
+at `$C1A2-$C1BE` shows `$6A/$6B` walking the `$0780/$0781` event pairs and
+clearing `$62` when that list is exhausted, which is the current evidence for
+its event-cursor role. Add `--hold-ab` when a
 deterministic continuous-fire comparison is needed. The trace contains
 observations only; it does not include ROM bytes or extracted graphics.
 Both trace formats also decode `hudScore` from the six visible OAM digit tiles

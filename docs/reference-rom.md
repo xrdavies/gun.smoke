@@ -132,6 +132,10 @@ An isolated `$BB29` Firebreather entity emits one dispatch `0x34` fireball at
 age 156 frames, aimed toward Billy at roughly 250 world pixels/s. ROM-tagged
 Firebreathers use this single-shot timing; the procedural fallback remains a
 three-way spread for non-ROM formations.
+An isolated `$BA51` Spear Thrower creates its dispatch `0x33` spear at age 72
+frames and aims it toward Billy at roughly 250 world pixels/s. ROM-tagged
+Spear Throwers use this measured timing; the procedural fallback remains the
+shorter generic throw delay.
 
 Current behavior map:
 
@@ -147,7 +151,7 @@ Current behavior map:
 | `$B775` | Rifleman | isolated state/OAM timing trace |
 | `$B82F` | Backstabber | Round 5 roster elimination |
 | `$B8F4` | Hatchet Thrower | isolated dispatch/OAM timing trace |
-| `$BA51` | Spear Thrower | Native Village roster elimination |
+| `$BA51` | Spear Thrower | isolated dispatch/OAM timing trace |
 | `$BB29` | Firebreather | isolated dispatch/OAM timing trace |
 
 The elimination entries remain behavior approximations until their complete

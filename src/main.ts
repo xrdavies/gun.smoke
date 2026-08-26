@@ -20,7 +20,7 @@ import { BANDIT_BILL_BULLET_SPEED, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST
 import { banditBillCooldown } from "./game-constants";
 import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "./game-constants";
 import { pistolShots } from "./game-constants";
-import { NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, shotgunVelocities } from "./game-constants";
+import { NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, shotgunVelocities, weaponCanRepeat } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
 import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_MOVEMENT_SPEED, FATMAN_JOE_VOLLEY_INTERVAL, FATMAN_JOE_VOLLEY_SIZE, fatmanJoeCombatY } from "./game-constants";
 import { WINGATE_BULLET_SPEED, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateCombatY, wingateShotCooldown } from "./game-constants";
@@ -636,7 +636,7 @@ class GunSmokeGame {
     const newlyPressed = mask & ~this.fireMask;
     this.fireMask = mask;
     if (mask === 0) return;
-    if (this.weapon === "pistol" && newlyPressed === 0) return;
+    if (!weaponCanRepeat(this.weapon) && newlyPressed === 0) return;
     if (this.weapon !== "pistol" && this.fireClock > 0) return;
     if (this.weapon !== "pistol" && this.ammo <= 0) {
       this.weapon = "pistol";

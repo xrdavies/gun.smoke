@@ -60,6 +60,10 @@ export function shotgunVelocities(left: boolean, right: boolean): readonly (read
   if (left) return [[-12, 0], [-11, -4], [-8, -8], [-4, -11], [0, -12]];
   return [[0, -12], [4, -11], [8, -8], [11, -4], [12, 0]];
 }
+
+export function weaponCanRepeat(weapon: WeaponName): boolean {
+  return weapon === "machinegun";
+}
 export const BOMBER_FIRST_THROW_DELAY = 198 / NES_FRAME_RATE;
 export const BOMBER_THROW_INTERVAL = 106 / NES_FRAME_RATE;
 export const DYNAMITE_AIRBORNE_DURATION = 212 / NES_FRAME_RATE;

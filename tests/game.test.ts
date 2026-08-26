@@ -134,7 +134,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROM_ENEMY_SLOT_CAPACITY).toBe(7);
     expect(ROM_OBJECT_SLOT_CAPACITY).toBe(6);
     expect(ROM_NON_ENEMY_OBJECT_BEHAVIORS).toEqual([5]);
-    expect(ROM_OBJECT_PICKUPS).toEqual({ 33: "boots", 34: "rifle", 37: "horse", 38: "redYashichi" });
+    expect(ROM_OBJECT_PICKUPS).toEqual({ 33: "boots", 34: "rifle", 35: "pow", 37: "horse", 38: "redYashichi" });
     expect(ROM_SCENE_ENEMY_DISPATCH_TYPES).toEqual([7]);
     expect(ROUND_ROM_ENEMY_EVENTS.flatMap((stream) => stream).every((event) => event.pool === "enemy" || event.pool === "object")).toBe(true);
     expect(canSpawnRomPool("enemy", 6)).toBe(true);

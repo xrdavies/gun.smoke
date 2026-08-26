@@ -41,6 +41,29 @@ test("starts the WebGPU stage and renders gameplay", async ({ page }) => {
   expect(pageErrors).toEqual([]);
 });
 
+test("accepts gamepad Start from the title flow", async ({ page }) => {
+  await page.addInitScript(() => {
+    let startPressed = false;
+    Object.defineProperty(window, "__setStartPressed", { value: (pressed: boolean) => { startPressed = pressed; } });
+    Object.defineProperty(navigator, "getGamepads", {
+      configurable: true,
+      value: () => startPressed ? [{
+        connected: true,
+        id: "test-pad",
+        index: 0,
+        mapping: "standard",
+        timestamp: performance.now(),
+        axes: [0, 0],
+        buttons: Array.from({ length: 10 }, (_, index) => ({ pressed: index === 9, touched: index === 9, value: index === 9 ? 1 : 0 })),
+      }] : [],
+    });
+  });
+  await page.goto("/");
+  await page.evaluate(() => (window as unknown as { __setStartPressed: (pressed: boolean) => void }).__setStartPressed(true));
+  await expect(page.locator("#intro-screen")).toBeVisible();
+  await page.evaluate(() => (window as unknown as { __setStartPressed: (pressed: boolean) => void }).__setStartPressed(false));
+});
+
 test("reaches the first trading post", async ({ page }) => {
   await page.goto("/");
   await page.locator("#start-button").click();

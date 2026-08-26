@@ -17,7 +17,9 @@ The NES version's stage rule is important: the wanted poster for the round's
 outlaw must be collected before the boss gate can resolve. The web build uses
 an original procedural barrel prop at a round-specific horizontal position;
 shooting the barrel reveals the poster,
-and keeps that gate in the gameplay state machine. Later trading posts provide
+and keeps that gate in the gameplay state machine. Poster reveal positions are
+separate from the later Boss trigger, so collecting one does not skip the final
+items and terrain. Later trading posts provide
 the alternate purchase route described by the NES walkthrough.
 
 If the player reaches the end without the poster, the Round loops to its first

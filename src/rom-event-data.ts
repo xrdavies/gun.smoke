@@ -66,6 +66,7 @@ export const ROM_ENEMY_SLOT_CAPACITY = 7;
 export const ROM_OBJECT_SLOT_CAPACITY = 6;
 export const ROM_SCENE_ENEMY_DISPATCH_TYPES = [7] as const;
 export const ROM_NON_ENEMY_OBJECT_BEHAVIORS = [5] as const; // $B5BF remains an unclassified scene object.
+export const ROM_OBJECT_PICKUPS = { 33: "boots", 34: "rifle" } as const;
 export const canSpawnRomPool = (pool: RomEnemyEvent["pool"], active: number): boolean => active < (pool === "object" ? ROM_OBJECT_SLOT_CAPACITY : ROM_ENEMY_SLOT_CAPACITY);
 export const romEventWorldAt = (event: RomEnemyEvent): number => event.at * WORLD_PER_NES_PIXEL;
 export const romEventWorldX = (event: RomEnemyEvent): number => event.x * (960 / 256);

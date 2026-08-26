@@ -25,7 +25,7 @@ import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_VOLLEY_INTERVAL, FATMAN_JOE_V
 import { WINGATE_BULLET_SPEED, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateShotCooldown } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPEED, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { CUTTER_ENTRY_DURATION, CUTTER_MOVEMENT_SPEED, cutterOpeningY } from "./game-constants";
-import { DEVIL_HAWK_ENTRY_DURATION, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkOpeningY } from "./game-constants";
+import { DEVIL_HAWK_ENTRY_DURATION, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkCombatY, devilHawkOpeningY } from "./game-constants";
 import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_ATTACK_DELAY, NINJA_BOSS_SHURIKEN_COUNT, NINJA_BOSS_SHURIKEN_SPEED } from "./game-constants";
 import { roundCollisionBlocks } from "./round-collision";
 import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
@@ -1268,7 +1268,7 @@ class GunSmokeGame {
       if (unit.x < minBossX || unit.x > maxBossX) unit.vx *= -1;
       if (this.stage === 1) unit.y = this.scroll + (unit.age < unit.invulnerableUntil ? 430 : banditBillOpeningY(unit.age));
       else if (this.stage === 2) unit.y = this.scroll + cutterOpeningY(unit.age <= CUTTER_ENTRY_DURATION ? unit.age : CUTTER_ENTRY_DURATION);
-      else if (this.stage === 3) unit.y = this.scroll + devilHawkOpeningY(unit.age <= DEVIL_HAWK_ENTRY_DURATION ? unit.age : DEVIL_HAWK_ENTRY_DURATION) + (unit.age <= DEVIL_HAWK_ENTRY_DURATION ? 0 : Math.abs(Math.sin((unit.age - DEVIL_HAWK_ENTRY_DURATION) * 2.1)) * 145);
+      else if (this.stage === 3) unit.y = this.scroll + (unit.age <= DEVIL_HAWK_ENTRY_DURATION ? devilHawkOpeningY(unit.age) : devilHawkCombatY(unit.age));
       else if (this.stage === 4) unit.y = this.scroll + (unit.bossEntryY ?? NINJA_BOSS_ENTRY_Y_LANES[0] ?? 144) + Math.abs(Math.sin(unit.age * 3)) * 55;
       else if (this.stage === 5) unit.y = this.scroll + fatmanJoeOpeningY(unit.age <= FATMAN_JOE_ENTRY_DURATION ? unit.age : FATMAN_JOE_ENTRY_DURATION) + (unit.age <= FATMAN_JOE_ENTRY_DURATION ? 0 : Math.abs(Math.sin((unit.age - FATMAN_JOE_ENTRY_DURATION) * 3.6)) * 32);
       else if (this.stage === 6 && unit.bossEntryY !== undefined) unit.y = this.scroll + wingateOpeningY(unit.age <= WINGATE_ENTRY_DURATION ? unit.age : WINGATE_ENTRY_DURATION) + (unit.age <= WINGATE_ENTRY_DURATION ? 0 : Math.min((unit.age - WINGATE_ENTRY_DURATION) * 110, 170));

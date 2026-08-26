@@ -184,8 +184,9 @@ Devil Hawk as dispatch `0x9a`, variant `0x61`, entering from the top edge
 after 143 frames. At frame 174 it creates five simultaneous `0xa2` fireballs,
 with later position-dependent attacks using three; a common repeat interval is
 125 frames. The center shot moves 3 NES pixels per frame. The runtime preserves
-this measured opening, 5/3 fan, timing, and speed; later jump trajectories
-remain approximations.
+this measured opening, 5/3 fan, timing, and speed. The first post-entry jump
+profile is sampled from the Boss trace; later short jumps repeat as a measured
+121-frame cycle approximation.
 The same campaign reaches Round 4 and identifies its Ninja Boss as dispatch
 `0xaa`, variant `0x6b`, with measured entry lanes near NES `x=176/192` and
 `y=64/128`. The runtime selects one horizontal and one vertical lane; smoke,

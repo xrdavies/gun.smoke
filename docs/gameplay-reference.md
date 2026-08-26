@@ -127,7 +127,8 @@ but the locked arena does not create extra ambient barrels or loose pickups.
 
 Devil Hawk enters from the top on one of the measured NES X lanes
 (`x=128/168/208`) before using a long jump arc and firing a five-shot or side-aimed three-shot
-fireball fan, while the Ninja enters from measured NES lanes near `x=176/192`,
+fireball fan, while the Ninja enters from measured NES lanes near `x=176/192`
+with an initial smoke/invulnerability window,
 Fatman Joe enters from NES `x=152` at the top edge before using short hops and a
 delayed dynamite bomb gun, while Wingate's two encounters use top-edge NES
 lanes `x=152` and `x=192`; the Ninja enters a smoke/invulnerability phase and

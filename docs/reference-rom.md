@@ -40,6 +40,13 @@ non-Mapper-2 files, truncated PRG payloads and addresses outside cartridge
 space. The output is a local
 analysis aid and is not committed as reconstructed Capcom source.
 
+Bank 1 code at `$B312-$B3F8` reads a 22-entry pointer table from `$B787/$B79D`
+and three row-parameter pairs from `$B7B3/$B7B6`. Running
+`npm run extract:rom-scene-script` follows those pointers, validates each
+`0xFF`-terminated block, and writes the candidate scene script to the ignored
+`.rom-traces/bank1-scene-script.json`. This preserves addresses and bytes for
+analysis without committing extracted ROM data.
+
 Pattern-table previews remain grayscale for bitplane inspection; nametable
 previews apply each tile's expanded attribute and the live NES background
 palette so terrain colors match the captured scene.

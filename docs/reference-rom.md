@@ -89,11 +89,11 @@ gunmen, while dispatch `0x08` and state-control records remain deferred.
 Contact verification confirms object codes `33` and `34` drop Boots and Rifle
 respectively after destruction. The same isolated contact trace shows code
 `35` converting to dispatch `0x22` (the ROM's all-enemy effect), code `37`
-creating the horse actor, and code `38` converting to dispatch `0x25` and
-increasing the life counter. The runtime therefore enables deterministic POW,
-Horse, and Life drops for those codes. Codes `36` and `41` convert to branches
-with no stable gameplay state change in the controlled trace and remain
-unresolved.
+creating the horse actor, code `38` converting to dispatch `0x25` and
+increasing the life counter, and code `39` converting to dispatch `0x27`
+(Skull). The runtime therefore enables deterministic POW, Horse, Life, and
+Skull drops for those codes. Codes `36` and `41` convert to branches with no
+stable gameplay state change in the controlled trace and remain unresolved.
 Behavior routine `$B0E5` allocates three projectile slots at `$B24B-$B281`
 and emits adjacent direction values, identifying it as the Shotgunner spread
 attack used by the runtime behavior map. An isolated instance fires at age 108

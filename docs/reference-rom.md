@@ -201,18 +201,18 @@ at frame 205, and the next fan begins about 131 frames later. The runtime
 preserves that opening delay, count, and interval while retaining self-generated
 grenade physics; later hopping and bomb-gun trajectories remain approximations.
 Round 6's first Wingate encounter is dispatch `0xa3`, variant `0x65`. It enters
-from NES `(x=0, y=152)`, holds that lane and reaches approximately `x=98`
-after 151 frames. The runtime preserves this first-encounter opening without
-reusing it for the second, real Wingate; both later attack phases remain
-approximations pending their isolated traces.
+from the top at NES `(x=152, y=0)`, holds that horizontal lane and reaches
+approximately `y=98` after 151 frames. The runtime preserves this first-
+encounter opening without reusing it for the second, real Wingate; both later
+attack phases remain approximations pending their isolated traces.
 The first encounter clears into a 264-frame empty interval. The real Wingate
-then reuses dispatch `0xa3`, variant `0x65` and the same 151-frame horizontal
-opening, but enters on NES lane `y=192`; `$BA=1` distinguishes this second
+then reuses dispatch `0xa3`, variant `0x65` and the same 151-frame vertical
+opening, but enters on NES lane `x=192`; `$BA=1` distinguishes this second
 encounter. The runtime preserves the delay and separate entry lane.
 With ordinary enemy slots suppressed, the first encounter emits six low-slot
 `0x30` bullets beginning at frame 4 and spaced 12 frames apart; the next volley
-starts 24 frames after the sixth. Horizontal bullets move 2 NES pixels per
-frame. The real Wingate first fires at frame 277, emits three shots at the same
+starts 24 frames after the sixth. Vertical bullets move 2 NES pixels per frame.
+The real Wingate first fires at frame 277, emits three shots at the same
 12-frame cadence, then leaves a measured 680-frame gap before the next attack
 state. The runtime uses these phase-specific timings and sequential shots.
 

@@ -7,6 +7,7 @@ import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "../src/game-constants";
 import { RIFLE_BULLET_SPEED_MULTIPLIER } from "../src/game-constants";
 import { pistolShots } from "../src/game-constants";
 import { MAX_POWERUP_STOCK, POWERUP_OVERFLOW_SCORE, storedPowerupPickup } from "../src/game-constants";
+import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_VOLLEY_INTERVAL, FATMAN_JOE_VOLLEY_SIZE } from "../src/game-constants";
 import { roundCollisionBlocks, ROUND_COLLISION_ROW_COUNTS } from "../src/round-collision";
 import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_ENEMY_SLOT_CAPACITY, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_OBJECT_SLOT_CAPACITY, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_ENEMY_EVENT_COUNTS, ROUND_ROM_OBJECT_EVENTS, ROUND_ROM_OBJECT_EVENT_COUNTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY } from "../src/rom-event-data";
 
@@ -289,6 +290,9 @@ describe("Gun.Smoke vertical slice", () => {
     expect(fatmanJoeOpeningX(FATMAN_JOE_ENTRY_DURATION / 2)).toBe(210);
     expect(fatmanJoeOpeningX(FATMAN_JOE_ENTRY_DURATION)).toBe(420);
     expect(fatmanJoeOpeningX(FATMAN_JOE_ENTRY_DURATION * 2)).toBe(420);
+    expect(FATMAN_JOE_FIRST_VOLLEY_DELAY).toBeCloseTo(205 / NES_FRAME_RATE, 9);
+    expect(FATMAN_JOE_VOLLEY_INTERVAL).toBeCloseTo(131 / NES_FRAME_RATE, 9);
+    expect(FATMAN_JOE_VOLLEY_SIZE).toBe(5);
   });
 
   it("matches the traced first Wingate entrance", () => {

@@ -125,6 +125,8 @@ Devil Hawk uses a long jump arc and fires a five-shot or side-aimed three-shot
 fireball fan, Fatman Joe uses short hops and a delayed dynamite bomb gun,
 Wingate rushes forward, and the Ninja enters a smoke/invulnerability phase and
 teleports after each lost health bar.
+Fatman Joe's measured opening volley begins at frame 205, emits five projectiles
+and repeats after roughly 131 frames; projectile arcs remain procedural.
 
 The ROM event stream is data-driven per Round. Its behavior routines currently
 map to the recognizable roster of gunmen, bombers, snipers, back-stabbers,

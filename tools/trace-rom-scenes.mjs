@@ -42,12 +42,14 @@ const sample = (frame) => {
   return {
     frame,
     gameFrame: Math.max(0, frame - 825),
-    state: nes.cpu.mem[0x68],
-    substate: nes.cpu.mem[0x69],
-    stage: nes.cpu.mem[0x62],
-    scorePage: nes.cpu.mem[0x4c],
-    scoreLow: nes.cpu.mem[0x4f],
-    lives: nes.cpu.mem[0x7a],
+    ram: {
+      "0x4c": nes.cpu.mem[0x4c],
+      "0x4f": nes.cpu.mem[0x4f],
+      "0x62": nes.cpu.mem[0x62],
+      "0x68": nes.cpu.mem[0x68],
+      "0x69": nes.cpu.mem[0x69],
+      "0x7a": nes.cpu.mem[0x7a],
+    },
     ppu: {
       coarseX: nes.ppu.regHT,
       coarseY: nes.ppu.regVT,

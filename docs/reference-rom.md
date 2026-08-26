@@ -104,8 +104,9 @@ assign gameplay names before a dispatch routine is identified.
 Both trace modes include the verified zero-based Round index at `$41`, the
 `$5A/$5B` map-ring pointer, `$5E/$5F` map end, raw `$5C/$5D` map page/scroll
 state, and Billy's `$74/$71` X/Y coordinates. The initializer at `$E7E5` and
-collision lookup at `$C6C4` provide the map-field evidence; `$E85E` initializes
-Billy at `(128, 188)` before calling the collision routine.
+collision lookup at `$C6C4` provide the map-field evidence; `$E85E` seeds
+`$74/$71` at `(128, 188)`, and the first collision pass produces the observed
+Round-entry position `(136, 188)`.
 Both trace formats also decode `hudScore` from the six visible OAM digit tiles
 at `y=16`: runtime tiles 88 through 97 map directly to digits 0 through 9.
 This gives a verified score observation without assigning semantics to an

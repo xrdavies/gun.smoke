@@ -28,7 +28,7 @@ type GameAction =
   | "start";
 type GameMode = "title" | "intro" | "briefing" | "playing" | "paused" | "gameover" | "ending";
 type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "moneyBag" | "ammo" | "barrel" | "item" | "wanted";
-type ProjectileType = "bullet" | "dynamite" | "boomerang" | "fireball" | "shuriken" | "spear" | "hatchet";
+type ProjectileType = "bullet" | "dynamite" | "grenade" | "boomerang" | "fireball" | "shuriken" | "spear" | "hatchet";
 type TextureName = "player" | "enemy" | "boss" | "bullet" | "moneyBag" | "powerup" | "ammo" | "barrel" | "wanted" | "terrain" | "road" | "landmark";
 type Rgba = [number, number, number, number];
 
@@ -647,7 +647,7 @@ class GunSmokeGame {
     const center = (pattern.count - 1) / 2;
     for (let index = 0; index < pattern.count; index += 1) {
       const projectile = this.spawnUnit("enemyBullet", boss.x, boss.y + 24, 1);
-      projectile.projectileType = this.stage === 2 ? "boomerang" : this.stage === 3 ? "fireball" : this.stage === 4 ? "shuriken" : this.stage === 5 ? "dynamite" : "bullet";
+      projectile.projectileType = this.stage === 2 ? "boomerang" : this.stage === 3 ? "fireball" : this.stage === 4 ? "shuriken" : this.stage === 5 ? "grenade" : "bullet";
       const shotAngle = angle + (index - center) * pattern.spread;
       projectile.vx = Math.cos(shotAngle) * pattern.speed;
       projectile.vy = Math.sin(shotAngle) * pattern.speed;
@@ -993,7 +993,7 @@ class GunSmokeGame {
       unit.y += 40 * delta;
       unit.x += Math.sin(unit.age * 4 + unit.phase) * 14 * delta;
     } else {
-      if (unit.kind === "enemyBullet" && unit.projectileType === "dynamite") {
+      if (unit.kind === "enemyBullet" && (unit.projectileType === "dynamite" || unit.projectileType === "grenade")) {
         if (unit.age >= 0.75) {
           unit.vx = 0;
           unit.vy = 0;

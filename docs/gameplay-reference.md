@@ -108,9 +108,10 @@ fire a two-shot burst, and retreat toward the top of the playfield.
 
 Round 1 Bomber dynamite has explicit flight, landed, defusable, and delayed
 explosion phases. Boss and enemy projectiles are typed separately as bullets,
-boomerangs, fireballs, shuriken, spears, hatchets, or dynamite. Spear and
+boomerangs, fireballs, shuriken, spears, hatchets, dynamite, or grenades. Spear and
 hatchet projectiles also use distinct proportions and rotation behavior rather
-than sharing the Ninja shuriken representation.
+than sharing the Ninja shuriken representation. Fatman Joe's grenades share the
+delayed explosion physics but cannot be defused like Bomber dynamite.
 
 Encounter timing is also represented as four deterministic segments per Round,
 with explicit formation shape and interval data; this replaces the earlier

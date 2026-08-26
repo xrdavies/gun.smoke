@@ -1252,6 +1252,7 @@ class GunSmokeGame {
       if (this.stage === 1) unit.x = unit.bossEntryX ?? unit.x;
       else if (this.stage === 2 && unit.age <= CUTTER_ENTRY_DURATION) unit.x = unit.bossEntryX ?? unit.x;
       else if (this.stage === 3 && unit.age <= DEVIL_HAWK_ENTRY_DURATION) unit.x = unit.bossEntryX ?? unit.x;
+      else if (this.stage === 4 && unit.age <= NINJA_BOSS_ENTRY_INVULNERABILITY) unit.x = unit.bossEntryX ?? unit.x;
       else if (this.stage === 5 && unit.age <= FATMAN_JOE_ENTRY_DURATION) unit.x = unit.bossEntryX ?? unit.x;
       else if (this.stage === 6 && unit.bossEntryY !== undefined && unit.age <= WINGATE_ENTRY_DURATION) unit.x = unit.bossEntryX ?? unit.x;
       else {
@@ -1269,7 +1270,10 @@ class GunSmokeGame {
       if (this.stage === 1) unit.y = this.scroll + (unit.age < unit.invulnerableUntil ? 430 : banditBillOpeningY(unit.age));
       else if (this.stage === 2) unit.y = this.scroll + cutterOpeningY(unit.age <= CUTTER_ENTRY_DURATION ? unit.age : CUTTER_ENTRY_DURATION);
       else if (this.stage === 3) unit.y = this.scroll + (unit.age <= DEVIL_HAWK_ENTRY_DURATION ? devilHawkOpeningY(unit.age) : devilHawkCombatY(unit.age));
-      else if (this.stage === 4) unit.y = this.scroll + (unit.bossEntryY ?? NINJA_BOSS_ENTRY_Y_LANES[0] ?? 144) + Math.abs(Math.sin(unit.age * 3)) * 55;
+      else if (this.stage === 4) {
+        const entryY = unit.bossEntryY ?? NINJA_BOSS_ENTRY_Y_LANES[0] ?? 144;
+        unit.y = this.scroll + entryY + (unit.age <= NINJA_BOSS_ENTRY_INVULNERABILITY ? 0 : Math.abs(Math.sin(unit.age * 3)) * 55);
+      }
       else if (this.stage === 5) unit.y = this.scroll + (unit.age <= FATMAN_JOE_ENTRY_DURATION ? fatmanJoeOpeningY(unit.age) : fatmanJoeCombatY(unit.age));
       else if (this.stage === 6 && unit.bossEntryY !== undefined) unit.y = this.scroll + wingateOpeningY(unit.age <= WINGATE_ENTRY_DURATION ? unit.age : WINGATE_ENTRY_DURATION) + (unit.age <= WINGATE_ENTRY_DURATION ? 0 : Math.min((unit.age - WINGATE_ENTRY_DURATION) * 110, 170));
       else if (this.stage === 6) unit.y = this.scroll + 92 + Math.min(unit.age * 110, 170);

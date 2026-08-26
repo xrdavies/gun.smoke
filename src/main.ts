@@ -22,7 +22,7 @@ import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "./game-constants";
 import { pistolShots } from "./game-constants";
 import { NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
-import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_MOVEMENT_SPEED, FATMAN_JOE_VOLLEY_INTERVAL, FATMAN_JOE_VOLLEY_SIZE, fatmanJoeCombatY } from "./game-constants";
+import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_MOVEMENT_SPEED, FATMAN_JOE_SHOT_INTERVAL, FATMAN_JOE_VOLLEY_GAP, FATMAN_JOE_VOLLEY_SIZE, fatmanJoeCombatY } from "./game-constants";
 import { WINGATE_BULLET_SPEED, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateCombatY, wingateShotCooldown } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPEED, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { CUTTER_ENTRY_DURATION, CUTTER_MOVEMENT_SPEED, cutterCombatY, cutterOpeningY } from "./game-constants";
@@ -844,12 +844,27 @@ class GunSmokeGame {
       this.beep(258, 0.045);
       return;
     }
+    if (this.stage === 5) {
+      const shotInVolley = boss.volleysFired + 1;
+      const projectile = this.spawnEnemyProjectile(boss.x, boss.y + 24);
+      if (projectile) {
+        projectile.projectileType = "grenade";
+        projectile.vx = 0;
+        projectile.vy = 0;
+        projectile.maxAge = FATMAN_JOE_GRENADE_LIFETIME;
+      }
+      boss.volleysFired = shotInVolley === FATMAN_JOE_VOLLEY_SIZE ? 0 : shotInVolley;
+      this.bossFireClock = shotInVolley === FATMAN_JOE_VOLLEY_SIZE ? FATMAN_JOE_VOLLEY_GAP : FATMAN_JOE_SHOT_INTERVAL;
+      if (shotInVolley === 1) boss.invulnerableUntil = boss.age + 0.75;
+      boss.fired = true;
+      this.beep(150 + this.stage * 18, 0.045);
+      return;
+    }
     const patterns: Record<number, { count: number; spread: number; speed: number; cooldown: number; turnRate: number }> = {
       1: { count: 1, spread: 0, speed: 125, cooldown: 1.1, turnRate: 0 },
       2: { count: 2, spread: 0.24, speed: CUTTER_BOOMERANG_SPEED, cooldown: CUTTER_ATTACK_INTERVAL, turnRate: 1.1 },
       3: { count: 5, spread: 0.18, speed: DEVIL_HAWK_FIREBALL_SPEED, cooldown: DEVIL_HAWK_VOLLEY_INTERVAL, turnRate: 0 },
       4: { count: NINJA_BOSS_SHURIKEN_COUNT, spread: 0.3, speed: NINJA_BOSS_SHURIKEN_SPEED, cooldown: NINJA_BOSS_ATTACK_INTERVAL, turnRate: 0 },
-      5: { count: FATMAN_JOE_VOLLEY_SIZE, spread: 0.18, speed: 100, cooldown: FATMAN_JOE_VOLLEY_INTERVAL, turnRate: 0 },
     };
     let pattern = patterns[this.stage] ?? patterns[1]!;
     if (this.stage === 3 && Math.abs(this.player.x - boss.x) > 120) pattern = { ...pattern, count: 3 };
@@ -865,7 +880,6 @@ class GunSmokeGame {
       projectile.radius = 7;
     }
     boss.fired = true;
-    if (this.stage === 5) boss.invulnerableUntil = boss.age + 0.75;
     this.bossFireClock = pattern.cooldown;
     this.beep(150 + this.stage * 18, 0.045);
   }
@@ -1320,14 +1334,12 @@ class GunSmokeGame {
       if (unit.kind === "enemyBullet" && unit.projectileType === "rock") {
         if (unit.age >= ROCK_IMPACT_DELAY) unit.vx = unit.vy = 0;
       }
-      if (unit.kind === "enemyBullet" && (unit.projectileType === "dynamite" || unit.projectileType === "grenade")) {
-        const airborneDuration = unit.projectileType === "dynamite" ? DYNAMITE_AIRBORNE_DURATION : 0.75;
-        const explosionAt = unit.projectileType === "dynamite" ? DYNAMITE_LIFETIME : 2.2;
-        if (unit.age >= airborneDuration) {
+      if (unit.kind === "enemyBullet" && unit.projectileType === "dynamite") {
+        if (unit.age >= DYNAMITE_AIRBORNE_DURATION) {
           unit.vx = 0;
           unit.vy = 0;
         }
-        if (unit.age >= explosionAt) {
+        if (unit.age >= DYNAMITE_LIFETIME) {
           if (distance(unit, this.player) <= 85 && this.invulnerable <= 0) this.takeHit();
           unit.hp = 0;
           this.beep(95, 0.14);

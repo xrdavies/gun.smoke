@@ -227,12 +227,13 @@ profile, four-shot opening and interval while keeping the smoke and teleport
 visuals procedural.
 Round 5's gate identifies Fatman Joe as dispatch `0x80`, variant `0x51`. He
 enters from the top at NES `(x=152, y=0)`, keeps that horizontal lane for the
-first 170 frames and reaches about `y=112`. The first five-shot `0x3f` fan starts
-at frame 205, and the next fan begins about 131 frames later. The runtime
-preserves that opening delay, count, interval, and the measured post-entry
-horizontal movement while retaining self-generated
-grenade physics. The stored Boss trace now drives the measured multi-hop
-vertical profile; later bomb-gun trajectories remain approximations.
+first 170 frames and reaches about `y=112`. The first five `0x3f` grenade traps
+start at frame 205 and are emitted one every four frames; each remains at its
+launch coordinate for about 30 frames before the slot is released. The next
+five-shot sequence begins about 131 frames later. The runtime preserves this
+opening delay, sequential cadence, static lifetime and the measured post-entry
+horizontal movement. The stored Boss trace now drives the measured multi-hop
+vertical profile.
 Round 6's first Wingate encounter is dispatch `0xa3`, variant `0x65`. It enters
 from the top at NES `(x=152, y=0)`, holds that horizontal lane and reaches
 approximately `y=98` after 151 frames. The runtime preserves this first-

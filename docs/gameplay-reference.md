@@ -135,9 +135,10 @@ Fatman Joe enters from NES `x=152` at the top edge before using short hops and a
 delayed dynamite bomb gun, while Wingate's two encounters use top-edge NES
 lanes `x=152` and `x=192` before a short horizontal rush and slower cruise; the Ninja enters a smoke/invulnerability phase and
 teleports after each lost health bar.
-Fatman Joe's measured opening volley begins at frame 205, emits five projectiles
-and repeats after roughly 131 frames; his multi-hop vertical profile follows
-the measured Boss trace while projectile arcs remain procedural.
+Fatman Joe's measured opening volley begins at frame 205, emits five stationary
+grenade traps four NES frames apart, and repeats after roughly 131 frames; each
+trap lasts about 30 NES frames. His multi-hop vertical profile follows the
+measured Boss trace.
 Ninja's measured first shuriken volley appears at frame 179 with four diagonal
 shots and a common 60-frame repeat interval; smoke preparation remains
 procedural.
@@ -156,8 +157,9 @@ Round 1 Bomber dynamite has explicit flight, landed, defusable, and delayed
 explosion phases. Boss and enemy projectiles are typed separately as bullets,
 boomerangs, fireballs, shuriken, spears, hatchets, dynamite, or grenades. Spear and
 hatchet projectiles also use distinct proportions and rotation behavior rather
-than sharing the Ninja shuriken representation. Fatman Joe's grenades share the
-delayed explosion physics but cannot be defused like Bomber dynamite.
+than sharing the Ninja shuriken representation. Fatman Joe's grenade traps are
+stationary and short-lived; they do not share Bomber dynamite's flight or
+defusable delayed-explosion phases.
 
 Landmark timing remains represented as four deterministic segments per Round,
 with explicit formation metadata and a landmark type (`town`, `rock`, `village`,

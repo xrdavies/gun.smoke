@@ -200,6 +200,11 @@ export function unitMaxAge(kind: "boss" | "enemy" | "pickup" | "projectile"): nu
   return kind === "boss" ? Number.POSITIVE_INFINITY : kind === "projectile" ? 2.5 : 18;
 }
 
+export function bossReward(stage: number, phase = 0): number {
+  if (stage === MAX_STAGE && phase === 0) return 0;
+  return BOSS_REWARDS[stage - 1] ?? 0;
+}
+
 export function nextExtraLifeScore(currentThreshold: number): number {
   return currentThreshold === 30_000 ? 100_000 : currentThreshold + 100_000;
 }

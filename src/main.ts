@@ -165,6 +165,12 @@ function atlasRows(rows: readonly string[]): string[] {
   });
 }
 
+function pairedRows(leftRows: readonly string[], rightRows: readonly string[]): string[] {
+  const width = Math.max(...leftRows.map((row) => row.length), ...rightRows.map((row) => row.length));
+  const height = Math.max(leftRows.length, rightRows.length);
+  return Array.from({ length: height }, (_, index) => (leftRows[index] ?? "").padEnd(width, ".") + (rightRows[index] ?? "").padEnd(width, "."));
+}
+
 class GunSmokeGame {
   readonly world = new World();
   readonly actions = actions;
@@ -267,11 +273,15 @@ class GunSmokeGame {
         ".tttkkkkkkkktt", "..tkkkkkkkkkt.", "...ttkkkktt...", "....tkkkktt...",
         "....tkkkkt....", "...tt...tt....", "...tt...tt....", "...t.....t....",
       ], palette),
-      shopkeeper: pixelTexture(engine, [
+      shopkeeper: pixelTexture(engine, pairedRows([
+        ".....oo.....", ".....oo.....", "............", ".....oo.....",
         "....oooo....", "...okkkko...", "..ookkkkoo..", ".ookkkkkkoo.",
-        "..okwwwwko..", "...okkkko...", "....oooo....", "...tttttt...",
-        "..ttkkkktt..", ".ttkkkkkktt.", "..tttttttt..", "...tt..tt...",
-      ], palette),
+        "..okwwwwko..", "...tttttt...", "..ttkkkktt..", ".tttt..tttt.",
+      ], [
+        "............", "............", "............", "............",
+        "....oooo....", "...okkkko...", "..ookkkkoo..", ".ookkkkkkoo.",
+        "..okwwwwko..", "...tttttt...", "..ttkkkktt..", ".tttt..tttt.",
+      ]), palette),
       bullet: pixelTexture(engine, [".o.", ".o.", ".o.", ".o.", ".o.", ".o."], palette),
       moneyBag: pixelTexture(engine, ["..oo..", ".oooo.", "ookkoo", "okkkko", "okkkko", ".oooo."], palette),
       ammo: pixelTexture(engine, [".bbb.", "bkkkb", "bkkkb", ".bbb."], palette),
@@ -900,10 +910,12 @@ class GunSmokeGame {
     const itemColors: Record<ItemType, [number, number, number, number]> = { boots: [0.45, 0.8, 1, 1], rifle: [0.7, 0.9, 0.5, 1], ammo: [0.5, 0.7, 1, 1], money: [1, 0.85, 0.35, 1], pow: [1, 0.35, 0.35, 1], skull: [0.75, 0.75, 0.75, 1], horse: [0.8, 0.55, 0.3, 1], blueYashichi: [0.35, 0.65, 1, 1], redYashichi: [1, 0.3, 0.35, 1] };
     const color: [number, number, number, number] = isBoss ? bossColors[this.stage - 1] ?? bossColors[0]! : kind === "enemy" && enemyType ? colors[enemyType] : kind === "item" && itemType ? itemColors[itemType] : kind === "shopkeeper" ? [1, 0.9, 0.55, 1] : [1, 1, 1, 1];
     const texture = isBoss ? this.bossTextures[this.stage - 1] ?? this.bossTextures[0]! : kind === "enemy" && enemyType ? this.enemyTextures[enemyType] : kind === "item" && itemType ? this.itemTextures[itemType] : this.textures[textureName];
-    const sprite = new Sprite({ texture, sampler: this.sampler, frame: kind === "enemy" || isBoss ? { x: 0, y: 0, width: 0.5, height: 1 } : undefined, position: { x, y }, size: { x: isBoss ? 110 : isPickup ? 28 : small ? 9 : 34, y: isBoss ? 68 : isPickup ? 28 : small ? 25 : kind === "shopkeeper" ? 46 : 34 }, anchor: { x: 0.5, y: 0.5 }, color, layer: isBoss ? 15 : small ? 12 : isPickup ? 11 : 10 });
-    const animation = kind === "enemy" || isBoss ? new SpriteAnimationBinding(sprite, new AnimationPlayer().play(new SpriteFrameClip([
-      { x: 0, y: 0, width: 0.5, height: 1, duration: 0.14 },
-      { x: 0.5, y: 0, width: 0.5, height: 1, duration: 0.14 },
+    const animated = kind === "enemy" || kind === "shopkeeper" || isBoss;
+    const frameDuration = kind === "shopkeeper" ? 0.35 : 0.14;
+    const sprite = new Sprite({ texture, sampler: this.sampler, frame: animated ? { x: 0, y: 0, width: 0.5, height: 1 } : undefined, position: { x, y }, size: { x: isBoss ? 110 : isPickup ? 28 : small ? 9 : 34, y: isBoss ? 68 : isPickup ? 28 : small ? 25 : kind === "shopkeeper" ? 54 : 34 }, anchor: { x: 0.5, y: 0.5 }, color, layer: isBoss ? 15 : small ? 12 : isPickup ? 11 : 10 });
+    const animation = animated ? new SpriteAnimationBinding(sprite, new AnimationPlayer().play(new SpriteFrameClip([
+      { x: 0, y: 0, width: 0.5, height: 1, duration: frameDuration },
+      { x: 0.5, y: 0, width: 0.5, height: 1, duration: frameDuration },
     ]), true)) : undefined;
     const unit: Unit = {
       kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined,

@@ -185,6 +185,8 @@ original entity codes and pool selection remain attached for comparison.
 Important barrel contents now come directly from the decoded ROM object stream,
 so every Boots, Rifle, POW, Money, Yashichi, Skull and Horse barrel uses its
 original Round order and NES coordinate without a second authored barrel list.
+Breakable objects enter at the top edge and descend with the measured ROM
+object speed, keeping the barrel and pickup interaction in the playable area.
 Enemy Money Bag and ammunition drops remain randomized.
 The Wanted barrel itself now comes from the decoded `wantedTrigger` object
 event, while the older authored item list remains the source for the verified

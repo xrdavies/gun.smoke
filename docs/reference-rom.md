@@ -79,7 +79,8 @@ event stream with separate capacities.
 The generated `ROUND_ROM_OBJECT_EVENTS` stream retains no-behavior object
 records. The runtime consumes the single `wantedTrigger` per Round to place
 the poster barrel, renders dispatch `0x08` scene props, and preserves dispatch
-`0x07` breakable-container variants; only `stateControl` records remain
+`0x07` breakable-container variants. Decoded `0x07` objects descend at the
+measured one NES pixel every three frames; only `stateControl` records remain
 deferred for later scene-system work.
 Round 4's 44 `$B5BF` records all select the object pool. Isolated contact
 verification identifies them as falling rock hazards: they travel toward the

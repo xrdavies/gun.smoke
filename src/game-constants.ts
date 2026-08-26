@@ -38,6 +38,8 @@ export const ROUND_LENGTHS = ROUND_LOOP_SCROLL_NES.map((value) => value * NES_WO
 export const WANTED_REVEAL_AT = ROUND_WANTED_SCROLL_NES.map((value) => value * NES_WORLD_Y_SCALE);
 export const NES_SCROLL_SPEED = 20 * (NES_FRAME_RATE / 60);
 export const WORLD_SCROLL_SPEED = NES_SCROLL_SPEED * NES_WORLD_Y_SCALE;
+// ROM object Y advances with the camera scroll plus one screen-speed descent.
+export const ROM_OBJECT_DROP_SPEED = WORLD_SCROLL_SPEED * 2;
 export const NES_PLAYER_SPEED = 75 * (NES_FRAME_RATE / 60);
 export const WORLD_PLAYER_SPEED = NES_PLAYER_SPEED * NES_WORLD_Y_SCALE;
 export const BOOTS_SPEED_MULTIPLIER = 4 / 3;

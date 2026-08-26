@@ -40,6 +40,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(AMMO_GAIN).toEqual({ pistol: 0, shotgun: 20, machinegun: 40, magnum: 10 });
     expect(WANTED_COSTS).toEqual([20_000, 24_000, 50_000, 40_000, 40_000, 60_000]);
     expect(WANTED_X_OFFSETS).toHaveLength(MAX_STAGE);
+    expect(WANTED_X_OFFSETS[1]).toBeLessThan(0);
+    expect(WANTED_X_OFFSETS[4]).toBeGreaterThan(0);
     expect(ROUND_ENEMY_TYPES).toHaveLength(MAX_STAGE);
     expect(ROUND_ENEMY_TYPES[0]).toContain("backstabber");
     expect(ROUND_ENEMY_TYPES[2]).toContain("spear");

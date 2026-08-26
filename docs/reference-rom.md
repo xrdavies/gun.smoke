@@ -82,6 +82,8 @@ writes at `$8000+`. Each sample also reports every bank seen and the number of
 bank writes during that interval, because the game can switch several times
 inside one video frame. This keeps observed mapper state separate from unknown
 RAM semantics while locating the switchable-bank script data.
+The `sceneRuntime` sample contains the live `$036A-$036D` pointer/count/record
+buffer used by the bank 1 loader, even when the buffer is currently idle.
 `--pulse-fire` alternates short A/B presses every four frames, producing a
 repeatable diagonal-fire trace for score and hit timing. Unlike `--hold-ab`, it
 continues to trigger the semi-automatic Pistol after the first shot.

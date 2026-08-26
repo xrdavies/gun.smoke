@@ -75,6 +75,11 @@ const sample = (frame) => {
       "0x7a": nes.cpu.mem[0x7a],
     },
     eventCursor: { slot: nes.cpu.mem[0x6a], delay: nes.cpu.mem[0x6b], ramA3: nes.cpu.mem[0xa3] },
+    sceneRuntime: {
+      pointer: (nes.cpu.mem[0x36a] ?? 0) | ((nes.cpu.mem[0x36b] ?? 0) << 8),
+      count: nes.cpu.mem[0x36c],
+      records: Array.from(nes.cpu.mem.slice(0x36d, 0x394)),
+    },
     mapperBank,
     mapperBanksSeen: [...mapperBanksSeen].sort((left, right) => left - right),
     mapperWriteCount,

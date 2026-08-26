@@ -17,6 +17,7 @@ import { AMMO_GAIN, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER
 import { GUNMAN_BULLET_SPEED, GUNMAN_FIRST_SHOT_DELAY, GUNMAN_LIFETIME } from "./game-constants";
 import { BANDIT_BILL_BULLET_SPEED, BANDIT_BILL_FIRST_VOLLEY_DELAY } from "./game-constants";
 import { banditBillCooldown } from "./game-constants";
+import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "./game-constants";
 import { roundCollisionBlocks } from "./round-collision";
 import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
 
@@ -1380,9 +1381,9 @@ class GunSmokeGame {
       this.hasHorse = true;
       this.horseHealth = 3;
     } else if (item === "blueYashichi") {
-      this.invulnerable = Math.max(this.invulnerable, 8);
+      this.invulnerable = Math.max(this.invulnerable, BLUE_YASHICHI_DURATION);
     } else if (item === "redYashichi") {
-      this.lives = Math.min(9, this.lives + 1);
+      this.lives = Math.min(MAX_LIVES, this.lives + 1);
     }
     this.showMessage(item.replace(/([A-Z])/g, " $1").toUpperCase());
     this.updateHud();
@@ -1431,7 +1432,7 @@ class GunSmokeGame {
   private awardScoreLife(): void {
     const reward = scoreExtraLives(this.score, this.nextLifeScore);
     for (let index = 0; index < reward.lives; index += 1) {
-      this.lives = Math.min(9, this.lives + 1);
+      this.lives = Math.min(MAX_LIVES, this.lives + 1);
       this.showMessage("EXTRA LIFE");
     }
     this.nextLifeScore = reward.nextThreshold;

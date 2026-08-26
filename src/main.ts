@@ -715,7 +715,7 @@ class GunSmokeGame {
       const sniperX = offset <= 0 ? 480 - roadHalf + 22 : 480 + roadHalf - 22;
       const enemy = this.spawnUnit("enemy", enemyType === "sniper" ? sniperX : clamp(center + offset * 66, 54, 906), entryY, 1 + Number(this.stage >= 4), enemyType);
       enemy.vx = segment.formation === "cross" ? offset * 32 : (this.nextRandom() - 0.5) * (55 + this.stage * 8);
-      enemy.vy = enemyType === "backstabber" ? -100 : enemyType === "sniper" ? 0 : 24 + this.stage * 6;
+      enemy.vy = entersFromBehind ? -100 : enemyType === "sniper" ? 0 : 24 + this.stage * 6;
     }
     if (this.nextRandom() < 0.28) this.spawnUnit("coin", clamp(center + (this.nextRandom() - 0.5) * 260, 60, 900), y + 55, 1);
     if (this.nextRandom() < 0.1) {

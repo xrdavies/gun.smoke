@@ -21,7 +21,7 @@ import { banditBillCooldown } from "./game-constants";
 import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "./game-constants";
 import { pistolShots } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
-import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_VOLLEY_INTERVAL, FATMAN_JOE_VOLLEY_SIZE } from "./game-constants";
+import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_VOLLEY_INTERVAL, FATMAN_JOE_VOLLEY_SIZE, fatmanJoeCombatY } from "./game-constants";
 import { WINGATE_BULLET_SPEED, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateShotCooldown } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPEED, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { CUTTER_ENTRY_DURATION, CUTTER_MOVEMENT_SPEED, cutterOpeningY } from "./game-constants";
@@ -1270,7 +1270,7 @@ class GunSmokeGame {
       else if (this.stage === 2) unit.y = this.scroll + cutterOpeningY(unit.age <= CUTTER_ENTRY_DURATION ? unit.age : CUTTER_ENTRY_DURATION);
       else if (this.stage === 3) unit.y = this.scroll + (unit.age <= DEVIL_HAWK_ENTRY_DURATION ? devilHawkOpeningY(unit.age) : devilHawkCombatY(unit.age));
       else if (this.stage === 4) unit.y = this.scroll + (unit.bossEntryY ?? NINJA_BOSS_ENTRY_Y_LANES[0] ?? 144) + Math.abs(Math.sin(unit.age * 3)) * 55;
-      else if (this.stage === 5) unit.y = this.scroll + fatmanJoeOpeningY(unit.age <= FATMAN_JOE_ENTRY_DURATION ? unit.age : FATMAN_JOE_ENTRY_DURATION) + (unit.age <= FATMAN_JOE_ENTRY_DURATION ? 0 : Math.abs(Math.sin((unit.age - FATMAN_JOE_ENTRY_DURATION) * 3.6)) * 32);
+      else if (this.stage === 5) unit.y = this.scroll + (unit.age <= FATMAN_JOE_ENTRY_DURATION ? fatmanJoeOpeningY(unit.age) : fatmanJoeCombatY(unit.age));
       else if (this.stage === 6 && unit.bossEntryY !== undefined) unit.y = this.scroll + wingateOpeningY(unit.age <= WINGATE_ENTRY_DURATION ? unit.age : WINGATE_ENTRY_DURATION) + (unit.age <= WINGATE_ENTRY_DURATION ? 0 : Math.min((unit.age - WINGATE_ENTRY_DURATION) * 110, 170));
       else if (this.stage === 6) unit.y = this.scroll + 92 + Math.min(unit.age * 110, 170);
       else unit.y = this.scroll + 92 + Math.sin(unit.age * 2) * 18;

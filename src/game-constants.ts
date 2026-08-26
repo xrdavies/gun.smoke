@@ -184,6 +184,20 @@ export const FATMAN_JOE_VOLLEY_SIZE = 5;
 export function fatmanJoeOpeningY(age: number): number {
   return Math.max(0, Math.min(1, age / FATMAN_JOE_ENTRY_DURATION)) * FATMAN_JOE_ENTRY_END_Y;
 }
+const FATMAN_JOE_COMBAT_PATH_NES = [[0, 112], [50, 142], [80, 124], [110, 93], [130, 94], [180, 89], [280, 56], [350, 158], [390, 158], [420, 54], [450, 40], [480, 75], [500, 98], [530, 121]] as const;
+
+export function fatmanJoeCombatY(age: number): number {
+  const frame = Math.max(0, age * NES_FRAME_RATE - FATMAN_JOE_ENTRY_DURATION * NES_FRAME_RATE);
+  const first = FATMAN_JOE_COMBAT_PATH_NES[0]!;
+  if (frame <= first[0]) return first[1] * NES_WORLD_Y_SCALE;
+  const last = FATMAN_JOE_COMBAT_PATH_NES.at(-1)!;
+  if (frame >= last[0]) return last[1] * NES_WORLD_Y_SCALE;
+  const nextIndex = FATMAN_JOE_COMBAT_PATH_NES.findIndex(([at]) => at >= frame);
+  const previous = FATMAN_JOE_COMBAT_PATH_NES[nextIndex - 1]!;
+  const next = FATMAN_JOE_COMBAT_PATH_NES[nextIndex]!;
+  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  return (previous[1] + (next[1] - previous[1]) * amount) * NES_WORLD_Y_SCALE;
+}
 export const WINGATE_ENTRY_X_NES = 152;
 export const WINGATE_ENTRY_X = WINGATE_ENTRY_X_NES * NES_WORLD_X_SCALE;
 export const WINGATE_ENTRY_Y_NES = 0;

@@ -135,7 +135,8 @@ delayed dynamite bomb gun, while Wingate's two encounters use top-edge NES
 lanes `x=152` and `x=192` before a short horizontal rush and slower cruise; the Ninja enters a smoke/invulnerability phase and
 teleports after each lost health bar.
 Fatman Joe's measured opening volley begins at frame 205, emits five projectiles
-and repeats after roughly 131 frames; projectile arcs remain procedural.
+and repeats after roughly 131 frames; his multi-hop vertical profile follows
+the measured Boss trace while projectile arcs remain procedural.
 Ninja's measured first shuriken volley appears at frame 179 with four diagonal
 shots and a common 60-frame repeat interval; smoke preparation remains
 procedural.

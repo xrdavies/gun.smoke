@@ -49,6 +49,8 @@ const checkpoint = (label, gameFrame) => {
       "0x69": nes.cpu.mem[0x69],
       "0x7a": nes.cpu.mem[0x7a],
     },
+    eventCursor: { slot: nes.cpu.mem[0x6a], delay: nes.cpu.mem[0x6b], bank: nes.cpu.mem[0xa3] },
+    eventPairs: Array.from(nes.cpu.mem.slice(0x780, 0x7c0)),
     hudScore: hudScore(),
     ppu: {
       vramAddress: nes.ppu.vramAddress,

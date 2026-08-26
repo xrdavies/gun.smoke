@@ -1545,7 +1545,7 @@ class GunSmokeGame {
   }
 
   private clearEnemyProjectiles(): void {
-    for (const unit of this.units) if (unit.kind === "enemyBullet" && unit.projectileType !== "rock") unit.hp = 0;
+    for (const unit of this.units) if (unit.kind === "enemyBullet" && unit.projectileType !== "rock" && !unit.bossProjectile) unit.hp = 0;
   }
 
   private awardScoreLife(): void {

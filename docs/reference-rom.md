@@ -124,7 +124,7 @@ to use their object pool.
 Projectile clear routine `$CDD4-$CDE0` only zeros those same eight slots. The
 POW path at `$CDAB-$CDD3` also handles ordinary enemy slots `$0410-$0416`, but
 neither path clears object-pool falling rocks; runtime screen clears preserve
-that boundary.
+that boundary and retain the low-slot Boss projectile pool.
 On a Horse-protected collision, `$CABC-$CAC5` first removes only the colliding
 ordinary projectile, then `$CAEF-$CB29` decrements Horse health and starts a
 60-frame protection timer without calling the screen-clear routine. The runtime

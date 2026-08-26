@@ -12,6 +12,7 @@ const routines = [...new Set(manifest.rounds.flatMap((round) => round.records
   .filter((record) => record.command === "spawn" && record.behaviorRoutine)
   .map((record) => record.behaviorRoutine)))].sort();
 const routineIds = Object.fromEntries(routines.map((routine, index) => [routine, index]));
+const nonEnemyObjectBehaviorIds = [routineIds["$b5bf"]].filter((value) => Number.isInteger(value));
 const streams = manifest.rounds.map((round) => {
   const bytes = [];
   for (const record of round.records.filter((candidate) => candidate.command === "spawn" && candidate.behaviorRoutine)) {
@@ -83,7 +84,7 @@ const source = [
   "export const romObjectWorldY = (event: RomObjectEvent): number => event.y * WORLD_PER_NES_PIXEL;",
   "export const ROM_ENEMY_SLOT_CAPACITY = 7;",
   "export const ROM_OBJECT_SLOT_CAPACITY = 6;",
-  "export const ROM_NON_ENEMY_OBJECT_BEHAVIORS = [5] as const; // $B5BF remains an unclassified scene object.",
+  `export const ROM_NON_ENEMY_OBJECT_BEHAVIORS = ${JSON.stringify(nonEnemyObjectBehaviorIds)} as const; // $B5BF remains an unclassified scene object.`,
   "export const canSpawnRomPool = (pool: RomEnemyEvent[\"pool\"], active: number): boolean => active < (pool === \"object\" ? ROM_OBJECT_SLOT_CAPACITY : ROM_ENEMY_SLOT_CAPACITY);",
   "export const romEventWorldAt = (event: RomEnemyEvent): number => event.at * WORLD_PER_NES_PIXEL;",
   "export const romEventWorldX = (event: RomEnemyEvent): number => event.x * (960 / 256);",

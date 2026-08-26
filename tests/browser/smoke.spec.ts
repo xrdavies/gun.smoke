@@ -141,6 +141,15 @@ test("rejects non-iNES reference files", async ({ page }) => {
   });
   await expect(page.locator("#rom-status")).toContainText("Could not load ROM");
   await expect(page.locator("#title-screen")).toBeVisible();
+  const header = Buffer.alloc(16);
+  header.write("NES\x1a", 0, "binary");
+  header[4] = 1;
+  await page.locator("#reference-rom").setInputFiles({
+    name: "truncated.nes",
+    mimeType: "application/octet-stream",
+    buffer: header,
+  });
+  await expect(page.locator("#rom-status")).toContainText("Truncated iNES ROM data");
   await page.locator("#start-button").click();
   await expect(page.locator("#intro-screen")).toBeVisible();
 });

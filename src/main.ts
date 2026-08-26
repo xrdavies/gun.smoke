@@ -1440,33 +1440,45 @@ class ReferenceRomGame {
     }
     const flags6 = bytes[6] ?? 0;
     const flags7 = bytes[7] ?? 0;
+    const trainerBytes = flags6 & 0x04 ? 512 : 0;
     const metadata = {
       mapper: (flags6 >> 4) | (flags7 & 0xf0),
       prgBytes: (bytes[4] ?? 0) * 16 * 1024,
       chrBytes: (bytes[5] ?? 0) * 8 * 1024,
     };
+    if (bytes.length < 16 + trainerBytes + metadata.prgBytes + metadata.chrBytes) {
+      throw new Error("Truncated iNES ROM data");
+    }
     let binary = "";
     for (let offset = 0; offset < bytes.length; offset += 0x8000) {
       binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
     }
     const frame: { value: Uint32Array | undefined } = { value: undefined };
+    let pcm: PcmStream | undefined;
+    const nes = new NES({ onFrame: (nextFrame) => { frame.value = nextFrame; }, onAudioSample: (left, right) => pcm?.push(left, right) });
+    nes.loadROM(binary);
     let audio: AudioManager | undefined;
     try {
       audio = new AudioManager();
     } catch {
       audio = undefined;
     }
-    let pcm: PcmStream | undefined;
     try {
       pcm = audio?.createPcmStream({ bus: "music" });
     } catch {
       audio?.dispose();
       audio = undefined;
     }
-    const nes = new NES({ onFrame: (nextFrame) => { frame.value = nextFrame; }, onAudioSample: (left, right) => pcm?.push(left, right) });
-    nes.loadROM(binary);
-    const engine = await Engine.create({ canvas, autoStart: false, input: true });
-    return new ReferenceRomGame(engine, nes, Controller, frame, audio, pcm, metadata);
+    let engine: Engine | undefined;
+    try {
+      engine = await Engine.create({ canvas, autoStart: false, input: true });
+      return new ReferenceRomGame(engine, nes, Controller, frame, audio, pcm, metadata);
+    } catch (error) {
+      engine?.destroy();
+      pcm?.stop();
+      audio?.dispose();
+      throw error;
+    }
   }
 
   start(): void {

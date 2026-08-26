@@ -16,7 +16,7 @@ import type { ButtonKey } from "jsnes";
 import { AMMO_GAIN, banditBillOpeningY, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, BOMBER_FIRST_THROW_DELAY, BOMBER_THROW_INTERVAL, bossReward, BOOTS_SPEED_MULTIPLIER, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, DYNAMITE_LIFETIME, DYNAMITE_WORLD_SPEED, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X, FATMAN_JOE_ENTRY_Y, fatmanJoeOpeningY, FIREBREATHER_FIRST_SHOT_DELAY, FIREBREATHER_PROJECTILE_SPEED, formationEntryY, HATCHET_FIRST_SHOT_DELAY, HATCHET_PROJECTILE_SPEED, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_X_LANES, NINJA_BOSS_ENTRY_Y_LANES, NINJA_FIRST_SHOT_DELAY, NINJA_PROJECTILE_SPEED, PISTOL_BULLET_LIFETIME, RIFLE_BULLET_SPEED_MULTIPLIER, RIFLEMAN_BULLET_SPEED, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_LIFETIME, ROCK_WORLD_SPEED_X, ROCK_WORLD_SPEED_Y, ROAD_WIDTHS, ROM_OBJECT_DROP_SPEED, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_VOLLEY_INTERVAL, shouldLoopStage, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, SPEAR_FIRST_SHOT_DELAY, SPEAR_PROJECTILE_SPEED, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_DURATION, WINGATE_ENTRY_X, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_X, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, wingateOpeningY, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
 import { GUNMAN_BULLET_SPEED, GUNMAN_FIRST_SHOT_DELAY, GUNMAN_LIFETIME } from "./game-constants";
 import { RIFLEMAN_ATTACK_STATE_FRAME } from "./game-constants";
-import { BANDIT_BILL_BULLET_SPEED, BANDIT_BILL_FIRST_VOLLEY_DELAY } from "./game-constants";
+import { BANDIT_BILL_BULLET_SPEED, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, banditBillCombatX, banditBillCombatY } from "./game-constants";
 import { banditBillCooldown } from "./game-constants";
 import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "./game-constants";
 import { pistolShots } from "./game-constants";
@@ -1250,7 +1250,8 @@ class GunSmokeGame {
       }
       if (unit.x < 32 || unit.x > 928) unit.vx *= -1;
     } else if (unit.kind === "boss") {
-      if (this.stage === 1) unit.x = unit.bossEntryX ?? unit.x;
+      if (this.stage === 1 && unit.age <= BANDIT_BILL_ENTRY_DURATION) unit.x = unit.bossEntryX ?? unit.x;
+      else if (this.stage === 1) unit.x = banditBillCombatX(unit.age, unit.bossEntryX ?? unit.x);
       else if (this.stage === 2 && unit.age <= CUTTER_ENTRY_DURATION) unit.x = unit.bossEntryX ?? unit.x;
       else if (this.stage === 3 && unit.age <= DEVIL_HAWK_ENTRY_DURATION + DEVIL_HAWK_POST_ENTRY_X_HOLD) unit.x = unit.bossEntryX ?? unit.x;
       else if (this.stage === 3) unit.x = devilHawkCombatX(unit.age, unit.bossEntryX ?? unit.x);
@@ -1270,7 +1271,7 @@ class GunSmokeGame {
       const minBossX = edgeEntryBoss ? 0 : 380;
       const maxBossX = edgeEntryBoss ? 960 : 580;
       if (unit.x < minBossX || unit.x > maxBossX) unit.vx *= -1;
-      if (this.stage === 1) unit.y = this.scroll + (unit.age < unit.invulnerableUntil ? 430 : banditBillOpeningY(unit.age));
+      if (this.stage === 1) unit.y = this.scroll + (unit.age < unit.invulnerableUntil ? 430 : unit.age <= BANDIT_BILL_ENTRY_DURATION ? banditBillOpeningY(unit.age) : banditBillCombatY(unit.age, unit.bossEntryX ?? 192 * (960 / 256)));
       else if (this.stage === 2) unit.y = this.scroll + (unit.age <= CUTTER_ENTRY_DURATION ? cutterOpeningY(unit.age) : cutterCombatY(unit.age));
       else if (this.stage === 3) unit.y = this.scroll + (unit.age <= DEVIL_HAWK_ENTRY_DURATION ? devilHawkOpeningY(unit.age) : devilHawkCombatY(unit.age));
       else if (this.stage === 4) {

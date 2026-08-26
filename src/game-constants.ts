@@ -111,6 +111,32 @@ export const BANDIT_BILL_ENTRY_SPEED_Y = (64 / 96) * NES_FRAME_RATE * NES_WORLD_
 export function banditBillOpeningY(age: number): number {
   return Math.max(0, Math.min(1, age / BANDIT_BILL_ENTRY_DURATION)) * BANDIT_BILL_ENTRY_END_Y;
 }
+const BANDIT_BILL_COMBAT_PATH_NES = [[0, 192, 64], [119, 186, 49], [227, 147, 49], [335, 186, 49], [443, 192, 64], [551, 196, 60], [587, 196, 60]] as const;
+
+function banditBillCombatPosition(age: number, entryX = 192 * NES_WORLD_X_SCALE): readonly [number, number] {
+  const frame = Math.max(0, age * NES_FRAME_RATE - BANDIT_BILL_ENTRY_DURATION * NES_FRAME_RATE);
+  const laneOffset = entryX / NES_WORLD_X_SCALE - 192;
+  const first = BANDIT_BILL_COMBAT_PATH_NES[0]!;
+  if (frame <= first[0]) return [(first[1] + laneOffset) * NES_WORLD_X_SCALE, first[2] * NES_WORLD_Y_SCALE];
+  const last = BANDIT_BILL_COMBAT_PATH_NES.at(-1)!;
+  if (frame >= last[0]) return [(last[1] + laneOffset) * NES_WORLD_X_SCALE, last[2] * NES_WORLD_Y_SCALE];
+  const nextIndex = BANDIT_BILL_COMBAT_PATH_NES.findIndex(([at]) => at >= frame);
+  const previous = BANDIT_BILL_COMBAT_PATH_NES[nextIndex - 1]!;
+  const next = BANDIT_BILL_COMBAT_PATH_NES[nextIndex]!;
+  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  return [
+    (previous[1] + (next[1] - previous[1]) * amount + laneOffset) * NES_WORLD_X_SCALE,
+    (previous[2] + (next[2] - previous[2]) * amount) * NES_WORLD_Y_SCALE,
+  ];
+}
+
+export function banditBillCombatX(age: number, entryX = 192 * NES_WORLD_X_SCALE): number {
+  return banditBillCombatPosition(age, entryX)[0];
+}
+
+export function banditBillCombatY(age: number, entryX = 192 * NES_WORLD_X_SCALE): number {
+  return banditBillCombatPosition(age, entryX)[1];
+}
 export const CUTTER_ENTRY_X_NES = [88, 144, 168] as const;
 export const CUTTER_ENTRY_X_LANES = CUTTER_ENTRY_X_NES.map((value) => value * NES_WORLD_X_SCALE);
 export const CUTTER_ENTRY_Y_NES = 0;

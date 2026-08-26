@@ -166,8 +166,9 @@ values instead of its former single slow shot.
 The gate traces place his initial entity at the top edge (`y=0`) and observe
 four horizontal entry lanes, NES `x=96/128/160/192`; after 96 frames the actor
 reaches approximately `y=64`. The web runtime selects one of those measured
-lanes and uses the corresponding downward entry speed, while later movement
-and damage phases remain separate Boss approximations.
+lanes and uses the corresponding downward entry speed. After the opening, the
+runtime follows the measured lateral/vertical combat path while retaining the
+separate damage-phase approximation.
 The same controlled full-round trace identifies Round 2's Cutter as dispatch
 `0x90`, variant `0x5b`, entering from the top edge (`y=0`). Controlled runs
 observe NES horizontal entry lanes near `x=88/144/168`; one lane reaches about

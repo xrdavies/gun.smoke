@@ -1241,7 +1241,7 @@ class GunSmokeGame {
       else if (this.stage === 5 && unit.age <= FATMAN_JOE_ENTRY_DURATION) unit.x = fatmanJoeOpeningX(unit.age);
       else if (this.stage === 6 && unit.bossEntryY !== undefined && unit.age <= WINGATE_ENTRY_DURATION) unit.x = wingateOpeningX(unit.age);
       else unit.x += unit.vx * delta;
-      const edgeEntryBoss = this.stage === 1 || this.stage === 2 || this.stage === 3 || (this.stage === 6 && unit.bossEntryY !== undefined);
+      const edgeEntryBoss = this.stage === 1 || this.stage === 2 || this.stage === 3 || this.stage === 4 || (this.stage === 6 && unit.bossEntryY !== undefined);
       const minBossX = edgeEntryBoss ? 0 : 380;
       const maxBossX = edgeEntryBoss ? 960 : 580;
       if (unit.x < minBossX || unit.x > maxBossX) unit.vx *= -1;

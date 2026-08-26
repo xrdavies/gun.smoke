@@ -83,6 +83,13 @@ single random cadence and provides a stable target for ROM trace comparison.
 Each segment also carries a landmark type (`town`, `rock`, `village`, `cliff`,
 `forest`, `cemetery`, or `open`) so side geometry changes with the event script.
 
+Rocky Pass, Cliff Valley, Forest, and Wingate Town also have authored gameplay
+blockers rather than decoration-only scenery. Boulder, tree, and grave zones
+are tested against the player's world-space position and support axis sliding,
+so a diagonal input can follow a narrow path around an obstacle. The blocker
+coordinates remain explicit approximation data until each stage has a matching
+ROM trace.
+
 Important barrel contents are represented as ordered world events per Round,
 so the notable boots, rifle, POW, Yashichi, Skull and Horse sequence is stable;
 enemy drops remain a separate randomized supplement.

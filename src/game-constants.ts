@@ -72,6 +72,14 @@ export interface RoundItemEvent {
   item: ItemType;
 }
 
+export interface RoundObstacle {
+  at: number;
+  length: number;
+  x: number;
+  width: number;
+  kind: "boulder" | "tree" | "grave";
+}
+
 export const ROUND_SEGMENTS: readonly (readonly RoundSegment[])[] = [
   [{ at: 146, formation: "line", enemyTypes: ["gunman", "bomber"], interval: 1.1, landmark: "town" }, { at: 416, formation: "wedge", enemyTypes: ["sniper", "backstabber"], interval: 1, landmark: "town" }, { at: 551, formation: "line", enemyTypes: ["gunman", "bomber"], interval: 0.9, landmark: "open" }, { at: 731, formation: "cross", enemyTypes: ["gunman", "sniper"], interval: 0.8, landmark: "town" }],
   [{ at: 146, formation: "wedge", enemyTypes: ["gunman", "rifleman"], interval: 1, landmark: "rock" }, { at: 500, formation: "line", enemyTypes: ["backstabber", "rifleman"], interval: 0.9, landmark: "rock" }, { at: 1_050, formation: "cross", enemyTypes: ["gunman", "shotgunner"], interval: 0.8, landmark: "rock" }, { at: 1_500, formation: "wedge", enemyTypes: ["rifleman", "backstabber"], interval: 0.75, landmark: "rock" }],
@@ -97,6 +105,36 @@ export const ROUND_ITEM_EVENTS: readonly (readonly RoundItemEvent[])[] = [
   [{ at: 300, xOffset: -160, item: "blueYashichi" }, { at: 680, xOffset: 150, item: "redYashichi" }, { at: 1_040, xOffset: -120, item: "pow" }, { at: 1_440, xOffset: 120, item: "redYashichi" }],
   [{ at: 240, xOffset: -150, item: "blueYashichi" }, { at: 700, xOffset: 140, item: "redYashichi" }, { at: 1_020, xOffset: -100, item: "pow" }, { at: 1_440, xOffset: 120, item: "skull" }],
   [{ at: 260, xOffset: 0, item: "pow" }, { at: 620, xOffset: -150, item: "blueYashichi" }, { at: 1_000, xOffset: 140, item: "redYashichi" }, { at: 1_420, xOffset: 0, item: "pow" }],
+];
+
+// Obstacles are gameplay-space blockers, separate from decorative landmarks.
+// Their coordinates are intentionally data-driven so a later ROM trace can replace them.
+export const ROUND_OBSTACLES: readonly (readonly RoundObstacle[])[] = [
+  [],
+  [
+    { at: 690, length: 150, x: 300, width: 92, kind: "boulder" },
+    { at: 1_120, length: 130, x: 660, width: 104, kind: "boulder" },
+  ],
+  [],
+  [
+    { at: 380, length: 180, x: 350, width: 98, kind: "boulder" },
+    { at: 940, length: 150, x: 620, width: 112, kind: "boulder" },
+    { at: 1_360, length: 170, x: 390, width: 86, kind: "boulder" },
+  ],
+  [
+    { at: 280, length: 150, x: 285, width: 112, kind: "tree" },
+    { at: 560, length: 180, x: 690, width: 132, kind: "tree" },
+    { at: 850, length: 130, x: 470, width: 92, kind: "tree" },
+    { at: 1_080, length: 160, x: 300, width: 124, kind: "tree" },
+    { at: 1_380, length: 150, x: 660, width: 128, kind: "tree" },
+    { at: 1_650, length: 130, x: 460, width: 100, kind: "tree" },
+  ],
+  [
+    { at: 360, length: 120, x: 330, width: 82, kind: "grave" },
+    { at: 620, length: 150, x: 650, width: 94, kind: "grave" },
+    { at: 980, length: 130, x: 420, width: 86, kind: "grave" },
+    { at: 1_300, length: 150, x: 700, width: 104, kind: "grave" },
+  ],
 ];
 
 export type WeaponName = "pistol" | "shotgun" | "machinegun" | "magnum";
@@ -138,6 +176,11 @@ export function shouldLoopStage(scroll: number, hasWanted: boolean): boolean {
 
 export function segmentDelay(scroll: number, at: number, speed: number): number {
   return Math.max(0, (at - scroll) / speed);
+}
+
+export function obstacleBlocks(obstacle: RoundObstacle, x: number, y: number, radius = 18): boolean {
+  return y >= obstacle.at - radius && y <= obstacle.at + obstacle.length + radius &&
+    x >= obstacle.x - obstacle.width / 2 - radius && x <= obstacle.x + obstacle.width / 2 + radius;
 }
 
 export function nextExtraLifeScore(currentThreshold: number): number {

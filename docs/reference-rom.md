@@ -83,6 +83,9 @@ for later scene-system work.
 Round 4's 44 `$B5BF` records all select the object pool and remain unclassified
 scene objects; they are deliberately not rendered as enemy proxies until their
 visual and interaction state is decoded.
+In contrast, `sceneObject` records with dispatch type `0x07` render as generic
+field enemies in the ROM. The runtime now preserves those events as object-pool
+gunmen, while dispatch `0x08` and state-control records remain deferred.
 Behavior routine `$B0E5` allocates three projectile slots at `$B24B-$B281`
 and emits adjacent direction values, identifying it as the Shotgunner spread
 attack used by the runtime behavior map. An isolated instance fires at age 108

@@ -164,6 +164,9 @@ is identified. The pools are capped independently at seven enemy slots and
 six object slots, matching the ROM allocator. The all-object `$B5BF` Round 4
 records are currently withheld from enemy rendering rather than misclassified;
 they remain in the research stream for a later scene-object implementation.
+Object-pool dispatch `0x07` records are the exception: ROM screenshots show
+them as field enemies, so the runtime renders them as generic gunmen while
+retaining their original entity codes.
 
 Important barrel contents are represented as ordered world events per Round,
 so every Boots, Rifle, POW, Yashichi, Skull and Horse barrel is stable rather

@@ -15,7 +15,7 @@ import "./style.css";
 import type { ButtonKey } from "jsnes";
 import { AMMO_GAIN, BOMBER_FIRST_THROW_DELAY, BOMBER_THROW_INTERVAL, bossReward, BOOTS_SPEED_MULTIPLIER, clamp, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, DYNAMITE_LIFETIME, DYNAMITE_WORLD_SPEED, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_BOSS_TRIGGERS, ROUND_ITEM_EVENTS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_VOLLEY_INTERVAL, shouldLoopStage, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, worldEventEnteredView, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
 import { roundCollisionBlocks } from "./round-collision";
-import { canSpawnRomPool, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX } from "./rom-event-data";
+import { canSpawnRomPool, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_SCENE_ENEMY_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
 
 type GameAction =
   | "left"
@@ -671,10 +671,22 @@ class GunSmokeGame {
       const event = events[this.romObjectCursor];
       if (!event || romObjectWorldAt(event) > this.scroll) break;
       this.romObjectCursor += 1;
-      if (event.semantic !== "wantedTrigger" || this.hasWanted || this.posterPropSpawned) continue;
-      this.posterPropSpawned = true;
-      this.spawnUnit("barrel", clamp(romObjectWorldX(event), 70, 890), this.scroll + 170, 1);
-      this.showMessage("SHOOT THE BARREL");
+      if (event.semantic === "wantedTrigger") {
+        if (this.hasWanted || this.posterPropSpawned) continue;
+        this.posterPropSpawned = true;
+        this.spawnUnit("barrel", clamp(romObjectWorldX(event), 70, 890), this.scroll + 170, 1);
+        this.showMessage("SHOOT THE BARREL");
+        continue;
+      }
+      if (event.semantic !== "sceneObject" || !ROM_SCENE_ENEMY_DISPATCH_TYPES.includes(event.dispatchType as 7)) continue;
+      const activeObjects = this.units.filter((unit) => unit.kind === "enemy" && unit.romPool === "object" && unit.romEntityCode !== undefined && unit.hp > 0).length;
+      if (!canSpawnRomPool("object", activeObjects)) continue;
+      const enemy = this.spawnUnit("enemy", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), 1 + Number(this.stage >= 4), "gunman");
+      enemy.romEntityCode = event.entityCode;
+      enemy.romFlags = event.flags;
+      enemy.romPool = "object";
+      enemy.vx = (this.nextRandom() - 0.5) * (42 + this.stage * 6);
+      enemy.vy = 24 + this.stage * 6;
     }
   }
 
@@ -683,7 +695,7 @@ class GunSmokeGame {
     const events = ROUND_ROM_ENEMY_EVENTS[this.stage - 1] ?? [];
     const activePools = { enemy: 0, object: 0 };
     for (const unit of this.units) {
-      if (unit.kind === "enemy" && unit.romBehavior !== undefined && unit.hp > 0) activePools[unit.romPool ?? "enemy"] += 1;
+      if (unit.kind === "enemy" && unit.romEntityCode !== undefined && unit.hp > 0) activePools[unit.romPool ?? "enemy"] += 1;
     }
     while (this.romEventCursor < events.length) {
       const event = events[this.romEventCursor];

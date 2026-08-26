@@ -193,6 +193,10 @@ from NES `(x=0, y=152)`, holds that lane and reaches approximately `x=98`
 after 151 frames. The runtime preserves this first-encounter opening without
 reusing it for the second, real Wingate; both later attack phases remain
 approximations pending their isolated traces.
+The first encounter clears into a 264-frame empty interval. The real Wingate
+then reuses dispatch `0xa3`, variant `0x65` and the same 151-frame horizontal
+opening, but enters on NES lane `y=192`; `$BA=1` distinguishes this second
+encounter. The runtime preserves the delay and separate entry lane.
 
 Current behavior map:
 

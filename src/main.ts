@@ -22,7 +22,7 @@ import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "./game-constants";
 import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, pistolBulletSpeedFactor, pistolVelocities, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
 import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_MOVEMENT_SPEED, FATMAN_JOE_SHOT_INTERVAL, FATMAN_JOE_VOLLEY_GAP, FATMAN_JOE_VOLLEY_SIZE, fatmanJoeCombatY } from "./game-constants";
-import { WINGATE_BULLET_SPEED, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateCombatY, wingateShotCooldown } from "./game-constants";
+import { WINGATE_BULLET_SPEED, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateCombatY, wingateShotCooldown } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPEED, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { CUTTER_ENTRY_DURATION, CUTTER_MOVEMENT_SPEED, cutterCombatY, cutterOpeningY } from "./game-constants";
 import { DEVIL_HAWK_ENTRY_DURATION, DEVIL_HAWK_FIREBALL_FAN_NES, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_POST_ENTRY_X_HOLD, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY } from "./game-constants";
@@ -825,7 +825,7 @@ class GunSmokeGame {
   private fireBoss(boss: Unit): void {
     const angle = Math.atan2(this.player.y - boss.y, this.player.x - boss.x);
     if (this.stage === 1) {
-      const projectile = this.spawnEnemyProjectile(boss.x, boss.y + 24, true);
+      const projectile = this.spawnEnemyProjectile(boss.x + WINGATE_PROJECTILE_X_OFFSET_NES * NES_WORLD_X_SCALE, boss.y + 24, true);
       if (projectile) {
         projectile.vx = Math.cos(angle) * BANDIT_BILL_BULLET_SPEED;
         projectile.vy = Math.sin(angle) * BANDIT_BILL_BULLET_SPEED;

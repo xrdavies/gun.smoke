@@ -347,6 +347,7 @@ export const WINGATE_SECOND_VOLLEY_GAP = 680 / NES_FRAME_RATE;
 export const WINGATE_FIRST_VOLLEY_SIZE = 6;
 export const WINGATE_SECOND_VOLLEY_SIZE = 3;
 export const WINGATE_BULLET_SPEED = 2 * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
+export const WINGATE_PROJECTILE_X_OFFSET_NES = -8;
 
 export function wingateOpeningY(age: number): number {
   return Math.max(0, Math.min(1, age / WINGATE_ENTRY_DURATION)) * WINGATE_ENTRY_END_Y;

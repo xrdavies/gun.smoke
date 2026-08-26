@@ -31,7 +31,8 @@ const positionX = Array.from({ length: positionCount }, (_, index) => fixedByte(
 const positionY = Array.from({ length: positionCount }, (_, index) => fixedByte(positionYAddress + index));
 const behaviorBank = prg.subarray(6 * 0x4000, 7 * 0x4000);
 const initializerFor = (entityCode) => {
-  const initializerCode = entityCode < 0x20 ? entityCode : entityCode < 0x2c ? 0x31 : 0x39;
+  // $FA94-$FAC1 normalizes item codes before calling $C796.
+  const initializerCode = entityCode < 0x20 ? entityCode : entityCode >= 0x2c ? 0x39 : 0x31;
   const pointer = fixedByte(0xde83 + initializerCode * 2) | (fixedByte(0xde84 + initializerCode * 2) << 8);
   if (pointer < 0xc000 || pointer >= 0x10000) throw new Error(`Entity ${entityCode} has an invalid initializer pointer`);
   const count = fixedByte(pointer);

@@ -825,7 +825,7 @@ class GunSmokeGame {
   private fireBoss(boss: Unit): void {
     const angle = Math.atan2(this.player.y - boss.y, this.player.x - boss.x);
     if (this.stage === 1) {
-      const projectile = this.spawnEnemyProjectile(boss.x + WINGATE_PROJECTILE_X_OFFSET_NES * NES_WORLD_X_SCALE, boss.y + 24, true);
+      const projectile = this.spawnEnemyProjectile(boss.x, boss.y + 24, true);
       if (projectile) {
         projectile.vx = Math.cos(angle) * BANDIT_BILL_BULLET_SPEED;
         projectile.vy = Math.sin(angle) * BANDIT_BILL_BULLET_SPEED;
@@ -836,7 +836,7 @@ class GunSmokeGame {
       return;
     }
     if (this.stage === MAX_STAGE) {
-      const projectile = this.spawnEnemyProjectile(boss.x, boss.y + 24, true);
+      const projectile = this.spawnEnemyProjectile(boss.x + WINGATE_PROJECTILE_X_OFFSET_NES * NES_WORLD_X_SCALE, boss.y + 24, true);
       if (projectile) {
         projectile.vx = 0;
         projectile.vy = WINGATE_BULLET_SPEED;

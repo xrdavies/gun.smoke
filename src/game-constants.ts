@@ -44,6 +44,7 @@ export const SHOP_CHECKPOINTS: readonly (readonly number[])[] = [
 
 export const ROAD_WIDTHS = [730, 450, 430, 500, 650, 540] as const;
 export const WANTED_COSTS = [20_000, 24_000, 50_000, 40_000, 40_000, 60_000] as const;
+export const BOSS_REWARDS = [10_000, 12_000, 25_000, 20_000, 20_000, 30_000] as const;
 export const WANTED_X_OFFSETS = [-220, -170, -150, -150, 180, 0] as const;
 
 export const ROUND_ENEMY_TYPES: readonly (readonly EnemyType[])[] = [

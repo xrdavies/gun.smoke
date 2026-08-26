@@ -122,6 +122,16 @@ export const FATMAN_JOE_ENTRY_DURATION = 170 / NES_FRAME_RATE;
 export function fatmanJoeOpeningX(age: number): number {
   return Math.max(0, Math.min(1, age / FATMAN_JOE_ENTRY_DURATION)) * FATMAN_JOE_ENTRY_END_X;
 }
+export const WINGATE_ENTRY_X = 0 * NES_WORLD_X_SCALE;
+export const WINGATE_ENTRY_Y_NES = 152;
+export const WINGATE_ENTRY_Y = WINGATE_ENTRY_Y_NES * NES_WORLD_Y_SCALE;
+export const WINGATE_ENTRY_END_X_NES = 98;
+export const WINGATE_ENTRY_END_X = WINGATE_ENTRY_END_X_NES * NES_WORLD_X_SCALE;
+export const WINGATE_ENTRY_DURATION = 151 / NES_FRAME_RATE;
+
+export function wingateOpeningX(age: number): number {
+  return Math.max(0, Math.min(1, age / WINGATE_ENTRY_DURATION)) * WINGATE_ENTRY_END_X;
+}
 
 export function banditBillCooldown(shotsFired: number): number {
   return shotsFired % BANDIT_BILL_SHOTS_PER_VOLLEY === 0 ? BANDIT_BILL_VOLLEY_GAP : BANDIT_BILL_SHOT_INTERVAL;

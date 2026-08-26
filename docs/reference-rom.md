@@ -188,6 +188,11 @@ Round 5's gate identifies Fatman Joe as dispatch `0x80`, variant `0x51`. He
 enters from NES `(x=0, y=152)`, keeps that vertical lane for the first 170
 frames and reaches about `x=112`. The runtime preserves this measured opening;
 its later hopping and bomb-gun phases remain explicit approximations.
+Round 6's first Wingate encounter is dispatch `0xa3`, variant `0x65`. It enters
+from NES `(x=0, y=152)`, holds that lane and reaches approximately `x=98`
+after 151 frames. The runtime preserves this first-encounter opening without
+reusing it for the second, real Wingate; both later attack phases remain
+approximations pending their isolated traces.
 
 Current behavior map:
 

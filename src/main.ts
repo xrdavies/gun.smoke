@@ -1248,7 +1248,7 @@ class GunSmokeGame {
       if (this.stage === 1) unit.y = this.scroll + (unit.age < unit.invulnerableUntil ? 430 : unit.bossEntryY ?? 360);
       else if (this.stage === 2) unit.y = this.scroll + (unit.bossEntryY ?? CUTTER_ENTRY_Y_LANES[0] ?? 198);
       else if (this.stage === 3) unit.y = this.scroll + (unit.bossEntryY ?? DEVIL_HAWK_ENTRY_Y_LANES[0] ?? 288) + (unit.age <= DEVIL_HAWK_ENTRY_DURATION ? 0 : Math.abs(Math.sin((unit.age - DEVIL_HAWK_ENTRY_DURATION) * 2.1)) * 145);
-      else if (this.stage === 4) unit.y = this.scroll + 92 + Math.abs(Math.sin(unit.age * 3)) * 55;
+      else if (this.stage === 4) unit.y = this.scroll + (unit.bossEntryY ?? NINJA_BOSS_ENTRY_Y) + Math.abs(Math.sin(unit.age * 3)) * 55;
       else if (this.stage === 5) unit.y = this.scroll + (unit.bossEntryY ?? FATMAN_JOE_ENTRY_Y) + (unit.age <= FATMAN_JOE_ENTRY_DURATION ? 0 : Math.abs(Math.sin((unit.age - FATMAN_JOE_ENTRY_DURATION) * 3.6)) * 32);
       else if (this.stage === 6 && unit.bossEntryY !== undefined) unit.y = this.scroll + unit.bossEntryY + (unit.age <= WINGATE_ENTRY_DURATION ? 0 : Math.min((unit.age - WINGATE_ENTRY_DURATION) * 110, 170));
       else if (this.stage === 6) unit.y = this.scroll + 92 + Math.min(unit.age * 110, 170);

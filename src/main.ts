@@ -1436,14 +1436,14 @@ class ReferenceRomGame {
   readonly buttons: typeof import("jsnes").Controller;
   readonly audio: AudioManager | undefined;
   readonly pcm: PcmStream | undefined;
-  readonly metadata: { mapper: number; prgBytes: number; chrBytes: number };
+  readonly metadata: { mapper: number; prgBytes: number; chrBytes: number; sampleRate: number };
   private readonly frameRef: { value: Uint32Array | undefined };
   private readonly rgba = new Uint8Array(256 * 240 * 4);
   private accumulator = 0;
   private frameCount = 0;
   private readonly held = new Set<number>();
 
-  private constructor(engine: Engine, nes: import("jsnes").NES, buttons: typeof import("jsnes").Controller, frameRef: { value: Uint32Array | undefined }, audio: AudioManager | undefined, pcm: PcmStream | undefined, metadata: { mapper: number; prgBytes: number; chrBytes: number }) {
+  private constructor(engine: Engine, nes: import("jsnes").NES, buttons: typeof import("jsnes").Controller, frameRef: { value: Uint32Array | undefined }, audio: AudioManager | undefined, pcm: PcmStream | undefined, metadata: { mapper: number; prgBytes: number; chrBytes: number; sampleRate: number }) {
     this.engine = engine;
     this.nes = nes;
     this.buttons = buttons;
@@ -1479,6 +1479,7 @@ class ReferenceRomGame {
       mapper: (flags6 >> 4) | (flags7 & 0xf0),
       prgBytes: (bytes[4] ?? 0) * 16 * 1024,
       chrBytes: (bytes[5] ?? 0) * 8 * 1024,
+      sampleRate: 48_000,
     };
     if (bytes.length < 16 + trainerBytes + metadata.prgBytes + metadata.chrBytes) {
       throw new Error("Truncated iNES ROM data");
@@ -1488,20 +1489,27 @@ class ReferenceRomGame {
       binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
     }
     const frame: { value: Uint32Array | undefined } = { value: undefined };
-    let pcm: PcmStream | undefined;
-    const nes = new NES({ onFrame: (nextFrame) => { frame.value = nextFrame; }, onAudioSample: (left, right) => pcm?.push(left, right) });
-    nes.loadROM(binary);
     let audio: AudioManager | undefined;
     try {
       audio = new AudioManager();
     } catch {
       audio = undefined;
     }
+    let pcm: PcmStream | undefined;
     try {
       pcm = audio?.createPcmStream({ bus: "music" });
     } catch {
       audio?.dispose();
       audio = undefined;
+    }
+    metadata.sampleRate = audio?.context.sampleRate ?? 48_000;
+    const nes = new NES({ sampleRate: metadata.sampleRate, onFrame: (nextFrame) => { frame.value = nextFrame; }, onAudioSample: (left, right) => pcm?.push(left, right) });
+    try {
+      nes.loadROM(binary);
+    } catch (error) {
+      pcm?.stop();
+      audio?.dispose();
+      throw error;
     }
     let engine: Engine | undefined;
     try {
@@ -1679,7 +1687,7 @@ async function loadReferenceRom(): Promise<void> {
     hud.hidden = true;
     shop.hidden = true;
     referenceGame.start();
-    romStatus.textContent = `Reference ROM active: ${file.name} / Mapper ${referenceGame.metadata.mapper} / ${referenceGame.metadata.prgBytes / 1024} KiB PRG`;
+    romStatus.textContent = `Reference ROM active: ${file.name} / Mapper ${referenceGame.metadata.mapper} / ${referenceGame.metadata.prgBytes / 1024} KiB PRG / ${referenceGame.metadata.sampleRate} Hz`;
   } catch (error) {
     const reason = error instanceof Error ? error.message : String(error);
     romStatus.textContent = `Could not load ROM: ${reason}`;

@@ -29,7 +29,7 @@ type GameAction =
 type GameMode = "title" | "intro" | "briefing" | "playing" | "paused" | "gameover" | "ending";
 type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "moneyBag" | "ammo" | "barrel" | "item" | "wanted";
 type ProjectileType = "bullet" | "dynamite" | "grenade" | "boomerang" | "fireball" | "shuriken" | "spear" | "hatchet";
-type TextureName = "player" | "horse" | "boss" | "bullet" | "moneyBag" | "ammo" | "barrel" | "wanted" | "terrain" | "road" | "landmark";
+type TextureName = "player" | "horse" | "bullet" | "moneyBag" | "ammo" | "barrel" | "wanted" | "terrain" | "road" | "landmark";
 type Rgba = [number, number, number, number];
 
 interface Unit {
@@ -176,6 +176,7 @@ class GunSmokeGame {
   readonly textures: Record<TextureName, GPUTexture>;
   readonly itemTextures: Record<ItemType, GPUTexture>;
   readonly enemyTextures: Record<EnemyType, GPUTexture>;
+  readonly bossTextures: GPUTexture[];
   readonly terrainTextures: GPUTexture[] = [];
   readonly roadTextures: GPUTexture[] = [];
   audio: AudioManager | undefined;
@@ -263,12 +264,6 @@ class GunSmokeGame {
         ".tttkkkkkkkktt", "..tkkkkkkkkkt.", "...ttkkkktt...", "....tkkkktt...",
         "....tkkkkt....", "...tt...tt....", "...tt...tt....", "...t.....t....",
       ], palette),
-      boss: pixelTexture(engine, atlasRows([
-        "....oooooo....", "..oookkkkkkooo..", ".ookkkkkkkkkkoo.", "ookkrrrrrrrrkkoo",
-        "okkrrrrrrrrrrkko", "okkrrrwwwwrrrkko", "okrrrrrrrrrrrrrko", "okkkkkkkkkkkkkko",
-        "okkrrrrrrrrrrkko", "okkrrrrrrrrrrkko", ".okkkkkkkkkkkko.", "..ookkkkkkkkoo..",
-        "...oooooooooo...", "....oooooooo....",
-      ]), palette),
       bullet: pixelTexture(engine, [".o.", ".o.", ".o.", ".o.", ".o.", ".o."], palette),
       moneyBag: pixelTexture(engine, ["..oo..", ".oooo.", "ookkoo", "okkkko", "okkkko", ".oooo."], palette),
       ammo: pixelTexture(engine, [".bbb.", "bkkkb", "bkkkb", ".bbb."], palette),
@@ -306,6 +301,14 @@ class GunSmokeGame {
       firebreather: pixelTexture(engine, atlasRows(["..oooo..", ".okkkko.", "ookookoo", "wokkkkow", ".woooow.", ".ookkoo.", "oo.kk.oo", ".o....o."]), palette),
       shotgunner: pixelTexture(engine, atlasRows(["..rrrr..", ".rkkkkr.", "rrkrrkrr", ".rkkkkrrr", "..rrrrrr", ".rrkkrr.", "rr.kk.rr", ".r....r."]), palette),
     };
+    this.bossTextures = [
+      ["...rrrrrr...", ".rrkkkkkkrr.", "rrkkrrrrkkrr", "rkkkkkkkkkkr", ".rrkkkkkkrr.", "..rrkkkkrr..", ".rrrkkkkrrr.", "rr..rrrr..rr"],
+      ["w...bbbb...w", ".bbkkkkkkbb.", "bbkbbbbbbkbb", ".bkkkkkkkkb.", "..bbbbbbbb..", ".bbkkkkkkbb.", "bb..bbbb..bb", ".b........b."],
+      ["..o......o..", ".oooooooooo.", "ookkkkkkkkoo", "okkooooookko", ".okkkkkkkko.", "..ookkkkoo..", ".ooookkkkooo", "oo...oo...oo"],
+      ["...kkkkkk...", "..kwwwwwwk..", ".kkwkkkkwkk.", "kkkkkkkkkkkk", "..kkrrrrkk..", ".kkkkrrrrkkk", "kk..kkkk..kk", ".k........k."],
+      ["..oooooooo..", ".ookkkkkkkoo.", "ookkoooookkoo", "okkkkkkkkkkko", "okkooooooooko", ".ookkkkkkkkoo", "ooookkkkkkooo", "oo..oooooo..oo"],
+      ["...wwwwww...", "..wkkkkkkw..", ".wwkwwwwkww.", "wwkkkkkkkkww", "..wwrrrrww..", ".wwwrrrrwwww", "ww..wwww..ww", ".w........w."],
+    ].map((rows) => pixelTexture(engine, atlasRows(rows), palette));
     const terrainPatterns: readonly (readonly string[])[] = [
       ["d", "d", "d", "p", "d", "p"],
       ["b", "d", "b", "d", "d", "b"],
@@ -863,7 +866,7 @@ class GunSmokeGame {
   }
 
   private spawnUnit(kind: UnitKind, x: number, y: number, hp: number, enemyType?: EnemyType, itemType?: ItemType): Unit {
-    const textureName: TextureName = kind === "enemyBullet" || kind === "enemy" ? "bullet" : kind === "item" ? "ammo" : kind === "boss" || kind === "bullet" || kind === "moneyBag" || kind === "ammo" || kind === "barrel" || kind === "wanted" ? kind : "bullet";
+    const textureName: TextureName = kind === "enemyBullet" || kind === "enemy" || kind === "boss" ? "bullet" : kind === "item" ? "ammo" : kind === "bullet" || kind === "moneyBag" || kind === "ammo" || kind === "barrel" || kind === "wanted" ? kind : "bullet";
     const isBoss = kind === "boss";
     const isPickup = kind === "moneyBag" || kind === "ammo" || kind === "item" || kind === "wanted";
     const small = kind === "bullet" || kind === "enemyBullet";
@@ -874,7 +877,7 @@ class GunSmokeGame {
     const bossColors: readonly [number, number, number, number][] = [[1, 0.55, 0.42, 1], [0.55, 0.75, 1, 1], [1, 0.72, 0.34, 1], [0.78, 0.58, 1, 1], [1, 0.82, 0.42, 1], [1, 0.96, 0.72, 1]];
     const itemColors: Record<ItemType, [number, number, number, number]> = { boots: [0.45, 0.8, 1, 1], rifle: [0.7, 0.9, 0.5, 1], ammo: [0.5, 0.7, 1, 1], money: [1, 0.85, 0.35, 1], pow: [1, 0.35, 0.35, 1], skull: [0.75, 0.75, 0.75, 1], horse: [0.8, 0.55, 0.3, 1], blueYashichi: [0.35, 0.65, 1, 1], redYashichi: [1, 0.3, 0.35, 1] };
     const color: [number, number, number, number] = isBoss ? bossColors[this.stage - 1] ?? bossColors[0]! : kind === "enemy" && enemyType ? colors[enemyType] : kind === "item" && itemType ? itemColors[itemType] : [1, 1, 1, 1];
-    const texture = kind === "enemy" && enemyType ? this.enemyTextures[enemyType] : kind === "item" && itemType ? this.itemTextures[itemType] : this.textures[textureName];
+    const texture = isBoss ? this.bossTextures[this.stage - 1] ?? this.bossTextures[0]! : kind === "enemy" && enemyType ? this.enemyTextures[enemyType] : kind === "item" && itemType ? this.itemTextures[itemType] : this.textures[textureName];
     const sprite = new Sprite({ texture, sampler: this.sampler, frame: kind === "enemy" || isBoss ? { x: 0, y: 0, width: 0.5, height: 1 } : undefined, position: { x, y }, size: { x: isBoss ? 110 : isPickup ? 28 : small ? 9 : 34, y: isBoss ? 68 : isPickup ? 28 : small ? 25 : 34 }, anchor: { x: 0.5, y: 0.5 }, color, layer: isBoss ? 15 : small ? 12 : isPickup ? 11 : 10 });
     const animation = kind === "enemy" || isBoss ? new SpriteAnimationBinding(sprite, new AnimationPlayer().play(new SpriteFrameClip([
       { x: 0, y: 0, width: 0.5, height: 1, duration: 0.14 },

@@ -8,6 +8,7 @@ const filename = args.find((argument) => !argument.startsWith("--")) ?? "Gun.Smo
 const frames = Number(args.find((argument) => argument.startsWith("--frames="))?.split("=")[1] ?? 12_000);
 const every = Number(args.find((argument) => argument.startsWith("--every="))?.split("=")[1] ?? 60);
 const holdFire = args.includes("--hold-ab");
+const pulseFire = args.includes("--pulse-fire");
 const output = args.find((argument) => argument.startsWith("--out="))?.split("=")[1] ?? ".rom-traces/scenes.json";
 if (!fs.existsSync(filename)) {
   console.log(`Reference ROM not found: ${filename}`);
@@ -16,6 +17,7 @@ if (!fs.existsSync(filename)) {
 if (!Number.isInteger(frames) || frames <= 0 || !Number.isInteger(every) || every <= 0) {
   throw new Error("--frames and --every must be positive integers");
 }
+if (holdFire && pulseFire) throw new Error("Choose either --hold-ab or --pulse-fire");
 
 const rom = fs.readFileSync(filename).toString("binary");
 const romBytes = fs.readFileSync(filename);
@@ -88,6 +90,11 @@ if (holdFire) {
 
 const samples = [];
 for (let frame = 0; frame < frames; frame += 1) {
+  if (pulseFire && frame % 4 === 0) nes.buttonDown(1, Math.floor(frame / 4) % 2 === 0 ? Controller.BUTTON_B : Controller.BUTTON_A);
+  if (pulseFire && frame % 4 === 1) {
+    nes.buttonUp(1, Controller.BUTTON_A);
+    nes.buttonUp(1, Controller.BUTTON_B);
+  }
   nes.frame();
   if ((frame + 1) % every === 0) samples.push(sample(frame + 1 + 825));
 }
@@ -103,6 +110,7 @@ fs.writeFileSync(output, JSON.stringify({
   frames,
   every,
   holdFire,
+  pulseFire,
   samples,
 }, null, 2));
 console.log(`Wrote ${samples.length} ROM scene samples to ${output}`);

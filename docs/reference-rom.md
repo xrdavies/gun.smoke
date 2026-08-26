@@ -57,6 +57,12 @@ Both trace formats also decode `hudScore` from the six visible OAM digit tiles
 at `y=16`: runtime tiles 88 through 97 map directly to digits 0 through 9.
 This gives a verified score observation without assigning semantics to an
 unknown RAM address.
+`--pulse-fire` alternates short A/B presses every four frames, producing a
+repeatable diagonal-fire trace for score and hit timing. Unlike `--hold-ab`, it
+continues to trigger the semi-automatic Pistol after the first shot.
+For the verified ROM, a 600-frame pulse trace reports HUD score 100 at gameplay
+frame 240 and 200 at frame 360; these are stable calibration checkpoints for
+early Round 1 reward timing.
 
 The corrected Round 1 trace shows the PPU vertical position advancing 20 pixels
 per 60 frames. At 60.098 Hz, the 540-high procedural world therefore uses

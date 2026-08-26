@@ -77,10 +77,10 @@ candidate bytes it records raw PPU coarse/fine scroll, nametable hashes, an OAM
 activity hash, and frame hashes. Zero-page values are keyed by their literal
 addresses (`0x4c`, `0x4f`, `0x62`, `0x68`, `0x69`, and `0x7a`) rather than
 unverified semantic names. In particular, `0x62` changes inside a single Round
-and must not be treated as a stable stage number. The fixed-bank disassembly
-at `$C1A2-$C1BE` shows `$6A/$6B` walking the `$0780/$0781` event pairs and
-clearing `$62` when that list is exhausted, which is the current evidence for
-its event-cursor role. Add `--hold-ab` when a
+and must not be treated as a stable stage number. `$6A/$6B` and
+`$0780-$07BF` are input-replay state instead of gameplay events: when `$68` is
+nonzero, `$C1A2-$C1BE` plays input/duration pairs into `$F7`; during a normal
+Round 1, `$C1D3-$C208` records the same run-length format. Add `--hold-ab` when a
 deterministic continuous-fire comparison is needed. The trace contains
 observations only; it does not include ROM bytes or extracted graphics.
 Both trace modes include the verified zero-based Round index at `$41`, the
@@ -92,8 +92,8 @@ Both trace formats also decode `hudScore` from the six visible OAM digit tiles
 at `y=16`: runtime tiles 88 through 97 map directly to digits 0 through 9.
 This gives a verified score observation without assigning semantics to an
 unknown RAM address.
-They also record the event cursor (`$6A/$6B`), raw `$A3`, the live
-`$0780-$07BF` event-pair buffer, and the actual Mapper 2 bank selected through
+They also record the input-replay cursor (`$6A/$6B`), raw `$A3`, the live
+`$0780-$07BF` input/duration pairs, and the actual Mapper 2 bank selected through
 writes at `$8000+`. Each sample also reports every bank seen and the number of
 bank writes during that interval, because the game can switch several times
 inside one video frame. This keeps observed mapper state separate from unknown

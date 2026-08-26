@@ -161,7 +161,8 @@ enemy-slot pool and have a verified behavior routine. Object-pool records stay
 separate instead of being misclassified as enemies. Each runtime enemy retains
 its behavior and entity codes for trace comparison; the visible enemy type is
 an explicit procedural approximation until that routine's state machine is
-identified.
+identified. The event pool is capped at the NES limit of seven active enemies;
+records reached while all seven slots are occupied are skipped.
 
 Important barrel contents are represented as ordered world events per Round,
 so every Boots, Rifle, POW, Yashichi, Skull and Horse barrel is stable rather

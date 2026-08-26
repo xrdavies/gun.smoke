@@ -31,6 +31,8 @@ const decodeStream = (encoded: string): readonly RomEnemyEvent[] => {
 
 export const ROUND_ROM_ENEMY_EVENTS: readonly (readonly RomEnemyEvent[])[] = ROUND_EVENT_STREAMS.map(decodeStream);
 export const ROUND_ROM_ENEMY_EVENT_COUNTS = ROUND_ROM_ENEMY_EVENTS.map((events) => events.length);
+export const ROM_ENEMY_SLOT_CAPACITY = 7;
+export const canSpawnRomEnemy = (activeEnemies: number): boolean => activeEnemies < ROM_ENEMY_SLOT_CAPACITY;
 export const romEventWorldAt = (event: RomEnemyEvent): number => event.at * WORLD_PER_NES_PIXEL;
 export const romEventWorldX = (event: RomEnemyEvent): number => event.x * (960 / 256);
 export const romEventWorldY = (event: RomEnemyEvent): number => event.y * WORLD_PER_NES_PIXEL;

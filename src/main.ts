@@ -15,7 +15,7 @@ import "./style.css";
 import type { ButtonKey } from "jsnes";
 import { AMMO_GAIN, bossReward, BOOTS_SPEED_MULTIPLIER, clamp, distance, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_BOSS_TRIGGERS, ROUND_ITEM_EVENTS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, shouldLoopStage, shouldRevealWanted, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, worldEventEnteredView, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
 import { roundCollisionBlocks } from "./round-collision";
-import { ROUND_ROM_ENEMY_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY } from "./rom-event-data";
+import { canSpawnRomEnemy, ROUND_ROM_ENEMY_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY } from "./rom-event-data";
 
 type GameAction =
   | "left"
@@ -669,9 +669,12 @@ class GunSmokeGame {
   private spawnRomEnemyEvents(): void {
     if (this.bossSpawned) return;
     const events = ROUND_ROM_ENEMY_EVENTS[this.stage - 1] ?? [];
+    let activeEnemies = this.units.filter((unit) => unit.kind === "enemy" && unit.romBehavior !== undefined && unit.hp > 0).length;
     while (this.romEventCursor < events.length) {
       const event = events[this.romEventCursor];
       if (!event || romEventWorldAt(event) > this.scroll) break;
+      this.romEventCursor += 1;
+      if (!canSpawnRomEnemy(activeEnemies)) continue;
       const enemyType = ROM_BEHAVIOR_ENEMY_TYPES[event.behavior] ?? "gunman";
       const enemy = this.spawnUnit(
         "enemy",
@@ -685,7 +688,7 @@ class GunSmokeGame {
       enemy.romFlags = event.flags;
       enemy.vx = enemyType === "sniper" ? 0 : (this.nextRandom() - 0.5) * (42 + this.stage * 6);
       enemy.vy = enemyType === "backstabber" ? -100 : enemyType === "sniper" ? 0 : 24 + this.stage * 6;
-      this.romEventCursor += 1;
+      activeEnemies += 1;
     }
   }
 

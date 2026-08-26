@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, bossReward, BOOTS_SPEED_MULTIPLIER, clamp, distance, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_BOSS_TRIGGERS, ROUND_ITEM_EVENTS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, shouldLoopStage, shouldRevealWanted, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, worldEventEnteredView, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, BOMBER_FIRST_THROW_DELAY, BOMBER_THROW_INTERVAL, bossReward, BOOTS_SPEED_MULTIPLIER, clamp, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, DYNAMITE_LIFETIME, DYNAMITE_WORLD_SPEED, formationEntryY, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_FRAME_RATE, obstacleBlocks, PISTOL_BULLET_LIFETIME, RIFLE_RANGE_MULTIPLIER, ROAD_WIDTHS, ROUND_BOSS_TRIGGERS, ROUND_ITEM_EVENTS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, shouldLoopStage, shouldRevealWanted, SHOP_CHECKPOINTS, SHOP_COSTS, SHOP_TYPES, SHOP_X_OFFSETS, SMART_BOMB_CAPACITY, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WANTED_X_OFFSETS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, worldEventEnteredView, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
 import { roundCollisionBlocks } from "./round-collision";
 import { canSpawnRomPool, ROUND_ROM_ENEMY_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY } from "./rom-event-data";
 
@@ -62,6 +62,7 @@ interface Unit {
   romEntityCode?: number;
   romFlags?: number;
   romPool?: "enemy" | "object";
+  nextFireAt: number;
 }
 
 const actions = new ActionMap<GameAction>();
@@ -964,7 +965,7 @@ class GunSmokeGame {
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
       value: isBoss ? bossReward(this.stage, this.wingatePhase) : kind === "moneyBag" ? 200 : kind === "ammo" || kind === "item" || kind === "wanted" ? 0 : kind === "barrel" ? 50 : 100,
-      age: 0, phase: this.nextRandom() * Math.PI * 2, damage: kind === "enemy" && enemyType === "rifleman" ? 0 : 1, fired: false, turnRate: 0, maxAge: isBoss ? unitMaxAge("boss") : small ? unitMaxAge("projectile") : isPickup || kind === "barrel" ? unitMaxAge("pickup") : unitMaxAge("enemy"), invulnerableUntil: 0, piercing: false,
+      age: 0, phase: this.nextRandom() * Math.PI * 2, damage: kind === "enemy" && enemyType === "rifleman" ? 0 : 1, fired: false, nextFireAt: 0, turnRate: 0, maxAge: isBoss ? unitMaxAge("boss") : small ? unitMaxAge("projectile") : isPickup || kind === "barrel" ? unitMaxAge("pickup") : unitMaxAge("enemy"), invulnerableUntil: 0, piercing: false,
     };
     this.units.push(unit);
     return unit;
@@ -1027,13 +1028,14 @@ class GunSmokeGame {
       } else if (unit.enemyType === "bomber") {
         unit.x += unit.vx * delta;
         unit.y += unit.vy * 0.7 * delta;
-        if (!unit.fired && unit.age > 0.9) {
-          unit.fired = true;
+        if (unit.nextFireAt === 0) unit.nextFireAt = BOMBER_FIRST_THROW_DELAY;
+        if (unit.age >= unit.nextFireAt) {
+          unit.nextFireAt += BOMBER_THROW_INTERVAL;
           const projectile = this.spawnUnit("enemyBullet", unit.x, unit.y + 12, 1);
           projectile.projectileType = "dynamite";
-          projectile.vx = (this.player.x - unit.x) * 0.35;
-          projectile.vy = 115;
-          projectile.maxAge = 2.5;
+          projectile.vx = (this.player.x - unit.x) * DYNAMITE_AIM_FACTOR;
+          projectile.vy = DYNAMITE_WORLD_SPEED;
+          projectile.maxAge = DYNAMITE_LIFETIME;
         }
       } else if (unit.enemyType === "shotgunner") {
         unit.x += unit.vx * delta;
@@ -1109,11 +1111,13 @@ class GunSmokeGame {
       unit.x += Math.sin(unit.age * 4 + unit.phase) * 14 * delta;
     } else {
       if (unit.kind === "enemyBullet" && (unit.projectileType === "dynamite" || unit.projectileType === "grenade")) {
-        if (unit.age >= 0.75) {
+        const airborneDuration = unit.projectileType === "dynamite" ? DYNAMITE_AIRBORNE_DURATION : 0.75;
+        const explosionAt = unit.projectileType === "dynamite" ? DYNAMITE_LIFETIME : 2.2;
+        if (unit.age >= airborneDuration) {
           unit.vx = 0;
           unit.vy = 0;
         }
-        if (unit.age >= 2.2) {
+        if (unit.age >= explosionAt) {
           if (distance(unit, this.player) <= 85 && this.invulnerable <= 0) this.takeHit();
           unit.hp = 0;
           this.beep(95, 0.14);
@@ -1174,7 +1178,7 @@ class GunSmokeGame {
       } else if (unit.kind === "shopkeeper" && distance(unit, this.player) <= unit.radius + 22) {
         this.openShop(unit.shopIndex ?? this.shopSpawnCursor);
         break;
-      } else if (unit.kind === "enemyBullet" && unit.projectileType === "dynamite" && unit.age >= 0.75 && unit.age < 2.2 && distance(unit, this.player) <= unit.radius + 20) {
+      } else if (unit.kind === "enemyBullet" && unit.projectileType === "dynamite" && unit.age >= DYNAMITE_AIRBORNE_DURATION && unit.age < DYNAMITE_LIFETIME && distance(unit, this.player) <= unit.radius + 20) {
         unit.hp = 0;
         this.showMessage("DYNAMITE DEFUSED");
       } else if ((unit.kind === "enemy" || unit.kind === "enemyBullet") && this.invulnerable > 0 && distance(unit, this.player) <= unit.radius + 20) {

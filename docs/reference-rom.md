@@ -198,8 +198,10 @@ An isolated `$B671` Ninja emits one dispatch `0x31` Shuriken at age 103
 frames. Its measured path is diagonal toward Billy; the runtime uses the
 same one-shot timing and a 300-world-pixel/s self-generated projectile.
 An isolated `$B8F4` Hatchet Thrower emits its dispatch `0x32` projectile at age
-78 frames and aims it toward Billy at roughly 230 world pixels/s. The runtime
-uses that measured delay and speed.
+78 frames and aims it toward Billy at roughly 230 world pixels/s. Its clean
+Round 3 trace holds `x=120` through frame 40, reaches approximately
+`x=138,y=43` at frame 60, and launches from about `x=138,y=48`; the runtime
+uses those entry checkpoints and the actor-relative launch coordinate.
 An isolated `$BB29` Firebreather entity emits one dispatch `0x34` fireball at
 age 156 frames, aimed toward Billy at roughly 250 world pixels/s. ROM-tagged
 Firebreathers use this single-shot timing; the procedural fallback remains a

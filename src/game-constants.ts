@@ -209,6 +209,21 @@ export const ROCK_IMPACT_DELAY = 24 / NES_FRAME_RATE;
 export const ROCK_LIFETIME = 49 / NES_FRAME_RATE;
 export const HATCHET_FIRST_SHOT_DELAY = 78 / NES_FRAME_RATE;
 export const HATCHET_PROJECTILE_SPEED = 230;
+export const HATCHET_PATH_NES = [[0, 0, 0], [20, 0, 40], [40, 0, 40], [60, 18, 43], [78, 18, 48]] as const;
+
+export function hatchetPosition(age: number): readonly [number, number] {
+  const frame = Math.max(0, age * NES_FRAME_RATE);
+  const nextIndex = HATCHET_PATH_NES.findIndex(([at]) => at >= frame);
+  if (nextIndex < 0) {
+    const last = HATCHET_PATH_NES.at(-1)!;
+    return [last[1], last[2]];
+  }
+  if (nextIndex === 0) return [0, 0];
+  const previous = HATCHET_PATH_NES[nextIndex - 1]!;
+  const next = HATCHET_PATH_NES[nextIndex]!;
+  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  return [previous[1] + (next[1] - previous[1]) * amount, previous[2] + (next[2] - previous[2]) * amount];
+}
 export const FIREBREATHER_FIRST_SHOT_DELAY = 156 / NES_FRAME_RATE;
 export const FIREBREATHER_PROJECTILE_SPEED = 250;
 export const SPEAR_FIRST_SHOT_DELAY = 72 / NES_FRAME_RATE;

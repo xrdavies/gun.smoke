@@ -360,8 +360,8 @@ approximately `y=98` after 151 frames. The runtime preserves this first-
 encounter opening without reusing it for the second, real Wingate. After the
 opening, both encounters pause for about 19 frames before a short roughly 176
 world-pixel/s horizontal rush,
-then settle to about 123 world pixels/s; their later attack phases remain
-approximations pending isolated traces.
+then settle to about 123 world pixels/s; the later random movement-direction
+sequence remains an approximation.
 The first encounter clears both ordinary and low-slot projectile actors before
 entering a 264-frame empty interval. The real Wingate
 then reuses dispatch `0xa3`, variant `0x65` and the same 151-frame vertical
@@ -375,7 +375,9 @@ sector before allocating a projectile. This explains skipped checks and the
 non-fixed volley lengths in longer traces. Each `0x30` bullet begins at Boss
 offset `(-8,+6)` NES pixels, uses the routine's quantized 32-direction aim, and
 releases after about 64 frames. Runtime applies this shared state rule instead
-of the former fixed six-shot/three-shot sequences.
+of the former fixed six-shot/three-shot sequences. The remaining Round 6
+approximation is the later random movement-direction sequence between these
+measured attack checks.
 
 Current behavior map:
 

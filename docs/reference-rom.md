@@ -473,6 +473,10 @@ of the former fixed six-shot/three-shot sequences. The remaining Round 6
 approximation is the later random direction sequence between these measured
 attack checks and the route after the recorded frame window.
 
+Boss defeats keep a brief 30-frame explosion state for visual feedback before
+the existing Round transition/ending flow; the state is non-colliding and does
+not add another reward.
+
 Current behavior map:
 
 | Routine | Runtime mapping | Evidence |

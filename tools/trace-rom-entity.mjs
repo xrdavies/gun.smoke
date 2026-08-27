@@ -106,7 +106,7 @@ for (let frame = 0; frame < frames; frame += 1) {
     }
   }
   if (targetSlot === undefined || targetStart === undefined) continue;
-  if (!active(targetSlot)) break;
+  if (!active(targetSlot) || ![dispatch, dispatch + 1].includes(memory[0x420 + targetSlot])) break;
 
   const relativeFrame = frame - targetStart;
   entityFrames.push({

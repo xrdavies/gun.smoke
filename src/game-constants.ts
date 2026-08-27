@@ -23,7 +23,8 @@ export const MAX_SCORE = 999_990;
 export const BLUE_YASHICHI_DURATION = 180 / NES_FRAME_RATE;
 export const HORSE_HIT_INVULNERABILITY = 60 / NES_FRAME_RATE;
 export const MAX_POWERUP_STOCK = 4;
-export const POWERUP_OVERFLOW_SCORE = 100;
+export const POWERUP_OVERFLOW_SCORE = 1_000;
+export const LIFE_OVERFLOW_SCORE = 10_000;
 export const PLAYER_DEATH_ANIMATION_DURATION = 152 / NES_FRAME_RATE;
 export const PLAYER_RESPAWN_HIDDEN_DURATION = 100 / NES_FRAME_RATE;
 export const PLAYER_RESPAWN_READY_DURATION = 40 / NES_FRAME_RATE;
@@ -38,6 +39,10 @@ export function playerDeathPhase(age: number): "dying" | "hidden" | "ready" | "a
 
 export function storedPowerupPickup(stock: number): { stock: number; score: number } {
   return stock >= MAX_POWERUP_STOCK ? { stock: MAX_POWERUP_STOCK, score: POWERUP_OVERFLOW_SCORE } : { stock: stock + 1, score: 0 };
+}
+
+export function lifePickup(lives: number): { lives: number; score: number } {
+  return lives >= MAX_LIVES ? { lives: MAX_LIVES, score: LIFE_OVERFLOW_SCORE } : { lives: lives + 1, score: 0 };
 }
 
 export function addScore(score: number, points: number): number {

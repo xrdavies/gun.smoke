@@ -93,7 +93,8 @@ Buying an item subtracts directly from the score shown in the HUD.
 
 Barrels can reveal the NES item set: stored Boots and Rifle power-ups, special
 weapon ammo, money, POW, Cattle Skull, Horse, and Blue/Red Yashichi. Stored
-Boots/Rifle are capped at four and each loses one stock on death; Blue Yashichi
+Boots/Rifle are capped at four and award 1,000 points at cap; Life awards
+10,000 points at the five-life cap. Each stored power-up loses one stock on death; Blue Yashichi
 grants contact damage and temporary invulnerability, while Magnum bullets can
 destroy enemy projectiles. POW clears regular enemies, falling rocks and
 ordinary projectiles but does not damage the low-slot Boss actor or clear its

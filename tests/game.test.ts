@@ -19,7 +19,7 @@ import { banditBillCooldown } from "../src/game-constants";
 import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "../src/game-constants";
 import { RIFLE_BULLET_SPEED_MULTIPLIER } from "../src/game-constants";
 import { BOSS_PROJECTILE_CAPACITY, canSpawnBossProjectile, canSpawnEnemyProjectile, canSpawnPlayerBullet, ENEMY_PROJECTILE_CAPACITY, machineGunVelocities, pistolBulletSpeedFactor, pistolShots, pistolVelocities, PLAYER_BULLET_CAPACITY, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "../src/game-constants";
-import { MAX_POWERUP_STOCK, POWERUP_OVERFLOW_SCORE, storedPowerupPickup } from "../src/game-constants";
+import { LIFE_OVERFLOW_SCORE, lifePickup, MAX_POWERUP_STOCK, POWERUP_OVERFLOW_SCORE, storedPowerupPickup } from "../src/game-constants";
 import { FATMAN_JOE_ATTACK_CHANCE, FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeAimHeading, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, FATMAN_JOE_LONG_ACTION_DURATION, FATMAN_JOE_MINE_INTERVAL, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_MOVEMENT_SPEED, FATMAN_JOE_SHORT_ACTION_DURATION, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, FATMAN_JOE_SHELL_SPLIT_DELAY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "../src/game-constants";
 import { WINGATE_ATTACK_INTERVAL, wingateAimHeading, WINGATE_BULLET_LIFETIME, WINGATE_BULLET_VELOCITIES_NES, wingateCanFire, WINGATE_ENTRY_RUSH_DURATION, WINGATE_FIRE_CHANCE, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, wingateRushOffset, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateCombatX, wingateCombatY } from "../src/game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_LIFETIME, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "../src/game-constants";
@@ -159,9 +159,12 @@ describe("Gun.Smoke vertical slice", () => {
 
   it("caps stored Boots and Rifle with the traced overflow reward", () => {
     expect(MAX_POWERUP_STOCK).toBe(4);
-    expect(POWERUP_OVERFLOW_SCORE).toBe(100);
+    expect(POWERUP_OVERFLOW_SCORE).toBe(1_000);
     expect(storedPowerupPickup(3)).toEqual({ stock: 4, score: 0 });
-    expect(storedPowerupPickup(4)).toEqual({ stock: 4, score: 100 });
+    expect(storedPowerupPickup(4)).toEqual({ stock: 4, score: 1_000 });
+    expect(LIFE_OVERFLOW_SCORE).toBe(10_000);
+    expect(lifePickup(4)).toEqual({ lives: 5, score: 0 });
+    expect(lifePickup(5)).toEqual({ lives: 5, score: 10_000 });
   });
 
   it("keeps the round shop cadence explicit", () => {

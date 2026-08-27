@@ -124,8 +124,9 @@ at `$7A == 5`; no ROM path increments `$7A` in response to score changes.
 Round-entry snapshots store `3` in `$7A`, so the runtime starts a new game with
 three lives and treats five only as the cap.
 Boots and Rifle compare `$78/$79` against `4` before incrementing. At that cap,
-contact leaves the stock unchanged and awards 100 points; the runtime preserves
-both the four-item cap and overflow reward.
+contact leaves the stock unchanged and calls score-table entry `2` with carry
+set, awarding 1,000 points. Life at the five-life cap calls entry `7` the same
+way and awards 10,000 points. Runtime preserves both caps and overflow rewards.
 Behavior routine `$B0E5` allocates three projectile slots at `$B24B-$B281`
 and emits a fixed downward fan. An isolated instance fires at age 108 and 159
 frames, then exits at age 228; the three shots begin at the actor coordinate,

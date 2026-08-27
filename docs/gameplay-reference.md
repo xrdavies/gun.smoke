@@ -11,7 +11,7 @@ names are cross-checked against the public NES walkthrough on
 | 3 | Native village | Devil Hawk | gate, poster, shop, measured entrance and opening fan |
 | 4 | Cliff valley | Ninja | gate, poster, shop, measured entrance and shuriken volley |
 | 5 | Forest / bridges | Fatman Joe | gate, poster, shop, measured entrance and shell split |
-| 6 | Wingate town / cemetery | Wingate (two encounters) | gate, poster, shop, measured entrances and attack checks; movement approximation |
+| 6 | Wingate town / cemetery | Wingate (two encounters) | gate, poster, shop, measured entrances, X movement and attack checks; Y movement approximation |
 
 The NES version's stage rule is important: the wanted poster for the round's
 outlaw must be collected before the boss gate can resolve. The web build keeps

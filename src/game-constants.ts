@@ -1058,6 +1058,10 @@ const WINGATE_COMBAT_PATHS_NES = [
   [[0, 98], [34, 46], [39, 57], [149, 69], [269, 97], [279, 79], [299, 47], [309, 54], [369, 87], [383, 99], [399, 58], [419, 85], [439, 95], [449, 63], [459, 57], [479, 83]] as const,
   [[0, 98], [34, 42], [39, 50], [269, 50], [279, 39], [309, 40], [319, 41], [419, 79], [439, 47], [449, 57], [469, 60], [579, 95], [599, 47], [609, 58], [619, 60]] as const,
 ] as const;
+const WINGATE_COMBAT_X_PATHS_NES = [
+  [[0, 152], [32, 128], [64, 109], [96, 91], [128, 76], [160, 56], [192, 38], [224, 60], [256, 76], [288, 56], [320, 71], [352, 83], [416, 83], [448, 76], [480, 79], [576, 82], [608, 95], [640, 110], [672, 110], [704, 110], [736, 140], [768, 157], [800, 138], [832, 123], [864, 118], [896, 118], [928, 142], [960, 150], [992, 150], [1024, 124]] as const,
+  [[0, 192], [32, 167], [64, 147], [96, 129], [128, 114], [160, 107], [192, 107], [224, 107], [256, 94], [288, 77], [320, 72], [352, 72], [384, 83], [416, 108], [448, 126], [480, 133], [512, 133], [544, 133], [576, 110], [608, 105], [640, 105], [672, 98], [704, 80], [736, 65], [768, 65], [800, 100], [832, 115], [864, 133], [896, 113], [928, 98], [960, 80], [992, 67], [1024, 67]] as const,
+] as const;
 const WINGATE_RUSH_PATH_NES = [[0, 0], [17, 0], [18, -1], [19, -3], [20, -4], [21, -6], [22, -8], [23, -9], [24, -11], [25, -13], [26, -13], [27, -15], [28, -17], [29, -18], [30, -19], [31, -21], [32, -22], [33, -23], [34, -26]] as const;
 
 export function wingateRushOffset(frame: number, entryX = 152): number {
@@ -1083,6 +1087,22 @@ export function wingateCombatY(age: number, phase = 0): number {
   const next = path[nextIndex]!;
   const amount = (frame - previous[0]) / (next[0] - previous[0]);
   return (previous[1] + (next[1] - previous[1]) * amount) * NES_WORLD_Y_SCALE;
+}
+
+export function wingateCombatX(age: number, phase = 0, entryX = 152): number {
+  const frame = Math.max(0, age * NES_FRAME_RATE - WINGATE_ENTRY_DURATION * NES_FRAME_RATE);
+  const path = WINGATE_COMBAT_X_PATHS_NES[phase > 0 ? 1 : 0];
+  const base = path[0]![1];
+  const mirror = entryX < 128 ? -1 : 1;
+  const position = (at: number): number => entryX + (at - base) * mirror;
+  if (frame <= path[0]![0]) return position(path[0]![1]);
+  const last = path.at(-1)!;
+  if (frame >= last[0]) return position(last[1]);
+  const nextIndex = path.findIndex(([at]) => at >= frame);
+  const previous = path[nextIndex - 1]!;
+  const next = path[nextIndex]!;
+  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  return position(previous[1] + (next[1] - previous[1]) * amount);
 }
 
 export function wingateAimHeading(originX: number, originY: number, targetX: number, targetY: number): number {

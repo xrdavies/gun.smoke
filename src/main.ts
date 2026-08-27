@@ -1032,19 +1032,22 @@ class GunSmokeGame {
       return;
     }
     if (this.stage === 4) {
-      const smoke = this.spawnEnemyProjectile(boss.x, boss.y, true);
-      if (smoke) {
-        smoke.projectileType = "ninjaSmoke";
-        smoke.romOriginX = boss.x;
-        smoke.romOriginY = boss.y;
-        smoke.targetX = this.player.x + NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES[0] * NES_WORLD_X_SCALE;
-        smoke.targetY = this.player.y + NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES[1] * NES_WORLD_Y_SCALE;
-        smoke.vx = 0;
-        smoke.vy = 0;
-        smoke.radius = 0;
-        smoke.maxAge = NINJA_BOSS_PREPARE_DURATION + NINJA_BOSS_PREPARE_CONTROLLER_DURATION;
-        boss.fired = true;
+      const aimHeading = nesAimHeading(boss.x, boss.y, this.player.x, this.player.y);
+      if (aimHeading >= 12 && aimHeading <= 20) {
+        const smoke = this.spawnEnemyProjectile(boss.x, boss.y, true);
+        if (smoke) {
+          smoke.projectileType = "ninjaSmoke";
+          smoke.romOriginX = boss.x;
+          smoke.romOriginY = boss.y;
+          smoke.targetX = this.player.x + NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES[0] * NES_WORLD_X_SCALE;
+          smoke.targetY = this.player.y + NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES[1] * NES_WORLD_Y_SCALE;
+          smoke.vx = 0;
+          smoke.vy = 0;
+          smoke.radius = 0;
+          smoke.maxAge = NINJA_BOSS_PREPARE_DURATION + NINJA_BOSS_PREPARE_CONTROLLER_DURATION;
+        }
       }
+      boss.fired = true;
       this.bossFireClock = NINJA_BOSS_ATTACK_INTERVAL;
       return;
     }

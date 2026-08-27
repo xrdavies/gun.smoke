@@ -680,15 +680,15 @@ class GunSmokeGame {
     if (this.weapon !== "pistol") this.ammo = Math.max(0, this.ammo - 1);
     if (this.weapon === "pistol") {
       const speedFactor = pistolBulletSpeedFactor(this.powerups.rifle);
-      for (const [x, y, offset] of pistolVelocities(left, right)) this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_Y_SCALE * speedFactor, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE * speedFactor, weapon.damage, weaponBulletLifetime("pistol"), offset * NES_WORLD_X_SCALE);
+      for (const [x, y, offset] of pistolVelocities(left, right)) this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE * speedFactor, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE * speedFactor, weapon.damage, weaponBulletLifetime("pistol"), offset * NES_WORLD_X_SCALE);
     } else if (this.weapon === "shotgun") {
       for (const [x, y] of shotgunVelocities(left, right)) {
         this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE, weapon.damage, weaponBulletLifetime("shotgun"));
       }
     } else if (this.weapon === "machinegun") {
-      for (const [x, y, offset] of machineGunVelocities(left, right)) this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_Y_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE, weapon.damage, weaponBulletLifetime("machinegun"), offset * NES_WORLD_X_SCALE);
+      for (const [x, y, offset] of machineGunVelocities(left, right)) this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE, weapon.damage, weaponBulletLifetime("machinegun"), offset * NES_WORLD_X_SCALE);
     } else if (this.weapon === "magnum") {
-      for (const [x, y, offset] of pistolVelocities(left, right)) this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_Y_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE, weapon.damage, weaponBulletLifetime("magnum"), offset * NES_WORLD_X_SCALE, true);
+      for (const [x, y, offset] of pistolVelocities(left, right)) this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE, weapon.damage, weaponBulletLifetime("magnum"), offset * NES_WORLD_X_SCALE, true);
     }
     this.fireClock = weapon.interval;
     this.beep(740, 0.025);

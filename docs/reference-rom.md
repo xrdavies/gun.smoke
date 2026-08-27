@@ -502,7 +502,7 @@ OAM projectile traces show straight A+B pistol shots moving 6 pixels per frame,
 and single-button two-gun diagonal pairs moving about `(2,-5)` and `(3,-5)`
 NES pixels per frame (mirrored on the left). Normal pistol shots persist for
 roughly 15 frames. These map
-to 811.323 straight, 338.05125/676.1025 diagonal world pixels per second and a
+to 811.323 straight, 450.735/676.1025 diagonal world pixels per second and a
 15/60.098-second base lifetime in the procedural world.
 With `$79/$88` set for an active Rifle stock, the straight A+B projectile moves
 8 pixels per frame but still persists for 15 frames. The runtime therefore

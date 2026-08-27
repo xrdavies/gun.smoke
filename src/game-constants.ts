@@ -226,6 +226,7 @@ export function hatchetPosition(age: number): readonly [number, number] {
 }
 export const FIREBREATHER_FIRST_SHOT_DELAY = 156 / NES_FRAME_RATE;
 export const FIREBREATHER_PROJECTILE_SPEED = 250;
+export const FIREBREATHER_PROJECTILE_OFFSET_NES = [0, -1] as const;
 export const SPEAR_FIRST_SHOT_DELAY = 72 / NES_FRAME_RATE;
 export const SPEAR_PROJECTILE_SPEED = 250;
 export const BACKSTABBER_AMBUSH_DROP_SPEED = 45;

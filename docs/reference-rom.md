@@ -204,7 +204,8 @@ Round 3 trace holds `x=120` through frame 40, reaches approximately
 uses those entry checkpoints and the actor-relative launch coordinate.
 An isolated `$BB29` Firebreather entity emits one dispatch `0x34` fireball at
 age 156 frames, aimed toward Billy at roughly 250 world pixels/s. ROM-tagged
-Firebreathers use this single-shot timing; the procedural fallback remains a
+Firebreathers use this single-shot timing and launch from the actor coordinate
+with a measured `-1` NES Y-pixel offset; the procedural fallback remains a
 three-way spread for non-ROM formations.
 An isolated `$BA51` Spear Thrower creates its dispatch `0x33` spear at age 72
 frames and aims it toward Billy at roughly 250 world pixels/s. ROM-tagged

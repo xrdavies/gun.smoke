@@ -1849,7 +1849,7 @@ class GunSmokeGame {
           continue;
         }
       }
-      const target = targets.find((candidate) => candidate.hp > 0 && !candidate.exploding && !bullet.hitTargets?.has(candidate) && distance(bullet, candidate) <= bullet.radius + candidate.radius);
+      const target = targets.find((candidate) => (candidate.kind === "barrel" || candidate.kind === "enemy" || candidate.kind === "boss") && candidate.hp > 0 && !candidate.exploding && !bullet.hitTargets?.has(candidate) && distance(bullet, candidate) <= bullet.radius + candidate.radius);
       if (!target) continue;
       if (!this.isBossVulnerable(target)) continue;
       if (bullet.piercing) bullet.hitTargets?.add(target);

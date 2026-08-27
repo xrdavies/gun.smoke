@@ -1253,7 +1253,7 @@ class GunSmokeGame {
         unit.y += unit.vy * 0.65 * delta;
         const tracedSpread = unit.romBehavior === 1;
         if (unit.nextFireAt === 0) unit.nextFireAt = tracedSpread ? SHOTGUNNER_FIRST_VOLLEY_DELAY : 0.8;
-        const activeProjectiles = this.units.filter((candidate) => candidate.kind === "enemyBullet" && candidate.projectileType !== "rock" && candidate.hp > 0).length;
+        const activeProjectiles = this.units.filter((candidate) => candidate.kind === "enemyBullet" && candidate.projectileType !== "rock" && !candidate.bossProjectile && candidate.hp > 0).length;
         if (unit.age >= unit.nextFireAt && (tracedSpread ? unit.volleysFired < 2 : !unit.fired) && (!tracedSpread || canSpawnEnemyProjectile(activeProjectiles, 3))) {
           unit.fired = true;
           unit.volleysFired += 1;

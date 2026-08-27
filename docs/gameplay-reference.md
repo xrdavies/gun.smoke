@@ -59,7 +59,7 @@ flagged supply shop sells Horse, Bullet refills, and Wanted posters, and Rounds
 3 and 6 receive a later weapon-shop revisit.
 
 The Horse is a three-hit shield rather than a speed bonus. A blocked hit removes
-only its collision source and grants brief protection; it does not clear every
+only its collision source and grants 60 NES frames of protection; it does not clear every
 enemy projectile. Score awards an extra life at 30,000, again at 100,000, and
 at each later 100,000-point threshold.
 

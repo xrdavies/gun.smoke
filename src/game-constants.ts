@@ -20,6 +20,7 @@ export const MAX_STAGE = STAGES.length;
 export const NES_FRAME_RATE = 60.098;
 export const MAX_LIVES = 5;
 export const BLUE_YASHICHI_DURATION = 180 / NES_FRAME_RATE;
+export const HORSE_HIT_INVULNERABILITY = 60 / NES_FRAME_RATE;
 export const MAX_POWERUP_STOCK = 4;
 export const POWERUP_OVERFLOW_SCORE = 100;
 export const PLAYER_DEATH_ANIMATION_DURATION = 152 / NES_FRAME_RATE;

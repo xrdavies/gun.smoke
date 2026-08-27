@@ -1284,6 +1284,10 @@ export function scoreBossDefeat(score: number, stage: number, phase = 0): number
   return addScore(score, bossReward(stage, phase));
 }
 
+export function shouldClearProjectilesAfterBossDefeat(stage: number, phase = 0): boolean {
+  return stage < MAX_STAGE || phase > 0;
+}
+
 export function formationEntryY(scroll: number, bossEncounter = false): number {
   return scroll + (bossEncounter ? -40 : 55);
 }

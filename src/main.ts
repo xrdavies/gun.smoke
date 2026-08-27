@@ -20,7 +20,7 @@ import { advanceFirebreather, advanceHatchet, advanceSpear, createFirebreatherSt
 import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanCanAttack, riflemanPosition, riflemanShotHeading, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition, sniperProjectileVelocity } from "./game-constants";
 import { BANDIT_BILL_DAMAGE_RECOVERY_DURATION, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, banditBillCombatX, banditBillCombatY, banditBillProjectileVelocity } from "./game-constants";
 import { banditBillCooldown } from "./game-constants";
-import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "./game-constants";
+import { BLUE_YASHICHI_DURATION, MAX_LIVES, shouldClearProjectilesAfterBossDefeat } from "./game-constants";
 import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, PLAYER_ENTRY_X, PLAYER_ENTRY_Y, pistolBulletSpeedFactor, pistolVelocities, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
 import { addScore } from "./game-constants";
@@ -1826,6 +1826,10 @@ class GunSmokeGame {
         return;
       }
       this.score = addScore(this.score, target.value);
+      if (shouldClearProjectilesAfterBossDefeat(this.stage, this.wingatePhase)) {
+        this.clearEnemyProjectiles();
+        this.clearBossProjectiles();
+      }
       this.bossSpawned = false;
       this.stageClearClock = 1.5;
       this.showMessage(this.stage === MAX_STAGE ? "TRAIL COMPLETE" : "BOSS DOWN");

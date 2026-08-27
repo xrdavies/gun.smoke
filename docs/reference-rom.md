@@ -211,10 +211,10 @@ when the actor's movement heading is within two sectors of its integer aim at
 Billy. `$0540` advances by three until wrapping at 192, so failed checks recur
 64 frames later; isolated first phases appear at frames `40/52/58/62`. The
 runtime preserves those observed phases, the 64-frame retry, and the one-shot
-limit. Two clean top-entry
-routes release at ages 550 and 560 after their turn and
-retreat states; the runtime no longer truncates them at the earlier partial
-289-frame observation. The projectile uses the ROM's quantized
+limit. Clean top-entry routes can release around ages 550/560 after their turn
+and retreat states, while player-relative routes remain active past 650 frames;
+the runtime no longer truncates them at a fixed age and instead lets state/space
+cleanup release the slot. The projectile uses the ROM's quantized
 32-direction speed table at the second tier (about 266 world pixels/s on its
 diagonal), and ROM-tagged Gunmen use this per-actor timing
 instead of the procedural global firing clock. A clean Round 1 isolation also
@@ -512,7 +512,8 @@ Passing an ignored JSNES save with `--state=.rom-traces/round3-boss-state.json`
 starts directly at that Boss entrance. In snapshot mode the tracer also records
 the six low Boss-weapon slots, whose dispatch values can be outside the ordinary
 projectile range; for example Devil Hawk's five `0xA2` fireballs appear there.
-`--record` captures every Boss frame without injecting fire input or Boss damage;
+`--record` captures every Boss frame without injecting fire input or Boss damage,
+including the CPU PC and complete Boss parallel-array fields;
 `--attack` remains the controlled player-fire variant.
 The output is an ignored observation artifact under `.rom-traces/`; it is not
 runtime game data or copied ROM code.

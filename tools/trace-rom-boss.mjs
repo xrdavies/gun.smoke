@@ -103,7 +103,21 @@ for (let frame = 0; frame < frames; frame += 1) {
   if (attack || record) {
     bossFrames.push({
       frame: relativeFrame,
+      pc: `$${nes.cpu.REG_PC.toString(16).padStart(4, "0")}`,
       ...boss,
+      fields: {
+        animation: memory[0x440 + 14],
+        collision: memory[0x460 + 14],
+        heading: memory[0x4a0 + 14],
+        substate: memory[0x4c0 + 14],
+        timer: memory[0x4e0 + 14],
+        fineY: memory[0x500 + 14],
+        fineX: memory[0x520 + 14],
+        health: memory[0x540 + 14],
+        flags: memory[0x560 + 14],
+        field580: memory[0x580 + 14],
+        field5a0: memory[0x5a0 + 14],
+      },
       zeroPage: { b0: memory[0xb0], b4: memory[0xb4], b5: memory[0xb5], ba: memory[0xba], bc: memory[0xbc] },
     });
   }

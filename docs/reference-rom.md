@@ -273,16 +273,21 @@ second-tier direction-table projectile. ROM-tagged Ninja, Hatchet, Spear, and Fi
 shots use the same second-tier 32-direction table as Gunmen; side Firebreathers
 mask the selected heading to an even sector before allocation. Non-ROM fallback
 formations retain their continuous procedural aim.
-An isolated `$B8F4` Hatchet Thrower enters its throw state at age 78 frames only
-when Billy is in aim sectors `15..17`, then emits dispatch `0x32` toward Billy
-at roughly 230 world pixels/s. Its clean
-Round 3 trace holds `x=120` through frame 40, reaches approximately
-`x=138,y=43` at frame 60, and launches from about `x=138,y=48`; the runtime
-uses those entry checkpoints and the actor-relative launch coordinate.
-Four isolated full routes release between frames 1026 and 1041; the runtime uses
-1042 as the ROM-tagged actor cap. Attack opportunities recur about 130 frames
-apart, with each opportunity rechecking the actor's movement/aim sector; later
-movement-state details remain pending.
+An isolated `$B8F4` Hatchet Thrower descends to NES `y=40` in 20 frames, pauses
+for 20 frames, then patrols with the shared second-tier 32-heading movement
+table. Collision probes follow its facing edge; a blocked path starts a 34-frame
+curved turn, and turns above/below `y=121` use the routine's two measured heading
+sequences. Crossing NES `x=40/216` clears the post-throw lock and permits another
+aim-sector `15..17` check. A successful check captures that heading, waits through
+the 26-frame throw animation, and emits dispatch `0x32` from the actor coordinate.
+Three fixed-player traces released at frames 620, 651 and 713 and produced zero,
+one and three Hatchets respectively; the earlier four-route maximum of 1,042
+frames remains a safety cap, not a fixed lifetime or attack interval. The web
+runtime now drives the same collision, turn, lock, aim and exit states against
+the decoded Round collision map. Deterministic replays match all four observed
+throw frames and the 713/651-frame releases; the no-throw route releases one
+frame later because the web actor does not inherit the ROM slot's stale X
+subpixel residue.
 An isolated `$BB29` top-entry Firebreather emits dispatch `0x34` fireballs at
 ages 156, 364 and 416 frames, then releases its slot at age 644. Each is aimed
 toward Billy at roughly 250 world pixels/s and launches from the actor coordinate

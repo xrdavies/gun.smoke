@@ -206,10 +206,12 @@ edge before releasing at frame 259.
 Top-entry Shotgunners fire two measured three-shot fans; entity code `4`
 instead enters from either side, fires one fan at frame 114, and returns to its
 edge before releasing at frame 232.
-Hatchet Throwers wait for aim sectors `15..17` before their frame-78 throw;
-their measured route releases by frame 1042. Further opportunities recur about
-every 130 NES frames and recheck the aim sector; movement-coupled route details
-remain pending full state-machine parity.
+Hatchet Throwers descend to NES `y=40`, pause 20 frames, and patrol the authored
+collision map. A blocked path starts a 34-frame curved turn; after crossing NES
+`x=40/216`, a new aim-sector `15..17` check becomes eligible. A successful check
+holds the actor through a 26-frame throw animation and captures the projectile
+heading before that delay. Their route-dependent lifetimes release between 620
+and 1,042 measured frames instead of using a fixed attack interval.
 side Firebreathers require Billy below them, a 50% random gate, and aim sectors
 `10..22` at every 52-frame attack check, including the first. Top-entry Spear
 Throwers accept sectors `10..23`.

@@ -13,10 +13,10 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, banditBillOpeningY, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, bomberCanThrow, bomberMovementDuration, bomberMovementVelocity, BOMBER_THROW_DURATION, bossReward, BOOTS_SPEED_MULTIPLIER, bossSpriteVisible, canSpawnPlayerBullet, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_LIFETIME, dynamiteVerticalOffset, EMPTY_BARREL_EXPLOSION_LIFETIME, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X_LANES, FATMAN_JOE_ENTRY_Y, fatmanJoeOpeningY, formationEntryY, HATCHET_FIRST_SHOT_DELAY, HATCHET_LIFETIME, HORSE_HIT_INVULNERABILITY, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_LANES, NINJA_FIRST_SHOT_DELAY, NINJA_LIFETIME, ninjaAttackPosition, ninjaOpeningY, obstacleBlocks, PLAYER_DEATH_ANIMATION_DURATION, PLAYER_DEATH_RECOVERY_DURATION, playerDeathPhase, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_LIFETIME, ROCK_WORLD_SPEED_X, ROCK_WORLD_SPEED_Y, ROAD_WIDTHS, ROM_ENEMY_SCREEN_MAX_Y, ROM_OBJECT_DROP_SPEED, ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_SIDE_LIFETIME, SHOTGUNNER_SIDE_SHOT_FRAME, SHOTGUNNER_VOLLEY_INTERVAL, shotgunnerPosition, shotgunnerSidePosition, shouldLoopStage, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_CODE2_SHOT_FRAMES, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_DURATION, WINGATE_ENTRY_X_LANES, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, wingateOpeningY, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, banditBillOpeningY, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, bomberCanThrow, bomberMovementDuration, bomberMovementVelocity, BOMBER_THROW_DURATION, bossReward, BOOTS_SPEED_MULTIPLIER, bossSpriteVisible, canSpawnPlayerBullet, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_LIFETIME, dynamiteVerticalOffset, EMPTY_BARREL_EXPLOSION_LIFETIME, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X_LANES, FATMAN_JOE_ENTRY_Y, fatmanJoeOpeningY, formationEntryY, HATCHET_LIFETIME, HORSE_HIT_INVULNERABILITY, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_LANES, NINJA_FIRST_SHOT_DELAY, NINJA_LIFETIME, ninjaAttackPosition, ninjaOpeningY, obstacleBlocks, PLAYER_DEATH_ANIMATION_DURATION, PLAYER_DEATH_RECOVERY_DURATION, playerDeathPhase, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_LIFETIME, ROCK_WORLD_SPEED_X, ROCK_WORLD_SPEED_Y, ROAD_WIDTHS, ROM_ENEMY_SCREEN_MAX_Y, ROM_OBJECT_DROP_SPEED, ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_SIDE_LIFETIME, SHOTGUNNER_SIDE_SHOT_FRAME, SHOTGUNNER_VOLLEY_INTERVAL, shotgunnerPosition, shotgunnerSidePosition, shouldLoopStage, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_CODE2_SHOT_FRAMES, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_DURATION, WINGATE_ENTRY_X_LANES, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, wingateOpeningY, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
 import { GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, gunmanCanFire, GUNMAN_ENTRY_PATH_NES, GUNMAN_FLANK_LIFETIMES, GUNMAN_FLANK_SHOT_FRAMES, GUNMAN_LIFETIME, gunmanFirstOpportunityFrame, gunmanFlankPosition, gunmanOpeningY, gunmanProjectileVelocity, GUNMAN_SHOT_OPPORTUNITY_INTERVAL, mediumProjectileHeadingVelocity, mediumProjectileVelocity } from "./game-constants";
 import { BOMBER_ENTRY_DURATION, bomberOpeningY } from "./game-constants";
-import { firebreatherSideCanAttack, FIREBREATHER_SIDE_ATTACK_INTERVAL, FIREBREATHER_SIDE_LIFETIME, FIREBREATHER_SIDE_PATH_NES, firebreatherSidePosition, FIREBREATHER_FIRST_SHOT_DELAY, FIREBREATHER_LIFETIME, FIREBREATHER_PATH_NES, FIREBREATHER_PROJECTILE_OFFSET_NES, firebreatherPosition, FIREBREATHER_SHOT_FRAMES, HATCHET_ATTACK_INTERVAL, HATCHET_PATH_NES, hatchetCanThrow, hatchetPosition, SPEAR_PATH_NES, SPEAR_PROJECTILE_OFFSET_NES, SPEAR_SIDE_LIFETIME, SPEAR_SIDE_PATH_NES, SPEAR_SIDE_SHOT_FRAMES, spearPosition, spearSidePosition, spearTopCanAttack, SPEAR_TOP_ATTACK_FRAMES, SPEAR_TOP_LIFETIME } from "./game-constants";
+import { advanceHatchet, createHatchetState, firebreatherSideCanAttack, FIREBREATHER_SIDE_ATTACK_INTERVAL, FIREBREATHER_SIDE_LIFETIME, FIREBREATHER_SIDE_PATH_NES, firebreatherSidePosition, FIREBREATHER_FIRST_SHOT_DELAY, FIREBREATHER_LIFETIME, FIREBREATHER_PATH_NES, FIREBREATHER_PROJECTILE_OFFSET_NES, firebreatherPosition, FIREBREATHER_SHOT_FRAMES, SPEAR_PATH_NES, SPEAR_PROJECTILE_OFFSET_NES, SPEAR_SIDE_LIFETIME, SPEAR_SIDE_PATH_NES, SPEAR_SIDE_SHOT_FRAMES, spearPosition, spearSidePosition, spearTopCanAttack, SPEAR_TOP_ATTACK_FRAMES, SPEAR_TOP_LIFETIME, type HatchetState } from "./game-constants";
 import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanCanAttack, riflemanPosition, riflemanShotHeading, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition, sniperProjectileVelocity } from "./game-constants";
 import { BANDIT_BILL_DAMAGE_RECOVERY_DURATION, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, banditBillCombatX, banditBillCombatY, banditBillProjectileVelocity } from "./game-constants";
 import { banditBillCooldown } from "./game-constants";
@@ -34,7 +34,7 @@ import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOS
 import { canSpawnEnemyProjectile } from "./game-constants";
 import { canSpawnBossProjectile } from "./game-constants";
 import { hasSpecialAmmoStock, romEnemyDrop, romEnemyScore } from "./game-constants";
-import { roundCollisionBlocks, ROUND_COLLISION_ROWS } from "./round-collision";
+import { roundCollisionAtNes, roundCollisionBlocks, ROUND_COLLISION_ROWS } from "./round-collision";
 import { canSpawnRomPool, compareRomEventOrder, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_FALLING_ROCK_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
 import type { RomEnemyEvent, RomObjectEvent } from "./rom-event-data";
 
@@ -103,6 +103,7 @@ interface Unit {
   targetY?: number;
   gunmanBottomRoute?: "near" | "far";
   riflemanAimHeading?: number;
+  hatchetState?: HatchetState;
   bomberState?: "entry" | "moving" | "throwing";
   bomberDirection?: number;
   bossEntryX?: number;
@@ -1193,7 +1194,7 @@ class GunSmokeGame {
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: frameDuration },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, riflemanAimHeading: undefined, bomberState: undefined, bomberDirection: undefined, boomerangHeading: undefined, bossCycleStart: undefined,
+      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, riflemanAimHeading: undefined, hatchetState: undefined, bomberState: undefined, bomberDirection: undefined, boomerangHeading: undefined, bossCycleStart: undefined,
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" || sceneObject ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
@@ -1453,29 +1454,43 @@ class GunSmokeGame {
         }
       } else if (unit.enemyType === "hatchet") {
         const tracedHatchet = unit.romBehavior === 9;
-        if (tracedHatchet && unit.age <= HATCHET_FIRST_SHOT_DELAY) {
-          const [offsetX, offsetY] = hatchetPosition(unit.age);
-          unit.x = (unit.romOriginX ?? unit.x) + offsetX * NES_WORLD_X_SCALE;
-          unit.y = this.scroll + (unit.romOriginY ?? 0) + offsetY * NES_WORLD_Y_SCALE;
-        } else {
+        if (!tracedHatchet) {
           unit.x += Math.sin(unit.age * 3.4 + unit.phase) * 42 * delta;
           unit.y += unit.vy * delta;
-        }
-        if (tracedHatchet && unit.nextFireAt === 0) unit.nextFireAt = HATCHET_FIRST_SHOT_DELAY;
-        const hatchetOpportunity = tracedHatchet ? unit.nextFireAt : HATCHET_FIRST_SHOT_DELAY;
-        if (unit.age >= hatchetOpportunity && (!tracedHatchet ? !unit.fired : true)) {
-          if (tracedHatchet) unit.nextFireAt += HATCHET_ATTACK_INTERVAL;
-          const canThrow = !tracedHatchet || hatchetCanThrow(unit.x, unit.y, this.player.x, this.player.y);
-          if (canThrow) {
+          if (!unit.fired && unit.age >= 0.7) {
             unit.fired = true;
             const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
-            const projectile = this.spawnEnemyProjectile(unit.x, tracedHatchet ? unit.y : unit.y + 12);
+            const projectile = this.spawnEnemyProjectile(unit.x, unit.y + 12);
             if (projectile) {
               projectile.projectileType = "hatchet";
-              [projectile.vx, projectile.vy] = tracedHatchet ? mediumProjectileVelocity(unit.x, unit.y, this.player.x, this.player.y) : [Math.cos(angle) * 230, Math.sin(angle) * 230];
+              [projectile.vx, projectile.vy] = [Math.cos(angle) * 230, Math.sin(angle) * 230];
               projectile.radius = 9;
               projectile.sprite.size = { x: 16, y: 16 };
             }
+          }
+        } else {
+          const state = unit.hatchetState ??= createHatchetState((unit.romOriginX ?? unit.x) / NES_WORLD_X_SCALE, (unit.y - this.scroll) / NES_WORLD_Y_SCALE);
+          const result = advanceHatchet(
+            state,
+            Math.floor(unit.age * NES_FRAME_RATE),
+            this.player.x / NES_WORLD_X_SCALE,
+            (this.player.y - this.scroll) / NES_WORLD_Y_SCALE,
+            (probeX, probeY) => roundCollisionAtNes(this.stage, this.scroll, probeX, probeY),
+          );
+          unit.x = state.x * NES_WORLD_X_SCALE;
+          unit.y = this.scroll + state.y * NES_WORLD_Y_SCALE;
+          if (result.dead) unit.hp = 0;
+          if (result.shots.length > 0) {
+            unit.fired = true;
+            unit.volleysFired += result.shots.length;
+          }
+          for (const heading of result.shots) {
+            const projectile = this.spawnEnemyProjectile(unit.x, unit.y);
+            if (!projectile) continue;
+            projectile.projectileType = "hatchet";
+            [projectile.vx, projectile.vy] = mediumProjectileHeadingVelocity(heading);
+            projectile.radius = 9;
+            projectile.sprite.size = { x: 16, y: 16 };
           }
         }
       } else if (unit.enemyType === "firebreather") {

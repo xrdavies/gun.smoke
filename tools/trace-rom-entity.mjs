@@ -54,6 +54,8 @@ const entity = (slot) => {
     fineX: memory[0x520 + slot],
     health: memory[0x540 + slot],
     flags: memory[0x560 + slot],
+    field580: memory[0x580 + slot],
+    field5a0: memory[0x5a0 + slot],
     y: memory[0x5c0 + slot],
     x: memory[0x5e0 + slot],
   };
@@ -107,7 +109,17 @@ for (let frame = 0; frame < frames; frame += 1) {
   if (!active(targetSlot)) break;
 
   const relativeFrame = frame - targetStart;
-  entityFrames.push({ frame: relativeFrame, ...entity(targetSlot), player: { x: memory[0x74], y: memory[0x71] } });
+  entityFrames.push({
+    frame: relativeFrame,
+    ...entity(targetSlot),
+    player: { x: memory[0x74], y: memory[0x71] },
+    roundState: {
+      mapPointer: (memory[0x5a] ?? 0) | ((memory[0x5b] ?? 0) << 8),
+      mapPage: memory[0x5c],
+      scrollOffset: memory[0x5d],
+      scrollStep: memory[0x62],
+    },
+  });
   for (let slot = 24; slot < 32; slot += 1) {
     if (active(slot)) projectileFrames.push({ frame: relativeFrame, ...entity(slot) });
   }

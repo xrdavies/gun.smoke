@@ -28,6 +28,12 @@ const WORLD_HEIGHT = 540;
 const INITIAL_STORAGE_ROW = 8;
 
 export function roundCollisionBlocks(round: number, scroll: number, x: number, y: number): boolean {
+  const screenX = Math.round(x * NES_MAP_WIDTH / WORLD_WIDTH + 8);
+  const screenY = Math.round((y - scroll) * NES_VIEW_HEIGHT / WORLD_HEIGHT + 6);
+  return roundCollisionAtNes(round, scroll, screenX, screenY);
+}
+
+export function roundCollisionAtNes(round: number, scroll: number, screenX: number, screenY: number): boolean {
   const rows = ROUND_COLLISION_ROWS[round - 1];
   if (!rows) return false;
   const mapRows = rows.length / 2;
@@ -35,13 +41,12 @@ export function roundCollisionBlocks(round: number, scroll: number, x: number, y
   const fineScroll = (16 + scrollNes) & 31;
   const mapPage = fineScroll < 16 ? 1 : 0;
   const pointerStorageRow = (INITIAL_STORAGE_ROW + Math.floor(scrollNes / NES_MAP_ROW_PIXELS)) % mapRows;
-  const screenX = Math.max(0, Math.min(NES_MAP_WIDTH - 1, Math.round(x * NES_MAP_WIDTH / WORLD_WIDTH + 8)));
-  const screenY = Math.max(0, Math.min(255, Math.round((y - scroll) * NES_VIEW_HEIGHT / WORLD_HEIGHT + 6)));
-  const relativeY = (screenY - fineScroll + 256) & 255;
+  const clampedX = Math.max(0, Math.min(NES_MAP_WIDTH - 1, Math.floor(screenX)));
+  const relativeY = (Math.max(0, Math.min(255, Math.floor(screenY))) - fineScroll + 256) & 255;
   const byteOffset = ((relativeY & 0xe0) >> 2) + 8 + (mapPage === 0 ? 8 : 0);
   const storageRow = (pointerStorageRow - byteOffset / 8 + mapRows) % mapRows;
   const traversalRow = (storageRow - INITIAL_STORAGE_ROW + mapRows) % mapRows;
   const row = traversalRow * 2 + Number(Boolean(relativeY & 0x10));
-  const bit = 15 - ((screenX >> 5) * 2 + Number(Boolean(screenX & 0x10)));
+  const bit = 15 - ((clampedX >> 5) * 2 + Number(Boolean(clampedX & 0x10)));
   return Boolean((rows[row] ?? 0) & (1 << bit));
 }

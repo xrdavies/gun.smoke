@@ -365,24 +365,119 @@ export const ROCK_WORLD_SPEED_X = 230;
 export const ROCK_WORLD_SPEED_Y = 236;
 export const ROCK_IMPACT_DELAY = 24 / NES_FRAME_RATE;
 export const ROCK_LIFETIME = 49 / NES_FRAME_RATE;
-export const HATCHET_FIRST_SHOT_DELAY = 78 / NES_FRAME_RATE;
-export const HATCHET_PROJECTILE_SPEED = 230;
 export const HATCHET_LIFETIME = 1042 / NES_FRAME_RATE;
-export const HATCHET_ATTACK_INTERVAL = 130 / NES_FRAME_RATE;
-export const HATCHET_PATH_NES = [[0, 0, 0], [20, 0, 40], [40, 0, 40], [60, 18, 43], [78, 18, 48]] as const;
+export const HATCHET_ENTRY_DEPTH_NES = 40;
+export const HATCHET_ENTRY_PAUSE_FRAMES = 20;
+export const HATCHET_TURN_FRAMES = 34;
+export const HATCHET_THROW_FRAMES = 26;
+export const HATCHET_PATROL_BOUNDS_NES = [40, 216] as const;
+const HATCHET_TURN_HEADINGS = [
+  [24, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9],
+  [24, 24, 25, 26, 27, 28, 29, 30, 31, 0, 1, 2, 3, 4, 5, 6, 7],
+] as const;
+const HATCHET_COLLISION_PROBES_NES = [[0, -12], [6, -12], [12, -12], [12, -6], [12, 0], [12, 6], [12, 12], [6, 12], [0, 12], [-6, 12], [-12, 12], [-12, 6], [-12, 0], [-12, -6], [-12, -12], [-6, -12]] as const;
 
-export function hatchetPosition(age: number): readonly [number, number] {
-  const frame = Math.max(0, age * NES_FRAME_RATE);
-  const nextIndex = HATCHET_PATH_NES.findIndex(([at]) => at >= frame);
-  if (nextIndex < 0) {
-    const last = HATCHET_PATH_NES.at(-1)!;
-    return [last[1], last[2]];
+export function hatchetTurnHeading(remainingFrames: number, lowerArc: boolean, mirrored: boolean): number {
+  const table = HATCHET_TURN_HEADINGS[Number(lowerArc)]!;
+  const heading = table[Math.floor(Math.max(0, Math.min(HATCHET_TURN_FRAMES - 1, remainingFrames)) / 2)] ?? table[0];
+  return mirrored ? (32 - heading) & 31 : heading;
+}
+
+export function hatchetCollisionProbeOffset(heading: number): readonly [number, number] {
+  return HATCHET_COLLISION_PROBES_NES[(heading & 31) >> 1] ?? HATCHET_COLLISION_PROBES_NES[0];
+}
+
+export type HatchetState = {
+  frame: number;
+  mode: "entry" | "pause" | "patrol" | "throw" | "exit";
+  wait: number;
+  heading: number;
+  turn: number;
+  mirrored: boolean;
+  lowerArc: boolean;
+  attackLocked: boolean;
+  aimHeading: number;
+  animationPhase: number;
+  x: number;
+  y: number;
+};
+
+export function createHatchetState(x: number, y = 0): HatchetState {
+  return { frame: 0, mode: "entry", wait: 0, heading: x < 128 ? 8 : 24, turn: 0, mirrored: x >= 128, lowerArc: false, attackLocked: false, aimHeading: 16, animationPhase: 1, x, y };
+}
+
+export function advanceHatchet(state: HatchetState, targetFrame: number, playerX: number, playerY: number, blocked: (probeX: number, probeY: number) => boolean): { readonly shots: readonly number[]; readonly dead: boolean } {
+  const shots: number[] = [];
+  while (state.frame < targetFrame && state.y >= 0) {
+    state.frame += 1;
+    const animationPhase = state.animationPhase;
+    state.animationPhase = (state.animationPhase + 1) % 52;
+    if (state.mode === "entry") {
+      if (state.y < HATCHET_ENTRY_DEPTH_NES) state.y += 2;
+      else {
+        state.mode = "pause";
+        state.wait = HATCHET_ENTRY_PAUSE_FRAMES;
+      }
+      continue;
+    }
+    if (state.mode === "pause") {
+      if (state.wait > 0) {
+        state.wait -= 1;
+        continue;
+      }
+      state.mode = "patrol";
+    }
+    if (state.mode === "throw") {
+      state.y += NES_SCROLL_SPEED / NES_FRAME_RATE;
+      state.wait -= 1;
+      if (state.wait > 0) continue;
+      shots.push(state.aimHeading);
+      state.animationPhase = 1;
+      state.mode = "patrol";
+      state.attackLocked = true;
+      continue;
+    }
+    if (state.mode === "exit") {
+      if (state.wait > 0) state.wait -= 1;
+      else state.y -= 2;
+      continue;
+    }
+    if (state.y < HATCHET_ENTRY_DEPTH_NES) {
+      state.mode = "exit";
+      state.wait = HATCHET_ENTRY_PAUSE_FRAMES;
+      continue;
+    }
+    if (state.turn === 0 && (state.x < HATCHET_PATROL_BOUNDS_NES[0] || state.x >= HATCHET_PATROL_BOUNDS_NES[1])) {
+      state.turn = HATCHET_TURN_FRAMES;
+      state.attackLocked = false;
+      continue;
+    }
+    const turning = state.turn > 0;
+    if (turning) {
+      state.turn -= 1;
+      state.heading = hatchetTurnHeading(state.turn, state.lowerArc, state.mirrored);
+    } else if (!state.attackLocked && animationPhase < 13 && hatchetCanThrow(state.x * NES_WORLD_X_SCALE, state.y * NES_WORLD_Y_SCALE, playerX * NES_WORLD_X_SCALE, playerY * NES_WORLD_Y_SCALE)) {
+      state.mode = "throw";
+      state.wait = HATCHET_THROW_FRAMES;
+      state.aimHeading = nesAimHeading(state.x * NES_WORLD_X_SCALE, state.y * NES_WORLD_Y_SCALE, playerX * NES_WORLD_X_SCALE, playerY * NES_WORLD_Y_SCALE);
+    }
+    const [velocityX, velocityY] = SNIPER_BULLET_VELOCITIES_NES[state.heading & 31] ?? SNIPER_BULLET_VELOCITIES_NES[0];
+    const nextX = state.x + velocityX * 2;
+    const nextY = state.y + velocityY * 2;
+    const [probeX, probeY] = hatchetCollisionProbeOffset(state.heading);
+    if (blocked(nextX + probeX, nextY + probeY)) {
+      state.y += NES_SCROLL_SPEED / NES_FRAME_RATE;
+      if (!turning) state.turn = HATCHET_TURN_FRAMES;
+    } else {
+      state.x = nextX;
+      state.y = nextY;
+    }
+    if (turning && state.turn === 0) {
+      state.mirrored = !state.mirrored;
+      if (state.y >= 121) state.lowerArc = true;
+    }
   }
-  if (nextIndex === 0) return [0, 0];
-  const previous = HATCHET_PATH_NES[nextIndex - 1]!;
-  const next = HATCHET_PATH_NES[nextIndex]!;
-  const amount = (frame - previous[0]) / (next[0] - previous[0]);
-  return [previous[1] + (next[1] - previous[1]) * amount, previous[2] + (next[2] - previous[2]) * amount];
+  return { shots, dead: state.y < 0 };
 }
 
 export function hatchetCanThrow(originX: number, originY: number, targetX: number, targetY: number): boolean {

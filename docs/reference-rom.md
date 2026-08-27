@@ -458,6 +458,8 @@ Bill slot (`$0400/$0420/$0480`) and projectile-slot changes for 720 frames.
 Adding `--attack` pulses A+B, follows the Boss's X coordinate and records raw
 zero-page observations through a 2,400-frame Boss window; `--boss-frames=N`
 overrides either window.
+Adding `--clear-field --boss-frames=420` clears non-Boss slots and records each
+Boss `0x30` projectile position for velocity comparison.
 The output is an ignored observation artifact under `.rom-traces/`; it is not
 runtime game data or copied ROM code.
 

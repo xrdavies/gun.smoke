@@ -9,6 +9,7 @@ const frames = Number(args.find((argument) => argument.startsWith("--frames="))?
 const bossFramesLimit = Number(args.find((argument) => argument.startsWith("--boss-frames="))?.split("=")[1] ?? (args.includes("--attack") ? 2_400 : 720));
 const output = args.find((argument) => argument.startsWith("--out="))?.split("=")[1] ?? ".rom-traces/boss.json";
 const attack = args.includes("--attack");
+const clearField = args.includes("--clear-field");
 if (!fs.existsSync(filename)) {
   console.log(`Reference ROM not found: ${filename}`);
   process.exit(0);
@@ -37,6 +38,7 @@ nes.buttonDown(1, Controller.BUTTON_B);
 const bossChanges = [];
 const bossFrames = [];
 const projectileEvents = [];
+const projectileFrames = [];
 let bossStart;
 let previousBoss;
 const previousProjectiles = new Map();
@@ -69,11 +71,20 @@ for (let frame = 0; frame < frames; frame += 1) {
       else nes.buttonUp(1, button);
     }
   }
+  if (clearField && bossStart !== undefined) {
+    for (let slot = 2; slot < 32; slot += 1) {
+      if (slot !== 14 && !(nes.cpu.mem[0x400 + slot] & 0x80 && nes.cpu.mem[0x420 + slot] === 0x30)) nes.cpu.mem[0x400 + slot] = 0;
+    }
+  }
   nes.frame();
 
   const boss = activeEntity(14);
   if (bossStart === undefined && boss?.dispatch === 0x88) {
     bossStart = frame;
+    if (clearField) {
+      for (let slot = 2; slot < 14; slot += 1) nes.cpu.mem[0x400 + slot] = 0;
+      for (let slot = 24; slot < 32; slot += 1) nes.cpu.mem[0x400 + slot] = 0;
+    }
     if (!attack) {
       nes.buttonUp(1, Controller.BUTTON_A);
       nes.buttonUp(1, Controller.BUTTON_B);
@@ -93,7 +104,8 @@ for (let frame = 0; frame < frames; frame += 1) {
     bossChanges.push({ frame: relativeFrame, ...boss });
     previousBoss = bossSignature;
   }
-  for (let slot = 24; slot < 32; slot += 1) {
+  for (let slot = clearField ? 2 : 24; slot < 32; slot += 1) {
+    if (slot === 14) continue;
     const projectile = activeEntity(slot);
     if (!projectile || projectile.dispatch < 0x20 || projectile.dispatch >= 0x40) {
       previousProjectiles.delete(slot);
@@ -104,6 +116,7 @@ for (let frame = 0; frame < frames; frame += 1) {
       projectileEvents.push({ frame: relativeFrame, slot, ...projectile });
       previousProjectiles.set(slot, signature);
     }
+    if (clearField && projectile.dispatch === 0x30) projectileFrames.push({ frame: relativeFrame, slot, ...projectile });
   }
   if (relativeFrame >= bossFramesLimit) break;
 }
@@ -120,6 +133,7 @@ const trace = {
   mapperBank,
   bossChanges,
   ...(attack ? { bossFrames } : {}),
+  ...(clearField ? { projectileFrames } : {}),
   projectileEvents,
 };
 fs.mkdirSync(path.dirname(output), { recursive: true });

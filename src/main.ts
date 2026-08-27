@@ -50,6 +50,17 @@ type ProjectileType = "bullet" | "dynamite" | "grenade" | "boomerang" | "firebal
 type TextureName = "player" | "horse" | "shopkeeper" | "bullet" | "moneyBag" | "ammo" | "barrel" | "terrain" | "road" | "landmark";
 type Rgba = [number, number, number, number];
 
+const PROJECTILE_STYLES: Partial<Record<ProjectileType, { size: { x: number; y: number }; color: Rgba }>> = {
+  dynamite: { size: { x: 18, y: 18 }, color: [0.95, 0.55, 0.16, 1] },
+  grenade: { size: { x: 18, y: 18 }, color: [0.9, 0.25, 0.15, 1] },
+  fireball: { size: { x: 18, y: 18 }, color: [1, 0.45, 0.08, 1] },
+  boomerang: { size: { x: 24, y: 12 }, color: [0.6, 0.85, 1, 1] },
+  shuriken: { size: { x: 16, y: 16 }, color: [0.85, 0.85, 0.9, 1] },
+  spear: { size: { x: 7, y: 34 }, color: [0.4, 1, 0.55, 1] },
+  hatchet: { size: { x: 16, y: 16 }, color: [1, 0.7, 0.25, 1] },
+  rock: { size: { x: 24, y: 24 }, color: [0.4, 0.45, 0.5, 1] },
+};
+
 interface Unit {
   kind: UnitKind;
   enemyType?: EnemyType;
@@ -1378,6 +1389,13 @@ class GunSmokeGame {
       unit.y += 40 * delta;
       unit.x += Math.sin(unit.age * 4 + unit.phase) * 14 * delta;
     } else {
+      if (unit.kind === "enemyBullet") {
+        const style = PROJECTILE_STYLES[unit.projectileType ?? "bullet"];
+        if (style) {
+          unit.sprite.size = style.size;
+          unit.sprite.color = style.color;
+        }
+      }
       if (unit.kind === "barrel" && unit.exploding) {
         const start = unit.maxAge - EMPTY_BARREL_EXPLOSION_LIFETIME;
         const progress = clamp((unit.age - start) / EMPTY_BARREL_EXPLOSION_LIFETIME, 0, 1);

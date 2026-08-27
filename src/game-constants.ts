@@ -915,6 +915,7 @@ export const DEVIL_HAWK_ENTRY_DURATION = 143 / NES_FRAME_RATE;
 export const DEVIL_HAWK_POST_ENTRY_X_HOLD = 113 / NES_FRAME_RATE;
 export const DEVIL_HAWK_FIRST_VOLLEY_DELAY = 174 / NES_FRAME_RATE;
 export const DEVIL_HAWK_VOLLEY_INTERVAL = 125 / NES_FRAME_RATE;
+export const DEVIL_HAWK_ATTACK_FRAMES = [174, 365, 459, 722, 815] as const;
 export const DEVIL_HAWK_ENTRY_SPEED_Y = (96 / 143) * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
 export const DEVIL_HAWK_FULL_FAN_HEADINGS = [12, 14, 16, 18, 20] as const;
 export const DEVIL_HAWK_FULL_FAN_LIFETIME = 45 / NES_FRAME_RATE;
@@ -936,6 +937,12 @@ export function devilHawkProjectileVelocity(heading: number): readonly [number, 
 
 export function devilHawkOpeningY(age: number): number {
   return Math.max(0, Math.min(1, age / DEVIL_HAWK_ENTRY_DURATION)) * DEVIL_HAWK_ENTRY_END_Y;
+}
+
+export function devilHawkAttackDelay(age: number): number {
+  const frame = Math.round(age * NES_FRAME_RATE);
+  const next = DEVIL_HAWK_ATTACK_FRAMES.find((at) => at > frame) ?? frame + Math.round(DEVIL_HAWK_VOLLEY_INTERVAL * NES_FRAME_RATE);
+  return Math.max(1, next - frame) / NES_FRAME_RATE;
 }
 // Keyframes sampled from the unhurt Round 3 Boss trace. The ROM updates these
 // coordinates in coarse steps; interpolation keeps the web runtime frame-rate

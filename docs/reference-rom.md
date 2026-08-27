@@ -398,8 +398,10 @@ velocity table and a 45-frame lifetime. The Boss leaves its opening attack state
 even when the aim-sector gate produces no projectile, so vulnerability is tied
 to the attempted attack rather than slot allocation. Later position-dependent attacks select
 three adjacent headings from Billy's integer aim sector, using a 36-frame
-lifetime. A common repeat interval is 125 frames. The runtime preserves these
-measured 5/3 fan geometries and lifetimes. The five-shot branch accepts aim
+lifetime. The controlled unhurt trace attempts attacks at frames
+`174/365/459/722/815`; after that recorded window the routine commonly returns
+to a 125-frame interval. The runtime preserves these measured 5/3 fan geometries
+and lifetimes. The five-shot branch accepts aim
 sectors 8 through 24 (inclusive), as enforced by the ROM's `$C7E6` check. The
 runtime uses compressed X/Y keyframes from the unhurt Boss trace through
 combat frame 1,057; interpolation preserves the long recorded route while the

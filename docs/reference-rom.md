@@ -215,9 +215,11 @@ approximately `(x+2,y=57)` at frame 78; the runtime preserves this short path
 before the procedural combat loop resumes. The fallback remains a three-way
 spread for non-ROM formations.
 An isolated `$BA51` Spear Thrower creates its dispatch `0x33` spear at age 72
-frames and aims it toward Billy at roughly 250 world pixels/s. ROM-tagged
-Spear Throwers launch from the actor coordinate; the procedural fallback remains
-the shorter generic throw delay.
+frames and aims it toward Billy at roughly 250 world pixels/s. Its clean
+entrance descends to about 68 NES pixels by frame 24, pauses through frame 65,
+then follows a measured arc to roughly `(x+36,y=21)` by frame 96; the runtime
+preserves this first path and launches from the actor coordinate. Later cycles
+remain on the procedural fallback.
 The `$B82F` Round 5 Backstabber variant is an ambush actor rather than a
 projectile shooter: its X remains fixed, it descends roughly 85 NES pixels, and
 its slot is released after about 407 frames. The runtime keeps this state

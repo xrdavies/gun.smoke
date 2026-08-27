@@ -1002,8 +1002,8 @@ class GunSmokeGame {
         projectile.maxAge = fullFan ? DEVIL_HAWK_FULL_FAN_LIFETIME : DEVIL_HAWK_SIDE_FAN_LIFETIME;
         projectile.radius = 7;
       }
+      boss.volleysFired += 1;
       if (headings.length > 0) {
-        boss.volleysFired += 1;
         this.beep(204, 0.045);
       }
       this.bossFireClock = devilHawkAttackDelay(boss.age);

@@ -514,6 +514,8 @@ values narrow later-Round comparisons without synthesizing an entity state.
 `--round=3` accelerates earlier Boss gates with automated player fire and Boss
 health clamped to one before searching that Round, so the target actor still
 comes from its authored event and initializer state.
+`--skip=1` ignores the first matching initialization, which separates authored
+forms that share one dispatch and variant without mutating either entity.
 
 `npm run trace:rom:scenes -- --frames=12000 --every=60` writes a longer,
 machine-readable trace to `.rom-traces/scenes.json`. In addition to the state

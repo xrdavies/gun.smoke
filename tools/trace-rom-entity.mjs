@@ -10,6 +10,7 @@ const filename = args.find((argument) => !argument.startsWith("--")) ?? "Gun.Smo
 const stateFile = option("state");
 const dispatch = numberOption("dispatch", Number.NaN);
 const variant = option("variant") === undefined ? undefined : numberOption("variant", 0);
+const skip = numberOption("skip", 0);
 const round = option("round") === undefined ? undefined : numberOption("round", 1);
 const frames = numberOption("frames", round === undefined ? 12_000 : round * 24_000);
 const traceFrames = numberOption("trace-frames", 1_200);
@@ -23,6 +24,7 @@ if (!fs.existsSync(filename)) {
 }
 if (stateFile && !fs.existsSync(stateFile)) throw new Error(`State file not found: ${stateFile}`);
 if (!Number.isInteger(dispatch)) throw new Error("--dispatch is required and accepts decimal or 0x-prefixed values");
+if (!Number.isInteger(skip) || skip < 0) throw new Error("--skip must be a non-negative integer");
 if (round !== undefined && (!Number.isInteger(round) || round < 1 || round > 6)) throw new Error("--round must be an integer from 1 through 6");
 if (!Number.isInteger(frames) || frames <= 0 || !Number.isInteger(traceFrames) || traceFrames <= 0) throw new Error("--frames and --trace-frames must be positive integers");
 
@@ -66,6 +68,8 @@ let targetSlot;
 let targetStart;
 const entityFrames = [];
 const projectileFrames = [];
+const matchingSlots = new Set();
+let matchesSeen = 0;
 for (let frame = 0; frame < frames; frame += 1) {
   const memory = nes.cpu.mem;
   memory[0x7c] = 255;
@@ -97,7 +101,16 @@ for (let frame = 0; frame < frames; frame += 1) {
 
   if (targetSlot === undefined) {
     for (let slot = 16; slot < 23; slot += 1) {
-      if (advancing || !active(slot) || memory[0x420 + slot] !== dispatch || variant !== undefined && memory[0x480 + slot] !== variant) continue;
+      if (!active(slot)) {
+        matchingSlots.delete(slot);
+        continue;
+      }
+      const matches = !advancing && memory[0x420 + slot] === dispatch && (variant === undefined || memory[0x480 + slot] === variant);
+      if (!matches) continue;
+      if (matchingSlots.has(slot)) continue;
+      matchingSlots.add(slot);
+      matchesSeen += 1;
+      if (matchesSeen <= skip) continue;
       targetSlot = slot;
       targetStart = frame;
       for (let other = 16; other < 23; other += 1) if (other !== slot) memory[0x400 + other] = 0;
@@ -133,6 +146,7 @@ const trace = {
   sourceSha256: crypto.createHash("sha256").update(romBytes).digest("hex"),
   frameRate: 60.098,
   dispatch,
+  skip,
   ...(round === undefined ? {} : { round }),
   ...(variant === undefined ? {} : { variant }),
   targetSlot,

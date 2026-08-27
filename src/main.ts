@@ -242,7 +242,7 @@ class GunSmokeGame {
   stage = 1;
   score = 0;
   nextLifeScore = 30_000;
-  lives = 5;
+  lives = 3;
   weaponAmmo: Record<WeaponName, number> = { pistol: Number.POSITIVE_INFINITY, shotgun: 0, machinegun: 0, magnum: 0 };
   ownedWeapons = new Set<WeaponName>(["pistol"]);
   smartBombs = 0;

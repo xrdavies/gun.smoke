@@ -113,6 +113,8 @@ pickup's later collection is the 200-point reward.
 The Blue Yashichi branch writes `180` to `$7C`, so the runtime uses a
 `180 / 60.098`-second invulnerability window. The Life branch stops incrementing
 at `$7A == 5`; both item and score-awarded lives share that five-life cap.
+Round-entry snapshots store `3` in `$7A`, so the runtime starts a new game with
+three lives and treats five only as the cap.
 Boots and Rifle compare `$78/$79` against `4` before incrementing. At that cap,
 contact leaves the stock unchanged and awards 100 points; the runtime preserves
 both the four-item cap and overflow reward.

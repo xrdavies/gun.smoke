@@ -115,18 +115,16 @@ test("reaches the first ROM weapon shop", async ({ page }) => {
   await page.locator("#continue-button").click();
   await page.locator("#briefing-button").click();
   await page.keyboard.down("ArrowUp");
-  for (let index = 0; index < 27; index += 1) {
-    const key = index % 2 === 0 ? "ArrowLeft" : "ArrowRight";
-    await page.keyboard.down(key);
-    await runPistolWithClock(page, 1_800);
-    await page.keyboard.up(key);
-  }
+  await page.keyboard.down("ArrowLeft");
+  await runPistolWithClock(page, 45_000);
+  await page.keyboard.up("ArrowLeft");
   await page.keyboard.down("ArrowRight");
   await runPistolWithClock(page, 450);
   await page.keyboard.up("ArrowRight");
-  if (!await page.locator("#shop").isVisible()) await runPistolWithClock(page, 11_000);
+  if (!await page.locator("#shop").isVisible()) await runPistolWithClock(page, 8_000);
   await page.keyboard.up("ArrowUp");
   await expect(page.locator("#shop")).toBeVisible();
+  await expect(page.locator("#lives-label")).not.toHaveText("LIVES 0");
   await expect(page.locator("#shop-title")).toHaveText("WEAPON SHOP / ROUND 1");
   await expect(page.locator('[data-shop-item="shotgun"]')).toBeVisible();
   await expect(page.locator('[data-shop-item="horse"]')).toBeHidden();

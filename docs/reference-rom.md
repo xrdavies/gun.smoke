@@ -282,7 +282,8 @@ start at frame 205 and are emitted one every four frames; each remains at its
 launch coordinate for about 30 frames before the slot is released. The next
 five-shot sequence begins about 131 frames later. The runtime preserves this
 opening delay, sequential cadence, static lifetime and the measured post-entry
-horizontal movement. The stored Boss trace now drives the measured multi-hop
+horizontal movement. Each grenade launch also refreshes the short damage
+protection window before the next vulnerable interval. The stored Boss trace now drives the measured multi-hop
 vertical profile.
 Round 6's first Wingate encounter is dispatch `0xa3`, variant `0x65`. It enters
 from the top at NES `(x=152, y=0)`, holds that horizontal lane and reaches

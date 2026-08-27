@@ -23,7 +23,7 @@ import { banditBillCooldown } from "./game-constants";
 import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "./game-constants";
 import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, pistolBulletSpeedFactor, pistolVelocities, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
-import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_MOVEMENT_SPEED, FATMAN_JOE_SHOT_INTERVAL, FATMAN_JOE_VOLLEY_GAP, FATMAN_JOE_VOLLEY_SIZE, fatmanJoeCombatY } from "./game-constants";
+import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, FATMAN_JOE_MOVEMENT_SPEED, FATMAN_JOE_SHOT_INTERVAL, FATMAN_JOE_VOLLEY_GAP, FATMAN_JOE_VOLLEY_SIZE, fatmanJoeCombatY } from "./game-constants";
 import { WINGATE_BULLET_SPEED, WINGATE_ENTRY_RUSH_DELAY, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateCombatY, wingateShotCooldown } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_VELOCITIES_NES, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { CUTTER_ENTRY_DURATION, CUTTER_MOVEMENT_SPEED, cutterCombatY, cutterOpeningY } from "./game-constants";
@@ -890,7 +890,7 @@ class GunSmokeGame {
       }
       boss.volleysFired = shotInVolley === FATMAN_JOE_VOLLEY_SIZE ? 0 : shotInVolley;
       this.bossFireClock = shotInVolley === FATMAN_JOE_VOLLEY_SIZE ? FATMAN_JOE_VOLLEY_GAP : FATMAN_JOE_SHOT_INTERVAL;
-      if (shotInVolley === 1) boss.invulnerableUntil = boss.age + 0.75;
+      boss.invulnerableUntil = boss.age + FATMAN_JOE_LAUNCH_INVULNERABILITY;
       boss.fired = true;
       this.beep(150 + this.stage * 18, 0.045);
       return;

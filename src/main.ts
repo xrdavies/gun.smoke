@@ -28,7 +28,7 @@ import { ninjaCanThrow } from "./game-constants";
 import { FATMAN_JOE_ATTACK_CHANCE, FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_MOVEMENT_SPEED, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, fatmanJoeCombatY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "./game-constants";
 import { WINGATE_ATTACK_INTERVAL, WINGATE_BULLET_LIFETIME, wingateCanFire, WINGATE_ENTRY_RUSH_DELAY, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateCombatY } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_LIFETIME, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
-import { CUTTER_ENTRY_DURATION, CUTTER_MOVEMENT_SPEED, cutterCombatY, cutterOpeningY } from "./game-constants";
+import { CUTTER_ENTRY_DURATION, CUTTER_MOVEMENT_SPEED, cutterCombatY, cutterOpeningX, cutterOpeningY } from "./game-constants";
 import { DEVIL_HAWK_ENTRY_DURATION, devilHawkFanHeadings, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_FULL_FAN_LIFETIME, DEVIL_HAWK_FULL_FAN_MAX_Y_NES, DEVIL_HAWK_POST_ENTRY_X_HOLD, devilHawkProjectileVelocity, DEVIL_HAWK_SIDE_FAN_LIFETIME, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY, nesAimHeading } from "./game-constants";
 import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_PREPARE_DELAY, NINJA_BOSS_PREPARE_CONTROLLER_DURATION, NINJA_BOSS_PREPARE_DURATION, NINJA_BOSS_SHURIKEN_LIFETIME, NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES, NINJA_BOSS_SHURIKEN_VELOCITIES_NES, NINJA_BOSS_TELEPORT_DELAY, ninjaBossCombatY, ninjaBossPreparePosition } from "./game-constants";
 import { canSpawnEnemyProjectile } from "./game-constants";
@@ -1559,7 +1559,7 @@ class GunSmokeGame {
       const ninjaTeleporting = this.stage === 4 && ninjaCycleStart > 0 && ninjaCycleAge < 0;
       if (this.stage === 1 && unit.age <= BANDIT_BILL_ENTRY_DURATION) unit.x = unit.bossEntryX ?? unit.x;
       else if (this.stage === 1) unit.x = banditBillCombatX(unit.age, unit.bossEntryX ?? unit.x);
-      else if (this.stage === 2 && unit.age <= CUTTER_ENTRY_DURATION) unit.x = unit.bossEntryX ?? unit.x;
+      else if (this.stage === 2 && unit.age <= CUTTER_ENTRY_DURATION) unit.x = cutterOpeningX(unit.age, unit.bossEntryX ?? unit.x);
       else if (this.stage === 3 && unit.age <= DEVIL_HAWK_ENTRY_DURATION + DEVIL_HAWK_POST_ENTRY_X_HOLD) unit.x = unit.bossEntryX ?? unit.x;
       else if (this.stage === 3) unit.x = devilHawkCombatX(unit.age, unit.bossEntryX ?? unit.x);
       else if (this.stage === 4 && (ninjaTeleporting || ninjaCycleAge <= NINJA_BOSS_ENTRY_INVULNERABILITY)) unit.x = unit.bossEntryX ?? unit.x;

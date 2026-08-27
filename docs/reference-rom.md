@@ -318,8 +318,10 @@ that 176-frame recovery instead of moving to a fixed off-route position.
 The same controlled full-round trace identifies Round 2's Cutter as dispatch
 `0x90`, variant `0x5b`, entering from the top edge (`y=0`). Controlled runs
 observe NES horizontal entry lanes near `x=88/144/168`; one lane reaches about
-`y=136` after 324 frames. The web runtime selects one measured lane and uses
-the calibrated downward opening, then follows the measured 136-to-40/99 NES
+`y=136` after 324 frames. That entry first descends to about `y=142`, holds its
+lane through frame 258, then curves 15 pixels left while returning to `y=136`.
+The web runtime selects one measured lane and follows this two-axis opening,
+then follows the measured 136-to-40/99 NES
 vertical combat profile while resuming horizontal movement at about
 1.72 NES X pixels per frame. At frame 350 it creates the paired `0x98/0x99`
 boomerangs from Boss-relative offsets `(-3,+3)` and `(+3,+2)` NES pixels,

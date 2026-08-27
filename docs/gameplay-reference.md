@@ -132,8 +132,8 @@ used by ordinary enemy gunfire, so field bullets cannot suppress those attacks;
 Bandit Bill's traced `0x30` shots are the exception and use the ordinary pool.
 Ordinary screen clears do not erase active low-slot Boss shots.
 Cutter enters from the top edge on one of the measured NES X lanes
-(`x=88/144/168`) and reaches approximately `y=136` after 324 frames, then
-resumes horizontal movement. Its first paired boomerangs appear at frame 350
+(`x=88/144/168`), descends through a short overshoot, and curves 15 NES pixels
+left to approximately `y=136` after 324 frames. Its first paired boomerangs appear at frame 350
 and repeat every 256 frames. Both turn through measured 32-direction headings,
 capture Billy's position at NES `y=176`, and recalculate their return heading
 once before leaving the arena.

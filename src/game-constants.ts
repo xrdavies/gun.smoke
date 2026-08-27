@@ -577,7 +577,6 @@ export const CUTTER_ENTRY_Y = CUTTER_ENTRY_Y_NES * NES_WORLD_Y_SCALE;
 export const CUTTER_ENTRY_END_Y_NES = 136;
 export const CUTTER_ENTRY_END_Y = CUTTER_ENTRY_END_Y_NES * NES_WORLD_Y_SCALE;
 export const CUTTER_ENTRY_DURATION = 324 / NES_FRAME_RATE;
-export const CUTTER_ENTRY_SPEED_Y = (136 / 324) * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
 export const CUTTER_FIRST_ATTACK_DELAY = 350 / NES_FRAME_RATE;
 export const CUTTER_ATTACK_INTERVAL = 256 / NES_FRAME_RATE;
 export const CUTTER_BOOMERANG_SPAWN_NES = [[-3, 3], [3, 2]] as const;
@@ -605,8 +604,32 @@ export function cutterBoomerangTurn(heading: number, target: number): number {
 }
 export const CUTTER_MOVEMENT_SPEED = (31 / 18) * NES_FRAME_RATE * NES_WORLD_X_SCALE;
 
+const CUTTER_OPENING_PATH_NES = [[0, 144, 0], [95, 144, 64], [142, 144, 96], [190, 144, 128], [213, 144, 142], [222, 144, 142], [250, 144, 118], [258, 144, 118], [274, 135, 129], [286, 130, 135], [298, 126, 140], [308, 123, 143], [318, 125, 142], [322, 129, 136], [324, 129, 136]] as const;
+
+function cutterOpeningPosition(age: number, entryX = 144 * NES_WORLD_X_SCALE): readonly [number, number] {
+  const frame = Math.max(0, age * NES_FRAME_RATE);
+  const laneOffset = entryX / NES_WORLD_X_SCALE - 144;
+  const nextIndex = CUTTER_OPENING_PATH_NES.findIndex(([at]) => at >= frame);
+  if (nextIndex < 0) {
+    const last = CUTTER_OPENING_PATH_NES.at(-1)!;
+    return [(last[1] + laneOffset) * NES_WORLD_X_SCALE, last[2] * NES_WORLD_Y_SCALE];
+  }
+  if (nextIndex === 0) return [entryX, 0];
+  const previous = CUTTER_OPENING_PATH_NES[nextIndex - 1]!;
+  const next = CUTTER_OPENING_PATH_NES[nextIndex]!;
+  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  return [
+    (previous[1] + (next[1] - previous[1]) * amount + laneOffset) * NES_WORLD_X_SCALE,
+    (previous[2] + (next[2] - previous[2]) * amount) * NES_WORLD_Y_SCALE,
+  ];
+}
+
+export function cutterOpeningX(age: number, entryX = 144 * NES_WORLD_X_SCALE): number {
+  return cutterOpeningPosition(age, entryX)[0];
+}
+
 export function cutterOpeningY(age: number): number {
-  return Math.max(0, Math.min(1, age / CUTTER_ENTRY_DURATION)) * CUTTER_ENTRY_END_Y;
+  return cutterOpeningPosition(age)[1];
 }
 const CUTTER_COMBAT_PATH_NES = [[0, 136], [26, 136], [71, 41], [131, 40], [256, 99], [311, 40]] as const;
 

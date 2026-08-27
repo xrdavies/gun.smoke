@@ -932,7 +932,7 @@ class GunSmokeGame {
     }
     this.enemyFireClock -= delta;
     if (this.enemyFireClock > 0) return;
-    const shooters = this.units.filter((unit) => unit.kind === "enemy" && unit.enemyType === "gunman" && unit.romBehavior === undefined && unit.hp > 0 && unit.y < this.player.y);
+    const shooters = this.units.filter((unit) => unit.kind === "enemy" && unit.enemyType === "gunman" && unit.romBehavior === undefined && !unit.exploding && unit.hp > 0 && unit.y < this.player.y);
     const shooter = shooters[Math.floor(this.nextRandom() * shooters.length)];
     if (shooter) {
       const angle = Math.atan2(this.player.y - shooter.y, this.player.x - shooter.x);

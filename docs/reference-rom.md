@@ -265,8 +265,8 @@ to 32 NES pixels, pauses through frame 36, then descends to 126 NES pixels by
 frame 83. After the throw it moves diagonally for about 15 frames toward a
 player-relative offset before holding position; clean routes release between
 281 and 302 frames. The runtime caps ROM-tagged Ninja actors at 303 frames while
-preserving these keyframes and one-shot timing with a 300-world-pixel/s
-self-generated projectile. ROM-tagged Ninja, Hatchet, Spear, and Firebreather
+preserving these keyframes and one-shot timing with a self-generated
+second-tier direction-table projectile. ROM-tagged Ninja, Hatchet, Spear, and Firebreather
 shots use the same second-tier 32-direction table as Gunmen; side Firebreathers
 mask the selected heading to an even sector before allocation. Non-ROM fallback
 formations retain their continuous procedural aim.

@@ -317,7 +317,8 @@ returning to `0x88`. The actor continues from its current coordinate throughout
 that 176-frame recovery instead of moving to a fixed off-route position.
 The same controlled full-round trace identifies Round 2's Cutter as dispatch
 `0x90`, variant `0x5b`, entering from the top edge (`y=0`). Controlled runs
-observe NES horizontal entry lanes near `x=88/144/168`; one lane reaches about
+the four-value initializer table defines NES horizontal entry lanes
+`x=88/112/144/168`; one captured lane reaches about
 `y=136` after 324 frames. That entry first descends to about `y=142`, holds its
 lane through frame 258, then curves 15 pixels left while returning to `y=136`.
 The web runtime selects one measured lane and follows this two-axis opening,
@@ -334,8 +335,8 @@ runtime uses this measured state machine for every volley rather than a fixed
 angular curve.
 After clearing only ordinary slots at the next real gate, Round 3 produces
 Devil Hawk as dispatch `0x9a`, variant `0x61`, entering from the top edge
-(`y=0`). Controlled traces observe NES horizontal entry lanes near
-`x=128/168/208`; the opening holds that lane and reaches approximately `y=96`
+(`y=0`). Its initializer table defines NES horizontal entry lanes
+`x=88/128/168/208`; the opening holds that lane and reaches approximately `y=96`
 after 143 frames, then holds the lane for another 113 frames before the first
 lateral jump; the measured path then moves through NES `x=157/137/155`. At frame
 174 it creates five simultaneous `0xa2` fireballs from the Boss coordinate.
@@ -368,8 +369,8 @@ initializes all four shuriken slots together. The runtime preserves that
 low-slot lifecycle with a self-generated smoke proxy, plus the player-relative
 cross, multi-height combat profile, opening timing and interval. Entry and
 teleport smoke artwork remains procedural.
-Round 5's gate identifies Fatman Joe as dispatch `0x80`, variant `0x51`. He
-enters from the top at NES `(x=152, y=0)`, keeps that horizontal lane for the
+Round 5's gate identifies Fatman Joe as dispatch `0x80`, variant `0x51`. His
+initializer selects NES `x=64/104/152/192` at `y=0` and keeps that lane for the
 first 170 frames and reaches about `y=112`. A 2,400-frame Boss trace spans NES
 `x=88..152`, beyond the runtime's former 54-pixel-wide center clamp; the web
 Boss now uses the full Round 5 road bounds. His attack decision timer first
@@ -387,8 +388,8 @@ counter stops while the short route lasts 53 frames (`b8=16`) or the long route
 lasts 122 frames (`b8=40` followed by `b8=32`); the runtime extends its existing
 76-frame clock by those measured windows. Later direction selection remains an
 approximation over the measured multi-hop profile.
-Round 6's first Wingate encounter is dispatch `0xa3`, variant `0x65`. It enters
-from the top at NES `(x=152, y=0)`, holds that horizontal lane and reaches
+Round 6's first Wingate encounter is dispatch `0xa3`, variant `0x65`. Both
+encounters select NES `x=64/104/152/192` at `y=0`, hold that lane and reach
 approximately `y=98` after 151 frames. The runtime preserves this first-
 encounter opening without reusing it for the second, real Wingate. After the
 opening, both encounters pause for about 19 frames before a short roughly 176
@@ -398,8 +399,8 @@ sequence remains an approximation.
 The first encounter clears both ordinary and low-slot projectile actors before
 entering a 264-frame empty interval. The real Wingate
 then reuses dispatch `0xa3`, variant `0x65` and the same 151-frame vertical
-opening, but enters on NES lane `x=192`; `$BA=1` distinguishes this second
-encounter. The runtime preserves the delay, separate entry lane, and the
+opening; `$BA=1` distinguishes this second encounter rather than selecting a
+fixed X lane. The runtime preserves the delay, a fresh lane selection, and the
 phase-specific vertical combat profile.
 Both encounters begin attack checks at their measured phase time: frame 4 for
 the decoy and frame 277 for real Wingate. A check repeats every 12 frames, then

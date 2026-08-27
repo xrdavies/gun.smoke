@@ -131,8 +131,8 @@ Most Boss weapons use a six-slot projectile pool separate from the eight slots
 used by ordinary enemy gunfire, so field bullets cannot suppress those attacks;
 Bandit Bill's traced `0x30` shots are the exception and use the ordinary pool.
 Ordinary screen clears do not erase active low-slot Boss shots.
-Cutter enters from the top edge on one of the measured NES X lanes
-(`x=88/144/168`), descends through a short overshoot, and curves 15 NES pixels
+Cutter enters from the top edge on one of the ROM's NES X lanes
+(`x=88/112/144/168`), descends through a short overshoot, and curves 15 NES pixels
 left to approximately `y=136` after 324 frames. Its first paired boomerangs appear at frame 350
 and repeat every 256 frames. Both turn through measured 32-direction headings,
 hold their launch offsets for one frame, capture Billy's position at NES
@@ -144,15 +144,15 @@ owned and the Boss arena locks, scrolling and regular enemy-event spawning
 stop. Boss reinforcements can still drop money or ammunition when defeated,
 but the locked arena does not create extra ambient barrels or loose pickups.
 
-Devil Hawk enters from the top on one of the measured NES X lanes
-(`x=128/168/208`) before using a long jump arc and firing a measured five-shot
+Devil Hawk enters from the top on one of the ROM's NES X lanes
+(`x=88/128/168/208`) before using a long jump arc and firing a measured five-shot
 or player-sector three-shot fireball fan. Its five-shot branch accepts aim
 sectors `8..24`. The Ninja enters from one of four measured NES coordinate
 pairs (`112,64`, `192,64`, `120,144`, or `176,128`) with an initial
 smoke/invulnerability window,
-Fatman Joe enters from NES `x=152` at the top edge before using short hops and
+Fatman Joe enters from NES `x=64/104/152/192` at the top edge before using short hops and
 stationary grenade traps across the Round 5 road, while Wingate's two encounters use top-edge NES
-lanes `x=152` and `x=192` before a short horizontal rush and slower cruise; the Ninja enters a smoke/invulnerability phase and
+lanes `x=64/104/152/192` before a short horizontal rush and slower cruise; the Ninja enters a smoke/invulnerability phase and
 teleports after each lost health bar. The runtime hides the Boss for the
 measured 90-frame teleport delay, then restarts its entry smoke window and
 attack clock from the newly selected lane. Devil Hawk fireballs use the ROM's

@@ -570,7 +570,7 @@ export function banditBillCombatX(age: number, entryX = 192 * NES_WORLD_X_SCALE)
 export function banditBillCombatY(age: number, entryX = 192 * NES_WORLD_X_SCALE): number {
   return banditBillCombatPosition(age, entryX)[1];
 }
-export const CUTTER_ENTRY_X_NES = [88, 144, 168] as const;
+export const CUTTER_ENTRY_X_NES = [88, 112, 144, 168] as const;
 export const CUTTER_ENTRY_X_LANES = CUTTER_ENTRY_X_NES.map((value) => value * NES_WORLD_X_SCALE);
 export const CUTTER_ENTRY_Y_NES = 0;
 export const CUTTER_ENTRY_Y = CUTTER_ENTRY_Y_NES * NES_WORLD_Y_SCALE;
@@ -645,7 +645,7 @@ export function cutterCombatY(age: number): number {
   const amount = (frame - previous[0]) / (next[0] - previous[0]);
   return (previous[1] + (next[1] - previous[1]) * amount) * NES_WORLD_Y_SCALE;
 }
-export const DEVIL_HAWK_ENTRY_X_NES = [128, 168, 208] as const;
+export const DEVIL_HAWK_ENTRY_X_NES = [88, 128, 168, 208] as const;
 export const DEVIL_HAWK_ENTRY_X_LANES = DEVIL_HAWK_ENTRY_X_NES.map((value) => value * NES_WORLD_X_SCALE);
 export const DEVIL_HAWK_ENTRY_Y_NES = 0;
 export const DEVIL_HAWK_ENTRY_Y = DEVIL_HAWK_ENTRY_Y_NES * NES_WORLD_Y_SCALE;
@@ -745,8 +745,8 @@ export function ninjaBossCombatY(age: number, entryY = 128 * NES_WORLD_Y_SCALE):
   const amount = (frame - previous[0]) / (next[0] - previous[0]);
   return (previous[1] + (next[1] - previous[1]) * amount + laneOffset) * NES_WORLD_Y_SCALE;
 }
-export const FATMAN_JOE_ENTRY_X_NES = 152;
-export const FATMAN_JOE_ENTRY_X = FATMAN_JOE_ENTRY_X_NES * NES_WORLD_X_SCALE;
+export const FATMAN_JOE_ENTRY_X_NES = [64, 104, 152, 192] as const;
+export const FATMAN_JOE_ENTRY_X_LANES = FATMAN_JOE_ENTRY_X_NES.map((value) => value * NES_WORLD_X_SCALE);
 export const FATMAN_JOE_ENTRY_Y_NES = 0;
 export const FATMAN_JOE_ENTRY_Y = FATMAN_JOE_ENTRY_Y_NES * NES_WORLD_Y_SCALE;
 export const FATMAN_JOE_ENTRY_END_Y_NES = 112;
@@ -810,15 +810,13 @@ export function fatmanJoeCombatY(age: number): number {
   const amount = (frame - previous[0]) / (next[0] - previous[0]);
   return (previous[1] + (next[1] - previous[1]) * amount) * NES_WORLD_Y_SCALE;
 }
-export const WINGATE_ENTRY_X_NES = 152;
-export const WINGATE_ENTRY_X = WINGATE_ENTRY_X_NES * NES_WORLD_X_SCALE;
+export const WINGATE_ENTRY_X_NES = [64, 104, 152, 192] as const;
+export const WINGATE_ENTRY_X_LANES = WINGATE_ENTRY_X_NES.map((value) => value * NES_WORLD_X_SCALE);
 export const WINGATE_ENTRY_Y_NES = 0;
 export const WINGATE_ENTRY_Y = WINGATE_ENTRY_Y_NES * NES_WORLD_Y_SCALE;
 export const WINGATE_ENTRY_END_Y_NES = 98;
 export const WINGATE_ENTRY_END_Y = WINGATE_ENTRY_END_Y_NES * NES_WORLD_Y_SCALE;
 export const WINGATE_ENTRY_DURATION = 151 / NES_FRAME_RATE;
-export const WINGATE_SECOND_ENTRY_X_NES = 192;
-export const WINGATE_SECOND_ENTRY_X = WINGATE_SECOND_ENTRY_X_NES * NES_WORLD_X_SCALE;
 export const WINGATE_SECOND_ENTRY_Y_NES = 0;
 export const WINGATE_SECOND_ENTRY_Y = WINGATE_SECOND_ENTRY_Y_NES * NES_WORLD_Y_SCALE;
 export const WINGATE_ENTRY_RUSH_DURATION = 34 / NES_FRAME_RATE;

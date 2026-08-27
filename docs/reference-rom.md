@@ -248,6 +248,11 @@ entrance descends to about 68 NES pixels by frame 24, pauses through frame 65,
 then follows a measured arc to roughly `(x+36,y=21)` by frame 96; the runtime
 preserves this first path and launches from the actor coordinate. Later cycles
 remain on the procedural fallback.
+Entity code `20` is the side-entry Spear Thrower. Its first isolated route
+reaches the combat line by frame 40, throws at frames `89/305/449/593/737/809`,
+and leaves the screen at frame 813. The runtime mirrors the first 113-frame
+side path for left and right edge records and preserves the measured throw
+schedule.
 The `$B82F` Round 5 Backstabber variant is an ambush actor rather than a
 projectile shooter: its X remains fixed, it descends roughly 85 NES pixels, and
 its slot is released after about 407 frames. The runtime keeps this state

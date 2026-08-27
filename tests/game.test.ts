@@ -314,7 +314,10 @@ describe("Gun.Smoke vertical slice", () => {
       contactSourceShouldClear("enemyBullet", "rock"),
       contactSourceShouldClear("enemyBullet", "dynamite", true),
       contactSourceShouldClear("enemyBullet", "dynamite", false),
-    ]).toEqual([false, false, true, false, false, false, false, true, false]);
+      contactSourceShouldClear("enemyBullet", "bullet", false, true),
+      contactSourceShouldClear("enemyBullet", "shuriken", false, true),
+      contactSourceShouldClear("enemyBullet", "fireball", false, true),
+    ]).toEqual([false, false, true, false, false, false, false, true, false, true, true, false]);
   });
 
   it("matches the traced Shotgunner volley timing", () => {

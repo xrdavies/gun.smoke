@@ -175,7 +175,9 @@ ordinary projectile, then `$CAEF-$CB29` decrements Horse health and starts a
 uses the same 60 NES-frame window and does not erase enemy actors, high-dispatch
 hazards, or unrelated projectiles on a Horse hit. Low-dispatch ordinary bullets
 and airborne dynamite are cleared by the ROM contact branch; boomerangs, shells,
-mines, rocks, and landed dynamite remain active. The same dispatch rule applies
+mines, rocks, and landed dynamite remain active. Boss-pool Wingate bullets and
+Ninja shuriken use low dispatch values and are cleared on contact, while Devil
+Hawk fireballs remain active. The same dispatch rule applies
 to an unshielded contact; player invulnerability prevents repeated damage while
 the source actor remains in its routine. Once the first unshielded contact sets
 the death state in `$76`, the collision dispatcher stops processing additional

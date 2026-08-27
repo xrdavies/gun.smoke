@@ -221,9 +221,10 @@ export function dynamiteContactIsDefusable(age: number): boolean {
   return age < DYNAMITE_AIRBORNE_DURATION;
 }
 
-export function contactSourceShouldClear(kind: "enemy" | "boss" | "enemyBullet", projectileType?: string, dynamiteInFlight = false): boolean {
+export function contactSourceShouldClear(kind: "enemy" | "boss" | "enemyBullet", projectileType?: string, dynamiteInFlight = false, bossProjectile = false): boolean {
   if (kind !== "enemyBullet") return false;
   if (projectileType === "dynamite") return dynamiteInFlight;
+  if (bossProjectile) return projectileType === "bullet" || projectileType === "shuriken";
   return projectileType !== "boomerang" && projectileType !== "grenade" && projectileType !== "grenadeShell" && projectileType !== "rock";
 }
 export const SHOTGUNNER_FIRST_VOLLEY_DELAY = 108 / NES_FRAME_RATE;

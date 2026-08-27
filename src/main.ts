@@ -1880,10 +1880,10 @@ class GunSmokeGame {
         this.showMessage("DYNAMITE DEFUSED");
       } else if ((unit.kind === "enemy" || unit.kind === "enemyBullet") && this.invulnerable > 0 && distance(unit, this.player) <= unit.radius + 20) {
         if (unit.kind === "enemy" && this.invulnerableDestroysEnemies) this.defeatTarget(unit);
-        else if (unit.kind === "enemyBullet" && contactSourceShouldClear(unit.kind, unit.projectileType, unit.projectileType === "dynamite" && dynamiteContactIsDefusable(unit.age))) unit.hp = 0;
+        else if (unit.kind === "enemyBullet" && contactSourceShouldClear(unit.kind, unit.projectileType, unit.projectileType === "dynamite" && dynamiteContactIsDefusable(unit.age), unit.bossProjectile)) unit.hp = 0;
       } else if ((unit.kind === "enemy" || unit.kind === "boss" || unit.kind === "enemyBullet") && this.invulnerable <= 0 && distance(unit, this.player) <= unit.radius + 20) {
         this.takeHit();
-        if (contactSourceShouldClear(unit.kind, unit.projectileType, unit.projectileType === "dynamite" && dynamiteContactIsDefusable(unit.age))) unit.hp = 0;
+        if (contactSourceShouldClear(unit.kind, unit.projectileType, unit.projectileType === "dynamite" && dynamiteContactIsDefusable(unit.age), unit.bossProjectile)) unit.hp = 0;
         if (this.deathClock > 0) break;
       }
     }

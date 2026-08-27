@@ -380,7 +380,8 @@ slot is now isolated for its shuriken attack. The isolated damage trace shows a
 selects another valid pair and restarts the movement path and attack clock on
 that measured cycle while retaining procedural smoke visuals. Other Bosses stay
 visible through their invulnerability/recovery timers; only Ninja's smoke and
-teleport windows hide its sprite.
+teleport windows hide its sprite and disable actor collision. Runtime target and
+contact checks exclude hidden actors, including Snipers while they are in cover.
 The Ninja remains in its initial smoke state for about 44 frames. Its isolated
 attack routine creates a low-slot smoke/prepare entity at frame 140, then emits
 four `0x30` shuriken bullets at frame 179; subsequent volleys commonly recur

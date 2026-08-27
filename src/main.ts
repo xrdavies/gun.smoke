@@ -1728,7 +1728,7 @@ class GunSmokeGame {
 
   private resolveCollisions(): void {
     const bullets = this.units.filter((unit) => unit.kind === "bullet" && unit.hp > 0);
-    const targets = this.units.filter((unit) => (unit.kind === "enemy" || unit.kind === "boss" || unit.kind === "barrel") && !unit.exploding && unit.hp > 0);
+    const targets = this.units.filter((unit) => (unit.kind === "barrel" || (unit.kind === "enemy" || unit.kind === "boss") && unit.sprite.visible) && !unit.exploding && unit.hp > 0);
     for (const bullet of bullets) {
       if (bullet.piercing) {
         const projectile = this.units.find((candidate) => candidate.kind === "enemyBullet" && candidate.projectileType !== "ninjaSmoke" && candidate.hp > 0 && distance(bullet, candidate) <= bullet.radius + candidate.radius);
@@ -1752,6 +1752,7 @@ class GunSmokeGame {
     }
     for (const unit of this.units.filter((candidate) => candidate.hp > 0)) {
       if (unit.kind === "enemyBullet" && unit.projectileType === "ninjaSmoke") continue;
+      if ((unit.kind === "enemy" || unit.kind === "boss") && !unit.sprite.visible) continue;
       if (unit.kind === "moneyBag" || unit.kind === "item" || unit.kind === "ammo") {
         if (distance(unit, this.player) <= unit.radius + 22) {
           unit.hp = 0;

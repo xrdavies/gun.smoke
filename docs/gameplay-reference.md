@@ -60,8 +60,9 @@ flagged supply shop sells Horse, Bullet refills, and Wanted posters, and Rounds
 
 The Horse is a three-hit shield rather than a speed bonus. A blocked hit removes
 only its collision source and grants 60 NES frames of protection; it does not clear every
-enemy projectile. Score awards an extra life at 30,000, again at 100,000, and
-at each later 100,000-point threshold.
+enemy projectile. The ROM stores five mutable score digits plus a fixed zero
+ones digit, so the score caps at 999,990. Extra lives come from the Life pickup
+and are capped at five.
 
 An unshielded hit freezes scrolling and actors for a 152-frame death
 animation, then deducts the life and clears ordinary enemies/projectiles. Billy
@@ -77,9 +78,7 @@ The matching Boss rewards are 10,000, 12,000, 25,000, 20,000, 20,000, and
 second Wingate; the decoy encounter does not duplicate the bounty.
 
 Score and shop funds are the same NES value rather than separate counters.
-Buying an item subtracts directly from the score shown in the HUD; the next
-extra-life threshold remains monotonic, so spending cannot award a threshold
-twice.
+Buying an item subtracts directly from the score shown in the HUD.
 
 Barrels can reveal the NES item set: stored Boots and Rifle power-ups, special
 weapon ammo, money, POW, Cattle Skull, Horse, and Blue/Red Yashichi. Stored

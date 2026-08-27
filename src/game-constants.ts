@@ -19,6 +19,7 @@ export const STAGES: readonly StageDefinition[] = [
 export const MAX_STAGE = STAGES.length;
 export const NES_FRAME_RATE = 60.098;
 export const MAX_LIVES = 5;
+export const MAX_SCORE = 999_990;
 export const BLUE_YASHICHI_DURATION = 180 / NES_FRAME_RATE;
 export const HORSE_HIT_INVULNERABILITY = 60 / NES_FRAME_RATE;
 export const MAX_POWERUP_STOCK = 4;
@@ -37,6 +38,20 @@ export function playerDeathPhase(age: number): "dying" | "hidden" | "ready" | "a
 
 export function storedPowerupPickup(stock: number): { stock: number; score: number } {
   return stock >= MAX_POWERUP_STOCK ? { stock: MAX_POWERUP_STOCK, score: POWERUP_OVERFLOW_SCORE } : { stock: stock + 1, score: 0 };
+}
+
+export function addScore(score: number, points: number): number {
+  return Math.min(MAX_SCORE, Math.max(0, score + points));
+}
+
+/** @deprecated NES score changes do not award lives; kept for import compatibility. */
+export function nextExtraLifeScore(currentThreshold: number): number {
+  return currentThreshold === 30_000 ? 100_000 : currentThreshold + 100_000;
+}
+
+/** @deprecated NES score changes do not award lives; kept for import compatibility. */
+export function scoreExtraLives(_score: number, threshold: number): { lives: number; nextThreshold: number } {
+  return { lives: 0, nextThreshold: threshold };
 }
 export const WORLD_VIEWPORT_HEIGHT = 540;
 export const NES_WORLD_Y_SCALE = WORLD_VIEWPORT_HEIGHT / 240;
@@ -971,18 +986,4 @@ export function formationEntryY(scroll: number, bossEncounter = false): number {
 
 export function spendPoints(points: number, cost: number): number | undefined {
   return points >= cost ? points - cost : undefined;
-}
-
-export function nextExtraLifeScore(currentThreshold: number): number {
-  return currentThreshold === 30_000 ? 100_000 : currentThreshold + 100_000;
-}
-
-export function scoreExtraLives(score: number, threshold: number): { lives: number; nextThreshold: number } {
-  let lives = 0;
-  let nextThreshold = threshold;
-  while (score >= nextThreshold) {
-    lives += 1;
-    nextThreshold = nextExtraLifeScore(nextThreshold);
-  }
-  return { lives, nextThreshold };
 }

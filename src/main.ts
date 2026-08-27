@@ -23,6 +23,7 @@ import { banditBillCooldown } from "./game-constants";
 import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "./game-constants";
 import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, pistolBulletSpeedFactor, pistolVelocities, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
+import { addScore } from "./game-constants";
 import { FATMAN_JOE_ATTACK_CHANCE, FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_MOVEMENT_SPEED, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, fatmanJoeCombatY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "./game-constants";
 import { WINGATE_ATTACK_INTERVAL, WINGATE_BULLET_LIFETIME, wingateCanFire, WINGATE_ENTRY_RUSH_DELAY, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateCombatY } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_LIFETIME, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
@@ -252,7 +253,6 @@ class GunSmokeGame {
   scroll = 0;
   stage = 1;
   score = 0;
-  nextLifeScore = 30_000;
   lives = 3;
   weaponAmmo: Record<WeaponName, number> = { pistol: Number.POSITIVE_INFINITY, shotgun: 0, machinegun: 0, magnum: 0 };
   ownedWeapons = new Set<WeaponName>(["pistol"]);
@@ -1733,8 +1733,7 @@ class GunSmokeGame {
       if (unit.kind === "moneyBag" || unit.kind === "item" || unit.kind === "ammo") {
         if (distance(unit, this.player) <= unit.radius + 22) {
           unit.hp = 0;
-          this.score += unit.value;
-          this.awardScoreLife();
+          this.score = addScore(this.score, unit.value);
           if (unit.kind === "item" && unit.itemType) this.collectItem(unit.itemType);
           else if (unit.kind === "ammo") this.refillAmmo(1);
           this.beep(unit.kind === "moneyBag" ? 980 : 620, 0.08);
@@ -1757,8 +1756,7 @@ class GunSmokeGame {
 
   private defeatTarget(target: Unit): void {
     target.hp = 0;
-    this.score += target.value;
-    this.awardScoreLife();
+    this.score = addScore(this.score, target.value);
     if (target.kind === "barrel") {
       if (ROM_EMPTY_BARREL_ENTITY_CODES.includes(target.romEntityCode as 32 | 41)) {
         target.hp = 1;
@@ -1825,13 +1823,11 @@ class GunSmokeGame {
     if (item === "boots" || item === "rifle") {
       const pickup = storedPowerupPickup(this.powerups[item]);
       this.powerups[item] = pickup.stock;
-      this.score += pickup.score;
-      if (pickup.score > 0) this.awardScoreLife();
+      this.score = addScore(this.score, pickup.score);
     } else if (item === "ammo") {
       this.refillAmmo(1);
     } else if (item === "money") {
-      this.score += 200;
-      this.awardScoreLife();
+      this.score = addScore(this.score, 200);
     } else if (item === "pow") {
       for (const target of [...this.units]) {
         if (target.kind === "enemy" && target.hp > 0) this.defeatTarget(target);
@@ -1934,15 +1930,6 @@ class GunSmokeGame {
 
   private clearBossProjectiles(): void {
     for (const unit of this.units) if (unit.kind === "enemyBullet" && unit.bossProjectile) unit.hp = 0;
-  }
-
-  private awardScoreLife(): void {
-    const reward = scoreExtraLives(this.score, this.nextLifeScore);
-    for (let index = 0; index < reward.lives; index += 1) {
-      this.lives = Math.min(MAX_LIVES, this.lives + 1);
-      this.showMessage("EXTRA LIFE");
-    }
-    this.nextLifeScore = reward.nextThreshold;
   }
 
   private beginNextStage(): void {

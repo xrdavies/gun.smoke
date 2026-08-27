@@ -120,7 +120,7 @@ These object conversions do not add score when the barrel is broken; the Money
 pickup's later collection is the 200-point reward.
 The Blue Yashichi branch writes `180` to `$7C`, so the runtime uses a
 `180 / 60.098`-second invulnerability window. The Life branch stops incrementing
-at `$7A == 5`; both item and score-awarded lives share that five-life cap.
+at `$7A == 5`; no ROM path increments `$7A` in response to score changes.
 Round-entry snapshots store `3` in `$7A`, so the runtime starts a new game with
 three lives and treats five only as the cap.
 Boots and Rifle compare `$78/$79` against `4` before incrementing. At that cap,
@@ -231,6 +231,9 @@ The same defeat path calls `$E297`, which maps the initial dispatch through
 `$E335` and the BCD increment table at `$E2E9`; the resulting ordinary enemy
 score values are 100 (Gunman/Sniper/Bomber/Firebreather), 200
 (Ninja/Rifleman/Hatchet), 300 (Shotgunner), and 400 (Backstabber/Spear).
+The routine updates five score tiles at `$06F2/$06F4/$06F6/$06F8/$06FA`;
+`$06FC` remains the fixed zero ones digit, and overflow clamps those five
+tiles to `9`, yielding a maximum displayed score of `999990`.
 An isolated `$B775` Rifleman descends one NES pixel per frame through age 121,
 enters its attack state at age 122, and emits five dispatch `0x30` shots at ages
 138, 154, 170, 186 and 202. It returns to its movement state at age 212,

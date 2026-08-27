@@ -3,6 +3,7 @@ import { AMMO_GAIN, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER
 import { GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, GUNMAN_BOTTOM_NEAR_DISTANCE_NES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, GUNMAN_BULLET_SPEED, GUNMAN_ENTRY_PATH_NES, GUNMAN_FIRST_SHOT_DELAY, GUNMAN_FLANK_LIFETIMES, GUNMAN_FLANK_SHOT_FRAMES, GUNMAN_LIFETIME, gunmanFlankPosition, gunmanOpeningY } from "../src/game-constants";
 import { RIFLEMAN_LIFETIME, RIFLEMAN_PATH_NES, riflemanPosition, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_PATH_NES, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition } from "../src/game-constants";
 import { NINJA_BOSS_TELEPORT_DELAY } from "../src/game-constants";
+import { addScore, MAX_SCORE } from "../src/game-constants";
 import { NINJA_ATTACK_MOVE_DURATION, NINJA_ENTRY_PATH_NES, ninjaAttackPosition, ninjaOpeningY } from "../src/game-constants";
 import { ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y } from "../src/game-constants";
 import { BOMBER_ENTRY_DURATION, BOMBER_ENTRY_END_Y, BOMBER_ENTRY_END_Y_NES, bomberOpeningY } from "../src/game-constants";
@@ -141,10 +142,10 @@ describe("Gun.Smoke vertical slice", () => {
     expect(shouldLoopStage(ROUND_LENGTHS[0]!, 1, true)).toBe(false);
   });
 
-  it("matches the NES score-life thresholds", () => {
-    expect(nextExtraLifeScore(30_000)).toBe(100_000);
-    expect(nextExtraLifeScore(100_000)).toBe(200_000);
-    expect(scoreExtraLives(230_000, 30_000)).toEqual({ lives: 3, nextThreshold: 300_000 });
+  it("caps the six-digit NES score", () => {
+    expect(MAX_SCORE).toBe(999_990);
+    expect(addScore(999_900, 90)).toBe(MAX_SCORE);
+    expect(addScore(MAX_SCORE, 400)).toBe(MAX_SCORE);
     expect(spendPoints(10_000, 6_000)).toBe(4_000);
     expect(spendPoints(5_999, 6_000)).toBeUndefined();
   });

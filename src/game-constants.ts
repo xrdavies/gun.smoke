@@ -325,7 +325,7 @@ export function ninjaAttackPosition(age: number, originX: number, originY: numbe
 }
 
 export function ninjaCanThrow(actorY: number, playerY: number): boolean {
-  return Math.abs(playerY - actorY) < NINJA_ACTIVATION_DISTANCE_NES * NES_WORLD_Y_SCALE;
+  return Math.abs(Math.round(playerY / NES_WORLD_Y_SCALE) - Math.round(actorY / NES_WORLD_Y_SCALE)) < NINJA_ACTIVATION_DISTANCE_NES;
 }
 
 export const ROCK_WORLD_SPEED_X = 230;

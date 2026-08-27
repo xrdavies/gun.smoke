@@ -427,7 +427,7 @@ to a 125-frame interval. The runtime preserves these measured 5/3 fan geometries
 and lifetimes. The five-shot branch accepts aim
 sectors 8 through 24 (inclusive), as enforced by the ROM's `$C7E6` check. The
 runtime uses compressed X/Y keyframes from the unhurt Boss trace through
-combat frame 1,057; interpolation preserves the long recorded route while the
+combat frame 3,425; interpolation preserves the long recorded route while the
 separate attack scheduler remains subject to aim and random gates. The final
 sample is held until a longer trace establishes the next route branch.
 The same campaign reaches Round 4 and identifies its Ninja Boss as dispatch

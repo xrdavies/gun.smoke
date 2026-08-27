@@ -681,6 +681,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(devilHawkCombatX(DEVIL_HAWK_ENTRY_DURATION + 283 / NES_FRAME_RATE)).toBe(423.75);
     expect(devilHawkCombatY(DEVIL_HAWK_ENTRY_DURATION + 640 / NES_FRAME_RATE)).toBe(319.5);
     expect(devilHawkCombatX(DEVIL_HAWK_ENTRY_DURATION + 640 / NES_FRAME_RATE)).toBe(660);
+    expect(devilHawkCombatY(DEVIL_HAWK_ENTRY_DURATION + 3425 / NES_FRAME_RATE)).toBe(85 * NES_WORLD_Y_SCALE);
+    expect(devilHawkCombatX(DEVIL_HAWK_ENTRY_DURATION + 3425 / NES_FRAME_RATE)).toBe(122 * NES_WORLD_X_SCALE);
   });
 
   it("matches the traced Ninja Boss entrance", () => {

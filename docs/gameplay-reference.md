@@ -145,7 +145,8 @@ but the locked arena does not create extra ambient barrels or loose pickups.
 
 Devil Hawk enters from the top on one of the measured NES X lanes
 (`x=128/168/208`) before using a long jump arc and firing a measured five-shot
-or player-sector three-shot fireball fan, while the Ninja enters from measured NES lanes near `x=176/192`
+or player-sector three-shot fireball fan. Its five-shot branch accepts aim
+sectors `8..24`. The Ninja enters from measured NES lanes near `x=176/192`
 with an initial smoke/invulnerability window,
 Fatman Joe enters from NES `x=152` at the top edge before using short hops and
 stationary grenade traps across the Round 5 road, while Wingate's two encounters use top-edge NES
@@ -188,6 +189,9 @@ edge before releasing at frame 259.
 Top-entry Shotgunners fire two measured three-shot fans; entity code `4`
 instead enters from either side, fires one fan at frame 114, and returns to its
 edge before releasing at frame 232.
+Hatchet Throwers wait for aim sectors `15..17` before their frame-78 throw;
+side Firebreathers require Billy below them, a 50% random gate, and aim sectors
+`10..22` for later attacks. Top-entry Spear Throwers accept sectors `10..23`.
 
 Round 1 Bombers descend into range, choose among eight measured movement
 directions and durations, and make a half-probability throw decision between

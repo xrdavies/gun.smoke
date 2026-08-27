@@ -155,7 +155,8 @@ after 198 frames and repeats after 106 frames. The projectile remains airborne
 for 212 frames, changes to landed dispatch `0x3E` for 53 frames, then clears;
 the runtime uses these measured timings at 60.098 Hz.
 The same Round 1 traces show the Bomber actor descending one NES pixel per frame
-for 125 frames to `y=126`, then holding that combat height while its horizontal
+for 125 frames to `y=126` while its X coordinate remains fixed, then holding
+that combat height while its horizontal
 state runs. The runtime keeps this measured entrance profile before applying
 the existing procedural lateral movement.
 An isolated `$B080` Sniper fires at ages 134, 224, 405, 495 and 585 frames,

@@ -422,7 +422,7 @@ The first encounter clears both ordinary and low-slot projectile actors before
 entering a 264-frame empty interval. The real Wingate
 then reuses dispatch `0xa3`, variant `0x65` and the same 151-frame vertical
 opening; its first rush holds the entry X for about 17 frames, then follows a
-measured 17-frame path to an offset of `-26` NES pixels before the normal
+measured 17-frame path by 26 NES pixels toward the `x=128` centerline before the normal
 movement state. `$BA=1` distinguishes this second encounter rather than selecting a
 fixed X lane. The runtime preserves the delay, a fresh lane selection, and the
 phase-specific vertical combat profile.

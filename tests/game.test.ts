@@ -18,6 +18,7 @@ import { CUTTER_MOVEMENT_SPEED } from "../src/game-constants";
 import { DEVIL_HAWK_FIREBALL_FAN_NES, DEVIL_HAWK_FIREBALL_SIDE_FANS_NES, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_JUMP_PERIOD, DEVIL_HAWK_VOLLEY_INTERVAL } from "../src/game-constants";
 import { devilHawkCombatY } from "../src/game-constants";
 import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_ATTACK_DELAY, NINJA_BOSS_SHURIKEN_COUNT, NINJA_BOSS_SHURIKEN_LIFETIME, NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES, NINJA_BOSS_SHURIKEN_VELOCITIES_NES, ninjaBossCombatY } from "../src/game-constants";
+import { SHOTGUNNER_PATH_NES, shotgunnerPosition } from "../src/game-constants";
 import { romEnemyDrop } from "../src/game-constants";
 import { roundCollisionBlocks, ROUND_COLLISION_ROW_COUNTS } from "../src/round-collision";
 import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_ENEMY_SLOT_CAPACITY, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_OBJECT_SLOT_CAPACITY, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_ENEMY_EVENT_COUNTS, ROUND_ROM_OBJECT_EVENTS, ROUND_ROM_OBJECT_EVENT_COUNTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX } from "../src/rom-event-data";
@@ -245,6 +246,10 @@ describe("Gun.Smoke vertical slice", () => {
     expect(SHOTGUNNER_FIRST_VOLLEY_DELAY).toBeCloseTo(108 / 60.098, 9);
     expect(SHOTGUNNER_VOLLEY_INTERVAL).toBeCloseTo(51 / 60.098, 9);
     expect(SHOTGUNNER_LIFETIME).toBeCloseTo(228 / 60.098, 9);
+    expect(SHOTGUNNER_PATH_NES).toEqual([[0, 0, 0], [64, 0, 64], [80, -6, 77], [100, -18, 83], [108, -18, 83], [120, -20, 82], [140, -32, 70], [152, -34, 60], [164, -34, 60], [168, -34, 59], [224, -34, 3]]);
+    expect(shotgunnerPosition(80 / NES_FRAME_RATE)).toEqual([-6, 77]);
+    expect(shotgunnerPosition(108 / NES_FRAME_RATE)).toEqual([-18, 83]);
+    expect(shotgunnerPosition(224 / NES_FRAME_RATE)).toEqual([-34, 3]);
   });
 
   it("matches the traced Sniper firing windows", () => {

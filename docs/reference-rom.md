@@ -123,6 +123,8 @@ and emits a fixed downward fan. An isolated instance fires at age 108 and 159
 frames, then exits at age 228; the three shots begin at the actor coordinate,
 move about one NES Y pixel per frame, and use approximately `-1/8, 0, +1/8`
 NES X velocity. The runtime preserves both volleys and this ROM-tagged fan;
+the actor follows the measured entry path from the initial lane through its
+first lateral retreat before the generic fallback takes over;
 non-ROM fallback formations retain their procedural aim.
 The shared allocator at `$E454-$E460` scans ordinary enemy projectile slots
 `$0418-$041f`, giving field bullets and dynamite a common eight-slot limit.

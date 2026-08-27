@@ -1566,14 +1566,14 @@ class GunSmokeGame {
       const ninjaTeleporting = this.stage === 4 && ninjaCycleStart > 0 && ninjaCycleAge < 0;
       if (this.stage === 1 && unit.age <= BANDIT_BILL_ENTRY_DURATION) unit.x = unit.bossEntryX ?? unit.x;
       else if (this.stage === 1) unit.x = banditBillCombatX(unit.age, unit.bossEntryX ?? unit.x);
-      else if (this.stage === 2 && unit.age <= CUTTER_ENTRY_DURATION) unit.x = cutterOpeningX(unit.age, unit.bossEntryX ?? unit.x);
+      else if (this.stage === 2 && unit.age <= CUTTER_FIRST_ATTACK_DELAY) unit.x = cutterOpeningX(unit.age, unit.bossEntryX ?? unit.x);
       else if (this.stage === 3 && unit.age <= DEVIL_HAWK_ENTRY_DURATION + DEVIL_HAWK_POST_ENTRY_X_HOLD) unit.x = unit.bossEntryX ?? unit.x;
       else if (this.stage === 3) unit.x = devilHawkCombatX(unit.age, unit.bossEntryX ?? unit.x);
       else if (this.stage === 4 && (ninjaTeleporting || ninjaCycleAge <= NINJA_BOSS_ENTRY_INVULNERABILITY)) unit.x = unit.bossEntryX ?? unit.x;
       else if (this.stage === 5 && unit.age <= FATMAN_JOE_ENTRY_DURATION) unit.x = unit.bossEntryX ?? unit.x;
       else if (this.stage === 6 && unit.bossEntryY !== undefined && unit.age <= WINGATE_ENTRY_DURATION) unit.x = unit.bossEntryX ?? unit.x;
       else {
-        if (this.stage === 2 && unit.vx === 0) unit.vx = (unit.phase < Math.PI ? 1 : -1) * CUTTER_MOVEMENT_SPEED;
+        if (this.stage === 2 && unit.vx === 0 && unit.age > CUTTER_FIRST_ATTACK_DELAY) unit.vx = (unit.phase < Math.PI ? 1 : -1) * CUTTER_MOVEMENT_SPEED;
         if (this.stage === 6 && unit.bossEntryY !== undefined) {
           const direction = unit.vx === 0 ? (unit.phase < Math.PI ? 1 : -1) : unit.vx < 0 ? -1 : 1;
           unit.vx = direction * (unit.age <= WINGATE_ENTRY_DURATION + WINGATE_ENTRY_RUSH_DELAY + WINGATE_ENTRY_RUSH_DURATION ? WINGATE_ENTRY_RUSH_SPEED : WINGATE_MOVEMENT_SPEED);

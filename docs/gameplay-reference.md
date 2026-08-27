@@ -136,7 +136,8 @@ Ninja, Hatchet, Spear, and Firebreather shots use the shared discrete second-tie
 direction table; only procedural fallback formations use continuous aim.
 Cutter enters from the top edge on one of the ROM's NES X lanes
 (`x=88/112/144/168`), descends through a short overshoot, and curves 15 NES pixels
-left to approximately `y=136` after 324 frames. Its first paired boomerangs appear at frame 350
+left to approximately `y=136` after 324 frames, holds that lane until frame 350,
+then begins horizontal movement with its first paired boomerangs
 and repeat every 256 frames. Both turn through measured 32-direction headings,
 hold their launch offsets for one frame, capture Billy's position at NES
 `y=176`, and recalculate their return heading

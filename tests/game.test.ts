@@ -535,6 +535,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(cutterOpeningX(308 / NES_FRAME_RATE)).toBe(461.25);
     expect(cutterOpeningX(CUTTER_ENTRY_DURATION)).toBe(483.75);
     expect(cutterOpeningX(CUTTER_ENTRY_DURATION, 168 * NES_WORLD_X_SCALE)).toBe(153 * NES_WORLD_X_SCALE);
+    expect(cutterOpeningX(CUTTER_FIRST_ATTACK_DELAY)).toBe(483.75);
     expect(cutterCombatY(CUTTER_ENTRY_DURATION)).toBe(306);
     expect(cutterCombatY(CUTTER_ENTRY_DURATION + 71 / NES_FRAME_RATE)).toBe(92.25);
     expect(cutterCombatY(CUTTER_ENTRY_DURATION + 311 / NES_FRAME_RATE)).toBe(90);

@@ -125,6 +125,8 @@ teleporting away from his current route, while Cutter and Devil
 Hawk become vulnerable only after their opening attack. Fatman Joe is
 vulnerable before each bomb-gun firing and briefly protected during the launch;
 Cutter's boomerangs also curve in opposite directions.
+Ninja remains invulnerable during its opening smoke and every teleport/re-entry
+window; hidden Boss sprites cannot be damaged by bullets.
 Most Boss weapons use a six-slot projectile pool separate from the eight slots
 used by ordinary enemy gunfire, so field bullets cannot suppress those attacks;
 Bandit Bill's traced `0x30` shots are the exception and use the ordinary pool.

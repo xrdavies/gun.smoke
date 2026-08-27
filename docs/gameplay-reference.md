@@ -72,7 +72,8 @@ the ordinary-enemy clear.
 At zero lives, Game Over defaults to Continue. Continuing restarts the current
 Round with three lives and retains score, stored Boots/Rifle, unlost special
 weapons, ammunition and Smart Bomb stock; Horse, Wanted progress, actors and
-map progress reset. End returns to the title.
+map progress reset. Select switches between Continue and End, while Start
+confirms; End returns to the title.
 
 Shop funds now use the NES point scale: Money Bags are 200 points and the
 Wanted poster prices are 20,000 (Round 1), 24,000 (Round 2), 50,000 (Round 3),

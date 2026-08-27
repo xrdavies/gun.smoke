@@ -102,6 +102,13 @@ test("continues the current Round after Game Over", async ({ page }) => {
   await expect(page.locator("#briefing-round")).toContainText("ROUND 1");
   await page.locator("#briefing-button").click();
   await expect(page.locator("#lives-label")).toHaveText("LIVES 3");
+  await page.evaluate(() => (window as unknown as { __showGunSmokeGameOver: () => void }).__showGunSmokeGameOver());
+  await page.keyboard.down("Shift");
+  await page.waitForTimeout(50);
+  await page.keyboard.up("Shift");
+  await expect(page.locator("#restart-button")).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#title-screen")).toBeVisible();
 });
 
 test("does not spawn a trading post before the first ROM event", async ({ page }) => {

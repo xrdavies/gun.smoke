@@ -431,7 +431,10 @@ class GunSmokeGame {
       this.actions.handle(event);
       if (event.kind === "keyboard" && (event.code === "Tab" || event.code === "ShiftLeft" || event.code === "ShiftRight")) {
         event.preventDefault();
-        if (event.type === "keydown" && !event.repeat) this.toggleInventory();
+        if (event.type === "keydown" && !event.repeat) {
+          if (this.mode === "gameover") this.toggleGameOverChoice();
+          else this.toggleInventory();
+        }
       }
     });
     this.audio = this.createAudio();
@@ -527,6 +530,17 @@ class GunSmokeGame {
     inventoryScreen.hidden = true;
     this.updateHud();
     this.showBriefing();
+  }
+
+  confirmGameOver(): void {
+    if (this.mode !== "gameover") return;
+    if (document.activeElement === restartButton) restartButton.click();
+    else this.continueGame();
+  }
+
+  toggleGameOverChoice(): void {
+    if (this.mode !== "gameover") return;
+    (document.activeElement === gameOverContinueButton ? restartButton : gameOverContinueButton).focus();
   }
 
   private showBriefing(): void {
@@ -2091,6 +2105,7 @@ class GunSmokeGame {
       endingScreen.hidden = true;
       gameOver.querySelector("h2")!.textContent = "WANTED: ALIVE";
       finalScore.textContent = `SCORE ${String(this.score).padStart(6, "0")}`;
+      this.inventoryLatch = false;
       gameOverContinueButton.focus();
       this.pollPausedGamepad();
     }
@@ -2201,6 +2216,14 @@ class GunSmokeGame {
       this.pausePollHandle = undefined;
       if (this.mode !== "paused" && this.mode !== "briefing" && this.mode !== "gameover") return;
       this.engine.input?.pollGamepads();
+      if (this.mode === "gameover") {
+        const selectActive = this.actions.active("inventory");
+        if (!selectActive) this.inventoryLatch = false;
+        else if (!this.inventoryLatch) {
+          this.inventoryLatch = true;
+          this.toggleGameOverChoice();
+        }
+      }
       const active = this.actions.active("start");
       if (!active) this.startLatch = false;
       else if (!this.startLatch) {
@@ -2217,7 +2240,7 @@ class GunSmokeGame {
     if (this.mode === "title") this.start();
     else if (this.mode === "intro") this.continueFromIntro();
     else if (this.mode === "briefing") this.continueFromBriefing();
-    else if (this.mode === "gameover") this.continueGame();
+    else if (this.mode === "gameover") this.confirmGameOver();
     else if (this.mode === "playing" || this.mode === "paused") this.togglePause();
   }
 
@@ -2460,6 +2483,11 @@ smartBombButton.addEventListener("click", () => game?.toggleSmartBomb());
 for (const item of shopItems) item.addEventListener("click", () => game?.buyShopItem(item.dataset.shopItem ?? ""));
 referenceRomInput.addEventListener("change", () => void loadReferenceRom());
 window.addEventListener("keydown", (event) => {
+  if (game?.mode === "gameover" && (event.code === "Tab" || event.code === "ShiftLeft" || event.code === "ShiftRight")) {
+    event.preventDefault();
+    if (!event.repeat) game.toggleGameOverChoice();
+    return;
+  }
   if (event.code === "KeyP" || event.code === "Escape") {
     game?.togglePause();
     return;
@@ -2469,7 +2497,7 @@ window.addEventListener("keydown", (event) => {
   else if (game?.mode === "intro") game.continueFromIntro();
   else if (game?.mode === "briefing") game.continueFromBriefing();
   else if (game?.mode === "playing" || game?.mode === "paused") game.togglePause();
-  else if (game?.mode === "gameover") game.continueGame();
+  else if (game?.mode === "gameover") game.confirmGameOver();
   else if (game?.mode === "ending") window.location.reload();
 });
 try {

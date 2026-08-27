@@ -1129,6 +1129,7 @@ class GunSmokeGame {
 
   private openShop(index: number): void {
     if (this.shopOpen) return;
+    this.clearEnemyProjectiles();
     this.shopIndex = index;
     this.shopOpen = true;
     for (const unit of this.units) if (unit.kind === "shopkeeper") unit.hp = 0;

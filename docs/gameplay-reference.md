@@ -57,6 +57,8 @@ freezes the action only when Billy walks up; riding past skips that shop. The
 first shop in each Round sells the three special guns and Smart Bomb, the
 flagged supply shop sells Horse, Bullet refills, and Wanted posters, and Rounds
 3 and 6 receive a later weapon-shop revisit.
+Entering either shop clears ordinary enemy projectiles before the menu freezes;
+falling-rock actors and the separate Boss weapon pool are not part of that clear.
 
 The Horse is a three-hit shield rather than a speed bonus. A blocked hit removes
 only its collision source and grants 60 NES frames of protection; it does not clear every

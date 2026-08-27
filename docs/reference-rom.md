@@ -180,6 +180,8 @@ the `$BD4E` menu. `$A5=1` selects its four-item weapon branch; flag `0x40`
 produces `$A5=0x41` and selects the three-item supply branch. The extractor
 therefore labels them `weaponShop` and `supplyShop`; other no-behavior records
 remain `sceneObject`. These labels are research semantics, not copied ROM code.
+The web shop entry now calls the same ordinary-projectile clear before pausing;
+rocks remain enemy-slot actors and low Boss weapon slots remain separate.
 An isolated `$B501` actor descends one NES pixel per frame until it enters the
 player's 64-pixel vertical range, then chooses among eight movement headings.
 Their durations are `64/38/32/14/16/14/32/38` frames and use the ROM's

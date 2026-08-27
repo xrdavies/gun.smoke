@@ -33,6 +33,7 @@ import { DEVIL_HAWK_ENTRY_DURATION, devilHawkAttackDelay, devilHawkFanHeadings, 
 import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_PREPARE_DELAY, NINJA_BOSS_PREPARE_CONTROLLER_DURATION, NINJA_BOSS_PREPARE_DURATION, NINJA_BOSS_SHURIKEN_LIFETIME, NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES, NINJA_BOSS_SHURIKEN_VELOCITIES_NES, NINJA_BOSS_TELEPORT_DELAY, ninjaBossCombatX, ninjaBossCombatY, ninjaBossNextTeleportAt, ninjaBossPreparePosition } from "./game-constants";
 import { canSpawnEnemyProjectile } from "./game-constants";
 import { canSpawnBossProjectile } from "./game-constants";
+import { ENEMY_DEFEAT_ANIMATION_DURATION } from "./game-constants";
 import { hasSpecialAmmoStock, hasWeaponStock, romEnemyDrop, romEnemyScore } from "./game-constants";
 import { roundCollisionAtNes, roundCollisionBlocks, ROUND_COLLISION_ROWS } from "./round-collision";
 import { canSpawnRomPool, compareRomEventOrder, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_FALLING_ROCK_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
@@ -1313,6 +1314,13 @@ class GunSmokeGame {
       unit.sprite.position = { x: unit.x, y: unit.y };
       return;
     }
+    if (unit.kind === "enemy" && unit.exploding) {
+      const progress = clamp(unit.age / ENEMY_DEFEAT_ANIMATION_DURATION, 0, 1);
+      unit.sprite.visible = Math.floor(progress * 8) % 2 === 0;
+      unit.sprite.position = { x: unit.x, y: unit.y };
+      if (unit.age >= ENEMY_DEFEAT_ANIMATION_DURATION) unit.hp = 0;
+      return;
+    }
     if (unit.kind === "enemy") {
       const followsRomScroll = unit.romBehavior !== undefined && unit.romBehavior !== 1 && unit.romBehavior !== 2 && unit.romBehavior !== 6 && unit.romBehavior !== 7 && unit.romBehavior !== 9 && unit.romBehavior !== 10 && unit.romBehavior !== 11 && !(unit.enemyType === "backstabber" && (unit.romBehavior === 3 || unit.romBehavior === 8));
       if (followsRomScroll) unit.y += WORLD_SCROLL_SPEED * delta;
@@ -1912,6 +1920,10 @@ class GunSmokeGame {
       }
       if (target.itemType) this.spawnUnit("item", target.x, target.y, 1, undefined, target.itemType);
     } else if (target.kind === "enemy") {
+      target.hp = 1;
+      target.exploding = true;
+      target.maxAge = target.age + ENEMY_DEFEAT_ANIMATION_DURATION;
+      target.sprite.visible = true;
       if (target.romFlags !== undefined) {
         const hasSpecialStock = hasSpecialAmmoStock(this.weaponAmmo);
         const drop = romEnemyDrop(target.romFlags, hasSpecialStock);

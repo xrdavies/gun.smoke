@@ -316,6 +316,11 @@ uses the ROM dispatch table: Gunmen, Snipers, Bombers and Firebreathers are 100;
 Ninjas, Riflemen and Hatchet Throwers are 200; Shotgunners are 300; and
 Backstabbers and Spear Throwers are 400.
 
+After a lethal shot, the enemy remains non-colliding for the ROM's five-frame
+defeat animation while its slot is still occupied; any flagged drop is allocated
+as a separate enemy-pool pickup. This preserves the original short-lived slot
+pressure before the actor is released.
+
 After the second Wingate encounter the web recreation enters a separate ending
 and credits state instead of treating the win as Game Over.
 The first Wingate defeat clears both projectile pools and leaves a measured

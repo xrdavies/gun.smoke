@@ -272,6 +272,11 @@ If `$90/$94/$98/$9c` show no special-gun ammunition, it increments that to `0x4f
 the `$E192` conversion table then maps them to Bullet (`0x29`) and Money
 (`0x24`) pickups respectively. Smart Bomb inventory is not part of this stock
 test; unflagged ROM enemies produce no random drop.
+After a lethal hit, the original enemy slot remains active in dispatch `0x41`
+for five frames before release; a flagged drop is allocated in a separate enemy
+slot during that death animation. The web runtime keeps the defeated enemy
+non-colliding for the same five-frame window so pool pressure and slot reuse
+match the ROM.
 The same defeat path calls `$E297`, which maps the initial dispatch through
 `$E335` and the BCD increment table at `$E2E9`; the resulting ordinary enemy
 score values are 100 (Gunman/Sniper/Bomber/Firebreather), 200

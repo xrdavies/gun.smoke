@@ -193,6 +193,11 @@ is identified. The pools are capped independently at seven enemy slots and
 six object slots, matching the ROM allocator. The all-object `$B5BF` Round 4
 records are rendered as falling rock hazards with their own object-pool
 capacity and player collision, rather than being misclassified as enemies.
+ROM behavior actors are anchored in world space at their event trigger, then
+carry the camera scroll while their routine updates screen-relative movement.
+The current procedural fallback limits that descent to 160 NES pixels so
+untraced routines remain staged in the playable area instead of drifting
+through the camera indefinitely.
 Dispatch `0x07` records with verified pickup conversions render as breakable
 barrels; codes 32 and 41 are also empty breakable barrels that enter a short
 post-hit explosion state without yielding a pickup. The web runtime exposes the

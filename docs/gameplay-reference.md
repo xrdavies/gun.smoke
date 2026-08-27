@@ -170,6 +170,9 @@ make a brief player-relative diagonal retreat after their frame-103 Shuriken.
 Riflemen advance,
 enter their attack state at 122 NES frames, fire five shots at 138/154/170/186/202,
 and retreat toward the top of the playfield.
+Top-entry Shotgunners fire two measured three-shot fans; entity code `4`
+instead enters from either side, fires one fan at frame 114, and returns to its
+edge before releasing at frame 232.
 
 Round 1 Bombers descend into range, choose among eight measured movement
 directions and durations, and make a half-probability throw decision between

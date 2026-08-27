@@ -24,6 +24,7 @@ import { devilHawkFanHeadings, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_FULL_FA
 import { devilHawkCombatY } from "../src/game-constants";
 import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_ATTACK_DELAY, NINJA_BOSS_SHURIKEN_COUNT, NINJA_BOSS_SHURIKEN_LIFETIME, NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES, NINJA_BOSS_SHURIKEN_VELOCITIES_NES, ninjaBossCombatY } from "../src/game-constants";
 import { SHOTGUNNER_PATH_NES, shotgunnerPosition } from "../src/game-constants";
+import { SHOTGUNNER_SIDE_LIFETIME, SHOTGUNNER_SIDE_PATH_NES, SHOTGUNNER_SIDE_SHOT_FRAME, shotgunnerSidePosition } from "../src/game-constants";
 import { romEnemyDrop } from "../src/game-constants";
 import { roundCollisionBlocks, ROUND_COLLISION_ROW_COUNTS } from "../src/round-collision";
 import { canSpawnRomPool, compareRomEventOrder, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_ENEMY_SLOT_CAPACITY, ROM_FALLING_ROCK_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_OBJECT_SLOT_CAPACITY, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_ENEMY_EVENT_COUNTS, ROUND_ROM_OBJECT_EVENTS, ROUND_ROM_OBJECT_EVENT_COUNTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX } from "../src/rom-event-data";
@@ -278,6 +279,11 @@ describe("Gun.Smoke vertical slice", () => {
     expect(shotgunnerPosition(80 / NES_FRAME_RATE)).toEqual([-6, 77]);
     expect(shotgunnerPosition(108 / NES_FRAME_RATE)).toEqual([-18, 83]);
     expect(shotgunnerPosition(224 / NES_FRAME_RATE)).toEqual([-34, 3]);
+    expect(SHOTGUNNER_SIDE_SHOT_FRAME).toBe(114);
+    expect(SHOTGUNNER_SIDE_LIFETIME).toBeCloseTo(232 / NES_FRAME_RATE, 9);
+    expect(SHOTGUNNER_SIDE_PATH_NES).toEqual([[0, 0, 0], [60, 49, 0], [80, 64, -2], [100, 72, -19], [114, 72, -22], [140, 66, -36], [160, 52, -40], [220, 2, -40], [231, -7, -40]]);
+    expect(shotgunnerSidePosition(114 / NES_FRAME_RATE, false)).toEqual([-72, -22]);
+    expect(shotgunnerSidePosition(114 / NES_FRAME_RATE, true)).toEqual([72, -22]);
   });
 
   it("matches the traced Sniper firing windows", () => {

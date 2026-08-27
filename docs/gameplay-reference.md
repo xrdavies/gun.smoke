@@ -175,13 +175,13 @@ map to the recognizable roster of gunmen, bombers, snipers, back-stabbers,
 riflemen, ninjas, shotgunners, spear throwers, firebreathers and Hatchet
 Throwers; individual routine names remain explicit approximations until their
 full state machines are traced.
-Snipers are edge-mounted static shooters that aim once and retreat into their
-window/tee-pee cover instead of walking with field enemies. The code `2`
+Snipers are edge-mounted static shooters that aim once using the ROM's
+32-direction projectile table and retreat into their window/tee-pee cover instead of walking with field enemies. The code `2`
 opposite-side variant also fires at the otherwise missed age-314 aiming window.
 Ordinary Ninjas
 hold their entry lane through a short pause, descend to the combat line, then
 make a brief player-relative diagonal retreat after their frame-103 Shuriken.
-Riflemen advance,
+Gunmen use the same quantized table at the faster second tier. Riflemen advance,
 enter their attack state at 122 NES frames once they are at least 48 NES pixels
 downscreen and within 96 NES Y pixels of Billy, then fire five shots at
 138/154/170/186/202,

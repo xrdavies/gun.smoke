@@ -156,8 +156,10 @@ profile follows the measured Boss trace while random action selection remains
 an approximation.
 Ninja's measured first shuriken volley appears at frame 179 as a four-way
 diagonal cross spawned just above Billy; each shot lasts about 40 frames and the
-attack uses a common 60-frame repeat interval. Smoke preparation remains
-procedural.
+attack uses a common 60-frame repeat interval. A non-damaging low-slot smoke
+proxy starts at frame 140, travels toward the captured player-relative launch
+point for 40 frames, then remains as a hidden seven-frame controller while the
+four shuriken slots are active.
 
 The ROM event stream is data-driven per Round. Its behavior routines currently
 map to the recognizable roster of gunmen, bombers, snipers, back-stabbers,

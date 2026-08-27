@@ -28,7 +28,7 @@ import { WINGATE_ATTACK_INTERVAL, WINGATE_BULLET_LIFETIME, wingateCanFire, WINGA
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_LIFETIME, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { CUTTER_ENTRY_DURATION, CUTTER_MOVEMENT_SPEED, cutterCombatY, cutterOpeningY } from "./game-constants";
 import { DEVIL_HAWK_ENTRY_DURATION, devilHawkFanHeadings, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_FULL_FAN_LIFETIME, DEVIL_HAWK_FULL_FAN_MAX_Y_NES, DEVIL_HAWK_POST_ENTRY_X_HOLD, devilHawkProjectileVelocity, DEVIL_HAWK_SIDE_FAN_LIFETIME, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY, nesAimHeading } from "./game-constants";
-import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_ATTACK_DELAY, NINJA_BOSS_SHURIKEN_LIFETIME, NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES, NINJA_BOSS_SHURIKEN_VELOCITIES_NES, NINJA_BOSS_TELEPORT_DELAY, ninjaBossCombatY } from "./game-constants";
+import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_PREPARE_DELAY, NINJA_BOSS_PREPARE_CONTROLLER_DURATION, NINJA_BOSS_PREPARE_DURATION, NINJA_BOSS_SHURIKEN_LIFETIME, NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES, NINJA_BOSS_SHURIKEN_VELOCITIES_NES, NINJA_BOSS_TELEPORT_DELAY, ninjaBossCombatY, ninjaBossPreparePosition } from "./game-constants";
 import { canSpawnEnemyProjectile } from "./game-constants";
 import { canSpawnBossProjectile } from "./game-constants";
 import { romEnemyDrop } from "./game-constants";
@@ -49,7 +49,7 @@ type GameAction =
   | "start";
 type GameMode = "title" | "intro" | "briefing" | "playing" | "paused" | "gameover" | "ending";
 type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "moneyBag" | "ammo" | "barrel" | "item" | "shopkeeper" | "sceneObject";
-type ProjectileType = "bullet" | "dynamite" | "grenade" | "grenadeShell" | "boomerang" | "fireball" | "shuriken" | "spear" | "hatchet" | "rock";
+type ProjectileType = "bullet" | "dynamite" | "grenade" | "grenadeShell" | "boomerang" | "fireball" | "shuriken" | "ninjaSmoke" | "spear" | "hatchet" | "rock";
 type TextureName = "player" | "horse" | "shopkeeper" | "bullet" | "moneyBag" | "ammo" | "barrel" | "terrain" | "road" | "landmark";
 type Rgba = [number, number, number, number];
 
@@ -60,6 +60,7 @@ const PROJECTILE_STYLES: Partial<Record<ProjectileType, { size: { x: number; y: 
   fireball: { size: { x: 18, y: 18 }, color: [1, 0.45, 0.08, 1] },
   boomerang: { size: { x: 24, y: 12 }, color: [0.6, 0.85, 1, 1] },
   shuriken: { size: { x: 16, y: 16 }, color: [0.85, 0.85, 0.9, 1] },
+  ninjaSmoke: { size: { x: 26, y: 26 }, color: [0.72, 0.7, 0.82, 0.78] },
   spear: { size: { x: 7, y: 34 }, color: [0.4, 1, 0.55, 1] },
   hatchet: { size: { x: 16, y: 16 }, color: [1, 0.7, 0.25, 1] },
   rock: { size: { x: 24, y: 24 }, color: [0.4, 0.45, 0.5, 1] },
@@ -952,21 +953,20 @@ class GunSmokeGame {
       return;
     }
     if (this.stage === 4) {
-      const spawnX = this.player.x + NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES[0] * NES_WORLD_X_SCALE;
-      const spawnY = this.player.y + NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES[1] * NES_WORLD_Y_SCALE;
-      for (const [x, y] of NINJA_BOSS_SHURIKEN_VELOCITIES_NES) {
-        const projectile = this.spawnEnemyProjectile(spawnX, spawnY, true);
-        if (!projectile) break;
-        projectile.projectileType = "shuriken";
-        projectile.vx = x * NES_FRAME_RATE * NES_WORLD_X_SCALE;
-        projectile.vy = y * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
-        projectile.maxAge = NINJA_BOSS_SHURIKEN_LIFETIME;
-        projectile.radius = 8;
-        projectile.sprite.size = { x: 16, y: 16 };
+      const smoke = this.spawnEnemyProjectile(boss.x, boss.y, true);
+      if (smoke) {
+        smoke.projectileType = "ninjaSmoke";
+        smoke.romOriginX = boss.x;
+        smoke.romOriginY = boss.y;
+        smoke.targetX = this.player.x + NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES[0] * NES_WORLD_X_SCALE;
+        smoke.targetY = this.player.y + NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES[1] * NES_WORLD_Y_SCALE;
+        smoke.vx = 0;
+        smoke.vy = 0;
+        smoke.radius = 0;
+        smoke.maxAge = NINJA_BOSS_PREPARE_DURATION + NINJA_BOSS_PREPARE_CONTROLLER_DURATION;
+        boss.fired = true;
       }
-      boss.fired = true;
       this.bossFireClock = NINJA_BOSS_ATTACK_INTERVAL;
-      this.beep(222, 0.045);
       return;
     }
   }
@@ -1129,7 +1129,7 @@ class GunSmokeGame {
 
   private spawnBoss(): void {
     this.bossSpawned = true;
-    this.bossFireClock = this.stage === 1 ? BANDIT_BILL_FIRST_VOLLEY_DELAY : this.stage === 2 ? CUTTER_FIRST_ATTACK_DELAY : this.stage === 3 ? DEVIL_HAWK_FIRST_VOLLEY_DELAY : this.stage === 4 ? NINJA_BOSS_FIRST_ATTACK_DELAY : this.stage === 5 ? FATMAN_JOE_FIRST_ATTACK_DELAY : this.stage === MAX_STAGE ? WINGATE_FIRST_SHOT_DELAY : 0.6;
+    this.bossFireClock = this.stage === 1 ? BANDIT_BILL_FIRST_VOLLEY_DELAY : this.stage === 2 ? CUTTER_FIRST_ATTACK_DELAY : this.stage === 3 ? DEVIL_HAWK_FIRST_VOLLEY_DELAY : this.stage === 4 ? NINJA_BOSS_FIRST_PREPARE_DELAY : this.stage === 5 ? FATMAN_JOE_FIRST_ATTACK_DELAY : this.stage === MAX_STAGE ? WINGATE_FIRST_SHOT_DELAY : 0.6;
     const definition = STAGES[this.stage - 1] ?? STAGES[0]!;
     const isBanditBill = this.stage === 1;
     const isCutter = this.stage === 2;
@@ -1641,6 +1641,24 @@ class GunSmokeGame {
           unit.volleysFired += 1;
         }
       }
+      const ninjaSmokePathDriven = unit.kind === "enemyBullet" && unit.projectileType === "ninjaSmoke";
+      if (ninjaSmokePathDriven) {
+        [unit.x, unit.y] = ninjaBossPreparePosition(unit.age, unit.romOriginX ?? unit.x, unit.romOriginY ?? unit.y, unit.targetX ?? unit.x, unit.targetY ?? unit.y);
+        if (!unit.fired && unit.age >= NINJA_BOSS_PREPARE_DURATION) {
+          unit.fired = true;
+          unit.sprite.visible = false;
+          for (const [x, y] of NINJA_BOSS_SHURIKEN_VELOCITIES_NES) {
+            const projectile = this.spawnEnemyProjectile(unit.x, unit.y, true);
+            if (!projectile) break;
+            projectile.projectileType = "shuriken";
+            projectile.vx = x * NES_FRAME_RATE * NES_WORLD_X_SCALE;
+            projectile.vy = y * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
+            projectile.maxAge = NINJA_BOSS_SHURIKEN_LIFETIME;
+            projectile.radius = 8;
+          }
+          this.beep(222, 0.045);
+        }
+      }
       const boomerangPathDriven = unit.kind === "enemyBullet" && unit.projectileType === "boomerang" && unit.boomerangHeading !== undefined;
       if (boomerangPathDriven) {
         if (unit.phase === 1 || unit.phase === 3) {
@@ -1667,7 +1685,7 @@ class GunSmokeGame {
         unit.vy = Math.sin(angle) * speed;
       }
       if (unit.kind === "enemyBullet" && (unit.projectileType === "boomerang" || unit.projectileType === "shuriken" || unit.projectileType === "hatchet")) unit.sprite.rotation += delta * 10;
-      if (!boomerangPathDriven) {
+      if (!boomerangPathDriven && !ninjaSmokePathDriven) {
         unit.x += unit.vx * delta;
         unit.y += unit.vy * delta;
       }
@@ -1680,7 +1698,7 @@ class GunSmokeGame {
     const targets = this.units.filter((unit) => (unit.kind === "enemy" || unit.kind === "boss" || unit.kind === "barrel") && !unit.exploding && unit.hp > 0);
     for (const bullet of bullets) {
       if (bullet.piercing) {
-        const projectile = this.units.find((candidate) => candidate.kind === "enemyBullet" && candidate.hp > 0 && distance(bullet, candidate) <= bullet.radius + candidate.radius);
+        const projectile = this.units.find((candidate) => candidate.kind === "enemyBullet" && candidate.projectileType !== "ninjaSmoke" && candidate.hp > 0 && distance(bullet, candidate) <= bullet.radius + candidate.radius);
         if (projectile) {
           projectile.hp = 0;
           continue;
@@ -1700,6 +1718,7 @@ class GunSmokeGame {
       this.defeatTarget(target);
     }
     for (const unit of this.units.filter((candidate) => candidate.hp > 0)) {
+      if (unit.kind === "enemyBullet" && unit.projectileType === "ninjaSmoke") continue;
       if (unit.kind === "moneyBag" || unit.kind === "item" || unit.kind === "ammo") {
         if (distance(unit, this.player) <= unit.radius + 22) {
           unit.hp = 0;
@@ -1786,7 +1805,7 @@ class GunSmokeGame {
       unit.x = NINJA_BOSS_ENTRY_X_LANES[Math.floor(this.nextRandom() * NINJA_BOSS_ENTRY_X_LANES.length)] ?? unit.x;
       unit.bossEntryX = unit.x;
       unit.bossEntryY = NINJA_BOSS_ENTRY_Y_LANES[Math.floor(this.nextRandom() * NINJA_BOSS_ENTRY_Y_LANES.length)] ?? unit.bossEntryY;
-      this.bossFireClock = NINJA_BOSS_TELEPORT_DELAY + NINJA_BOSS_FIRST_ATTACK_DELAY;
+      this.bossFireClock = NINJA_BOSS_TELEPORT_DELAY + NINJA_BOSS_FIRST_PREPARE_DELAY;
       this.showMessage("NINJA SMOKE");
     }
   }

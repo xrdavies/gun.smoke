@@ -329,14 +329,17 @@ slot is now isolated for its shuriken attack. The isolated damage trace shows a
 90-frame teleport delay followed by a 44-frame entry-smoke window; the runtime
 restarts the lane, movement path and attack clock on that measured cycle while
 retaining procedural smoke visuals.
-The isolated Ninja routine first creates a low-slot smoke/prepare entity at
-frame 140, remains in its entry smoke state for about 44 frames, then emits
+The Ninja remains in its initial smoke state for about 44 frames. Its isolated
+attack routine creates a low-slot smoke/prepare entity at frame 140, then emits
 four `0x30` shuriken bullets at frame 179; subsequent volleys commonly recur
 after 60 frames. The four bullets begin together near Billy at NES offset
 `(+6,-34)`, use the four diagonal velocity pairs `(±1.25,±1.5)`, and release
-after about 40 frames. The runtime preserves this player-relative cross,
-multi-height combat profile, opening timing and interval while keeping the smoke
-and teleport visuals procedural.
+after about 40 frames. Bank 3 `$A093-$A0B2` initializes the prepare slot with a
+40-frame timer; `$A23E-$A28F` converts it to a seven-frame controller and
+initializes all four shuriken slots together. The runtime preserves that
+low-slot lifecycle with a self-generated smoke proxy, plus the player-relative
+cross, multi-height combat profile, opening timing and interval. Entry and
+teleport smoke artwork remains procedural.
 Round 5's gate identifies Fatman Joe as dispatch `0x80`, variant `0x51`. He
 enters from the top at NES `(x=152, y=0)`, keeps that horizontal lane for the
 first 170 frames and reaches about `y=112`. His attack decision timer first

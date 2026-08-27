@@ -75,7 +75,7 @@ also follows `$C796` through the initializer table at `$DE83` and, for enemy
 slots, the bank 6 behavior-pointer table at `$B000`; this records mechanical
 code-to-routine mappings without assigning speculative gameplay names.
 With the local ROM present, `npm run generate:rom-event-data` regenerates the
-committed compressed runtime event stream from that manifest. Position-byte
+committed compressed runtime event stream from that manifest. Entity type-byte
 bit 5 selects the six-slot object pool at `$0402-$0407`; clear bit 5 selects
 the seven-slot enemy pool at `$0410-$0416`. Both pools remain in the runtime
 event stream with separate capacities. The compressed behavior and object
@@ -90,11 +90,11 @@ records. The runtime consumes dispatch `30/31` weapon and supply-shop triggers,
 renders dispatch `0x08` scene props, and preserves dispatch `0x07`
 breakable-container variants. Decoded shop and `0x07` objects descend at the
 measured one NES pixel every three frames.
-Round 4's 44 `$B5BF` records all select the object pool. Isolated contact
+Round 4's 44 `$B5BF` records all select the enemy pool. Isolated contact
 verification identifies them as falling rock hazards: they travel toward the
 road center for about 24 frames, remain at the impact point for another 25
 frames, and touching one costs a life. The runtime renders a self-generated
-rock proxy and preserves the separate six-slot object capacity.
+rock proxy and accounts it against the same seven slots as ordinary enemies.
 Dispatch `0x07` records with a verified pickup conversion now render as
 self-generated breakable barrels instead of enemy proxies. Codes `32` and `41`
 are also breakable empty barrels: controlled pulse traces move them to dispatch
@@ -138,12 +138,13 @@ The shared allocator at `$E454-$E460` scans ordinary enemy projectile slots
 runtime keeps that all-or-nothing reservation. Bandit Bill's traced `0x30`
 shots remain in this ordinary pool. Other isolated Boss snapshots place Cutter
 boomerangs, Devil Hawk fireballs, Ninja shuriken, Fatman Joe grenades and
-Wingate bullets in the separate six slots `$0402-$0407`; falling rocks continue
-to use their object pool.
+Wingate bullets in the separate six slots `$0402-$0407`; falling rocks use the
+ordinary enemy actor slots instead.
 Projectile clear routine `$CDD4-$CDE0` only zeros those same eight slots. The
 POW path at `$CDAB-$CDD3` also handles ordinary enemy slots `$0410-$0416`, but
-neither path clears object-pool falling rocks; runtime screen clears preserve
-that boundary and retain the low-slot Boss projectile pool.
+not the low-slot Boss projectile pool. Runtime projectile-only clears leave
+falling rocks active, while POW, Smart Bomb and life-loss enemy clears remove
+them with the other enemy-slot actors.
 The Round 1 life-loss trace also clears active ordinary enemy actors in the same
 frame as the life decrement while leaving breakable barrels and scene objects;
 the runtime now applies that enemy-only death clear before continuing recovery.

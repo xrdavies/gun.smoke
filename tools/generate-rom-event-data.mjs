@@ -12,7 +12,7 @@ const routines = [...new Set(manifest.rounds.flatMap((round) => round.records
   .filter((record) => record.command === "spawn" && record.behaviorRoutine)
   .map((record) => record.behaviorRoutine)))].sort();
 const routineIds = Object.fromEntries(routines.map((routine, index) => [routine, index]));
-const nonEnemyObjectBehaviorIds = [routineIds["$b5bf"]].filter((value) => Number.isInteger(value));
+const fallingRockBehaviorIds = [routineIds["$b5bf"]].filter((value) => Number.isInteger(value));
 const streams = manifest.rounds.map((round) => {
   const bytes = [];
   for (const record of round.records.filter((candidate) => candidate.command === "spawn" && candidate.behaviorRoutine)) {
@@ -91,7 +91,7 @@ const source = [
   "export const ROM_OBJECT_SLOT_CAPACITY = 6;",
   "export const ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES = [7] as const;",
   "export const ROM_SCENE_PROP_DISPATCH_TYPES = [8] as const;",
-  `export const ROM_NON_ENEMY_OBJECT_BEHAVIORS = ${JSON.stringify(nonEnemyObjectBehaviorIds)} as const; // $B5BF is handled as a falling object hazard.`,
+  `export const ROM_FALLING_ROCK_BEHAVIORS = ${JSON.stringify(fallingRockBehaviorIds)} as const; // $B5BF is handled as a falling rock hazard.`,
   "export const ROM_OBJECT_PICKUPS = { 33: \"boots\", 34: \"rifle\", 35: \"pow\", 36: \"money\", 37: \"horse\", 38: \"redYashichi\", 39: \"skull\", 42: \"blueYashichi\" } as const;",
   "export const ROM_EMPTY_BARREL_ENTITY_CODES = [32, 41] as const;",
   "export const canSpawnRomPool = (pool: RomEnemyEvent[\"pool\"], active: number): boolean => active < (pool === \"object\" ? ROM_OBJECT_SLOT_CAPACITY : ROM_ENEMY_SLOT_CAPACITY);",

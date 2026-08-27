@@ -79,8 +79,9 @@ Barrels can reveal the NES item set: stored Boots and Rifle power-ups, special
 weapon ammo, money, POW, Cattle Skull, Horse, and Blue/Red Yashichi. Stored
 Boots/Rifle are capped at four and each loses one stock on death; Blue Yashichi
 grants contact damage and temporary invulnerability, while Magnum bullets can
-destroy enemy projectiles. POW clears regular enemies and their projectiles but
-does not damage the low-slot Boss actor or clear object-pool falling rocks.
+destroy enemy projectiles. POW clears regular enemies, falling rocks and
+ordinary projectiles but does not damage the low-slot Boss actor or clear its
+separate projectile pool.
 Smart Bomb is armed from the inventory and triggers
 on a lethal hit, clearing regular enemies and enemy bullets while consuming
 one bomb; it does not damage bosses. Arming it selects the unlimited Pistol,
@@ -195,9 +196,9 @@ behavior routine and preserves the NES enemy/object pool bit. Each runtime
 unit retains its behavior, entity code and pool for trace comparison; the
 visible type is an explicit procedural approximation until its state machine
 is identified. The pools are capped independently at seven enemy slots and
-six object slots, matching the ROM allocator. The all-object `$B5BF` Round 4
-records are rendered as falling rock hazards with their own object-pool
-capacity and player collision, rather than being misclassified as enemies.
+six object slots, matching the ROM allocator. The `$B5BF` Round 4 records are
+rendered as falling rock hazards with enemy-pool capacity and player collision,
+rather than being misclassified as ordinary walking enemies.
 Behavior and object records at the same trigger are merged by their decoded
 script index, preserving the original spawn order before either pool-capacity
 check is applied.

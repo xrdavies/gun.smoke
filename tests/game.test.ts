@@ -27,7 +27,7 @@ import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOS
 import { SHOTGUNNER_PATH_NES, shotgunnerPosition } from "../src/game-constants";
 import { romEnemyDrop } from "../src/game-constants";
 import { roundCollisionBlocks, ROUND_COLLISION_ROW_COUNTS } from "../src/round-collision";
-import { canSpawnRomPool, compareRomEventOrder, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_ENEMY_SLOT_CAPACITY, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_OBJECT_SLOT_CAPACITY, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_ENEMY_EVENT_COUNTS, ROUND_ROM_OBJECT_EVENTS, ROUND_ROM_OBJECT_EVENT_COUNTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX } from "../src/rom-event-data";
+import { canSpawnRomPool, compareRomEventOrder, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_ENEMY_SLOT_CAPACITY, ROM_FALLING_ROCK_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_OBJECT_SLOT_CAPACITY, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_ENEMY_EVENT_COUNTS, ROUND_ROM_OBJECT_EVENTS, ROUND_ROM_OBJECT_EVENT_COUNTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX } from "../src/rom-event-data";
 
 describe("Gun.Smoke vertical slice", () => {
   it("keeps the NES-inspired stage constants stable", () => {
@@ -198,10 +198,10 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROM_OBJECT_SLOT_CAPACITY).toBe(6);
     expect(ROM_EMPTY_BARREL_ENTITY_CODES).toEqual([32, 41]);
     expect(EMPTY_BARREL_EXPLOSION_LIFETIME).toBeCloseTo(10 / NES_FRAME_RATE, 9);
-    expect(ROM_NON_ENEMY_OBJECT_BEHAVIORS).toEqual([5]);
+    expect(ROM_FALLING_ROCK_BEHAVIORS).toEqual([5]);
     const fallingRockEvents = ROUND_ROM_ENEMY_EVENTS.flatMap((stream) => stream).filter((event) => event.behavior === 5);
     expect(fallingRockEvents.length).toBeGreaterThan(0);
-    expect(fallingRockEvents.every((event) => event.pool === "object")).toBe(true);
+    expect(fallingRockEvents.every((event) => event.pool === "enemy")).toBe(true);
     expect(ROM_OBJECT_PICKUPS).toEqual({ 33: "boots", 34: "rifle", 35: "pow", 36: "money", 37: "horse", 38: "redYashichi", 39: "skull", 42: "blueYashichi" });
     expect(ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES).toEqual([7]);
     expect(ROM_SCENE_PROP_DISPATCH_TYPES).toEqual([8]);
@@ -226,6 +226,8 @@ describe("Gun.Smoke vertical slice", () => {
     const round2At143 = [...ROUND_ROM_ENEMY_EVENTS[1]!.filter((event) => event.at === 143), ...ROUND_ROM_OBJECT_EVENTS[1]!.filter((event) => event.at === 143)].sort(compareRomEventOrder);
     expect(round1At319.map((event) => event.entityCode)).toEqual([6, 36]);
     expect(round2At143.map((event) => event.entityCode)).toEqual([33, 34, 6]);
+    expect(round1At319.map((event) => event.pool)).toEqual(["enemy", "object"]);
+    expect(round2At143.map((event) => event.pool)).toEqual(["object", "object", "enemy"]);
   });
 
   it("keeps Boss units alive until their health reaches zero", () => {

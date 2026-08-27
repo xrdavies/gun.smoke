@@ -33,7 +33,7 @@ import { canSpawnEnemyProjectile } from "./game-constants";
 import { canSpawnBossProjectile } from "./game-constants";
 import { romEnemyDrop } from "./game-constants";
 import { roundCollisionBlocks, ROUND_COLLISION_ROWS } from "./round-collision";
-import { canSpawnRomPool, compareRomEventOrder, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
+import { canSpawnRomPool, compareRomEventOrder, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_FALLING_ROCK_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
 import type { RomEnemyEvent, RomObjectEvent } from "./rom-event-data";
 
 type GameAction =
@@ -776,14 +776,14 @@ class GunSmokeGame {
 
   private spawnRomEnemyEvent(event: RomEnemyEvent): void {
     const active = this.units.filter((unit) => unit.romPool === event.pool && unit.romEntityCode !== undefined && unit.hp > 0).length;
-    if (event.pool === "object" && ROM_NON_ENEMY_OBJECT_BEHAVIORS.includes(event.behavior as 5)) {
-      if (!canSpawnRomPool("object", active)) return;
+    if (ROM_FALLING_ROCK_BEHAVIORS.includes(event.behavior as 5)) {
+      if (!canSpawnRomPool(event.pool, active)) return;
       const rock = this.spawnUnit("enemyBullet", clamp(romEventWorldX(event), 40, 920), this.scroll + romEventWorldY(event), 1);
       rock.projectileType = "rock";
       rock.romBehavior = event.behavior;
       rock.romEntityCode = event.entityCode;
       rock.romFlags = event.flags;
-      rock.romPool = "object";
+      rock.romPool = event.pool;
       rock.vx = (event.x < 128 ? 1 : -1) * ROCK_WORLD_SPEED_X;
       rock.vy = ROCK_WORLD_SPEED_Y;
       rock.maxAge = ROCK_LIFETIME;
@@ -1651,6 +1651,7 @@ class GunSmokeGame {
       for (const target of [...this.units]) {
         if (target.kind === "enemy" && target.hp > 0) this.defeatTarget(target);
       }
+      this.clearEnemyUnits();
       this.clearEnemyProjectiles();
     } else if (item === "skull") {
       this.powerups.boots = Math.max(0, this.powerups.boots - 1);
@@ -1683,6 +1684,7 @@ class GunSmokeGame {
       for (const unit of [...this.units]) {
         if (unit.kind === "enemy" && unit.hp > 0) this.defeatTarget(unit);
       }
+      this.clearEnemyUnits();
       this.clearEnemyProjectiles();
       this.invulnerable = 1;
       this.beep(75, 0.35);
@@ -1708,7 +1710,7 @@ class GunSmokeGame {
   }
 
   private clearEnemyUnits(): void {
-    for (const unit of this.units) if (unit.kind === "enemy") unit.hp = 0;
+    for (const unit of this.units) if (unit.kind === "enemy" || (unit.kind === "enemyBullet" && unit.projectileType === "rock")) unit.hp = 0;
   }
 
   private clearEnemyProjectiles(): void {

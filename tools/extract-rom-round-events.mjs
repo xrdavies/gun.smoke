@@ -67,7 +67,7 @@ const rounds = Array.from({ length: 6 }, (_, roundIndex) => {
     const command = positionByte === 0 ? "bossGate" : positionByte === 0xff ? "loop" : "spawn";
     const phase = command === "spawn" ? positionByte >> 7 : 0;
     const positionIndex = positionByte & 0x7f;
-    const slotPool = command === "spawn" ? positionByte & 0x20 ? "object" : "enemy" : undefined;
+    const slotPool = command === "spawn" ? typeByte & 0x20 ? "object" : "enemy" : undefined;
     if (command === "spawn" && positionIndex >= positionCount) throw new Error(`Round ${roundIndex + 1} record ${records.length} has an invalid position index`);
     const behavior = command === "spawn" ? initializerFor(typeByte & 0x3f) : undefined;
     const semantic = command !== "spawn" ? command : typeByte & 0x40 ? "supplyShop" : behavior?.dispatchType === 30 || behavior?.dispatchType === 31 ? "weaponShop" : behavior?.behaviorRoutine ? "behaviorEntity" : "sceneObject";

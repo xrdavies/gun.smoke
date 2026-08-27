@@ -385,7 +385,7 @@ The gate traces place his initial entity at the top edge (`y=0`) and observe
 four horizontal entry lanes, NES `x=96/128/160/192`; after 96 frames the actor
 reaches approximately `y=64`. The web runtime selects one of those measured
 lanes and uses the corresponding downward entry speed. After the opening, the
-runtime follows the clean-trace X/Y combat path through frame 1,104. Controlled pulse
+runtime follows the clean-trace X/Y combat path through frame 3,472. Controlled pulse
 fire shows each depleted health bar changing dispatch to hit state `0x8D` for
 8 frames and then invulnerable crawl state `0x8C` for 168 frames before
 returning to `0x88`. The actor continues from its current coordinate throughout

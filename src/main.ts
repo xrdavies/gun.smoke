@@ -1975,7 +1975,7 @@ class GunSmokeGame {
   private isBossVulnerable(unit: Unit): boolean {
     if (unit.kind !== "boss") return true;
     if (unit.age < unit.invulnerableUntil) return false;
-    if (this.stage === 1) return true;
+    if (this.stage === 1) return unit.age >= unit.invulnerableUntil;
     if (this.stage === 2 || this.stage === 3) return unit.fired;
     if (this.stage === 5) return unit.age >= unit.invulnerableUntil;
     return true;

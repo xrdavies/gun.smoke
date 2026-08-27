@@ -152,6 +152,10 @@ An isolated `$B501` actor first creates its `0x72`/dispatch `0x2F` dynamite
 after 198 frames and repeats after 106 frames. The projectile remains airborne
 for 212 frames, changes to landed dispatch `0x3E` for 53 frames, then clears;
 the runtime uses these measured timings at 60.098 Hz.
+The same Round 1 traces show the Bomber actor descending one NES pixel per frame
+for 125 frames to `y=126`, then holding that combat height while its horizontal
+state runs. The runtime keeps this measured entrance profile before applying
+the existing procedural lateral movement.
 An isolated `$B080` Sniper fires at ages 134, 224, 405, 495 and 585 frames,
 then releases its slot at age 732. The routine's 90-frame base cooldown is
 visible directly; the longer middle gap is a missed discrete aiming window.

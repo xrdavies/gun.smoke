@@ -147,7 +147,7 @@ Devil Hawk enters from the top on one of the measured NES X lanes
 or player-sector three-shot fireball fan, while the Ninja enters from measured NES lanes near `x=176/192`
 with an initial smoke/invulnerability window,
 Fatman Joe enters from NES `x=152` at the top edge before using short hops and
-stationary grenade traps, while Wingate's two encounters use top-edge NES
+stationary grenade traps across the Round 5 road, while Wingate's two encounters use top-edge NES
 lanes `x=152` and `x=192` before a short horizontal rush and slower cruise; the Ninja enters a smoke/invulnerability phase and
 teleports after each lost health bar. The runtime hides the Boss for the
 measured 90-frame teleport delay, then restarts its entry smoke window and

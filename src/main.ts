@@ -1863,6 +1863,7 @@ class GunSmokeGame {
       this.defeatTarget(target);
     }
     for (const unit of this.units.filter((candidate) => candidate.hp > 0)) {
+      if (unit.hp <= 0) continue;
       if (unit.exploding) continue;
       if (unit.kind === "enemyBullet" && unit.projectileType === "ninjaSmoke") continue;
       if ((unit.kind === "enemy" || unit.kind === "boss") && !unit.sprite.visible) continue;

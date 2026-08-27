@@ -1964,6 +1964,7 @@ class GunSmokeGame {
     this.stageLoopCount += 1;
     this.scroll = 0;
     this.camera.position.y = 270;
+    this.player.x = PLAYER_ENTRY_X;
     this.player.y = PLAYER_ENTRY_Y;
     this.player.sprite.position = { x: this.player.x, y: this.player.y };
     this.wingateRespawnClock = 0;

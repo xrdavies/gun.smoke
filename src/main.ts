@@ -1315,10 +1315,10 @@ class GunSmokeGame {
       return;
     }
     if (unit.kind === "enemy" && unit.exploding) {
-      const progress = clamp(unit.age / ENEMY_DEFEAT_ANIMATION_DURATION, 0, 1);
+      const progress = clamp((unit.age - (unit.maxAge - ENEMY_DEFEAT_ANIMATION_DURATION)) / ENEMY_DEFEAT_ANIMATION_DURATION, 0, 1);
       unit.sprite.visible = Math.floor(progress * 8) % 2 === 0;
       unit.sprite.position = { x: unit.x, y: unit.y };
-      if (unit.age >= ENEMY_DEFEAT_ANIMATION_DURATION) unit.hp = 0;
+      if (unit.age >= unit.maxAge) unit.hp = 0;
       return;
     }
     if (unit.kind === "enemy") {

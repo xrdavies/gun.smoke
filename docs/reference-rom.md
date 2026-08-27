@@ -228,10 +228,10 @@ An isolated `$B8F4` Hatchet Thrower emits its dispatch `0x32` projectile at age
 Round 3 trace holds `x=120` through frame 40, reaches approximately
 `x=138,y=43` at frame 60, and launches from about `x=138,y=48`; the runtime
 uses those entry checkpoints and the actor-relative launch coordinate.
-An isolated `$BB29` Firebreather entity emits one dispatch `0x34` fireball at
-age 156 frames, aimed toward Billy at roughly 250 world pixels/s. ROM-tagged
-Firebreathers use this single-shot timing and launch from the actor coordinate
-with a measured `-1` NES Y-pixel offset. Their clean entrance holds X through
+An isolated `$BB29` top-entry Firebreather emits dispatch `0x34` fireballs at
+ages 156, 364 and 416 frames, then releases its slot at age 644. Each is aimed
+toward Billy at roughly 250 world pixels/s and launches from the actor coordinate
+with a measured `-1` NES Y-pixel offset. The clean entrance holds X through
 frame 40 while Y reaches about 30/34 NES pixels at frames 30/40, then reaches
 approximately `(x+2,y=57)` at frame 78; the runtime preserves this short path
 before the procedural combat loop resumes. The fallback remains a three-way

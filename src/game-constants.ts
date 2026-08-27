@@ -246,6 +246,8 @@ export function hatchetPosition(age: number): readonly [number, number] {
   return [previous[1] + (next[1] - previous[1]) * amount, previous[2] + (next[2] - previous[2]) * amount];
 }
 export const FIREBREATHER_FIRST_SHOT_DELAY = 156 / NES_FRAME_RATE;
+export const FIREBREATHER_SHOT_FRAMES = [156, 364, 416] as const;
+export const FIREBREATHER_LIFETIME = 644 / NES_FRAME_RATE;
 export const FIREBREATHER_PROJECTILE_SPEED = 250;
 export const FIREBREATHER_PROJECTILE_OFFSET_NES = [0, -1] as const;
 export const FIREBREATHER_PATH_NES = [[0, 0, 0], [30, 0, 30], [40, 0, 34], [70, 0, 44], [78, 2, 57]] as const;

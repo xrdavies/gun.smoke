@@ -147,8 +147,9 @@ but the locked arena does not create extra ambient barrels or loose pickups.
 Devil Hawk enters from the top on one of the measured NES X lanes
 (`x=128/168/208`) before using a long jump arc and firing a measured five-shot
 or player-sector three-shot fireball fan. Its five-shot branch accepts aim
-sectors `8..24`. The Ninja enters from measured NES lanes near `x=176/192`
-with an initial smoke/invulnerability window,
+sectors `8..24`. The Ninja enters from one of four measured NES coordinate
+pairs (`112,64`, `192,64`, `120,144`, or `176,128`) with an initial
+smoke/invulnerability window,
 Fatman Joe enters from NES `x=152` at the top edge before using short hops and
 stationary grenade traps across the Round 5 road, while Wingate's two encounters use top-edge NES
 lanes `x=152` and `x=192` before a short horizontal rush and slower cruise; the Ninja enters a smoke/invulnerability phase and

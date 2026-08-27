@@ -349,11 +349,13 @@ first post-entry jump profile is
 sampled from the Boss trace; later short jumps repeat as a measured 121-frame
 cycle approximation.
 The same campaign reaches Round 4 and identifies its Ninja Boss as dispatch
-`0xaa`, variant `0x6b`, with measured entry lanes near NES `x=176/192` and
-`y=64/128`. The runtime selects one horizontal and one vertical lane; the low
+`0xaa`, variant `0x6b`. Bank 3's paired coordinate tables define NES entry lanes
+`(112,64)`, `(192,64)`, `(120,144)`, and `(176,128)`. The runtime selects one
+pair with a single random index; the low
 slot is now isolated for its shuriken attack. The isolated damage trace shows a
 90-frame teleport delay followed by a 44-frame entry-smoke window; the runtime
-restarts the lane, movement path and attack clock on that measured cycle while
+selects another valid pair and restarts the movement path and attack clock on
+that measured cycle while
 retaining procedural smoke visuals.
 The Ninja remains in its initial smoke state for about 44 frames. Its isolated
 attack routine creates a low-slot smoke/prepare entity at frame 140, then emits

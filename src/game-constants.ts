@@ -711,10 +711,8 @@ export function devilHawkCombatX(age: number, entryX = 208 * NES_WORLD_X_SCALE):
   const amount = (frame - previous[0]) / (next[0] - previous[0]);
   return (previous[1] + (next[1] - previous[1]) * amount + laneOffset) * NES_WORLD_X_SCALE;
 }
-export const NINJA_BOSS_ENTRY_X_NES = [176, 192] as const;
-export const NINJA_BOSS_ENTRY_X_LANES = NINJA_BOSS_ENTRY_X_NES.map((value) => value * NES_WORLD_X_SCALE);
-export const NINJA_BOSS_ENTRY_Y_NES = [64, 128] as const;
-export const NINJA_BOSS_ENTRY_Y_LANES = NINJA_BOSS_ENTRY_Y_NES.map((value) => value * NES_WORLD_Y_SCALE);
+export const NINJA_BOSS_ENTRY_LANES_NES = [[112, 64], [192, 64], [120, 144], [176, 128]] as const;
+export const NINJA_BOSS_ENTRY_LANES = NINJA_BOSS_ENTRY_LANES_NES.map(([x, y]) => [x * NES_WORLD_X_SCALE, y * NES_WORLD_Y_SCALE] as const);
 export const NINJA_BOSS_FIRST_PREPARE_DELAY = 140 / NES_FRAME_RATE;
 export const NINJA_BOSS_PREPARE_DURATION = 40 / NES_FRAME_RATE;
 export const NINJA_BOSS_PREPARE_CONTROLLER_DURATION = 7 / NES_FRAME_RATE;

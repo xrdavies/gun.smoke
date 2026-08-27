@@ -497,6 +497,12 @@ projectile range; for example Devil Hawk's five `0xA2` fireballs appear there.
 The output is an ignored observation artifact under `.rom-traces/`; it is not
 runtime game data or copied ROM code.
 
+`npm run trace:rom:entity -- --dispatch=0x57 --trace-frames=600` locks onto the
+first naturally initialized ordinary enemy with that dispatch, clears the other
+seven-slot actors, and records every parallel-array field plus the ordinary
+projectile pool. `--variant=0x43`, `--state=...`, and fixed `--player-x/--player-y`
+values narrow later-Round comparisons without synthesizing an entity state.
+
 `npm run trace:rom:scenes -- --frames=12000 --every=60` writes a longer,
 machine-readable trace to `.rom-traces/scenes.json`. In addition to the state
 candidate bytes it records raw PPU coarse/fine scroll, nametable hashes, an OAM

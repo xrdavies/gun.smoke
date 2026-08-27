@@ -79,7 +79,7 @@ for (let frame = 0; frame < frames; frame += 1) {
   if (clearField && bossStart !== undefined) {
     for (let slot = 2; slot < 32; slot += 1) {
       const lowBossSlot = stateFile && slot < 8;
-      const banditBillShot = nes.cpu.mem[0x400 + slot] & 0x80 && nes.cpu.mem[0x420 + slot] === 0x30;
+      const banditBillShot = !stateFile && Boolean(nes.cpu.mem[0x400 + slot] & 0x80) && nes.cpu.mem[0x420 + slot] === 0x30;
       if (slot !== 14 && !lowBossSlot && !banditBillShot) nes.cpu.mem[0x400 + slot] = 0;
     }
   }

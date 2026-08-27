@@ -1827,7 +1827,7 @@ class GunSmokeGame {
           continue;
         }
       }
-      const target = targets.find((candidate) => candidate.hp > 0 && !bullet.hitTargets?.has(candidate) && distance(bullet, candidate) <= bullet.radius + candidate.radius);
+      const target = targets.find((candidate) => candidate.hp > 0 && !candidate.exploding && !bullet.hitTargets?.has(candidate) && distance(bullet, candidate) <= bullet.radius + candidate.radius);
       if (!target) continue;
       if (!this.isBossVulnerable(target)) continue;
       if (bullet.piercing) bullet.hitTargets?.add(target);
@@ -1841,6 +1841,7 @@ class GunSmokeGame {
       this.defeatTarget(target);
     }
     for (const unit of this.units.filter((candidate) => candidate.hp > 0)) {
+      if (unit.exploding) continue;
       if (unit.kind === "enemyBullet" && unit.projectileType === "ninjaSmoke") continue;
       if ((unit.kind === "enemy" || unit.kind === "boss") && !unit.sprite.visible) continue;
       if (unit.kind === "moneyBag" || unit.kind === "item" || unit.kind === "ammo") {

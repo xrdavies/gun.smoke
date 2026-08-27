@@ -193,6 +193,12 @@ instead of the procedural global firing clock. A clean Round 1 isolation also
 shows the actor rising from `y=0` to approximately `y=53` at frame 40 and
 `y=128/132` at frames 100/104 before its horizontal combat state; the runtime
 uses these entry checkpoints and keeps the later movement procedural.
+The same routine has distinct side-entry initializers. Entity code `8` holds
+the left edge while scrolling, lunges inward at about frame 247, fires at frame
+309 and releases at frame 508. Entity code `9` enters from the right, follows a
+long mirrored loop, fires at frames 399/463 and releases at frame 826. Runtime
+uses separate measured keyframes and lifetimes for these ROM-tagged variants
+instead of applying the top-entry Gunman timing.
 On defeat, `$CD4E-$CDAA` converts an event's `0x80` flag into dispatch `0x4e`.
 If `$90/$94/$98/$9c` show no special stock, it increments that to `0x4f`;
 the `$E192` conversion table then maps them to Bullet (`0x29`) and Money

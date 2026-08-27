@@ -14,7 +14,7 @@ import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
 import { AMMO_GAIN, banditBillOpeningY, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, BOMBER_FIRST_THROW_DELAY, BOMBER_THROW_INTERVAL, bossReward, BOOTS_SPEED_MULTIPLIER, canSpawnPlayerBullet, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_LIFETIME, dynamiteVerticalOffset, EMPTY_BARREL_EXPLOSION_LIFETIME, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X, FATMAN_JOE_ENTRY_Y, fatmanJoeOpeningY, FIREBREATHER_FIRST_SHOT_DELAY, FIREBREATHER_PROJECTILE_SPEED, formationEntryY, HATCHET_FIRST_SHOT_DELAY, HATCHET_PROJECTILE_SPEED, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_X_LANES, NINJA_BOSS_ENTRY_Y_LANES, NINJA_FIRST_SHOT_DELAY, NINJA_PROJECTILE_SPEED, ninjaAttackPosition, ninjaOpeningY, RIFLEMAN_BULLET_SPEED, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_LIFETIME, ROCK_WORLD_SPEED_X, ROCK_WORLD_SPEED_Y, ROAD_WIDTHS, ROM_ENEMY_SCREEN_MAX_Y, ROM_OBJECT_DROP_SPEED, ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_VOLLEY_INTERVAL, shotgunnerPosition, shouldLoopStage, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, SPEAR_FIRST_SHOT_DELAY, SPEAR_PROJECTILE_SPEED, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_DURATION, WINGATE_ENTRY_X, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_X, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, wingateOpeningY, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
-import { GUNMAN_BULLET_SPEED, GUNMAN_ENTRY_PATH_NES, GUNMAN_FIRST_SHOT_DELAY, GUNMAN_LIFETIME, gunmanOpeningY } from "./game-constants";
+import { GUNMAN_BULLET_SPEED, GUNMAN_ENTRY_PATH_NES, GUNMAN_FIRST_SHOT_DELAY, GUNMAN_FLANK_LIFETIMES, GUNMAN_FLANK_SHOT_FRAMES, GUNMAN_LIFETIME, gunmanFlankPosition, gunmanOpeningY } from "./game-constants";
 import { bomberFirstManeuverPosition, bomberOpeningY } from "./game-constants";
 import { FIREBREATHER_PATH_NES, FIREBREATHER_PROJECTILE_OFFSET_NES, firebreatherPosition, HATCHET_PATH_NES, hatchetPosition, SPEAR_PATH_NES, SPEAR_PROJECTILE_OFFSET_NES, spearPosition } from "./game-constants";
 import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanPosition } from "./game-constants";
@@ -796,9 +796,10 @@ class GunSmokeGame {
     if (!canSpawnRomPool(event.pool, active)) return;
     const enemyType = ROM_BEHAVIOR_ENEMY_TYPES[event.behavior] ?? "gunman";
     const eventX = romEventWorldX(event);
+    const flankCode = event.behavior === 2 && (event.entityCode === 8 || event.entityCode === 9) ? event.entityCode : undefined;
     const enemy = this.spawnUnit(
       "enemy",
-      event.behavior === 3 ? eventX : clamp(eventX, 40, 920),
+      event.behavior === 3 || flankCode !== undefined ? eventX : clamp(eventX, 40, 920),
       this.scroll + romEventWorldY(event),
       1 + Number(this.stage >= 4),
       enemyType,
@@ -812,6 +813,7 @@ class GunSmokeGame {
     if (event.behavior === 0) enemy.maxAge = SNIPER_LIFETIME;
     if (event.behavior === 1) enemy.maxAge = SHOTGUNNER_LIFETIME;
     if (event.behavior === 2) enemy.maxAge = GUNMAN_LIFETIME;
+    if (flankCode !== undefined) enemy.maxAge = GUNMAN_FLANK_LIFETIMES[flankCode];
     if (event.behavior === 3) enemy.maxAge = BACKSTABBER_RAID_LIFETIME;
     if (event.behavior === 8) enemy.maxAge = BACKSTABBER_AMBUSH_LIFETIME;
     if (event.behavior === 7) enemy.maxAge = RIFLEMAN_LIFETIME;
@@ -1403,16 +1405,24 @@ class GunSmokeGame {
         }
       } else if (unit.enemyType === "gunman") {
         const tracedGunman = unit.romBehavior === 2;
-        if (tracedGunman && unit.age <= GUNMAN_ENTRY_PATH_NES.at(-1)![0] / NES_FRAME_RATE) {
+        const flankGunman = tracedGunman && (unit.romEntityCode === 8 || unit.romEntityCode === 9) ? unit.romEntityCode : undefined;
+        if (flankGunman !== undefined) {
+          const [offsetX, offsetY] = gunmanFlankPosition(flankGunman, unit.age);
+          unit.x = (unit.romOriginX ?? unit.x) + offsetX * NES_WORLD_X_SCALE;
+          unit.y = this.scroll + (unit.romOriginY ?? 0) + offsetY * NES_WORLD_Y_SCALE;
+        } else if (tracedGunman && unit.age <= GUNMAN_ENTRY_PATH_NES.at(-1)![0] / NES_FRAME_RATE) {
           unit.y = this.scroll + (unit.romOriginY ?? 0) + gunmanOpeningY(unit.age);
         } else {
           unit.x += unit.vx * delta;
           unit.y += unit.vy * delta;
         }
-        if (tracedGunman && unit.age <= GUNMAN_ENTRY_PATH_NES.at(-1)![0] / NES_FRAME_RATE) unit.x = unit.romOriginX ?? unit.x;
-        if (!tracedGunman || unit.age > GUNMAN_ENTRY_PATH_NES[1]![0] / NES_FRAME_RATE) unit.x += Math.sin(unit.age * 3 + unit.phase) * 18 * delta;
-        if (unit.romBehavior === 2 && !unit.fired && unit.age >= GUNMAN_FIRST_SHOT_DELAY) {
+        if (flankGunman === undefined && tracedGunman && unit.age <= GUNMAN_ENTRY_PATH_NES.at(-1)![0] / NES_FRAME_RATE) unit.x = unit.romOriginX ?? unit.x;
+        if (flankGunman === undefined && (!tracedGunman || unit.age > GUNMAN_ENTRY_PATH_NES[1]![0] / NES_FRAME_RATE)) unit.x += Math.sin(unit.age * 3 + unit.phase) * 18 * delta;
+        const shotFrames = flankGunman !== undefined ? GUNMAN_FLANK_SHOT_FRAMES[flankGunman] : [39];
+        const nextShotFrame = shotFrames[unit.volleysFired];
+        if (unit.romBehavior === 2 && nextShotFrame !== undefined && unit.age >= nextShotFrame / NES_FRAME_RATE) {
           unit.fired = true;
+          unit.volleysFired += 1;
           const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
           const projectile = this.spawnEnemyProjectile(unit.x, unit.y);
           if (projectile) {

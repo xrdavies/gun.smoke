@@ -186,7 +186,8 @@ Snipers are edge-mounted static shooters that aim once using the ROM's
 opposite-side variant also fires at the otherwise missed age-314 aiming window.
 Ordinary Ninjas
 hold their entry lane through a short pause, descend to the combat line, then
-make a brief player-relative diagonal retreat after their frame-103 Shuriken.
+make a brief player-relative diagonal retreat after their frame-103 Shuriken
+and release within the measured 303-frame route cap.
 Gunmen use the same quantized table at the faster second tier, check their
 movement-facing gate at 192-frame intervals after the representative frame-58
 first window, and retain their slot through the measured 550/560-frame

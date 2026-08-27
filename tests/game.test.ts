@@ -5,7 +5,7 @@ import { RIFLEMAN_LIFETIME, RIFLEMAN_PATH_NES, riflemanCanAttack, riflemanPositi
 import { bossSpriteVisible, NINJA_BOSS_TELEPORT_DELAY } from "../src/game-constants";
 import { addScore, MAX_SCORE } from "../src/game-constants";
 import { PLAYER_ENTRY_X, PLAYER_ENTRY_X_NES, PLAYER_ENTRY_Y, PLAYER_ENTRY_Y_NES } from "../src/game-constants";
-import { NINJA_ACTIVATION_DISTANCE_NES, ninjaCanThrow } from "../src/game-constants";
+import { NINJA_ACTIVATION_DISTANCE_NES, NINJA_LIFETIME, ninjaCanThrow } from "../src/game-constants";
 import { NINJA_ATTACK_MOVE_DURATION, NINJA_ENTRY_PATH_NES, ninjaAttackPosition, ninjaOpeningY } from "../src/game-constants";
 import { ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y } from "../src/game-constants";
 import { BOMBER_ENTRY_DURATION, BOMBER_ENTRY_END_Y, BOMBER_ENTRY_END_Y_NES, bomberOpeningY } from "../src/game-constants";
@@ -357,6 +357,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect([ninjaCanThrow(126 * NES_WORLD_Y_SCALE, 188 * NES_WORLD_Y_SCALE), ninjaCanThrow(124 * NES_WORLD_Y_SCALE, 188 * NES_WORLD_Y_SCALE)]).toEqual([true, false]);
     expect(ninjaAttackPosition(103 / NES_FRAME_RATE, 570, 283.5, 465, 207)).toEqual([570, 283.5]);
     expect(ninjaAttackPosition(118 / NES_FRAME_RATE, 570, 283.5, 465, 207)).toEqual([465, 207]);
+    expect(NINJA_LIFETIME).toBeCloseTo(303 / NES_FRAME_RATE, 9);
   });
 
   it("keeps the Ninja Boss smoke and teleport timing", () => {

@@ -259,12 +259,12 @@ reaches about `(x+56,y+57)` by frame 120, performs its first attack at frame
 checks recur every 52 frames and require Billy below the actor plus the
 routine's random gate. Runtime mirrors the measured opening for right-edge
 records and keeps the actor until defeat or scene cleanup.
-An isolated `$BA51` Spear Thrower creates its dispatch `0x33` spear at age 72
-frames and aims it toward Billy at roughly 250 world pixels/s. Its clean
-entrance descends to about 68 NES pixels by frame 24, pauses through frame 65,
-then follows a measured arc to roughly `(x+36,y=21)` by frame 96; the runtime
-preserves this first path and launches from the actor coordinate. Later cycles
-remain on the procedural fallback.
+An isolated `$BA51` top-entry Spear Thrower reaches about 68 NES pixels by
+frame 24, pauses through frame 65, then follows a measured arc to roughly
+`(x+36,y=21)` by frame 96. Attack opportunities recur every 72 frames; a
+direction/random gate decides whether that opportunity creates dispatch `0x33`
+at the actor coordinate. The runtime preserves the entry path, repeated
+opportunity clock and actor-relative launch coordinate.
 Entity code `20` is the side-entry Spear Thrower. Its first isolated route
 reaches the combat line by frame 40, throws at frames `89/305/449/593/737/809`,
 and leaves the screen at frame 813. The runtime mirrors the first 113-frame

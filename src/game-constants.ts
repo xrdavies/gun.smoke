@@ -349,6 +349,8 @@ export function firebreatherSideCanAttack(actorY: number, playerY: number, rando
 export const SPEAR_FIRST_SHOT_DELAY = 72 / NES_FRAME_RATE;
 export const SPEAR_PROJECTILE_SPEED = 250;
 export const SPEAR_PROJECTILE_OFFSET_NES = [0, 0] as const;
+export const SPEAR_TOP_ATTACK_FRAMES = [72, 144, 216, 288, 360, 432, 504, 576, 648] as const;
+export const SPEAR_TOP_LIFETIME = 656 / NES_FRAME_RATE;
 export const SPEAR_SIDE_SHOT_FRAMES = [89, 305, 449, 593, 737, 809] as const;
 export const SPEAR_SIDE_LIFETIME = 813 / NES_FRAME_RATE;
 export const SPEAR_SIDE_PATH_NES = [[0, 0, 0], [20, -32, -5], [40, -65, 37], [82, -66, 33], [89, -74, 6], [113, -101, -9]] as const;
@@ -381,6 +383,11 @@ export function spearSidePosition(age: number, fromLeft: boolean): readonly [num
   const next = SPEAR_SIDE_PATH_NES[nextIndex]!;
   const amount = (frame - previous[0]) / (next[0] - previous[0]);
   return [(previous[1] + (next[1] - previous[1]) * amount) * direction, previous[2] + (next[2] - previous[2]) * amount];
+}
+
+export function spearTopCanAttack(actorX: number, actorY: number, playerX: number, playerY: number, random: number): boolean {
+  const heading = nesAimHeading(actorX, actorY, playerX, playerY);
+  return random < 0.5 && heading >= 10 && heading <= 22;
 }
 
 export const BACKSTABBER_AMBUSH_DROP_SPEED = 45;

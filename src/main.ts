@@ -1910,15 +1910,12 @@ class GunSmokeGame {
         target.sprite.size = { x: 54, y: 54 };
         return;
       }
-      if (target.itemType) {
-        this.convertToPickup(target, "item", target.itemType);
-        return;
-      }
+      if (target.itemType) this.spawnUnit("item", target.x, target.y, 1, undefined, target.itemType);
     } else if (target.kind === "enemy") {
       if (target.romFlags !== undefined) {
         const hasSpecialStock = hasSpecialAmmoStock(this.weaponAmmo);
         const drop = romEnemyDrop(target.romFlags, hasSpecialStock);
-        if (drop) this.convertToPickup(target, drop);
+        if (drop) this.spawnUnit(drop, target.x, target.y, 1);
       } else {
         const drop = this.nextRandom();
         if (drop < 0.22) this.spawnUnit("moneyBag", target.x, target.y, 1);
@@ -1987,28 +1984,6 @@ class GunSmokeGame {
     unit.bossEntryY = lane[1];
     this.bossFireClock = NINJA_BOSS_TELEPORT_DELAY + NINJA_BOSS_FIRST_PREPARE_DELAY;
     this.showMessage("NINJA SMOKE");
-  }
-
-  private convertToPickup(target: Unit, kind: "item" | "ammo" | "moneyBag", itemType?: ItemType): void {
-    target.kind = kind;
-    target.enemyType = undefined;
-    target.itemType = kind === "item" ? itemType : undefined;
-    target.projectileType = undefined;
-    target.exploding = false;
-    target.hp = 1;
-    target.age = 0;
-    target.maxAge = unitMaxAge("pickup");
-    target.radius = 17;
-    target.value = kind === "moneyBag" ? 200 : 0;
-    target.damage = 0;
-    target.fired = false;
-    target.animation = undefined;
-    target.sprite.texture = kind === "item" && itemType ? this.itemTextures[itemType] : kind === "ammo" ? this.textures.ammo : this.textures.moneyBag;
-    target.sprite.frame = { x: 0, y: 0, width: 1, height: 1 };
-    target.sprite.size = { x: 28, y: 28 };
-    target.sprite.color = [1, 1, 1, 1];
-    target.sprite.layer = 11;
-    target.sprite.visible = true;
   }
 
   private collectItem(item: ItemType): void {

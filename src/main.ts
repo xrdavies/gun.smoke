@@ -1996,9 +1996,6 @@ class GunSmokeGame {
     if (this.smartBombArmed && this.smartBombs > 0) {
       this.smartBombs -= 1;
       this.smartBombArmed = false;
-      for (const unit of [...this.units]) {
-        if (unit.kind === "enemy" && unit.hp > 0) this.defeatTarget(unit);
-      }
       this.clearEnemyUnits();
       this.clearEnemyProjectiles();
       this.invulnerable = 1;

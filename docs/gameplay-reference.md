@@ -98,8 +98,9 @@ destroy enemy projectiles. POW clears regular enemies, falling rocks and
 ordinary projectiles but does not damage the low-slot Boss actor or clear its
 separate projectile pool.
 Smart Bomb is armed from the inventory and triggers
-on a lethal hit, clearing regular enemies and enemy bullets while consuming
-one bomb; it does not damage bosses. Arming it selects the unlimited Pistol,
+on a lethal hit, clearing regular enemies and enemy bullets without awarding
+their ordinary defeat score or drops, while consuming one bomb; it does not
+damage bosses. Arming it selects the unlimited Pistol,
 and equipping another weapon disarms the bomb without consuming it. Only one
 Smart Bomb can be owned at a time.
 

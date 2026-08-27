@@ -277,8 +277,9 @@ Round 3 trace holds `x=120` through frame 40, reaches approximately
 `x=138,y=43` at frame 60, and launches from about `x=138,y=48`; the runtime
 uses those entry checkpoints and the actor-relative launch coordinate.
 Four isolated full routes release between frames 1026 and 1041; the runtime uses
-1042 as the ROM-tagged actor cap. Later throws remain coupled to the unported
-movement-state cycle rather than a fixed cooldown.
+1042 as the ROM-tagged actor cap. Attack opportunities recur about 130 frames
+apart, with each opportunity rechecking the actor's movement/aim sector; later
+movement-state details remain pending.
 An isolated `$BB29` top-entry Firebreather emits dispatch `0x34` fireballs at
 ages 156, 364 and 416 frames, then releases its slot at age 644. Each is aimed
 toward Billy at roughly 250 world pixels/s and launches from the actor coordinate

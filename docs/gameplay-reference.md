@@ -203,7 +203,8 @@ Top-entry Shotgunners fire two measured three-shot fans; entity code `4`
 instead enters from either side, fires one fan at frame 114, and returns to its
 edge before releasing at frame 232.
 Hatchet Throwers wait for aim sectors `15..17` before their frame-78 throw;
-their measured route releases by frame 1042, while later movement-coupled throws
+their measured route releases by frame 1042. Further opportunities recur about
+every 130 NES frames and recheck the aim sector; movement-coupled route details
 remain pending full state-machine parity.
 side Firebreathers require Billy below them, a 50% random gate, and aim sectors
 `10..22` at every 52-frame attack check, including the first. Top-entry Spear

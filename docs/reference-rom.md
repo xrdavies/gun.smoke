@@ -358,7 +358,9 @@ after 143 frames, then holds the lane for another 113 frames before the first
 lateral jump; the measured path then moves through NES `x=157/137/155`. At frame
 174 it creates five simultaneous `0xa2` fireballs from the Boss coordinate.
 Their 32-direction headings are `12/14/16/18/20`, with the ROM's discrete
-velocity table and a 45-frame lifetime. Later position-dependent attacks select
+velocity table and a 45-frame lifetime. The Boss leaves its opening attack state
+even when the aim-sector gate produces no projectile, so vulnerability is tied
+to the attempted attack rather than slot allocation. Later position-dependent attacks select
 three adjacent headings from Billy's integer aim sector, using a 36-frame
 lifetime. A common repeat interval is 125 frames. The runtime preserves these
 measured 5/3 fan geometries and lifetimes. The five-shot branch accepts aim

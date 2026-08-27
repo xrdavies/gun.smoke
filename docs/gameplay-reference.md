@@ -151,7 +151,8 @@ but the locked arena does not create extra ambient barrels or loose pickups.
 Devil Hawk enters from the top on one of the ROM's NES X lanes
 (`x=88/128/168/208`) before using a long jump arc and firing a measured five-shot
 or player-sector three-shot fireball fan. Its five-shot branch accepts aim
-sectors `8..24`. The Ninja enters from one of four measured NES coordinate
+sectors `8..24`; an out-of-sector check can skip the projectile but still ends
+the opening attack's invulnerability. The Ninja enters from one of four measured NES coordinate
 pairs (`112,64`, `192,64`, `120,144`, or `176,128`) with an initial
 smoke/invulnerability window,
 Fatman Joe enters from NES `x=64/104/152/192` at the top edge before using short hops and

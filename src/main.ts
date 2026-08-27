@@ -929,6 +929,7 @@ class GunSmokeGame {
     if (this.stage === 3) {
       const fullFan = boss.volleysFired === 0 || (boss.y - this.scroll) / NES_WORLD_Y_SCALE <= DEVIL_HAWK_FULL_FAN_MAX_Y_NES;
       const headings = devilHawkFanHeadings(fullFan, nesAimHeading(boss.x, boss.y, this.player.x, this.player.y));
+      boss.fired = true;
       for (const heading of headings) {
         const projectile = this.spawnEnemyProjectile(boss.x, boss.y, true);
         if (!projectile) break;
@@ -938,7 +939,6 @@ class GunSmokeGame {
         projectile.radius = 7;
       }
       if (headings.length > 0) {
-        boss.fired = true;
         boss.volleysFired += 1;
         this.beep(204, 0.045);
       }

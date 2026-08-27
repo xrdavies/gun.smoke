@@ -245,7 +245,8 @@ NES pixels inward, fires three dispatch `0x30` shots at ages 97, 113 and 129,
 then returns to the edge and releases at age 259. Runtime mirrors this path for
 the left-edge records instead of applying code `14`'s top-entry five-shot
 cycle.
-An isolated `$B671` Ninja emits one dispatch `0x31` Shuriken at age 103
+An isolated `$B671` Ninja enters its attack state once Billy is within 64 NES
+Y pixels, then emits one dispatch `0x31` Shuriken no earlier than age 103
 frames. Its entrance holds the authored lane for 16 frames while descending
 to 32 NES pixels, pauses through frame 36, then descends to 126 NES pixels by
 frame 83. After the throw it moves diagonally for about 15 frames toward a

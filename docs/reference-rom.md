@@ -213,6 +213,8 @@ then releases its slot at age 732. The routine's 90-frame base cooldown is
 visible directly; the longer middle gap is a missed discrete aiming window.
 Its ROM Y coordinate advances with the camera at the measured scroll rate while
 the X lane stays fixed; the runtime carries ROM-tagged Snipers with that scroll.
+Each shot enters a cover dispatch for 90 NES frames, disabling collision until
+the actor returns to its firing state.
 Their dispatch `0x2f` bullets use the ROM's quantized 32-direction speed table
 at the first speed tier rather than continuous-angle velocity.
 The opposite-side entity code `2` keeps the same lifetime but hits every middle

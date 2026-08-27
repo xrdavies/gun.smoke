@@ -200,7 +200,8 @@ riflemen, ninjas, shotgunners, spear throwers, firebreathers and Hatchet
 Throwers; individual routine names remain explicit approximations until their
 full state machines are traced.
 Snipers are edge-mounted static shooters that aim once using the ROM's
-32-direction projectile table and retreat into their window/tee-pee cover instead of walking with field enemies. The code `2`
+32-direction projectile table, enter their window/tee-pee cover for 90 NES
+frames after each shot, and do not walk with field enemies. The code `2`
 opposite-side variant also fires at the otherwise missed age-314 aiming window.
 Ordinary Ninjas
 hold their entry lane through a short pause, descend to the combat line, then

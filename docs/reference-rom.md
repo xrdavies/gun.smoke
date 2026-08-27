@@ -421,7 +421,7 @@ the movement path and attack clock on that measured cycle while retaining
 procedural smoke visuals. Other Bosses stay
 visible through their invulnerability/recovery timers; only Ninja's smoke and
 teleport windows hide its sprite and disable actor collision. The runtime also
-replays the measured X route for the initial and post-teleport cycles. Runtime target and
+replays the measured X/Y routes for the initial and post-teleport cycles. Runtime target and
 contact checks exclude hidden actors, including Snipers while they are in cover.
 The Ninja remains in its initial smoke state for about 44 frames. Its isolated
 attack routine creates a low-slot smoke/prepare entity at frame 140, then emits

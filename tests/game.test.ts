@@ -670,6 +670,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ninjaBossCombatY(NINJA_BOSS_ENTRY_INVULNERABILITY)).toBe(288);
     expect(ninjaBossCombatY(NINJA_BOSS_ENTRY_INVULNERABILITY + 26 / NES_FRAME_RATE)).toBe(371.25);
     expect(ninjaBossCombatY(NINJA_BOSS_ENTRY_INVULNERABILITY + 551 / NES_FRAME_RATE)).toBe(92.25);
+    expect(ninjaBossCombatY(304 / NES_FRAME_RATE, 64 * NES_WORLD_Y_SCALE, true)).toBe(189);
+    expect(ninjaBossCombatY(416 / NES_FRAME_RATE, 64 * NES_WORLD_Y_SCALE, true)).toBe(81);
   });
 
   it("matches the traced Fatman Joe entrance", () => {

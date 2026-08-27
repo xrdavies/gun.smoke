@@ -1039,6 +1039,7 @@ const NINJA_BOSS_COMBAT_PATH_NES = [[0, 128], [26, 165], [51, 103], [67, 104], [
 
 const NINJA_BOSS_INITIAL_X_PATH_NES = [[0, 176], [43, 176], [51, 169], [59, 162], [67, 154], [75, 147], [83, 155], [91, 164], [99, 159], [107, 149], [115, 139], [123, 129], [131, 125], [139, 112], [147, 102], [155, 102], [163, 114], [171, 127], [179, 119], [187, 105], [195, 104], [203, 106], [211, 109], [219, 111], [227, 114], [235, 116], [243, 117], [251, 117], [259, 117], [267, 117], [275, 117], [283, 117], [295, 117], [338, 117]] as const;
 const NINJA_BOSS_REENTRY_X_PATH_NES = [[0, 112], [80, 112], [128, 112], [136, 108], [144, 98], [152, 94], [176, 94], [216, 107], [224, 120], [248, 127], [256, 136], [264, 139], [288, 142], [304, 163], [312, 150], [320, 139], [352, 139], [368, 139], [400, 150], [408, 157], [423, 157]] as const;
+const NINJA_BOSS_REENTRY_Y_PATH_NES = [[0, 64], [80, 64], [128, 103], [144, 114], [160, 132], [176, 112], [184, 110], [216, 102], [240, 124], [256, 98], [272, 96], [288, 88], [304, 84], [312, 69], [320, 80], [352, 74], [368, 104], [392, 93], [400, 72], [408, 67], [416, 36], [423, 33]] as const;
 
 function interpolateNinjaX(path: readonly (readonly [number, number])[], age: number, entryX: number, baseX: number): number {
   const frame = Math.max(0, age * NES_FRAME_RATE);
@@ -1058,7 +1059,21 @@ export function ninjaBossCombatX(age: number, entryX = 176 * NES_WORLD_X_SCALE, 
   return interpolateNinjaX(reentry ? NINJA_BOSS_REENTRY_X_PATH_NES : NINJA_BOSS_INITIAL_X_PATH_NES, age, entryX, reentry ? 112 : 176);
 }
 
-export function ninjaBossCombatY(age: number, entryY = 128 * NES_WORLD_Y_SCALE): number {
+export function ninjaBossCombatY(age: number, entryY = 128 * NES_WORLD_Y_SCALE, reentry = false): number {
+  if (reentry) {
+    const frame = Math.max(0, age * NES_FRAME_RATE);
+    const laneOffset = entryY / NES_WORLD_Y_SCALE - 64;
+    const first = NINJA_BOSS_REENTRY_Y_PATH_NES[0]!;
+    const point = (sample: readonly [number, number]): number => (sample[1] + laneOffset) * NES_WORLD_Y_SCALE;
+    if (frame <= first[0]) return point(first);
+    const last = NINJA_BOSS_REENTRY_Y_PATH_NES.at(-1)!;
+    if (frame >= last[0]) return point(last);
+    const nextIndex = NINJA_BOSS_REENTRY_Y_PATH_NES.findIndex(([at]) => at >= frame);
+    const previous = NINJA_BOSS_REENTRY_Y_PATH_NES[nextIndex - 1]!;
+    const next = NINJA_BOSS_REENTRY_Y_PATH_NES[nextIndex]!;
+    const amount = (frame - previous[0]) / (next[0] - previous[0]);
+    return point([frame, previous[1] + (next[1] - previous[1]) * amount]);
+  }
   const frame = Math.max(0, age * NES_FRAME_RATE - NINJA_BOSS_ENTRY_INVULNERABILITY * NES_FRAME_RATE);
   const laneOffset = entryY / NES_WORLD_Y_SCALE - 128;
   const first = NINJA_BOSS_COMBAT_PATH_NES[0]!;

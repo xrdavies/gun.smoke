@@ -1713,7 +1713,7 @@ class GunSmokeGame {
       else if (this.stage === 3) unit.y = this.scroll + (unit.age <= DEVIL_HAWK_ENTRY_DURATION ? devilHawkOpeningY(unit.age) : devilHawkCombatY(unit.age));
       else if (this.stage === 4) {
         const entryY = unit.bossEntryY ?? NINJA_BOSS_ENTRY_LANES[0]?.[1] ?? 144;
-        unit.y = this.scroll + (ninjaCycleAge <= NINJA_BOSS_ENTRY_INVULNERABILITY ? entryY : ninjaBossCombatY(ninjaCycleAge, entryY));
+        unit.y = this.scroll + (ninjaCycleAge <= NINJA_BOSS_ENTRY_INVULNERABILITY ? entryY : ninjaBossCombatY(ninjaCycleAge, entryY, unit.bossCycleStart !== undefined));
       }
       else if (this.stage === 5) unit.y = this.scroll + (unit.age <= FATMAN_JOE_ENTRY_DURATION ? fatmanJoeOpeningY(unit.age) : fatmanJoeCombatY(unit.age));
       else if (this.stage === 6 && unit.bossEntryY !== undefined) unit.y = this.scroll + (unit.age <= WINGATE_ENTRY_DURATION ? wingateOpeningY(unit.age) : wingateCombatY(unit.age, this.wingatePhase));

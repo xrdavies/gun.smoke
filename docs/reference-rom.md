@@ -429,7 +429,8 @@ slot is now isolated for its shuriken attack. The isolated damage trace shows a
 90-frame teleport delay followed by a 44-frame entry-smoke window. An unhurt
 record also shows natural teleports beginning at frame 339 and again 424 frames
 after the subsequent re-entry start; the runtime schedules those transitions at
-the same frame boundary in its fixed-step loop.
+the same frame boundary in its fixed-step loop, including the re-entry age used
+for the hidden window.
 addition to health-loss teleports. It selects another valid pair and restarts
 the movement path and attack clock on that measured cycle while retaining
 procedural smoke visuals. Other Bosses stay

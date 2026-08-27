@@ -1962,12 +1962,12 @@ class GunSmokeGame {
     if (this.stage !== 4) return;
     const boss = this.units.find((unit) => unit.kind === "boss" && unit.hp > 0 && !unit.exploding);
     if (!boss || boss.bossNextTeleportAt === undefined || boss.age + delta < boss.bossNextTeleportAt) return;
-    this.startNinjaBossTeleport(boss);
+    this.startNinjaBossTeleport(boss, boss.age + delta);
   }
 
-  private startNinjaBossTeleport(unit: Unit): void {
+  private startNinjaBossTeleport(unit: Unit, triggerAge = unit.age): void {
     const lane = NINJA_BOSS_ENTRY_LANES[Math.floor(this.nextRandom() * NINJA_BOSS_ENTRY_LANES.length)] ?? NINJA_BOSS_ENTRY_LANES[0]!;
-    unit.bossCycleStart = unit.age + NINJA_BOSS_TELEPORT_DELAY;
+    unit.bossCycleStart = triggerAge + NINJA_BOSS_TELEPORT_DELAY;
     unit.invulnerableUntil = unit.bossCycleStart + NINJA_BOSS_ENTRY_INVULNERABILITY;
     unit.bossNextTeleportAt = ninjaBossNextTeleportAt(unit.bossCycleStart);
     unit.x = lane[0];

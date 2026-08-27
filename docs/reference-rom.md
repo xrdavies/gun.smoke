@@ -413,9 +413,12 @@ The same campaign reaches Round 4 and identifies its Ninja Boss as dispatch
 `(112,64)`, `(192,64)`, `(120,144)`, and `(176,128)`. The runtime selects one
 pair with a single random index; the low
 slot is now isolated for its shuriken attack. The isolated damage trace shows a
-90-frame teleport delay followed by a 44-frame entry-smoke window; the runtime
-selects another valid pair and restarts the movement path and attack clock on
-that measured cycle while retaining procedural smoke visuals. Other Bosses stay
+90-frame teleport delay followed by a 44-frame entry-smoke window. An unhurt
+record also shows natural teleports beginning at frame 339 and again 424 frames
+after the subsequent re-entry start; the runtime schedules those transitions in
+addition to health-loss teleports. It selects another valid pair and restarts
+the movement path and attack clock on that measured cycle while retaining
+procedural smoke visuals. Other Bosses stay
 visible through their invulnerability/recovery timers; only Ninja's smoke and
 teleport windows hide its sprite and disable actor collision. Runtime target and
 contact checks exclude hidden actors, including Snipers while they are in cover.

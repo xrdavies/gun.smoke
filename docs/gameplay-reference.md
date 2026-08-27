@@ -174,9 +174,9 @@ stationary grenade traps across the Round 5 road, while Wingate's two encounters
 lanes `x=64/104/152/192` before a 17-frame measured horizontal rush toward the
 centerline after a
 short hold, then replay their recorded X/Y routes; the Ninja enters a smoke/invulnerability phase and
-teleports after each lost health bar. The runtime hides the Boss for the
-measured 90-frame teleport delay, then restarts its entry smoke window and
-attack clock from the newly selected lane. Devil Hawk fireballs use the ROM's
+teleports naturally during its route and after each lost health bar. The runtime
+hides the Boss for the measured 90-frame teleport delay, then restarts its entry
+smoke window and attack clock from the newly selected lane. Devil Hawk fireballs use the ROM's
 discrete directional velocity table and their measured 45/36-frame lifetimes;
 its recorded X/Y movement route is replayed through the available trace, while
 the random attack scheduler remains an approximation.

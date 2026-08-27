@@ -1001,6 +1001,8 @@ export const NINJA_BOSS_PREPARE_CONTROLLER_DURATION = 7 / NES_FRAME_RATE;
 export const NINJA_BOSS_FIRST_ATTACK_DELAY = 179 / NES_FRAME_RATE;
 export const NINJA_BOSS_ENTRY_INVULNERABILITY = 44 / NES_FRAME_RATE;
 export const NINJA_BOSS_TELEPORT_DELAY = 90 / NES_FRAME_RATE;
+export const NINJA_BOSS_FIRST_NATURAL_TELEPORT = 339 / NES_FRAME_RATE;
+export const NINJA_BOSS_REPEAT_NATURAL_TELEPORT = 424 / NES_FRAME_RATE;
 export const NINJA_BOSS_ATTACK_INTERVAL = 60 / NES_FRAME_RATE;
 export const NINJA_BOSS_SHURIKEN_COUNT = 4;
 export const NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES = [6, -34] as const;
@@ -1010,6 +1012,10 @@ export const NINJA_BOSS_SHURIKEN_LIFETIME = 40 / NES_FRAME_RATE;
 export function ninjaBossPreparePosition(age: number, originX: number, originY: number, targetX: number, targetY: number): readonly [number, number] {
   const progress = clamp(age / NINJA_BOSS_PREPARE_DURATION, 0, 1);
   return [originX + (targetX - originX) * progress, originY + (targetY - originY) * progress];
+}
+
+export function ninjaBossNextTeleportAt(reentryStart?: number): number {
+  return reentryStart === undefined ? NINJA_BOSS_FIRST_NATURAL_TELEPORT : reentryStart + NINJA_BOSS_REPEAT_NATURAL_TELEPORT;
 }
 
 const NINJA_BOSS_COMBAT_PATH_NES = [[0, 128], [26, 165], [51, 103], [67, 104], [126, 110], [196, 94], [253, 140], [296, 164], [386, 64], [431, 64], [448, 88], [474, 88], [508, 72], [534, 72], [551, 41]] as const;

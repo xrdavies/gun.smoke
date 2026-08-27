@@ -30,7 +30,7 @@ import { WINGATE_ATTACK_INTERVAL, WINGATE_BULLET_LIFETIME, wingateCanFire, WINGA
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_LIFETIME, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { CUTTER_ENTRY_DURATION, CUTTER_MOVEMENT_SPEED, cutterCombatY, cutterOpeningX, cutterOpeningY } from "./game-constants";
 import { DEVIL_HAWK_ENTRY_DURATION, devilHawkAttackDelay, devilHawkFanHeadings, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_FULL_FAN_LIFETIME, DEVIL_HAWK_FULL_FAN_MAX_Y_NES, DEVIL_HAWK_POST_ENTRY_X_HOLD, devilHawkProjectileVelocity, DEVIL_HAWK_SIDE_FAN_LIFETIME, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY, nesAimHeading } from "./game-constants";
-import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_PREPARE_DELAY, NINJA_BOSS_PREPARE_CONTROLLER_DURATION, NINJA_BOSS_PREPARE_DURATION, NINJA_BOSS_SHURIKEN_LIFETIME, NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES, NINJA_BOSS_SHURIKEN_VELOCITIES_NES, NINJA_BOSS_TELEPORT_DELAY, ninjaBossCombatY, ninjaBossPreparePosition } from "./game-constants";
+import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_PREPARE_DELAY, NINJA_BOSS_PREPARE_CONTROLLER_DURATION, NINJA_BOSS_PREPARE_DURATION, NINJA_BOSS_SHURIKEN_LIFETIME, NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES, NINJA_BOSS_SHURIKEN_VELOCITIES_NES, NINJA_BOSS_TELEPORT_DELAY, ninjaBossCombatY, ninjaBossNextTeleportAt, ninjaBossPreparePosition } from "./game-constants";
 import { canSpawnEnemyProjectile } from "./game-constants";
 import { canSpawnBossProjectile } from "./game-constants";
 import { hasSpecialAmmoStock, hasWeaponStock, romEnemyDrop, romEnemyScore } from "./game-constants";
@@ -114,6 +114,7 @@ interface Unit {
   bossProjectile?: boolean;
   boomerangHeading?: number;
   bossCycleStart?: number;
+  bossNextTeleportAt?: number;
   nextFireAt: number;
   volleysFired: number;
 }
@@ -650,6 +651,7 @@ class GunSmokeGame {
     this.updatePlayerFire(delta);
     this.updateSmartBomb();
     this.updateSpawns(delta);
+    this.updateNinjaBossTeleport();
     this.updateEnemyFire(delta);
     for (const unit of this.units) this.updateUnit(unit, delta);
     this.resolveCollisions();
@@ -1226,6 +1228,7 @@ class GunSmokeGame {
       if (isFirstWingate) boss.vx = (boss.x < 128 * NES_WORLD_X_SCALE ? 1 : -1) * WINGATE_MOVEMENT_SPEED;
       if (isFatmanJoe) boss.vx = (boss.phase < Math.PI ? 1 : -1) * FATMAN_JOE_MOVEMENT_SPEED;
       if (isNinjaBoss) boss.invulnerableUntil = NINJA_BOSS_ENTRY_INVULNERABILITY;
+      if (isNinjaBoss) boss.bossNextTeleportAt = ninjaBossNextTeleportAt();
     }
     this.showMessage(`WANTED: ${definition.boss}`);
     this.beep(180, 0.18);
@@ -1253,7 +1256,7 @@ class GunSmokeGame {
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: frameDuration },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, riflemanAimHeading: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, boomerangHeading: undefined, bossCycleStart: undefined,
+      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, riflemanAimHeading: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined,
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" || sceneObject ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
@@ -1946,15 +1949,27 @@ class GunSmokeGame {
       unit.invulnerableUntil = unit.age + BANDIT_BILL_DAMAGE_RECOVERY_DURATION;
       this.showMessage("BANDIT BILL CRAWLS");
     } else if (this.stage === 4) {
-      const lane = NINJA_BOSS_ENTRY_LANES[Math.floor(this.nextRandom() * NINJA_BOSS_ENTRY_LANES.length)] ?? NINJA_BOSS_ENTRY_LANES[0]!;
-      unit.bossCycleStart = unit.age + NINJA_BOSS_TELEPORT_DELAY;
-      unit.invulnerableUntil = unit.bossCycleStart + NINJA_BOSS_ENTRY_INVULNERABILITY;
-      unit.x = lane[0];
-      unit.bossEntryX = unit.x;
-      unit.bossEntryY = lane[1];
-      this.bossFireClock = NINJA_BOSS_TELEPORT_DELAY + NINJA_BOSS_FIRST_PREPARE_DELAY;
-      this.showMessage("NINJA SMOKE");
+      this.startNinjaBossTeleport(unit);
     }
+  }
+
+  private updateNinjaBossTeleport(): void {
+    if (this.stage !== 4) return;
+    const boss = this.units.find((unit) => unit.kind === "boss" && unit.hp > 0 && !unit.exploding);
+    if (!boss || boss.bossNextTeleportAt === undefined || boss.age < boss.bossNextTeleportAt) return;
+    this.startNinjaBossTeleport(boss);
+  }
+
+  private startNinjaBossTeleport(unit: Unit): void {
+    const lane = NINJA_BOSS_ENTRY_LANES[Math.floor(this.nextRandom() * NINJA_BOSS_ENTRY_LANES.length)] ?? NINJA_BOSS_ENTRY_LANES[0]!;
+    unit.bossCycleStart = unit.age + NINJA_BOSS_TELEPORT_DELAY;
+    unit.invulnerableUntil = unit.bossCycleStart + NINJA_BOSS_ENTRY_INVULNERABILITY;
+    unit.bossNextTeleportAt = ninjaBossNextTeleportAt(unit.bossCycleStart);
+    unit.x = lane[0];
+    unit.bossEntryX = unit.x;
+    unit.bossEntryY = lane[1];
+    this.bossFireClock = NINJA_BOSS_TELEPORT_DELAY + NINJA_BOSS_FIRST_PREPARE_DELAY;
+    this.showMessage("NINJA SMOKE");
   }
 
   private collectItem(item: ItemType): void {

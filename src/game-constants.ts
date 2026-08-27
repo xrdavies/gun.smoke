@@ -203,6 +203,25 @@ export function riflemanPosition(age: number): readonly [number, number] {
 }
 export const NINJA_FIRST_SHOT_DELAY = 103 / NES_FRAME_RATE;
 export const NINJA_PROJECTILE_SPEED = 300;
+export const NINJA_ATTACK_MOVE_DURATION = 15 / NES_FRAME_RATE;
+export const NINJA_ENTRY_PATH_NES = [[0, 0], [16, 32], [36, 32], [83, 126], [103, 126]] as const;
+
+export function ninjaOpeningY(age: number): number {
+  const frame = Math.max(0, age * NES_FRAME_RATE);
+  const nextIndex = NINJA_ENTRY_PATH_NES.findIndex(([at]) => at >= frame);
+  if (nextIndex < 0) return NINJA_ENTRY_PATH_NES.at(-1)![1] * NES_WORLD_Y_SCALE;
+  if (nextIndex === 0) return 0;
+  const previous = NINJA_ENTRY_PATH_NES[nextIndex - 1]!;
+  const next = NINJA_ENTRY_PATH_NES[nextIndex]!;
+  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  return (previous[1] + (next[1] - previous[1]) * amount) * NES_WORLD_Y_SCALE;
+}
+
+export function ninjaAttackPosition(age: number, originX: number, originY: number, targetX: number, targetY: number): readonly [number, number] {
+  const amount = Math.min(1, Math.max(0, (age - NINJA_FIRST_SHOT_DELAY) / NINJA_ATTACK_MOVE_DURATION));
+  return [originX + (targetX - originX) * amount, originY + (targetY - originY) * amount];
+}
+
 export const ROCK_WORLD_SPEED_X = 230;
 export const ROCK_WORLD_SPEED_Y = 236;
 export const ROCK_IMPACT_DELAY = 24 / NES_FRAME_RATE;

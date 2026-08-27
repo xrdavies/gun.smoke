@@ -195,8 +195,12 @@ retreats toward the top edge, and releases after roughly 364 frames. The runtime
 preserves this measured vertical path, volley cadence, actor-relative launch
 coordinate and slot lifetime for ROM-tagged Riflemen.
 An isolated `$B671` Ninja emits one dispatch `0x31` Shuriken at age 103
-frames. Its measured path is diagonal toward Billy; the runtime uses the
-same one-shot timing and a 300-world-pixel/s self-generated projectile.
+frames. Its entrance holds the authored lane for 16 frames while descending
+to 32 NES pixels, pauses through frame 36, then descends to 126 NES pixels by
+frame 83. After the throw it moves diagonally for about 15 frames toward a
+player-relative offset before holding position. The runtime preserves these
+ROM-tagged keyframes and one-shot timing with a 300-world-pixel/s
+self-generated projectile.
 An isolated `$B8F4` Hatchet Thrower emits its dispatch `0x32` projectile at age
 78 frames and aims it toward Billy at roughly 230 world pixels/s. Its clean
 Round 3 trace holds `x=120` through frame 40, reaches approximately

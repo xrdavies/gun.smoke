@@ -158,7 +158,10 @@ riflemen, ninjas, shotgunners, spear throwers, firebreathers and Hatchet
 Throwers; individual routine names remain explicit approximations until their
 full state machines are traced.
 Snipers are edge-mounted static shooters that aim once and retreat into their
-window/tee-pee cover instead of walking with field enemies. Riflemen advance,
+window/tee-pee cover instead of walking with field enemies. Ordinary Ninjas
+hold their entry lane through a short pause, descend to the combat line, then
+make a brief player-relative diagonal retreat after their frame-103 Shuriken.
+Riflemen advance,
 enter their attack state at 122 NES frames, fire five shots at 138/154/170/186/202,
 and retreat toward the top of the playfield.
 

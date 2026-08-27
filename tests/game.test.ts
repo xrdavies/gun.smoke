@@ -3,6 +3,7 @@ import { AMMO_GAIN, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER
 import { GUNMAN_BULLET_SPEED, GUNMAN_ENTRY_PATH_NES, GUNMAN_FIRST_SHOT_DELAY, GUNMAN_LIFETIME, gunmanOpeningY } from "../src/game-constants";
 import { RIFLEMAN_LIFETIME, RIFLEMAN_PATH_NES, riflemanPosition } from "../src/game-constants";
 import { NINJA_BOSS_TELEPORT_DELAY } from "../src/game-constants";
+import { NINJA_ATTACK_MOVE_DURATION, NINJA_ENTRY_PATH_NES, ninjaAttackPosition, ninjaOpeningY } from "../src/game-constants";
 import { BOMBER_ENTRY_DURATION, BOMBER_ENTRY_END_Y, BOMBER_ENTRY_END_Y_NES, bomberOpeningY } from "../src/game-constants";
 import { BOMBER_FIRST_MANEUVER_NES, bomberFirstManeuverPosition } from "../src/game-constants";
 import { DYNAMITE_AIM_FACTOR, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_VERTICAL_PATH_NES, dynamiteVerticalOffset } from "../src/game-constants";
@@ -282,6 +283,15 @@ describe("Gun.Smoke vertical slice", () => {
   it("matches the traced Ninja shot timing", () => {
     expect(NINJA_FIRST_SHOT_DELAY).toBeCloseTo(103 / NES_FRAME_RATE, 9);
     expect(NINJA_PROJECTILE_SPEED).toBe(300);
+  });
+
+  it("matches the traced ordinary Ninja entrance and retreat", () => {
+    expect(NINJA_ENTRY_PATH_NES).toEqual([[0, 0], [16, 32], [36, 32], [83, 126], [103, 126]]);
+    expect(ninjaOpeningY(16 / NES_FRAME_RATE)).toBeCloseTo(32 * (540 / 240), 9);
+    expect(ninjaOpeningY(83 / NES_FRAME_RATE)).toBeCloseTo(126 * (540 / 240), 9);
+    expect(NINJA_ATTACK_MOVE_DURATION).toBeCloseTo(15 / NES_FRAME_RATE, 9);
+    expect(ninjaAttackPosition(103 / NES_FRAME_RATE, 570, 283.5, 465, 207)).toEqual([570, 283.5]);
+    expect(ninjaAttackPosition(118 / NES_FRAME_RATE, 570, 283.5, 465, 207)).toEqual([465, 207]);
   });
 
   it("keeps the Ninja Boss smoke and teleport timing", () => {

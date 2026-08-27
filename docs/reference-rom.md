@@ -173,7 +173,9 @@ ordinary projectile, then `$CAEF-$CB29` decrements Horse health and starts a
 uses the same 60 NES-frame window and does not erase enemy actors, high-dispatch
 hazards, or unrelated projectiles on a Horse hit. Low-dispatch ordinary bullets
 and airborne dynamite are cleared by the ROM contact branch; boomerangs, shells,
-mines, rocks, and landed dynamite remain active.
+mines, rocks, and landed dynamite remain active. The same dispatch rule applies
+to an unshielded contact; player invulnerability prevents repeated damage while
+the source actor remains in its routine.
 The Round transition path at `$B9BD-$B9DA` clears `$77` before incrementing the
 Round, so Horse health does not carry into the next Round. Runtime stage changes
 apply the same reset while preserving stored Boots/Rifle and weapon stocks.

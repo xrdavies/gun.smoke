@@ -244,6 +244,7 @@ export function firebreatherPosition(age: number): readonly [number, number] {
 }
 export const SPEAR_FIRST_SHOT_DELAY = 72 / NES_FRAME_RATE;
 export const SPEAR_PROJECTILE_SPEED = 250;
+export const SPEAR_PROJECTILE_OFFSET_NES = [0, 0] as const;
 export const BACKSTABBER_AMBUSH_DROP_SPEED = 45;
 export const BACKSTABBER_AMBUSH_DEPTH = 191;
 export const BACKSTABBER_AMBUSH_LIFETIME = 407 / NES_FRAME_RATE;

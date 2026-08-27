@@ -367,8 +367,9 @@ pair with a single random index; the low
 slot is now isolated for its shuriken attack. The isolated damage trace shows a
 90-frame teleport delay followed by a 44-frame entry-smoke window; the runtime
 selects another valid pair and restarts the movement path and attack clock on
-that measured cycle while
-retaining procedural smoke visuals.
+that measured cycle while retaining procedural smoke visuals. Other Bosses stay
+visible through their invulnerability/recovery timers; only Ninja's smoke and
+teleport windows hide its sprite.
 The Ninja remains in its initial smoke state for about 44 frames. Its isolated
 attack routine creates a low-slot smoke/prepare entity at frame 140, then emits
 four `0x30` shuriken bullets at frame 179; subsequent volleys commonly recur

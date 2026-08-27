@@ -356,6 +356,10 @@ export function ninjaCanThrow(actorY: number, playerY: number): boolean {
   return Math.abs(Math.round(playerY / NES_WORLD_Y_SCALE) - Math.round(actorY / NES_WORLD_Y_SCALE)) < NINJA_ACTIVATION_DISTANCE_NES;
 }
 
+export function bossSpriteVisible(stage: number, age: number, invulnerableUntil: number, teleporting: boolean): boolean {
+  return stage !== 4 || (!teleporting && age >= invulnerableUntil);
+}
+
 export const ROCK_WORLD_SPEED_X = 230;
 export const ROCK_WORLD_SPEED_Y = 236;
 export const ROCK_IMPACT_DELAY = 24 / NES_FRAME_RATE;

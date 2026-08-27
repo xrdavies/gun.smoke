@@ -153,7 +153,10 @@ remain `sceneObject`. These labels are research semantics, not copied ROM code.
 An isolated `$B501` actor first creates its `0x72`/dispatch `0x2F` dynamite
 after 198 frames and repeats after 106 frames. The projectile remains airborne
 for 212 frames, changes to landed dispatch `0x3E` for 53 frames, then clears;
-the runtime uses these measured timings at 60.098 Hz.
+the runtime uses these measured timings at 60.098 Hz. Across complete traces,
+the airborne Y offset reaches about 18/32/89 NES pixels at frames 20/40/212;
+horizontal correction ends after roughly 40 frames. The landed state then
+moves with the measured scene-object scroll instead of freezing in world space.
 The same Round 1 traces show the Bomber actor descending one NES pixel per frame
 for 125 frames to `y=126` while its X coordinate remains fixed, then holding
 that height briefly before moving through relative NES checkpoints

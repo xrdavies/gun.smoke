@@ -352,7 +352,10 @@ stationary split controller. Beginning four frames later, it emits five `0x3f`
 mines at 4-frame intervals with relative offsets
 `(-16,+4),(-10,+12),(0,+16),(+10,+12),(+16,+4)`. Each mine remains for about
 29 frames and the controller releases at age 61. Runtime preserves this full
-shell-to-mine chain; later random movement-action scheduling remains an
+shell-to-mine chain. During the random action branch, the ROM's `$B6` decision
+counter stops while the short route lasts 53 frames (`b8=16`) or the long route
+lasts 122 frames (`b8=40` followed by `b8=32`); the runtime extends its existing
+76-frame clock by those measured windows. Later direction selection remains an
 approximation over the measured multi-hop profile.
 Round 6's first Wingate encounter is dispatch `0xa3`, variant `0x65`. It enters
 from the top at NES `(x=152, y=0)`, holds that horizontal lane and reaches

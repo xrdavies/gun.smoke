@@ -671,6 +671,8 @@ export const FATMAN_JOE_MOVEMENT_SPEED = (40 / 75) * NES_FRAME_RATE * NES_WORLD_
 export const FATMAN_JOE_FIRST_ATTACK_DELAY = 95 / NES_FRAME_RATE;
 export const FATMAN_JOE_ATTACK_DECISION_INTERVAL = 76 / NES_FRAME_RATE;
 export const FATMAN_JOE_ATTACK_CHANCE = 0.5;
+export const FATMAN_JOE_SHORT_ACTION_DURATION = 53 / NES_FRAME_RATE;
+export const FATMAN_JOE_LONG_ACTION_DURATION = 122 / NES_FRAME_RATE;
 export const FATMAN_JOE_SHELL_FLIGHT_DURATION = 31 / NES_FRAME_RATE;
 export const FATMAN_JOE_SHELL_SPLIT_DELAY = 35 / NES_FRAME_RATE;
 export const FATMAN_JOE_SHELL_LIFETIME = 61 / NES_FRAME_RATE;
@@ -687,6 +689,10 @@ export function fatmanJoeAimHeading(originX: number, originY: number, targetX: n
 export function fatmanJoeCanLaunch(originX: number, originY: number, targetX: number, targetY: number, random: number): boolean {
   const heading = fatmanJoeAimHeading(originX, originY, targetX, targetY);
   return random >= 1 - FATMAN_JOE_ATTACK_CHANCE && heading >= 14 && heading <= 18;
+}
+
+export function fatmanJoeMovementActionDuration(originY: number, random: number): number {
+  return random < 0.125 || originY / NES_WORLD_Y_SCALE < 72 ? FATMAN_JOE_LONG_ACTION_DURATION : FATMAN_JOE_SHORT_ACTION_DURATION;
 }
 
 export function fatmanJoeShellVelocity(originX: number, originY: number, targetX: number, targetY: number): readonly [number, number] {

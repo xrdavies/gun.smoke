@@ -1224,8 +1224,8 @@ class GunSmokeGame {
           } else {
             unit.targetX ??= this.player.x + (this.player.x < originX ? -12 : 12) * NES_WORLD_X_SCALE;
             const attackY = ninjaOpeningY(NINJA_FIRST_SHOT_DELAY);
-            unit.targetY ??= this.scroll + originY + attackY - 34 * NES_WORLD_Y_SCALE;
-            [unit.x, unit.y] = ninjaAttackPosition(unit.age, originX, this.scroll + originY + attackY, unit.targetX, unit.targetY);
+            unit.targetY ??= originY + attackY - 34 * NES_WORLD_Y_SCALE;
+            [unit.x, unit.y] = ninjaAttackPosition(unit.age, originX, this.scroll + originY + attackY, unit.targetX, this.scroll + unit.targetY);
           }
         } else {
           unit.x += (unit.vx + Math.sin(unit.age * 6 + unit.phase) * 90) * delta;

@@ -135,7 +135,8 @@ Cutter enters from the top edge on one of the measured NES X lanes
 (`x=88/144/168`), descends through a short overshoot, and curves 15 NES pixels
 left to approximately `y=136` after 324 frames. Its first paired boomerangs appear at frame 350
 and repeat every 256 frames. Both turn through measured 32-direction headings,
-capture Billy's position at NES `y=176`, and recalculate their return heading
+hold their launch offsets for one frame, capture Billy's position at NES
+`y=176`, and recalculate their return heading
 once before leaving the arena.
 
 The decoded enemy event stream runs until the Wanted gate; once the poster is

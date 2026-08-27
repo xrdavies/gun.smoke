@@ -910,7 +910,7 @@ class GunSmokeGame {
         projectile.projectileType = "boomerang";
         [projectile.vx, projectile.vy] = cutterBoomerangVelocity(heading);
         projectile.turnRate = cutterBoomerangHeadingToward(projectile.x, projectile.y, targetX * NES_WORLD_X_SCALE, this.scroll + targetY * NES_WORLD_Y_SCALE);
-        projectile.phase = 0;
+        projectile.phase = -1;
         projectile.nextFireAt = CUTTER_BOOMERANG_FIRST_TURN_DELAY;
         projectile.maxAge = CUTTER_BOOMERANG_LIFETIME;
         projectile.boomerangHeading = heading;
@@ -1667,22 +1667,26 @@ class GunSmokeGame {
       }
       const boomerangPathDriven = unit.kind === "enemyBullet" && unit.projectileType === "boomerang" && unit.boomerangHeading !== undefined;
       if (boomerangPathDriven) {
-        if (unit.phase === 1 || unit.phase === 3) {
-          unit.turnRate = cutterBoomerangHeadingToward(unit.x, unit.y, unit.targetX ?? this.player.x, unit.targetY ?? this.player.y);
-          unit.phase += 1;
-        }
-        while (unit.age >= unit.nextFireAt) {
-          unit.boomerangHeading = cutterBoomerangTurn(unit.boomerangHeading!, unit.turnRate);
-          unit.nextFireAt += CUTTER_BOOMERANG_TURN_INTERVAL;
-        }
-        [unit.vx, unit.vy] = cutterBoomerangVelocity(unit.boomerangHeading!);
-        unit.x += unit.vx * delta;
-        unit.y += unit.vy * delta;
-        if (unit.phase === 2 && unit.boomerangHeading === unit.turnRate) unit.phase = 3;
-        if (unit.phase === 0 && unit.y >= this.scroll + CUTTER_BOOMERANG_REAIM_Y_NES * NES_WORLD_Y_SCALE) {
-          unit.targetX = this.player.x;
-          unit.targetY = this.player.y;
-          unit.phase = 1;
+        if (unit.phase < 0) {
+          unit.phase = 0;
+        } else {
+          if (unit.phase === 1 || unit.phase === 3) {
+            unit.turnRate = cutterBoomerangHeadingToward(unit.x, unit.y, unit.targetX ?? this.player.x, unit.targetY ?? this.player.y);
+            unit.phase += 1;
+          }
+          while (unit.age >= unit.nextFireAt) {
+            unit.boomerangHeading = cutterBoomerangTurn(unit.boomerangHeading!, unit.turnRate);
+            unit.nextFireAt += CUTTER_BOOMERANG_TURN_INTERVAL;
+          }
+          [unit.vx, unit.vy] = cutterBoomerangVelocity(unit.boomerangHeading!);
+          unit.x += unit.vx * delta;
+          unit.y += unit.vy * delta;
+          if (unit.phase === 2 && unit.boomerangHeading === unit.turnRate) unit.phase = 3;
+          if (unit.phase === 0 && unit.y >= this.scroll + CUTTER_BOOMERANG_REAIM_Y_NES * NES_WORLD_Y_SCALE) {
+            unit.targetX = this.player.x;
+            unit.targetY = this.player.y;
+            unit.phase = 1;
+          }
         }
       } else if (unit.kind === "enemyBullet" && unit.turnRate !== 0) {
         const speed = Math.hypot(unit.vx, unit.vy);

@@ -325,7 +325,8 @@ then follows the measured 136-to-40/99 NES
 vertical combat profile while resuming horizontal movement at about
 1.72 NES X pixels per frame. At frame 350 it creates the paired `0x98/0x99`
 boomerangs from Boss-relative offsets `(-3,+3)` and `(+3,+2)` NES pixels,
-repeating every 256 frames. Both use a 32-direction steering state: initial
+holding those launch coordinates for the allocation frame and repeating every
+256 frames. Both use a 32-direction steering state: initial
 headings `14/18` turn toward fixed NES points `(224,176)/(32,176)` by one
 heading step every two frames. On reaching NES `y=176`, each captures Billy's
 position, turns toward it, then recalculates that return heading once. The

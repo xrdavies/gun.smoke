@@ -157,6 +157,10 @@ the runtime uses these measured timings at 60.098 Hz. Across complete traces,
 the airborne Y offset reaches about 18/32/89 NES pixels at frames 20/40/212;
 horizontal correction ends after roughly 40 frames. The landed state then
 moves with the measured scene-object scroll instead of freezing in world space.
+Player-contact dispatch at `$CB3D-$CB4E` clears airborne `0x2F` dynamite and
+returns without applying damage. Landed `0x3E` instead enters the normal hazard
+branch without the pre-hit clear, so the runtime permits contact defusal only
+during flight and treats the landed fuse as damaging.
 The same Round 1 traces show the Bomber actor descending one NES pixel per frame
 for 125 frames to `y=126` while its X coordinate remains fixed, then holding
 that height briefly before moving through relative NES checkpoints

@@ -155,6 +155,10 @@ export function dynamiteVerticalOffset(age: number): number {
   const amount = (frame - previous[0]) / (next[0] - previous[0]);
   return (previous[1] + (next[1] - previous[1]) * amount) * NES_WORLD_Y_SCALE;
 }
+
+export function dynamiteContactIsDefusable(age: number): boolean {
+  return age < DYNAMITE_AIRBORNE_DURATION;
+}
 export const SHOTGUNNER_FIRST_VOLLEY_DELAY = 108 / NES_FRAME_RATE;
 export const SHOTGUNNER_VOLLEY_INTERVAL = 51 / NES_FRAME_RATE;
 export const SHOTGUNNER_LIFETIME = 228 / NES_FRAME_RATE;

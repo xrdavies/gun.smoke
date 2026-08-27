@@ -10,6 +10,7 @@ const bossFramesLimit = Number(args.find((argument) => argument.startsWith("--bo
 const output = args.find((argument) => argument.startsWith("--out="))?.split("=")[1] ?? ".rom-traces/boss.json";
 const stateFile = args.find((argument) => argument.startsWith("--state="))?.split("=")[1];
 const attack = args.includes("--attack");
+const record = args.includes("--record");
 const clearField = args.includes("--clear-field");
 if (!fs.existsSync(filename)) {
   console.log(`Reference ROM not found: ${filename}`);
@@ -99,7 +100,7 @@ for (let frame = 0; frame < frames; frame += 1) {
   }
   if (bossStart === undefined || !boss) continue;
   const relativeFrame = frame - bossStart;
-  if (attack) {
+  if (attack || record) {
     bossFrames.push({
       frame: relativeFrame,
       ...boss,
@@ -141,7 +142,7 @@ const trace = {
   roundState: roundState(),
   mapperBank,
   bossChanges,
-  ...(attack ? { bossFrames } : {}),
+  ...(attack || record ? { bossFrames } : {}),
   ...(clearField ? { projectileFrames } : {}),
   projectileEvents,
 };

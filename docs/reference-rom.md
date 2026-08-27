@@ -510,6 +510,8 @@ Passing an ignored JSNES save with `--state=.rom-traces/round3-boss-state.json`
 starts directly at that Boss entrance. In snapshot mode the tracer also records
 the six low Boss-weapon slots, whose dispatch values can be outside the ordinary
 projectile range; for example Devil Hawk's five `0xA2` fireballs appear there.
+`--record` captures every Boss frame without injecting fire input or Boss damage;
+`--attack` remains the controlled player-fire variant.
 The output is an ignored observation artifact under `.rom-traces/`; it is not
 runtime game data or copied ROM code.
 

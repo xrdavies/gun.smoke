@@ -117,6 +117,16 @@ export function romEnemyDrop(flags: number, hasSpecialStock: boolean): "ammo" | 
   return flags & 0x80 ? hasSpecialStock ? "ammo" : "moneyBag" : undefined;
 }
 
+const ROM_ENEMY_SCORES: Readonly<Record<number, number>> = {
+  1: 100, 2: 100, 3: 300, 4: 300, 5: 100, 6: 100, 7: 100, 8: 100, 9: 100,
+  10: 400, 11: 100, 12: 200, 13: 200, 14: 200, 15: 200, 16: 200, 17: 200,
+  19: 400, 20: 400, 21: 100, 22: 100,
+};
+
+export function romEnemyScore(entityCode: number): number {
+  return ROM_ENEMY_SCORES[entityCode] ?? 100;
+}
+
 export function pistolShots(left: boolean, right: boolean): readonly { direction: number; offset: number }[] {
   return left && right
     ? [{ direction: 0, offset: -8 }, { direction: 0, offset: 8 }]

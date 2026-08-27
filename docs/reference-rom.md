@@ -227,6 +227,10 @@ On defeat, `$CD4E-$CDAA` converts an event's `0x80` flag into dispatch `0x4e`.
 If `$90/$94/$98/$9c` show no special stock, it increments that to `0x4f`;
 the `$E192` conversion table then maps them to Bullet (`0x29`) and Money
 (`0x24`) pickups respectively. Unflagged ROM enemies produce no random drop.
+The same defeat path calls `$E297`, which maps the initial dispatch through
+`$E335` and the BCD increment table at `$E2E9`; the resulting ordinary enemy
+score values are 100 (Gunman/Sniper/Bomber/Firebreather), 200
+(Ninja/Rifleman/Hatchet), 300 (Shotgunner), and 400 (Backstabber/Spear).
 An isolated `$B775` Rifleman descends one NES pixel per frame through age 121,
 enters its attack state at age 122, and emits five dispatch `0x30` shots at ages
 138, 154, 170, 186 and 202. It returns to its movement state at age 212,

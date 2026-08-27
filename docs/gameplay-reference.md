@@ -247,7 +247,10 @@ Breaking a barrel itself awards no points; only a collected Money Bag adds its
 200-point value.
 Enemy Money Bag and ammunition drops follow the decoded event flag: marked
 enemies drop Bullet supplies while any special stock remains, otherwise they
-drop a Money Bag; unmarked enemies do not drop either pickup.
+drop a Money Bag; unmarked enemies do not drop either pickup. Defeat score also
+uses the ROM dispatch table: Gunmen, Snipers, Bombers and Firebreathers are 100;
+Ninjas, Riflemen and Hatchet Throwers are 200; Shotgunners are 300; and
+Backstabbers and Spear Throwers are 400.
 
 After the second Wingate encounter the web recreation enters a separate ending
 and credits state instead of treating the win as Game Over.

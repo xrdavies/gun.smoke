@@ -1392,6 +1392,20 @@ class GunSmokeGame {
         unit.sprite.visible = unit.age >= unit.invulnerableUntil;
       } else if (unit.enemyType === "bomber") {
         const tracedBomber = unit.romBehavior === 4;
+        const throwDynamite = (): void => {
+          unit.bomberState = "throwing";
+          unit.nextFireAt = unit.age + BOMBER_THROW_DURATION;
+          unit.vx = 0;
+          unit.vy = 0;
+          const projectile = this.spawnEnemyProjectile(unit.x, unit.y);
+          if (projectile) {
+            projectile.projectileType = "dynamite";
+            projectile.romOriginY = projectile.y - this.scroll;
+            projectile.vx = (this.player.x - unit.x) * DYNAMITE_AIM_FACTOR / DYNAMITE_HORIZONTAL_DURATION;
+            projectile.vy = 0;
+            projectile.maxAge = DYNAMITE_LIFETIME;
+          }
+        };
         const startMovement = (): void => {
           unit.bomberState = "moving";
           unit.bomberDirection = Math.floor(this.nextRandom() * 8);
@@ -1403,7 +1417,7 @@ class GunSmokeGame {
             unit.x = unit.romOriginX ?? unit.x;
             unit.y = this.scroll + (unit.romOriginY ?? 0) + bomberOpeningY(unit.age);
           } else if (Math.abs(this.player.y - unit.y) < 64 * NES_WORLD_Y_SCALE && unit.y - this.scroll >= 32 * NES_WORLD_Y_SCALE) {
-            startMovement();
+            throwDynamite();
           } else {
             unit.y += NES_FRAME_RATE * NES_WORLD_Y_SCALE * delta;
           }
@@ -1420,18 +1434,7 @@ class GunSmokeGame {
           unit.y += unit.vy * delta;
           if (unit.age >= unit.nextFireAt) {
             if (bomberCanThrow(unit.y - this.scroll, this.player.y - this.scroll, this.nextRandom())) {
-              unit.bomberState = "throwing";
-              unit.nextFireAt = unit.age + BOMBER_THROW_DURATION;
-              unit.vx = 0;
-              unit.vy = 0;
-              const projectile = this.spawnEnemyProjectile(unit.x, unit.y);
-              if (projectile) {
-                projectile.projectileType = "dynamite";
-                projectile.romOriginY = projectile.y - this.scroll;
-                projectile.vx = (this.player.x - unit.x) * DYNAMITE_AIM_FACTOR / DYNAMITE_HORIZONTAL_DURATION;
-                projectile.vy = 0;
-                projectile.maxAge = DYNAMITE_LIFETIME;
-              }
+              throwDynamite();
             } else {
               startMovement();
             }

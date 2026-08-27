@@ -189,7 +189,8 @@ The Bullet loop at `$BE64-$BE87` skips zero stocks and increments only active,
 not-yet-capped weapons; runtime shop/refill checks use that current-stock
 distinction.
 An isolated `$B501` actor descends one NES pixel per frame until it enters the
-player's 64-pixel vertical range, then chooses among eight movement headings.
+player's 64-pixel vertical range; on the controlled entry trace it immediately
+starts its first 90-frame throw, then chooses among eight movement headings.
 Their durations are `64/38/32/14/16/14/32/38` frames and use the ROM's
 discrete velocity table. At the end of a movement segment, a half-probability
 decision either starts another segment or creates its `0x72`/dispatch `0x2F`

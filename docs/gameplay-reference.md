@@ -242,9 +242,9 @@ masked to an even sector. Later arcs alternate between reversing the previous
 route and selecting a new four-way random route, so neither form has a fixed
 shot schedule or actor lifetime.
 
-Round 1 Bombers descend into range, choose among eight measured movement
-directions and durations, and make a half-probability throw decision between
-segments. Their dynamite has explicit flight, landed, defusable, and delayed
+Round 1 Bombers descend into range and make their first throw on the measured
+entry transition, then choose among eight measured movement directions and
+durations with a half-probability throw decision between segments. Their dynamite has explicit flight, landed, defusable, and delayed
 explosion phases. Boss and enemy projectiles are typed separately as bullets,
 boomerangs, fireballs, shuriken, spears, hatchets, dynamite, or grenades. Spear and
 hatchet projectiles also use distinct proportions and rotation behavior rather

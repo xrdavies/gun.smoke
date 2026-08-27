@@ -767,6 +767,10 @@ describe("Gun.Smoke vertical slice", () => {
     expect(wingateCombatX(WINGATE_ENTRY_DURATION + 34 / NES_FRAME_RATE, 0, 152) * NES_WORLD_X_SCALE).toBe(472.5);
     expect(wingateCombatY(WINGATE_ENTRY_DURATION + 560 / NES_FRAME_RATE)).toBe(204.75);
     expect(wingateCombatX(WINGATE_ENTRY_DURATION + 560 / NES_FRAME_RATE, 1, 192)).toBe(114);
+    expect(wingateCombatX(WINGATE_ENTRY_DURATION + 3417 / NES_FRAME_RATE, 0, 152)).toBeCloseTo(134, 9);
+    expect(wingateCombatY(WINGATE_ENTRY_DURATION + 3417 / NES_FRAME_RATE)).toBeCloseTo(50 * NES_WORLD_Y_SCALE, 9);
+    expect(wingateCombatX(WINGATE_ENTRY_DURATION + 3417 / NES_FRAME_RATE, 1, 192)).toBeCloseTo(148, 9);
+    expect(wingateCombatY(WINGATE_ENTRY_DURATION + 3417 / NES_FRAME_RATE, 1)).toBeCloseTo(66 * NES_WORLD_Y_SCALE, 9);
     expect(WINGATE_SECOND_ENTRY_Y_NES).toBe(0);
     expect(WINGATE_SECOND_ENTRY_Y).toBe(0);
     expect(WINGATE_ENTRY_RUSH_DURATION).toBeCloseTo(34 / NES_FRAME_RATE, 9);

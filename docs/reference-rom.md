@@ -486,7 +486,7 @@ opening, both encounters hold X for about 17 frames before completing a
 measured 17-frame horizontal rush. The runtime now uses decoded unhurt-record X
 keyframes, mirrored from the selected entry lane, through the later combat
 sequence instead of constant-speed horizontal drift. The runtime now replays
-compressed X/Y keyframes from both unhurt traces through combat frame 1,049;
+compressed X/Y keyframes from both unhurt traces through combat frame 3,417;
 the random attack scheduler remains an explicit approximation beyond those
 recorded decisions.
 The first encounter clears both ordinary and low-slot projectile actors before

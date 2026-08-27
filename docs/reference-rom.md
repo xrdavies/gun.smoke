@@ -476,7 +476,7 @@ shell-to-mine chain. During the random action branch, the ROM's `$B6` decision
 counter stops while the short route lasts 53 frames (`b8=16`) or the long route
 lasts 122 frames (`b8=40` followed by `b8=32`); the runtime extends its existing
 76-frame clock by those measured windows. The runtime replays the controlled
-attack trace's multi-hop X/Y profile through combat frame 730; later direction
+attack trace's multi-hop X/Y profile through combat frame 3,418; later direction
 selection remains an approximation.
 Round 6's first Wingate encounter is dispatch `0xa3`, variant `0x65`. Both
 encounters select NES `x=64/104/152/192` at `y=0`, hold that lane and reach

@@ -281,6 +281,7 @@ class GunSmokeGame {
   enemyFireClock = 1.2;
   bossFireClock = 1;
   invulnerable = 0;
+  invulnerableDestroysEnemies = false;
   deathClock = 0;
   deathCommitted = false;
   bossSpawned = false;
@@ -503,6 +504,7 @@ class GunSmokeGame {
     this.fireMask = 0;
     this.bombLatch = false;
     this.invulnerable = 0;
+    this.invulnerableDestroysEnemies = false;
     this.deathClock = 0;
     this.deathCommitted = false;
     this.bossSpawned = false;
@@ -632,6 +634,7 @@ class GunSmokeGame {
     if (this.shopOpen) return;
     this.camera.position.y = this.scroll + 270;
     this.invulnerable = Math.max(0, this.invulnerable - delta);
+    if (this.invulnerable === 0) this.invulnerableDestroysEnemies = false;
     const movement = WORLD_PLAYER_SPEED * (this.powerups.boots > 0 ? BOOTS_SPEED_MULTIPLIER : 1);
     const halfRoad = (ROAD_WIDTHS[this.stage - 1] ?? 520) / 2;
     const nextX = clamp(this.player.x + (this.actions.value("right") - this.actions.value("left")) * movement * delta, 480 - halfRoad + 22, 480 + halfRoad - 22);
@@ -1876,8 +1879,8 @@ class GunSmokeGame {
         unit.hp = 0;
         this.showMessage("DYNAMITE DEFUSED");
       } else if ((unit.kind === "enemy" || unit.kind === "enemyBullet") && this.invulnerable > 0 && distance(unit, this.player) <= unit.radius + 20) {
-        if (unit.kind === "enemy") this.defeatTarget(unit);
-        else unit.hp = 0;
+        if (unit.kind === "enemy" && this.invulnerableDestroysEnemies) this.defeatTarget(unit);
+        else if (unit.kind === "enemyBullet" && contactSourceShouldClear(unit.kind, unit.projectileType, unit.projectileType === "dynamite" && dynamiteContactIsDefusable(unit.age))) unit.hp = 0;
       } else if ((unit.kind === "enemy" || unit.kind === "boss" || unit.kind === "enemyBullet") && this.invulnerable <= 0 && distance(unit, this.player) <= unit.radius + 20) {
         this.takeHit();
         if (contactSourceShouldClear(unit.kind, unit.projectileType, unit.projectileType === "dynamite" && dynamiteContactIsDefusable(unit.age))) unit.hp = 0;
@@ -1996,6 +1999,7 @@ class GunSmokeGame {
       this.horseHealth = 3;
     } else if (item === "blueYashichi") {
       this.invulnerable = Math.max(this.invulnerable, BLUE_YASHICHI_DURATION);
+      this.invulnerableDestroysEnemies = true;
     } else if (item === "redYashichi") {
       const pickup = lifePickup(this.lives);
       this.lives = pickup.lives;
@@ -2011,6 +2015,7 @@ class GunSmokeGame {
       this.horseHealth -= 1;
       this.hasHorse = this.horseHealth > 0;
       this.invulnerable = HORSE_HIT_INVULNERABILITY;
+      this.invulnerableDestroysEnemies = false;
       this.beep(170, 0.12);
       this.showMessage(this.hasHorse ? `HORSE ${this.horseHealth}` : "HORSE DOWN");
       this.updateHud();
@@ -2019,6 +2024,7 @@ class GunSmokeGame {
     if (this.smartBombArmed && this.smartBombs > 0) {
       this.smartBombs -= 1;
       this.smartBombArmed = false;
+      this.invulnerableDestroysEnemies = true;
       this.clearEnemyUnits();
       this.clearEnemyProjectiles();
       this.invulnerable = 1;

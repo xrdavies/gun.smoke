@@ -78,7 +78,13 @@ With the local ROM present, `npm run generate:rom-event-data` regenerates the
 committed compressed runtime event stream from that manifest. Position-byte
 bit 5 selects the six-slot object pool at `$0402-$0407`; clear bit 5 selects
 the seven-slot enemy pool at `$0410-$0416`. Both pools remain in the runtime
-event stream with separate capacities.
+event stream with separate capacities. The compressed behavior and object
+streams retain each record's original `$8C00` script index; runtime merges them
+by trigger and script index so mixed enemy/object/shop groups preserve their
+original order and compete for shared slots in the same sequence as the ROM.
+At `$FA89-$FA92`, a full selected pool skips the record and `$FAD8` advances
+the script pointer; runtime applies the same one-shot capacity check to shops,
+containers, props and behavior entities instead of retrying or exempting shops.
 The generated `ROUND_ROM_OBJECT_EVENTS` stream retains no-behavior object
 records. The runtime consumes dispatch `30/31` weapon and supply-shop triggers,
 renders dispatch `0x08` scene props, and preserves dispatch `0x07`

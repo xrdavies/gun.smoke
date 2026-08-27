@@ -33,7 +33,8 @@ import { canSpawnEnemyProjectile } from "./game-constants";
 import { canSpawnBossProjectile } from "./game-constants";
 import { romEnemyDrop } from "./game-constants";
 import { roundCollisionBlocks, ROUND_COLLISION_ROWS } from "./round-collision";
-import { canSpawnRomPool, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
+import { canSpawnRomPool, compareRomEventOrder, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_NON_ENEMY_OBJECT_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
+import type { RomEnemyEvent, RomObjectEvent } from "./rom-event-data";
 
 type GameAction =
   | "left"
@@ -710,8 +711,7 @@ class GunSmokeGame {
 
   private updateSpawns(delta: number): void {
     this.spawnClock -= delta;
-    this.spawnRomEnemyEvents();
-    this.spawnRomObjectEvents();
+    this.spawnRomEvents();
     if (this.scroll >= (ROUND_BOSS_TRIGGERS[this.stage - 1] ?? ROUND_BOSS_TRIGGERS[0]!) && this.hasWanted && !this.bossSpawned) this.spawnBoss();
     if (this.romEventMode) return;
     if (this.spawnClock <= 0) {
@@ -725,96 +725,97 @@ class GunSmokeGame {
     }
   }
 
-  private spawnRomObjectEvents(): void {
-    const events = ROUND_ROM_OBJECT_EVENTS[this.stage - 1] ?? [];
-    while (this.romObjectCursor < events.length) {
-      const event = events[this.romObjectCursor];
-      if (!event || romObjectWorldAt(event) > this.scroll) break;
-      this.romObjectCursor += 1;
-      const activeObjects = this.units.filter((unit) => unit.romPool === event.pool && unit.romEntityCode !== undefined && unit.hp > 0).length;
-      if (event.semantic === "weaponShop" || event.semantic === "supplyShop") {
-        const keeper = this.spawnUnit("shopkeeper", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), 1);
-        keeper.vy = ROM_OBJECT_DROP_SPEED;
-        keeper.shopIndex = ++this.shopSpawnCursor;
-        keeper.romEntityCode = event.entityCode;
-        keeper.romFlags = event.flags;
-        keeper.romPool = event.pool;
-        continue;
+  private spawnRomEvents(): void {
+    if (this.bossSpawned) return;
+    const enemyEvents = ROUND_ROM_ENEMY_EVENTS[this.stage - 1] ?? [];
+    const objectEvents = ROUND_ROM_OBJECT_EVENTS[this.stage - 1] ?? [];
+    while (this.romEventCursor < enemyEvents.length || this.romObjectCursor < objectEvents.length) {
+      const enemyEvent = enemyEvents[this.romEventCursor];
+      const objectEvent = objectEvents[this.romObjectCursor];
+      const enemyFirst = enemyEvent !== undefined && (objectEvent === undefined || compareRomEventOrder(enemyEvent, objectEvent) < 0);
+      const eventAt = enemyFirst ? romEventWorldAt(enemyEvent) : objectEvent ? romObjectWorldAt(objectEvent) : Number.POSITIVE_INFINITY;
+      if (eventAt > this.scroll) break;
+      if (enemyFirst) {
+        this.romEventCursor += 1;
+        this.spawnRomEnemyEvent(enemyEvent);
+      } else if (objectEvent) {
+        this.romObjectCursor += 1;
+        this.spawnRomObjectEvent(objectEvent);
       }
-      if (event.semantic === "sceneObject" && ROM_SCENE_PROP_DISPATCH_TYPES.includes(event.dispatchType as 8)) {
-        if (!canSpawnRomPool(event.pool, activeObjects)) continue;
-        const prop = this.spawnUnit("sceneObject", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), 1);
-        prop.romEntityCode = event.entityCode;
-        prop.romFlags = event.flags;
-        prop.romPool = event.pool;
-        prop.sprite.color = [0.58 + ((event.entityCode - 44) % 3) * 0.08, 0.68, 0.78, 1];
-        continue;
-      }
-      if (event.semantic !== "sceneObject" || !ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES.includes(event.dispatchType as 7)) continue;
-      if (!canSpawnRomPool(event.pool, activeObjects)) continue;
-      const pickup = ROM_OBJECT_PICKUPS[event.entityCode as keyof typeof ROM_OBJECT_PICKUPS];
-      const container = this.spawnUnit(pickup || ROM_EMPTY_BARREL_ENTITY_CODES.includes(event.entityCode as 32 | 41) ? "barrel" : "sceneObject", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), 1, undefined, pickup);
-      container.vy = ROM_OBJECT_DROP_SPEED;
-      container.romEntityCode = event.entityCode;
-      container.romFlags = event.flags;
-      container.romPool = event.pool;
     }
   }
 
-  private spawnRomEnemyEvents(): void {
-    if (this.bossSpawned) return;
-    const events = ROUND_ROM_ENEMY_EVENTS[this.stage - 1] ?? [];
-    const activePools = { enemy: 0, object: 0 };
-    for (const unit of this.units) {
-      if (unit.romEntityCode !== undefined && unit.hp > 0) activePools[unit.romPool ?? "enemy"] += 1;
+  private spawnRomObjectEvent(event: RomObjectEvent): void {
+    const activeObjects = this.units.filter((unit) => unit.romPool === event.pool && unit.romEntityCode !== undefined && unit.hp > 0).length;
+    if (!canSpawnRomPool(event.pool, activeObjects)) return;
+    if (event.semantic === "weaponShop" || event.semantic === "supplyShop") {
+      const keeper = this.spawnUnit("shopkeeper", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), 1);
+      keeper.vy = ROM_OBJECT_DROP_SPEED;
+      keeper.shopIndex = ++this.shopSpawnCursor;
+      keeper.romEntityCode = event.entityCode;
+      keeper.romFlags = event.flags;
+      keeper.romPool = event.pool;
+      return;
     }
-    while (this.romEventCursor < events.length) {
-      const event = events[this.romEventCursor];
-      if (!event || romEventWorldAt(event) > this.scroll) break;
-      this.romEventCursor += 1;
-      if (event.pool === "object" && ROM_NON_ENEMY_OBJECT_BEHAVIORS.includes(event.behavior as 5)) {
-        if (!canSpawnRomPool("object", activePools.object)) continue;
-        const rock = this.spawnUnit("enemyBullet", clamp(romEventWorldX(event), 40, 920), this.scroll + romEventWorldY(event), 1);
-        rock.projectileType = "rock";
-        rock.romBehavior = event.behavior;
-        rock.romEntityCode = event.entityCode;
-        rock.romFlags = event.flags;
-        rock.romPool = "object";
-        rock.vx = (event.x < 128 ? 1 : -1) * ROCK_WORLD_SPEED_X;
-        rock.vy = ROCK_WORLD_SPEED_Y;
-        rock.maxAge = ROCK_LIFETIME;
-        rock.radius = 15;
-        rock.sprite.size = { x: 24, y: 24 };
-        rock.sprite.color = [0.55, 0.58, 0.62, 1];
-        activePools.object += 1;
-        continue;
-      }
-      if (!canSpawnRomPool(event.pool, activePools[event.pool])) continue;
-      const enemyType = ROM_BEHAVIOR_ENEMY_TYPES[event.behavior] ?? "gunman";
-      const eventX = romEventWorldX(event);
-      const enemy = this.spawnUnit(
-        "enemy",
-        event.behavior === 3 ? eventX : clamp(eventX, 40, 920),
-        this.scroll + romEventWorldY(event),
-        1 + Number(this.stage >= 4),
-        enemyType,
-      );
-      enemy.romBehavior = event.behavior;
-      enemy.romEntityCode = event.entityCode;
-      enemy.romFlags = event.flags;
-      enemy.romPool = event.pool;
-      enemy.romOriginX = enemy.x;
-      enemy.romOriginY = romEventWorldY(event);
-      if (event.behavior === 0) enemy.maxAge = SNIPER_LIFETIME;
-      if (event.behavior === 1) enemy.maxAge = SHOTGUNNER_LIFETIME;
-      if (event.behavior === 2) enemy.maxAge = GUNMAN_LIFETIME;
-      if (event.behavior === 3) enemy.maxAge = BACKSTABBER_RAID_LIFETIME;
-      if (event.behavior === 8) enemy.maxAge = BACKSTABBER_AMBUSH_LIFETIME;
-      if (event.behavior === 7) enemy.maxAge = RIFLEMAN_LIFETIME;
-      enemy.vx = enemyType === "sniper" ? 0 : (this.nextRandom() - 0.5) * (42 + this.stage * 6);
-      enemy.vy = enemyType === "backstabber" ? -100 : enemyType === "sniper" ? 0 : 24 + this.stage * 6;
-      activePools[event.pool] += 1;
+    if (event.semantic === "sceneObject" && ROM_SCENE_PROP_DISPATCH_TYPES.includes(event.dispatchType as 8)) {
+      const prop = this.spawnUnit("sceneObject", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), 1);
+      prop.romEntityCode = event.entityCode;
+      prop.romFlags = event.flags;
+      prop.romPool = event.pool;
+      prop.sprite.color = [0.58 + ((event.entityCode - 44) % 3) * 0.08, 0.68, 0.78, 1];
+      return;
     }
+    if (event.semantic !== "sceneObject" || !ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES.includes(event.dispatchType as 7)) return;
+    const pickup = ROM_OBJECT_PICKUPS[event.entityCode as keyof typeof ROM_OBJECT_PICKUPS];
+    const container = this.spawnUnit(pickup || ROM_EMPTY_BARREL_ENTITY_CODES.includes(event.entityCode as 32 | 41) ? "barrel" : "sceneObject", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), 1, undefined, pickup);
+    container.vy = ROM_OBJECT_DROP_SPEED;
+    container.romEntityCode = event.entityCode;
+    container.romFlags = event.flags;
+    container.romPool = event.pool;
+  }
+
+  private spawnRomEnemyEvent(event: RomEnemyEvent): void {
+    const active = this.units.filter((unit) => unit.romPool === event.pool && unit.romEntityCode !== undefined && unit.hp > 0).length;
+    if (event.pool === "object" && ROM_NON_ENEMY_OBJECT_BEHAVIORS.includes(event.behavior as 5)) {
+      if (!canSpawnRomPool("object", active)) return;
+      const rock = this.spawnUnit("enemyBullet", clamp(romEventWorldX(event), 40, 920), this.scroll + romEventWorldY(event), 1);
+      rock.projectileType = "rock";
+      rock.romBehavior = event.behavior;
+      rock.romEntityCode = event.entityCode;
+      rock.romFlags = event.flags;
+      rock.romPool = "object";
+      rock.vx = (event.x < 128 ? 1 : -1) * ROCK_WORLD_SPEED_X;
+      rock.vy = ROCK_WORLD_SPEED_Y;
+      rock.maxAge = ROCK_LIFETIME;
+      rock.radius = 15;
+      rock.sprite.size = { x: 24, y: 24 };
+      rock.sprite.color = [0.55, 0.58, 0.62, 1];
+      return;
+    }
+    if (!canSpawnRomPool(event.pool, active)) return;
+    const enemyType = ROM_BEHAVIOR_ENEMY_TYPES[event.behavior] ?? "gunman";
+    const eventX = romEventWorldX(event);
+    const enemy = this.spawnUnit(
+      "enemy",
+      event.behavior === 3 ? eventX : clamp(eventX, 40, 920),
+      this.scroll + romEventWorldY(event),
+      1 + Number(this.stage >= 4),
+      enemyType,
+    );
+    enemy.romBehavior = event.behavior;
+    enemy.romEntityCode = event.entityCode;
+    enemy.romFlags = event.flags;
+    enemy.romPool = event.pool;
+    enemy.romOriginX = enemy.x;
+    enemy.romOriginY = romEventWorldY(event);
+    if (event.behavior === 0) enemy.maxAge = SNIPER_LIFETIME;
+    if (event.behavior === 1) enemy.maxAge = SHOTGUNNER_LIFETIME;
+    if (event.behavior === 2) enemy.maxAge = GUNMAN_LIFETIME;
+    if (event.behavior === 3) enemy.maxAge = BACKSTABBER_RAID_LIFETIME;
+    if (event.behavior === 8) enemy.maxAge = BACKSTABBER_AMBUSH_LIFETIME;
+    if (event.behavior === 7) enemy.maxAge = RIFLEMAN_LIFETIME;
+    enemy.vx = enemyType === "sniper" ? 0 : (this.nextRandom() - 0.5) * (42 + this.stage * 6);
+    enemy.vy = enemyType === "backstabber" ? -100 : enemyType === "sniper" ? 0 : 24 + this.stage * 6;
   }
 
   private updateEnemyFire(delta: number): void {

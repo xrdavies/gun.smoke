@@ -3,14 +3,12 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
-async function runPistolWithClock(page: Page, duration: number): Promise<void> {
+async function runPistolWithClock(page: Page, duration: number, keys: readonly string[] = ["z", "x"]): Promise<void> {
   for (let elapsed = 0; elapsed < duration; elapsed += 120) {
     const burst = Math.min(32, duration - elapsed);
-    await page.keyboard.down("z");
-    await page.keyboard.down("x");
+    for (const key of keys) await page.keyboard.down(key);
     await page.clock.runFor(burst);
-    await page.keyboard.up("x");
-    await page.keyboard.up("z");
+    for (const key of keys) await page.keyboard.up(key);
     if (duration - elapsed > burst) await page.clock.runFor(Math.min(120 - burst, duration - elapsed - burst));
   }
 }
@@ -114,15 +112,13 @@ test("reaches the first ROM weapon shop", async ({ page }) => {
   await page.locator("#start-button").click();
   await page.locator("#continue-button").click();
   await page.locator("#briefing-button").click();
-  await page.keyboard.down("ArrowUp");
   await page.keyboard.down("ArrowLeft");
-  await runPistolWithClock(page, 45_000);
+  await runPistolWithClock(page, 45_000, ["x"]);
   await page.keyboard.up("ArrowLeft");
   await page.keyboard.down("ArrowRight");
-  await runPistolWithClock(page, 450);
+  await runPistolWithClock(page, 450, ["x"]);
   await page.keyboard.up("ArrowRight");
-  if (!await page.locator("#shop").isVisible()) await runPistolWithClock(page, 8_000);
-  await page.keyboard.up("ArrowUp");
+  if (!await page.locator("#shop").isVisible()) await runPistolWithClock(page, 8_000, ["x"]);
   await expect(page.locator("#shop")).toBeVisible();
   await expect(page.locator("#lives-label")).not.toHaveText("LIVES 0");
   await expect(page.locator("#shop-title")).toHaveText("WEAPON SHOP / ROUND 1");

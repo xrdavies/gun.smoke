@@ -798,7 +798,7 @@ class GunSmokeGame {
   private updateSpawns(delta: number): void {
     this.spawnClock -= delta;
     this.spawnRomEvents();
-    if (this.scroll >= (ROUND_BOSS_TRIGGERS[this.stage - 1] ?? ROUND_BOSS_TRIGGERS[0]!) && this.hasWanted && !this.bossSpawned) this.spawnBoss();
+    if (this.scroll >= (ROUND_BOSS_TRIGGERS[this.stage - 1] ?? ROUND_BOSS_TRIGGERS[0]!) && this.hasWanted && !this.bossSpawned && this.wingateRespawnClock <= 0) this.spawnBoss();
     if (this.romEventMode) return;
     if (this.spawnClock <= 0) {
       const segments = ROUND_SEGMENTS[this.stage - 1] ?? ROUND_SEGMENTS[0]!;

@@ -2007,6 +2007,7 @@ class GunSmokeGame {
     unit.x = lane[0];
     unit.bossEntryX = unit.x;
     unit.bossEntryY = lane[1];
+    unit.sprite.visible = false;
     this.bossFireClock = NINJA_BOSS_TELEPORT_DELAY + NINJA_BOSS_FIRST_PREPARE_DELAY;
     this.showMessage("NINJA SMOKE");
   }

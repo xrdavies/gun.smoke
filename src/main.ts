@@ -1683,7 +1683,7 @@ class GunSmokeGame {
           } else if (topOpportunity) unit.nextFireAt += GUNMAN_SHOT_OPPORTUNITY_INTERVAL;
         }
       }
-      if (followsRomScroll) unit.y = Math.min(unit.y, this.scroll + ROM_ENEMY_SCREEN_MAX_Y);
+      if (followsRomScroll && unit.romBehavior !== 4) unit.y = Math.min(unit.y, this.scroll + ROM_ENEMY_SCREEN_MAX_Y);
       if (unit.x < 32 || unit.x > 928) unit.vx *= -1;
     } else if (unit.kind === "boss") {
       const ninjaCycleStart = this.stage === 4 ? unit.bossCycleStart ?? 0 : 0;

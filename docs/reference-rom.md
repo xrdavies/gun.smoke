@@ -341,13 +341,14 @@ then reuses dispatch `0xa3`, variant `0x65` and the same 151-frame vertical
 opening, but enters on NES lane `x=192`; `$BA=1` distinguishes this second
 encounter. The runtime preserves the delay, separate entry lane, and the
 phase-specific vertical combat profile.
-With ordinary enemy slots suppressed, the first encounter emits six low-slot
-`0x30` bullets beginning at frame 4 and spaced 12 frames apart; each uses the
-Boss X minus 8 NES pixels and stays on that launch lane. The next volley starts
-24 frames after the sixth. Vertical bullets move 2 NES pixels per frame.
-The real Wingate first fires at frame 277, emits three shots at the same
-12-frame cadence, then leaves a measured 680-frame gap before the next attack
-state. The runtime uses these phase-specific timings and sequential shots.
+Both encounters begin attack checks at their measured phase time: frame 4 for
+the decoy and frame 277 for real Wingate. A check repeats every 12 frames, then
+requires a three-of-four random gate and Billy inside the downward heading
+sector before allocating a projectile. This explains skipped checks and the
+non-fixed volley lengths in longer traces. Each `0x30` bullet begins at Boss
+offset `(-8,+6)` NES pixels, uses the routine's quantized 32-direction aim, and
+releases after about 64 frames. Runtime applies this shared state rule instead
+of the former fixed six-shot/three-shot sequences.
 
 Current behavior map:
 

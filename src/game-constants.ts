@@ -623,13 +623,12 @@ export const WINGATE_MOVEMENT_SPEED = (131 / 240) * NES_FRAME_RATE * NES_WORLD_X
 export const WINGATE_SECOND_SPAWN_DELAY = 264 / NES_FRAME_RATE;
 export const WINGATE_FIRST_SHOT_DELAY = 4 / NES_FRAME_RATE;
 export const WINGATE_SECOND_FIRST_SHOT_DELAY = 277 / NES_FRAME_RATE;
-export const WINGATE_SHOT_INTERVAL = 12 / NES_FRAME_RATE;
-export const WINGATE_FIRST_VOLLEY_GAP = 24 / NES_FRAME_RATE;
-export const WINGATE_SECOND_VOLLEY_GAP = 680 / NES_FRAME_RATE;
-export const WINGATE_FIRST_VOLLEY_SIZE = 6;
-export const WINGATE_SECOND_VOLLEY_SIZE = 3;
-export const WINGATE_BULLET_SPEED = 2 * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
+export const WINGATE_ATTACK_INTERVAL = 12 / NES_FRAME_RATE;
+export const WINGATE_FIRE_CHANCE = 0.75;
+export const WINGATE_BULLET_LIFETIME = 64 / NES_FRAME_RATE;
+export const WINGATE_BULLET_VELOCITIES_NES = [[1.15625, 1.40625], [0.9140625, 1.65625], [0.625, 1.8515625], [0.3125, 1.9453125], [0, 2], [-0.3125, 1.9453125], [-0.625, 1.8515625], [-0.9140625, 1.65625], [-1.15625, 1.40625]] as const;
 export const WINGATE_PROJECTILE_X_OFFSET_NES = -8;
+export const WINGATE_PROJECTILE_Y_OFFSET_NES = 6;
 
 export function wingateOpeningY(age: number): number {
   return Math.max(0, Math.min(1, age / WINGATE_ENTRY_DURATION)) * WINGATE_ENTRY_END_Y;
@@ -653,10 +652,19 @@ export function wingateCombatY(age: number, phase = 0): number {
   return (previous[1] + (next[1] - previous[1]) * amount) * NES_WORLD_Y_SCALE;
 }
 
-export function wingateShotCooldown(phase: number, shotsFired: number): number {
-  const volleySize = phase === 0 ? WINGATE_FIRST_VOLLEY_SIZE : WINGATE_SECOND_VOLLEY_SIZE;
-  if (shotsFired % volleySize !== 0) return WINGATE_SHOT_INTERVAL;
-  return phase === 0 ? WINGATE_FIRST_VOLLEY_GAP : WINGATE_SECOND_VOLLEY_GAP;
+export function wingateAimHeading(originX: number, originY: number, targetX: number, targetY: number): number {
+  const angle = Math.atan2((targetY - originY) / NES_WORLD_Y_SCALE, (targetX - originX) / NES_WORLD_X_SCALE);
+  return (Math.round(angle / (Math.PI / 16)) + 8 + 32) % 32;
+}
+
+export function wingateCanFire(originX: number, originY: number, targetX: number, targetY: number, random: number): boolean {
+  const heading = wingateAimHeading(originX, originY, targetX, targetY);
+  return random >= 1 - WINGATE_FIRE_CHANCE && heading >= 12 && heading <= 20;
+}
+
+export function wingateProjectileVelocity(originX: number, originY: number, targetX: number, targetY: number): readonly [number, number] {
+  const velocity = WINGATE_BULLET_VELOCITIES_NES[wingateAimHeading(originX, originY, targetX, targetY) - 12] ?? WINGATE_BULLET_VELOCITIES_NES[4];
+  return [velocity[0] * NES_FRAME_RATE * NES_WORLD_X_SCALE, velocity[1] * NES_FRAME_RATE * NES_WORLD_Y_SCALE];
 }
 
 

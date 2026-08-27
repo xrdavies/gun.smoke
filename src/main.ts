@@ -24,7 +24,7 @@ import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "./game-constants";
 import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, pistolBulletSpeedFactor, pistolVelocities, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
 import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, FATMAN_JOE_MOVEMENT_SPEED, FATMAN_JOE_SHOT_INTERVAL, FATMAN_JOE_VOLLEY_GAP, FATMAN_JOE_VOLLEY_SIZE, fatmanJoeCombatY } from "./game-constants";
-import { WINGATE_BULLET_SPEED, WINGATE_ENTRY_RUSH_DELAY, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateCombatY, wingateShotCooldown } from "./game-constants";
+import { WINGATE_ATTACK_INTERVAL, WINGATE_BULLET_LIFETIME, wingateCanFire, WINGATE_ENTRY_RUSH_DELAY, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateCombatY } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_LIFETIME, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { CUTTER_ENTRY_DURATION, CUTTER_MOVEMENT_SPEED, cutterCombatY, cutterOpeningY } from "./game-constants";
 import { DEVIL_HAWK_ENTRY_DURATION, DEVIL_HAWK_FIREBALL_FAN_NES, DEVIL_HAWK_FIREBALL_SIDE_FANS_NES, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_POST_ENTRY_X_HOLD, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY } from "./game-constants";
@@ -864,15 +864,17 @@ class GunSmokeGame {
       return;
     }
     if (this.stage === MAX_STAGE) {
-      const projectile = this.spawnEnemyProjectile(boss.x + WINGATE_PROJECTILE_X_OFFSET_NES * NES_WORLD_X_SCALE, boss.y + 24, true);
-      if (projectile) {
-        projectile.vx = 0;
-        projectile.vy = WINGATE_BULLET_SPEED;
+      if (wingateCanFire(boss.x, boss.y, this.player.x, this.player.y, this.nextRandom())) {
+        const projectile = this.spawnEnemyProjectile(boss.x + WINGATE_PROJECTILE_X_OFFSET_NES * NES_WORLD_X_SCALE, boss.y + WINGATE_PROJECTILE_Y_OFFSET_NES * NES_WORLD_Y_SCALE, true);
+        if (projectile) {
+          [projectile.vx, projectile.vy] = wingateProjectileVelocity(boss.x, boss.y, this.player.x, this.player.y);
+          projectile.maxAge = WINGATE_BULLET_LIFETIME;
+          boss.volleysFired += 1;
+          this.beep(258, 0.045);
+        }
       }
       boss.fired = true;
-      boss.volleysFired += 1;
-      this.bossFireClock = wingateShotCooldown(this.wingatePhase, boss.volleysFired);
-      this.beep(258, 0.045);
+      this.bossFireClock = WINGATE_ATTACK_INTERVAL;
       return;
     }
     if (this.stage === 2) {

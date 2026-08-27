@@ -18,7 +18,7 @@ import { RIFLE_BULLET_SPEED_MULTIPLIER } from "../src/game-constants";
 import { BOSS_PROJECTILE_CAPACITY, canSpawnBossProjectile, canSpawnEnemyProjectile, canSpawnPlayerBullet, ENEMY_PROJECTILE_CAPACITY, machineGunVelocities, pistolBulletSpeedFactor, pistolShots, pistolVelocities, PLAYER_BULLET_CAPACITY, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "../src/game-constants";
 import { MAX_POWERUP_STOCK, POWERUP_OVERFLOW_SCORE, storedPowerupPickup } from "../src/game-constants";
 import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, FATMAN_JOE_MOVEMENT_SPEED, FATMAN_JOE_SHOT_INTERVAL, FATMAN_JOE_VOLLEY_GAP, FATMAN_JOE_VOLLEY_INTERVAL, FATMAN_JOE_VOLLEY_SIZE } from "../src/game-constants";
-import { WINGATE_BULLET_SPEED, WINGATE_ENTRY_RUSH_DELAY, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_FIRST_VOLLEY_GAP, WINGATE_FIRST_VOLLEY_SIZE, WINGATE_MOVEMENT_SPEED, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_SECOND_FIRST_SHOT_DELAY, WINGATE_SECOND_VOLLEY_GAP, WINGATE_SECOND_VOLLEY_SIZE, WINGATE_SHOT_INTERVAL, wingateCombatY, wingateShotCooldown } from "../src/game-constants";
+import { WINGATE_ATTACK_INTERVAL, wingateAimHeading, WINGATE_BULLET_LIFETIME, WINGATE_BULLET_VELOCITIES_NES, wingateCanFire, WINGATE_ENTRY_RUSH_DELAY, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRE_CHANCE, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateCombatY } from "../src/game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_LIFETIME, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "../src/game-constants";
 import { CUTTER_MOVEMENT_SPEED } from "../src/game-constants";
 import { DEVIL_HAWK_FIREBALL_FAN_NES, DEVIL_HAWK_FIREBALL_SIDE_FANS_NES, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_JUMP_PERIOD, DEVIL_HAWK_VOLLEY_INTERVAL } from "../src/game-constants";
@@ -578,17 +578,20 @@ describe("Gun.Smoke vertical slice", () => {
     expect(WINGATE_SECOND_SPAWN_DELAY).toBeCloseTo(264 / NES_FRAME_RATE, 9);
     expect(WINGATE_FIRST_SHOT_DELAY).toBeCloseTo(4 / NES_FRAME_RATE, 9);
     expect(WINGATE_SECOND_FIRST_SHOT_DELAY).toBeCloseTo(277 / NES_FRAME_RATE, 9);
-    expect(WINGATE_BULLET_SPEED).toBeCloseTo(2 * NES_FRAME_RATE * (540 / 240), 9);
+    expect(WINGATE_ATTACK_INTERVAL).toBeCloseTo(12 / NES_FRAME_RATE, 9);
+    expect(WINGATE_FIRE_CHANCE).toBe(0.75);
+    expect(WINGATE_BULLET_LIFETIME).toBeCloseTo(64 / NES_FRAME_RATE, 9);
+    expect(WINGATE_BULLET_VELOCITIES_NES).toEqual([[1.15625, 1.40625], [0.9140625, 1.65625], [0.625, 1.8515625], [0.3125, 1.9453125], [0, 2], [-0.3125, 1.9453125], [-0.625, 1.8515625], [-0.9140625, 1.65625], [-1.15625, 1.40625]]);
     expect(WINGATE_PROJECTILE_X_OFFSET_NES).toBe(-8);
-    expect(WINGATE_FIRST_VOLLEY_SIZE).toBe(6);
-    expect(WINGATE_SECOND_VOLLEY_SIZE).toBe(3);
-    expect([1, 2, 3, 4, 5, 6].map((shot) => wingateShotCooldown(0, shot))).toEqual([
-      WINGATE_SHOT_INTERVAL, WINGATE_SHOT_INTERVAL, WINGATE_SHOT_INTERVAL,
-      WINGATE_SHOT_INTERVAL, WINGATE_SHOT_INTERVAL, WINGATE_FIRST_VOLLEY_GAP,
-    ]);
-    expect([1, 2, 3].map((shot) => wingateShotCooldown(1, shot))).toEqual([
-      WINGATE_SHOT_INTERVAL, WINGATE_SHOT_INTERVAL, WINGATE_SECOND_VOLLEY_GAP,
-    ]);
+    expect(WINGATE_PROJECTILE_Y_OFFSET_NES).toBe(6);
+    const actor = { x: 114 * NES_WORLD_X_SCALE, y: 50 * (540 / 240) };
+    const target = { x: 39 * NES_WORLD_X_SCALE, y: 118 * (540 / 240) };
+    expect(wingateAimHeading(actor.x, actor.y, target.x, target.y)).toBe(20);
+    expect([wingateCanFire(actor.x, actor.y, target.x, target.y, 0.24), wingateCanFire(actor.x, actor.y, target.x, target.y, 0.25)]).toEqual([false, true]);
+    expect(wingateCanFire(actor.x, actor.y, actor.x + 100, actor.y, 1)).toBe(false);
+    const [wingateVx, wingateVy] = wingateProjectileVelocity(actor.x, actor.y, target.x, target.y);
+    expect(wingateVx).toBeCloseTo(-1.15625 * NES_FRAME_RATE * NES_WORLD_X_SCALE, 9);
+    expect(wingateVy).toBeCloseTo(1.40625 * NES_FRAME_RATE * (540 / 240), 9);
   });
 
   it("awards the Round 6 bounty only after the real Wingate", () => {

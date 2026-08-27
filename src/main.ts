@@ -1923,7 +1923,11 @@ class GunSmokeGame {
         target.sprite.size = { x: 54, y: 54 };
         return;
       }
-      if (target.itemType) this.spawnUnit("item", target.x, target.y, 1, undefined, target.itemType);
+      if (target.itemType) {
+        const drop = this.spawnUnit("item", target.x, target.y, 1, undefined, target.itemType);
+        drop.romPool = "enemy";
+        drop.romEntityCode = target.romEntityCode;
+      }
     } else if (target.kind === "enemy") {
       target.hp = 1;
       target.exploding = true;
@@ -1931,8 +1935,12 @@ class GunSmokeGame {
       target.sprite.visible = true;
       if (target.romFlags !== undefined) {
         const hasSpecialStock = hasSpecialAmmoStock(this.weaponAmmo);
-        const drop = romEnemyDrop(target.romFlags, hasSpecialStock);
-        if (drop) this.spawnUnit(drop, target.x, target.y, 1);
+        const dropKind = romEnemyDrop(target.romFlags, hasSpecialStock);
+        if (dropKind) {
+          const drop = this.spawnUnit(dropKind, target.x, target.y, 1);
+          drop.romPool = "enemy";
+          drop.romEntityCode = target.romEntityCode;
+        }
       } else {
         const drop = this.nextRandom();
         if (drop < 0.22) this.spawnUnit("moneyBag", target.x, target.y, 1);

@@ -147,7 +147,8 @@ Joe remain visible during their recovery/launch protection windows.
 Most Boss weapons use a six-slot projectile pool separate from the eight slots
 used by ordinary enemy gunfire, so field bullets cannot suppress those attacks;
 Bandit Bill's traced `0x30` shots are the exception and use the ordinary pool;
-his clean-trace X/Y movement path is replayed through the measured combat window.
+his clean-trace X/Y movement path is replayed through the measured 3,472-frame
+combat window.
 Ordinary screen clears do not erase active low-slot Boss shots. ROM-tagged
 Ninja, Hatchet, Spear, and Firebreather shots use the shared discrete second-tier
 direction table; only procedural fallback formations use continuous aim.
@@ -187,7 +188,7 @@ Fatman Joe begins attack decisions after his measured entrance. A successful
 downward-sector check launches one aimed shell; after 31 frames it stops and
 splits into five stationary mines at four-frame intervals. The mines use the
 measured symmetric offsets and last about 29 NES frames. His multi-hop X/Y
-profile follows the controlled Boss trace through combat frame 730. The runtime
+profile follows the controlled Boss trace through combat frame 3,418. The runtime
 pauses the 76-frame attack counter during the measured 53-frame short or
 122-frame long movement action; only later random movement direction remains
 an approximation.

@@ -1700,7 +1700,7 @@ class GunSmokeGame {
       }
       else {
         if (this.stage === 6 && unit.bossEntryY !== undefined) {
-          unit.x = wingateCombatX(unit.age, this.wingatePhase, (unit.bossEntryX ?? unit.x) / NES_WORLD_X_SCALE);
+          unit.x = wingateCombatX(unit.age, this.wingatePhase, (unit.bossEntryX ?? unit.x) / NES_WORLD_X_SCALE) * NES_WORLD_X_SCALE;
           unit.vx = 0;
         } else {
           if (this.stage === 2) unit.x = cutterCombatX(unit.age, unit.bossEntryX ?? unit.x);

@@ -621,6 +621,11 @@ class GunSmokeGame {
         this.bossFireClock = WINGATE_SECOND_FIRST_SHOT_DELAY;
         this.showMessage("THE REAL WINGATE");
       }
+      if (this.wingateRespawnClock > 0) {
+        for (const unit of this.units) if (unit.kind === "boss" && unit.exploding) this.updateUnit(unit, delta);
+        this.updateHud();
+        return;
+      }
     }
     if (this.stageClearClock > 0) {
       this.stageClearClock -= delta;

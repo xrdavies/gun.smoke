@@ -2541,6 +2541,7 @@ class ReferenceRomGame {
       KeyX: this.buttons.BUTTON_A,
       Enter: this.buttons.BUTTON_START,
       NumpadEnter: this.buttons.BUTTON_START,
+      Tab: this.buttons.BUTTON_SELECT,
       ShiftLeft: this.buttons.BUTTON_SELECT,
       ShiftRight: this.buttons.BUTTON_SELECT,
     };

@@ -13,9 +13,9 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, banditBillOpeningY, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, BOMBER_FIRST_THROW_DELAY, BOMBER_THROW_INTERVAL, bossReward, BOOTS_SPEED_MULTIPLIER, canSpawnPlayerBullet, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_LIFETIME, dynamiteVerticalOffset, EMPTY_BARREL_EXPLOSION_LIFETIME, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X, FATMAN_JOE_ENTRY_Y, fatmanJoeOpeningY, FIREBREATHER_PROJECTILE_SPEED, formationEntryY, HATCHET_FIRST_SHOT_DELAY, HATCHET_PROJECTILE_SPEED, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_X_LANES, NINJA_BOSS_ENTRY_Y_LANES, NINJA_FIRST_SHOT_DELAY, NINJA_PROJECTILE_SPEED, ninjaAttackPosition, ninjaOpeningY, RIFLEMAN_BULLET_SPEED, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_LIFETIME, ROCK_WORLD_SPEED_X, ROCK_WORLD_SPEED_Y, ROAD_WIDTHS, ROM_ENEMY_SCREEN_MAX_Y, ROM_OBJECT_DROP_SPEED, ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_VOLLEY_INTERVAL, shotgunnerPosition, shouldLoopStage, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, SPEAR_FIRST_SHOT_DELAY, SPEAR_PROJECTILE_SPEED, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_DURATION, WINGATE_ENTRY_X, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_X, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, wingateOpeningY, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, banditBillOpeningY, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, bomberCanThrow, bomberMovementDuration, bomberMovementVelocity, BOMBER_THROW_DURATION, bossReward, BOOTS_SPEED_MULTIPLIER, canSpawnPlayerBullet, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_LIFETIME, dynamiteVerticalOffset, EMPTY_BARREL_EXPLOSION_LIFETIME, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X, FATMAN_JOE_ENTRY_Y, fatmanJoeOpeningY, FIREBREATHER_PROJECTILE_SPEED, formationEntryY, HATCHET_FIRST_SHOT_DELAY, HATCHET_PROJECTILE_SPEED, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_X_LANES, NINJA_BOSS_ENTRY_Y_LANES, NINJA_FIRST_SHOT_DELAY, NINJA_PROJECTILE_SPEED, ninjaAttackPosition, ninjaOpeningY, RIFLEMAN_BULLET_SPEED, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_LIFETIME, ROCK_WORLD_SPEED_X, ROCK_WORLD_SPEED_Y, ROAD_WIDTHS, ROM_ENEMY_SCREEN_MAX_Y, ROM_OBJECT_DROP_SPEED, ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_VOLLEY_INTERVAL, shotgunnerPosition, shouldLoopStage, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, SPEAR_FIRST_SHOT_DELAY, SPEAR_PROJECTILE_SPEED, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_DURATION, WINGATE_ENTRY_X, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_X, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, wingateOpeningY, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
 import { GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, GUNMAN_BULLET_SPEED, GUNMAN_ENTRY_PATH_NES, GUNMAN_FLANK_LIFETIMES, GUNMAN_FLANK_SHOT_FRAMES, GUNMAN_LIFETIME, gunmanFlankPosition, gunmanOpeningY } from "./game-constants";
-import { bomberFirstManeuverPosition, bomberOpeningY } from "./game-constants";
+import { BOMBER_ENTRY_DURATION, bomberOpeningY } from "./game-constants";
 import { firebreatherSideCanAttack, FIREBREATHER_SIDE_ATTACK_INTERVAL, FIREBREATHER_SIDE_LIFETIME, FIREBREATHER_SIDE_PATH_NES, firebreatherSidePosition, FIREBREATHER_FIRST_SHOT_DELAY, FIREBREATHER_LIFETIME, FIREBREATHER_PATH_NES, FIREBREATHER_PROJECTILE_OFFSET_NES, firebreatherPosition, FIREBREATHER_SHOT_FRAMES, HATCHET_PATH_NES, hatchetPosition, SPEAR_PATH_NES, SPEAR_PROJECTILE_OFFSET_NES, SPEAR_SIDE_LIFETIME, SPEAR_SIDE_PATH_NES, SPEAR_SIDE_SHOT_FRAMES, spearPosition, spearSidePosition } from "./game-constants";
 import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanPosition } from "./game-constants";
 import { BANDIT_BILL_BULLET_SPEED, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, banditBillCombatX, banditBillCombatY } from "./game-constants";
@@ -99,6 +99,8 @@ interface Unit {
   targetX?: number;
   targetY?: number;
   gunmanBottomRoute?: "near" | "far";
+  bomberState?: "entry" | "moving" | "throwing";
+  bomberDirection?: number;
   bossEntryX?: number;
   bossEntryY?: number;
   bossProjectile?: boolean;
@@ -820,6 +822,10 @@ class GunSmokeGame {
     if (event.behavior === 3) enemy.maxAge = BACKSTABBER_RAID_LIFETIME;
     if (event.behavior === 8) enemy.maxAge = BACKSTABBER_AMBUSH_LIFETIME;
     if (event.behavior === 7) enemy.maxAge = RIFLEMAN_LIFETIME;
+    if (event.behavior === 4) {
+      enemy.bomberState = "entry";
+      enemy.bomberDirection = 4;
+    }
     if (event.behavior === 11 && event.entityCode === 21) enemy.maxAge = FIREBREATHER_LIFETIME;
     if (event.behavior === 11 && event.entityCode === 22) enemy.maxAge = FIREBREATHER_SIDE_LIFETIME;
     if (event.behavior === 10 && event.entityCode === 20) enemy.maxAge = SPEAR_SIDE_LIFETIME;
@@ -1163,7 +1169,7 @@ class GunSmokeGame {
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: frameDuration },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, boomerangHeading: undefined, bossCycleStart: undefined,
+      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, bomberState: undefined, bomberDirection: undefined, boomerangHeading: undefined, bossCycleStart: undefined,
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" || sceneObject ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
@@ -1287,24 +1293,64 @@ class GunSmokeGame {
         }
         unit.sprite.visible = unit.age >= unit.invulnerableUntil;
       } else if (unit.enemyType === "bomber") {
-        if (unit.romBehavior === 4 && unit.age <= BOMBER_FIRST_THROW_DELAY) {
-          const [x, y] = bomberFirstManeuverPosition(unit.age, unit.vx < 0 ? -1 : 1);
-          unit.x = (unit.romOriginX ?? unit.x) + x * NES_WORLD_X_SCALE;
-          unit.y = this.scroll + y * NES_WORLD_Y_SCALE;
+        const tracedBomber = unit.romBehavior === 4;
+        const startMovement = (): void => {
+          unit.bomberState = "moving";
+          unit.bomberDirection = Math.floor(this.nextRandom() * 8);
+          [unit.vx, unit.vy] = bomberMovementVelocity(unit.bomberDirection);
+          unit.nextFireAt = unit.age + bomberMovementDuration(unit.bomberDirection);
+        };
+        if (tracedBomber && unit.bomberState === "entry") {
+          if (unit.age <= BOMBER_ENTRY_DURATION) {
+            unit.x = unit.romOriginX ?? unit.x;
+            unit.y = this.scroll + (unit.romOriginY ?? 0) + bomberOpeningY(unit.age);
+          } else if (Math.abs(this.player.y - unit.y) < 64 * NES_WORLD_Y_SCALE && unit.y - this.scroll >= 32 * NES_WORLD_Y_SCALE) {
+            startMovement();
+          } else {
+            unit.y += NES_FRAME_RATE * NES_WORLD_Y_SCALE * delta;
+          }
+        } else if (tracedBomber && unit.bomberState === "throwing") {
+          if (unit.age >= unit.nextFireAt) startMovement();
+        } else if (tracedBomber) {
+          const nextX = unit.x + unit.vx * delta;
+          const nextY = unit.y + unit.vy * delta;
+          if (this.isPlayerBlocked(nextX, nextY)) {
+            unit.bomberDirection = ((unit.bomberDirection ?? 0) + 4) & 7;
+            [unit.vx, unit.vy] = bomberMovementVelocity(unit.bomberDirection);
+          }
+          unit.x += unit.vx * delta;
+          unit.y += unit.vy * delta;
+          if (unit.age >= unit.nextFireAt) {
+            if (bomberCanThrow(unit.y - this.scroll, this.player.y - this.scroll, this.nextRandom())) {
+              unit.bomberState = "throwing";
+              unit.nextFireAt = unit.age + BOMBER_THROW_DURATION;
+              unit.vx = 0;
+              unit.vy = 0;
+              const projectile = this.spawnEnemyProjectile(unit.x, unit.y);
+              if (projectile) {
+                projectile.projectileType = "dynamite";
+                projectile.romOriginY = projectile.y - this.scroll;
+                projectile.vx = (this.player.x - unit.x) * DYNAMITE_AIM_FACTOR / DYNAMITE_HORIZONTAL_DURATION;
+                projectile.vy = 0;
+                projectile.maxAge = DYNAMITE_LIFETIME;
+              }
+            } else {
+              startMovement();
+            }
+          }
         } else {
           unit.x += unit.vx * delta;
-          if (unit.romBehavior !== 4) unit.y += unit.vy * 0.7 * delta;
-        }
-        if (unit.nextFireAt === 0) unit.nextFireAt = BOMBER_FIRST_THROW_DELAY;
-        if (unit.age >= unit.nextFireAt) {
-          unit.nextFireAt += BOMBER_THROW_INTERVAL;
-          const projectile = this.spawnEnemyProjectile(unit.x, unit.y + 12);
-          if (projectile) {
-            projectile.projectileType = "dynamite";
-            projectile.romOriginY = projectile.y - this.scroll;
-            projectile.vx = (this.player.x - unit.x) * DYNAMITE_AIM_FACTOR / DYNAMITE_HORIZONTAL_DURATION;
-            projectile.vy = 0;
-            projectile.maxAge = DYNAMITE_LIFETIME;
+          unit.y += unit.vy * 0.7 * delta;
+          if (!unit.fired && unit.age >= 0.8) {
+            unit.fired = true;
+            const projectile = this.spawnEnemyProjectile(unit.x, unit.y + 12);
+            if (projectile) {
+              projectile.projectileType = "dynamite";
+              projectile.romOriginY = projectile.y - this.scroll;
+              projectile.vx = (this.player.x - unit.x) * DYNAMITE_AIM_FACTOR / DYNAMITE_HORIZONTAL_DURATION;
+              projectile.vy = 0;
+              projectile.maxAge = DYNAMITE_LIFETIME;
+            }
           }
         }
       } else if (unit.enemyType === "shotgunner") {

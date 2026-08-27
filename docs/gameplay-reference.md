@@ -171,7 +171,9 @@ Riflemen advance,
 enter their attack state at 122 NES frames, fire five shots at 138/154/170/186/202,
 and retreat toward the top of the playfield.
 
-Round 1 Bomber dynamite has explicit flight, landed, defusable, and delayed
+Round 1 Bombers descend into range, choose among eight measured movement
+directions and durations, and make a half-probability throw decision between
+segments. Their dynamite has explicit flight, landed, defusable, and delayed
 explosion phases. Boss and enemy projectiles are typed separately as bullets,
 boomerangs, fireballs, shuriken, spears, hatchets, dynamite, or grenades. Spear and
 hatchet projectiles also use distinct proportions and rotation behavior rather

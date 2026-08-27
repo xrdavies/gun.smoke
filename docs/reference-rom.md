@@ -164,10 +164,16 @@ the `$BD4E` menu. `$A5=1` selects its four-item weapon branch; flag `0x40`
 produces `$A5=0x41` and selects the three-item supply branch. The extractor
 therefore labels them `weaponShop` and `supplyShop`; other no-behavior records
 remain `sceneObject`. These labels are research semantics, not copied ROM code.
-An isolated `$B501` actor first creates its `0x72`/dispatch `0x2F` dynamite
-after 198 frames and repeats after 106 frames. The projectile remains airborne
-for 212 frames, changes to landed dispatch `0x3E` for 53 frames, then clears;
-the runtime uses these measured timings at 60.098 Hz. Across complete traces,
+An isolated `$B501` actor descends one NES pixel per frame until it enters the
+player's 64-pixel vertical range, then chooses among eight movement headings.
+Their durations are `64/38/32/14/16/14/32/38` frames and use the ROM's
+discrete velocity table. At the end of a movement segment, a half-probability
+decision either starts another segment or creates its `0x72`/dispatch `0x2F`
+dynamite and holds the actor in a 90-frame throw state. This makes throw times
+deliberately variable; one clean natural trace throws at ages
+`159/289/397/527/633`. The projectile remains airborne for 212 frames, changes
+to landed dispatch `0x3E` for 53 frames, then clears; the runtime uses these
+measured timings at 60.098 Hz. Across complete traces,
 the airborne Y offset reaches about 18/32/89 NES pixels at frames 20/40/212;
 horizontal correction ends after roughly 40 frames. The landed state then
 moves with the measured scene-object scroll instead of freezing in world space.
@@ -175,12 +181,10 @@ Player-contact dispatch at `$CB3D-$CB4E` clears airborne `0x2F` dynamite and
 returns without applying damage. Landed `0x3E` instead enters the normal hazard
 branch without the pre-hit clear, so the runtime permits contact defusal only
 during flight and treats the landed fuse as damaging.
-The same Round 1 traces show the Bomber actor descending one NES pixel per frame
-for 125 frames to `y=126` while its X coordinate remains fixed, then holding
-that height briefly before moving through relative NES checkpoints
-`(+21,126)`, `(+37,114)`, `(+41,111)` and `(+35,113)` at frames
-150/175/190/198. The runtime mirrors this first maneuver according to its
-selected horizontal direction; later movement cycles remain procedural.
+The same Round 1 traces show the Bomber actor reaching `y=126` at age 125 while
+its X coordinate remains fixed. Runtime then uses the measured movement-state
+durations and velocities for every later segment instead of interpolating one
+captured random route.
 An isolated `$B080` Sniper fires at ages 134, 224, 405, 495 and 585 frames,
 then releases its slot at age 732. The routine's 90-frame base cooldown is
 visible directly; the longer middle gap is a missed discrete aiming window.

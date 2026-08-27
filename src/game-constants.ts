@@ -137,11 +137,14 @@ export function weaponCanRepeat(weapon: WeaponName): boolean {
 export function weaponBulletLifetime(weapon: WeaponName): number {
   return weapon === "shotgun" ? SHOTGUN_BULLET_LIFETIME : weapon === "machinegun" ? MACHINE_GUN_BULLET_LIFETIME : weapon === "magnum" ? MAGNUM_BULLET_LIFETIME : PISTOL_BULLET_LIFETIME;
 }
-export const BOMBER_FIRST_THROW_DELAY = 198 / NES_FRAME_RATE;
-export const BOMBER_THROW_INTERVAL = 106 / NES_FRAME_RATE;
 export const BOMBER_ENTRY_DURATION = 125 / NES_FRAME_RATE;
 export const BOMBER_ENTRY_END_Y_NES = 126;
 export const BOMBER_ENTRY_END_Y = BOMBER_ENTRY_END_Y_NES * NES_WORLD_Y_SCALE;
+export const BOMBER_THROW_DURATION = 90 / NES_FRAME_RATE;
+export const BOMBER_THROW_CHANCE = 0.5;
+export const BOMBER_ACTIVATION_DISTANCE_NES = 64;
+export const BOMBER_MOVEMENT_DURATIONS = [64, 38, 32, 14, 16, 14, 32, 38] as const;
+const BOMBER_MOVEMENT_VELOCITIES_NES = [[0, -1], [0.578125, -0.703125], [0.828125, 0], [0.578125, 0.703125], [0, 1], [-0.578125, 0.703125], [-0.828125, 0], [-0.578125, -0.703125]] as const;
 export const DYNAMITE_AIRBORNE_DURATION = 212 / NES_FRAME_RATE;
 export const DYNAMITE_LANDED_DURATION = 53 / NES_FRAME_RATE;
 export const DYNAMITE_LIFETIME = DYNAMITE_AIRBORNE_DURATION + DYNAMITE_LANDED_DURATION;
@@ -149,27 +152,21 @@ export const DYNAMITE_WORLD_SPEED = 89 * (540 / 240) / DYNAMITE_AIRBORNE_DURATIO
 export const DYNAMITE_HORIZONTAL_DURATION = 40 / NES_FRAME_RATE;
 export const DYNAMITE_AIM_FACTOR = 0.25;
 export const DYNAMITE_VERTICAL_PATH_NES = [[0, 0], [20, 18], [40, 32], [212, 89]] as const;
-export const BOMBER_FIRST_MANEUVER_NES = [[0, 0, 0], [125, 0, 126], [150, 21, 126], [175, 37, 114], [190, 41, 111], [198, 35, 113]] as const;
-
 export function bomberOpeningY(age: number): number {
   return Math.max(0, Math.min(1, age / BOMBER_ENTRY_DURATION)) * BOMBER_ENTRY_END_Y;
 }
 
-export function bomberFirstManeuverPosition(age: number, direction = 1): readonly [number, number] {
-  const frame = Math.max(0, age * NES_FRAME_RATE);
-  const nextIndex = BOMBER_FIRST_MANEUVER_NES.findIndex(([at]) => at >= frame);
-  if (nextIndex < 0) {
-    const last = BOMBER_FIRST_MANEUVER_NES.at(-1)!;
-    return [last[1] * direction, last[2]];
-  }
-  if (nextIndex === 0) return [0, 0];
-  const previous = BOMBER_FIRST_MANEUVER_NES[nextIndex - 1]!;
-  const next = BOMBER_FIRST_MANEUVER_NES[nextIndex]!;
-  const amount = (frame - previous[0]) / (next[0] - previous[0]);
-  return [
-    (previous[1] + (next[1] - previous[1]) * amount) * direction,
-    previous[2] + (next[2] - previous[2]) * amount,
-  ];
+export function bomberMovementDuration(direction: number): number {
+  return (BOMBER_MOVEMENT_DURATIONS[direction & 7] ?? BOMBER_MOVEMENT_DURATIONS[0]) / NES_FRAME_RATE;
+}
+
+export function bomberMovementVelocity(direction: number): readonly [number, number] {
+  const velocity = BOMBER_MOVEMENT_VELOCITIES_NES[direction & 7] ?? BOMBER_MOVEMENT_VELOCITIES_NES[0];
+  return [velocity[0] * NES_FRAME_RATE * NES_WORLD_X_SCALE, velocity[1] * NES_FRAME_RATE * NES_WORLD_Y_SCALE];
+}
+
+export function bomberCanThrow(actorY: number, playerY: number, random: number): boolean {
+  return actorY >= 32 * NES_WORLD_Y_SCALE && Math.abs(playerY - actorY) < BOMBER_ACTIVATION_DISTANCE_NES * NES_WORLD_Y_SCALE && random < BOMBER_THROW_CHANCE;
 }
 
 export function dynamiteVerticalOffset(age: number): number {

@@ -427,7 +427,7 @@ export function spearSidePosition(age: number, fromLeft: boolean): readonly [num
 
 export function spearTopCanAttack(actorX: number, actorY: number, playerX: number, playerY: number, random: number): boolean {
   const heading = nesAimHeading(actorX, actorY, playerX, playerY);
-  return random < 0.5 && heading >= 10 && heading <= 22;
+  return random < 0.5 && heading >= 10 && heading <= 23;
 }
 
 export const BACKSTABBER_AMBUSH_DROP_SPEED = 45;

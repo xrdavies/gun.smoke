@@ -412,6 +412,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(SPEAR_TOP_ATTACK_FRAMES).toEqual([72, 144, 216, 288, 360, 432, 504, 576, 648]);
     expect(SPEAR_TOP_LIFETIME).toBeCloseTo(656 / NES_FRAME_RATE, 9);
     expect([spearTopCanAttack(0, 0, 0, 100 * (540 / 240), 0.49), spearTopCanAttack(0, 0, 0, 100 * (540 / 240), 0.5), spearTopCanAttack(0, 0, 100 * NES_WORLD_X_SCALE, 0, 0)]).toEqual([true, false, false]);
+    expect(spearTopCanAttack(8 * NES_WORLD_X_SCALE, 0, 0, 2 * NES_WORLD_Y_SCALE, 0.49)).toBe(true);
+    expect(spearTopCanAttack(1 * NES_WORLD_X_SCALE, 0, 0, 0, 0.49)).toBe(false);
   });
 
   it("matches the traced Round 5 ambush backstabber", () => {

@@ -274,7 +274,8 @@ records and keeps the actor until defeat or scene cleanup.
 An isolated `$BA51` top-entry Spear Thrower reaches about 68 NES pixels by
 frame 24, pauses through frame 65, then follows a measured arc to roughly
 `(x+36,y=21)` by frame 96. Attack opportunities recur every 72 frames; a
-direction/random gate decides whether that opportunity creates dispatch `0x33`
+direction/random gate accepts headings 10 through 23 and decides whether that
+opportunity creates dispatch `0x33`
 at the actor coordinate. The runtime preserves the entry path, repeated
 opportunity clock and actor-relative launch coordinate.
 Entity code `20` is the side-entry Spear Thrower. Its first isolated route

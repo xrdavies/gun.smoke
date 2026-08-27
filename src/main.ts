@@ -1172,6 +1172,10 @@ class GunSmokeGame {
     const key = item as WeaponName | "horse" | "ammo" | "wanted" | "smartBomb";
     const shopType: ShopType = SHOP_TYPES[this.stage - 1]?.[this.shopIndex - 1] ?? "supplies";
     const isWeapon = key === "shotgun" || key === "machinegun" || key === "magnum" || key === "smartBomb";
+    if (key === "wanted" && this.shopIndex < 2) {
+      shopMessage.textContent = "NOT SOLD HERE";
+      return;
+    }
     if ((shopType === "weapons") !== isWeapon) {
       shopMessage.textContent = "NOT SOLD HERE";
       return;

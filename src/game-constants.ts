@@ -291,6 +291,13 @@ export const GUNMAN_FIRST_SHOT_DELAY = 39 / NES_FRAME_RATE;
 export const GUNMAN_BULLET_SPEED = 266;
 export const GUNMAN_LIFETIME = 289 / NES_FRAME_RATE;
 export const GUNMAN_ENTRY_PATH_NES = [[0, 0], [40, 53], [100, 128], [104, 132]] as const;
+export const GUNMAN_BOTTOM_NEAR_DISTANCE_NES = 56;
+export const GUNMAN_BOTTOM_SHOT_FRAMES = { near: [219], far: [241] } as const;
+export const GUNMAN_BOTTOM_LIFETIMES = { near: 318 / NES_FRAME_RATE, far: 479 / NES_FRAME_RATE } as const;
+const GUNMAN_BOTTOM_PATHS_NES = {
+  near: [[0, 0, 0], [1, 0, 248], [49, 0, 201], [80, -25, 201], [105, -44, 196], [110, -45, 191], [120, -38, 188], [130, -31, 192], [157, -23, 167], [190, -3, 147], [219, 16, 159], [240, 23, 180], [274, 34, 211], [300, 42, 235], [317, 47, 251]],
+  far: [[0, 0, 0], [1, 0, 248], [49, 0, 201], [63, -9, 198], [105, -15, 157], [177, -26, 88], [200, -35, 100], [241, -41, 139], [264, -45, 161], [274, -52, 160], [283, -53, 161], [300, -45, 147], [350, -22, 106], [400, 1, 64], [450, 23, 23], [478, 36, 0]],
+} as const;
 export const GUNMAN_FLANK_SHOT_FRAMES = { 7: [64, 410], 8: [309], 9: [399, 463] } as const;
 export const GUNMAN_FLANK_LIFETIMES = { 7: 642 / NES_FRAME_RATE, 8: 508 / NES_FRAME_RATE, 9: 826 / NES_FRAME_RATE } as const;
 const GUNMAN_FLANK_PATHS_NES = {
@@ -312,6 +319,26 @@ export function gunmanFlankPosition(entityCode: 7 | 8 | 9, age: number): readonl
   const next = path[nextIndex]!;
   const amount = (frame - previous[0]) / (next[0] - previous[0]);
   return [previous[1] + (next[1] - previous[1]) * amount, previous[2] + (next[2] - previous[2]) * amount];
+}
+
+export function gunmanBottomRoute(originX: number, targetX: number): "near" | "far" {
+  return Math.abs(originX - targetX) < GUNMAN_BOTTOM_NEAR_DISTANCE_NES * NES_WORLD_X_SCALE ? "near" : "far";
+}
+
+export function gunmanBottomPosition(route: "near" | "far", fromLeft: boolean, age: number): readonly [number, number] {
+  const path = GUNMAN_BOTTOM_PATHS_NES[route];
+  const sampledFromLeft = route === "near";
+  const frame = Math.max(0, age * NES_FRAME_RATE);
+  const nextIndex = path.findIndex(([at]) => at >= frame);
+  if (nextIndex < 0) {
+    const last = path.at(-1)!;
+    return [last[1] * (fromLeft === sampledFromLeft ? 1 : -1), last[2]];
+  }
+  if (nextIndex === 0) return [0, 0];
+  const previous = path[nextIndex - 1]!;
+  const next = path[nextIndex]!;
+  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  return [(previous[1] + (next[1] - previous[1]) * amount) * (fromLeft === sampledFromLeft ? 1 : -1), previous[2] + (next[2] - previous[2]) * amount];
 }
 
 export function gunmanOpeningY(age: number): number {

@@ -193,6 +193,12 @@ instead of the procedural global firing clock. A clean Round 1 isolation also
 shows the actor rising from `y=0` to approximately `y=53` at frame 40 and
 `y=128/132` at frames 100/104 before its horizontal combat state; the runtime
 uses these entry checkpoints and keeps the later movement procedural.
+Entity code `5` initializes the same routine with the opposite heading and
+enters from the bottom edge. Its 56-NES-pixel proximity branch is visible in
+two isolated routes: the near route fires at frame 219 and releases at frame
+318, while the far route fires at frame 241 and releases at frame 479. Runtime
+records the player's spawn-side distance, mirrors the matching measured route,
+and does not apply the top-entry Gunman timing.
 The same routine has distinct side-entry initializers. Entity code `7` enters
 from either edge on a mirrored route, fires at frames 64/410 and releases at
 frame 642. Entity code `8` holds the left edge while scrolling, lunges inward at

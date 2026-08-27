@@ -526,12 +526,23 @@ export const DEVIL_HAWK_POST_ENTRY_X_HOLD = 113 / NES_FRAME_RATE;
 export const DEVIL_HAWK_FIRST_VOLLEY_DELAY = 174 / NES_FRAME_RATE;
 export const DEVIL_HAWK_VOLLEY_INTERVAL = 125 / NES_FRAME_RATE;
 export const DEVIL_HAWK_ENTRY_SPEED_Y = (96 / 143) * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
-export const DEVIL_HAWK_FIREBALL_SPEED = 3 * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
-export const DEVIL_HAWK_FIREBALL_FAN_NES = [[-2, 2], [-1, 3], [0, 3], [1, 3], [2, 2]] as const;
-export const DEVIL_HAWK_FIREBALL_SIDE_FANS_NES = [
-  [[-2, 2], [-1, 3], [0, 3]],
-  [[0, 3], [1, 3], [2, 2]],
-] as const;
+export const DEVIL_HAWK_FULL_FAN_HEADINGS = [12, 14, 16, 18, 20] as const;
+export const DEVIL_HAWK_FULL_FAN_LIFETIME = 45 / NES_FRAME_RATE;
+export const DEVIL_HAWK_SIDE_FAN_LIFETIME = 36 / NES_FRAME_RATE;
+export const DEVIL_HAWK_FULL_FAN_MAX_Y_NES = 62;
+const DEVIL_HAWK_FIREBALL_VELOCITIES_NES = [[1.734375, 2.109375], [1.37109375, 2.484375], [0.9375, 2.77734375], [0.46875, 2.91796875], [0, 3], [-0.46875, 2.91796875], [-0.9375, 2.77734375], [-1.37109375, 2.484375], [-1.734375, 2.109375]] as const;
+
+export function devilHawkFanHeadings(fullFan: boolean, aimHeading: number): readonly number[] {
+  if (fullFan) return aimHeading >= 12 && aimHeading <= 20 ? DEVIL_HAWK_FULL_FAN_HEADINGS : [];
+  if (aimHeading < 8 || aimHeading >= 25) return [];
+  const start = aimHeading < 15 ? 12 : aimHeading < 18 ? 14 : 16;
+  return [start, start + 2, start + 4];
+}
+
+export function devilHawkProjectileVelocity(heading: number): readonly [number, number] {
+  const velocity = DEVIL_HAWK_FIREBALL_VELOCITIES_NES[heading - 12] ?? DEVIL_HAWK_FIREBALL_VELOCITIES_NES[4];
+  return [velocity[0] * NES_FRAME_RATE * NES_WORLD_X_SCALE, velocity[1] * NES_FRAME_RATE * NES_WORLD_Y_SCALE];
+}
 
 export function devilHawkOpeningY(age: number): number {
   return Math.max(0, Math.min(1, age / DEVIL_HAWK_ENTRY_DURATION)) * DEVIL_HAWK_ENTRY_END_Y;

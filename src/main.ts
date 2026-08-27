@@ -27,7 +27,7 @@ import { FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeCanLaunch, FATMAN_JOE_FIR
 import { WINGATE_ATTACK_INTERVAL, WINGATE_BULLET_LIFETIME, wingateCanFire, WINGATE_ENTRY_RUSH_DELAY, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateCombatY } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_LIFETIME, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { CUTTER_ENTRY_DURATION, CUTTER_MOVEMENT_SPEED, cutterCombatY, cutterOpeningY } from "./game-constants";
-import { DEVIL_HAWK_ENTRY_DURATION, DEVIL_HAWK_FIREBALL_FAN_NES, DEVIL_HAWK_FIREBALL_SIDE_FANS_NES, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_POST_ENTRY_X_HOLD, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY } from "./game-constants";
+import { DEVIL_HAWK_ENTRY_DURATION, devilHawkFanHeadings, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_FULL_FAN_LIFETIME, DEVIL_HAWK_FULL_FAN_MAX_Y_NES, DEVIL_HAWK_POST_ENTRY_X_HOLD, devilHawkProjectileVelocity, DEVIL_HAWK_SIDE_FAN_LIFETIME, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY, nesAimHeading } from "./game-constants";
 import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_ATTACK_DELAY, NINJA_BOSS_SHURIKEN_LIFETIME, NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES, NINJA_BOSS_SHURIKEN_VELOCITIES_NES, NINJA_BOSS_TELEPORT_DELAY, ninjaBossCombatY } from "./game-constants";
 import { canSpawnEnemyProjectile } from "./game-constants";
 import { canSpawnBossProjectile } from "./game-constants";
@@ -900,6 +900,25 @@ class GunSmokeGame {
       this.beep(186, 0.045);
       return;
     }
+    if (this.stage === 3) {
+      const fullFan = boss.volleysFired === 0 || (boss.y - this.scroll) / NES_WORLD_Y_SCALE <= DEVIL_HAWK_FULL_FAN_MAX_Y_NES;
+      const headings = devilHawkFanHeadings(fullFan, nesAimHeading(boss.x, boss.y, this.player.x, this.player.y));
+      for (const heading of headings) {
+        const projectile = this.spawnEnemyProjectile(boss.x, boss.y, true);
+        if (!projectile) break;
+        projectile.projectileType = "fireball";
+        [projectile.vx, projectile.vy] = devilHawkProjectileVelocity(heading);
+        projectile.maxAge = fullFan ? DEVIL_HAWK_FULL_FAN_LIFETIME : DEVIL_HAWK_SIDE_FAN_LIFETIME;
+        projectile.radius = 7;
+      }
+      if (headings.length > 0) {
+        boss.fired = true;
+        boss.volleysFired += 1;
+        this.beep(204, 0.045);
+      }
+      this.bossFireClock = DEVIL_HAWK_VOLLEY_INTERVAL;
+      return;
+    }
     if (this.stage === 5) {
       if (fatmanJoeCanLaunch(boss.x, boss.y, this.player.x, this.player.y, this.nextRandom())) {
         const projectile = this.spawnEnemyProjectile(boss.x - 8 * NES_WORLD_X_SCALE, boss.y + 6 * NES_WORLD_Y_SCALE, true);
@@ -936,33 +955,6 @@ class GunSmokeGame {
       this.beep(222, 0.045);
       return;
     }
-    const patterns: Record<number, { count: number; spread: number; speed: number; cooldown: number; turnRate: number }> = {
-      1: { count: 1, spread: 0, speed: 125, cooldown: 1.1, turnRate: 0 },
-      3: { count: 5, spread: 0.18, speed: DEVIL_HAWK_FIREBALL_SPEED, cooldown: DEVIL_HAWK_VOLLEY_INTERVAL, turnRate: 0 },
-    };
-    let pattern = patterns[this.stage] ?? patterns[1]!;
-    if (this.stage === 3 && Math.abs(this.player.x - boss.x) > 120) pattern = { ...pattern, count: 3 };
-    const center = (pattern.count - 1) / 2;
-    for (let index = 0; index < pattern.count; index += 1) {
-      const projectile = this.spawnEnemyProjectile(boss.x, this.stage === 3 ? boss.y : boss.y + 24, true);
-      if (!projectile) break;
-      projectile.projectileType = this.stage === 2 ? "boomerang" : this.stage === 3 ? "fireball" : this.stage === 4 ? "shuriken" : this.stage === 5 ? "grenade" : "bullet";
-      const sideFan = this.stage === 3 && pattern.count === 3 ? DEVIL_HAWK_FIREBALL_SIDE_FANS_NES[this.player.x < boss.x ? 0 : 1] : undefined;
-      const fan = this.stage === 3 ? pattern.count === DEVIL_HAWK_FIREBALL_FAN_NES.length ? DEVIL_HAWK_FIREBALL_FAN_NES[index] : sideFan?.[index] : undefined;
-      if (fan) {
-        projectile.vx = fan[0] * NES_FRAME_RATE * NES_WORLD_X_SCALE;
-        projectile.vy = fan[1] * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
-      } else {
-        const shotAngle = angle + (index - center) * pattern.spread;
-        projectile.vx = Math.cos(shotAngle) * pattern.speed;
-        projectile.vy = Math.sin(shotAngle) * pattern.speed;
-      }
-      projectile.turnRate = pattern.turnRate * (index === 0 ? -1 : 1);
-      projectile.radius = 7;
-    }
-    boss.fired = true;
-    this.bossFireClock = pattern.cooldown;
-    this.beep(150 + this.stage * 18, 0.045);
   }
 
   private render(): void {

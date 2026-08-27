@@ -136,15 +136,17 @@ stop. Boss reinforcements can still drop money or ammunition when defeated,
 but the locked arena does not create extra ambient barrels or loose pickups.
 
 Devil Hawk enters from the top on one of the measured NES X lanes
-(`x=128/168/208`) before using a long jump arc and firing a fixed five-shot
-downward or side-aimed three-shot fireball fan, while the Ninja enters from measured NES lanes near `x=176/192`
+(`x=128/168/208`) before using a long jump arc and firing a measured five-shot
+or player-sector three-shot fireball fan, while the Ninja enters from measured NES lanes near `x=176/192`
 with an initial smoke/invulnerability window,
 Fatman Joe enters from NES `x=152` at the top edge before using short hops and
 stationary grenade traps, while Wingate's two encounters use top-edge NES
 lanes `x=152` and `x=192` before a short horizontal rush and slower cruise; the Ninja enters a smoke/invulnerability phase and
 teleports after each lost health bar. The runtime hides the Boss for the
 measured 90-frame teleport delay, then restarts its entry smoke window and
-attack clock from the newly selected lane.
+attack clock from the newly selected lane. Devil Hawk fireballs use the ROM's
+discrete directional velocity table and their measured 45/36-frame lifetimes;
+the jump and random attack scheduler remain an approximation.
 Fatman Joe begins attack decisions after his measured entrance. A successful
 downward-sector check launches one aimed shell; after 31 frames it stops and
 splits into five stationary mines at four-frame intervals. The mines use the

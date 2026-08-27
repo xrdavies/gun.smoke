@@ -294,14 +294,14 @@ Devil Hawk as dispatch `0x9a`, variant `0x61`, entering from the top edge
 `x=128/168/208`; the opening holds that lane and reaches approximately `y=96`
 after 143 frames, then holds the lane for another 113 frames before the first
 lateral jump; the measured path then moves through NES `x=157/137/155`. At frame
-174 it creates five simultaneous `0xa2` fireballs from the Boss coordinate with
-measured NES velocity vectors `(-2,2),(-1,3),(0,3),(1,3),(2,2)` pixels per
-frame; later position-dependent attacks use three from that same coordinate,
-using the left or right three-shot mirror according to Billy's side. A common
-repeat interval is 125 frames. The runtime preserves these fixed 5/3 fans and
-timing. The first post-entry jump
-profile is sampled from the Boss trace; later short jumps repeat as a measured
-121-frame cycle approximation.
+174 it creates five simultaneous `0xa2` fireballs from the Boss coordinate.
+Their 32-direction headings are `12/14/16/18/20`, with the ROM's discrete
+velocity table and a 45-frame lifetime. Later position-dependent attacks select
+three adjacent headings from Billy's integer aim sector, using a 36-frame
+lifetime. A common repeat interval is 125 frames. The runtime preserves these
+measured 5/3 fan geometries and lifetimes. The first post-entry jump profile is
+sampled from the Boss trace; later short jumps repeat as a measured 121-frame
+cycle approximation.
 The same campaign reaches Round 4 and identifies its Ninja Boss as dispatch
 `0xaa`, variant `0x6b`, with measured entry lanes near NES `x=176/192` and
 `y=64/128`. The runtime selects one horizontal and one vertical lane; the low

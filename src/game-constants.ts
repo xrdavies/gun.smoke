@@ -344,6 +344,12 @@ export function hatchetPosition(age: number): readonly [number, number] {
   const amount = (frame - previous[0]) / (next[0] - previous[0]);
   return [previous[1] + (next[1] - previous[1]) * amount, previous[2] + (next[2] - previous[2]) * amount];
 }
+
+export function hatchetCanThrow(originX: number, originY: number, targetX: number, targetY: number): boolean {
+  const heading = nesAimHeading(originX, originY, targetX, targetY);
+  return heading >= 15 && heading <= 17;
+}
+
 export const FIREBREATHER_FIRST_SHOT_DELAY = 156 / NES_FRAME_RATE;
 export const FIREBREATHER_SHOT_FRAMES = [156, 364, 416] as const;
 export const FIREBREATHER_LIFETIME = 644 / NES_FRAME_RATE;

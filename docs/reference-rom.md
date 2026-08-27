@@ -252,8 +252,9 @@ frame 83. After the throw it moves diagonally for about 15 frames toward a
 player-relative offset before holding position. The runtime preserves these
 ROM-tagged keyframes and one-shot timing with a 300-world-pixel/s
 self-generated projectile.
-An isolated `$B8F4` Hatchet Thrower emits its dispatch `0x32` projectile at age
-78 frames and aims it toward Billy at roughly 230 world pixels/s. Its clean
+An isolated `$B8F4` Hatchet Thrower enters its throw state at age 78 frames only
+when Billy is in aim sectors `15..17`, then emits dispatch `0x32` toward Billy
+at roughly 230 world pixels/s. Its clean
 Round 3 trace holds `x=120` through frame 40, reaches approximately
 `x=138,y=43` at frame 60, and launches from about `x=138,y=48`; the runtime
 uses those entry checkpoints and the actor-relative launch coordinate.

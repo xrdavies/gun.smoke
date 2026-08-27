@@ -288,21 +288,24 @@ the decoded Round collision map. Deterministic replays match all four observed
 throw frames and the 713/651-frame releases; the no-throw route releases one
 frame later because the web actor does not inherit the ROM slot's stale X
 subpixel residue.
-An isolated `$BB29` top-entry Firebreather emits dispatch `0x34` fireballs at
-ages 156, 364 and 416 frames, then releases its slot at age 644. Each is aimed
-toward Billy at roughly 250 world pixels/s and launches from the actor coordinate
-with a measured `-1` NES Y-pixel offset. The clean entrance holds X through
-frame 40 while Y reaches about 30/34 NES pixels at frames 30/40, then reaches
-approximately `(x+2,y=57)` at frame 78; the runtime preserves this short path
-before the procedural combat loop resumes. The fallback remains a three-way
-spread for non-ROM formations.
-Entity code `22` is the side-entry Firebreather variant. A left-edge isolation
-reaches about `(x+56,y+57)` by frame 120, checks its first attack at frame
-156, and remains active beyond 1500 frames when not defeated. That and later
-checks recur every 52 frames and require Billy below the actor plus the
-routine's random gate and an aim heading in the inclusive `10..22` range.
-Runtime mirrors the measured opening for right-edge
-records and keeps the actor until defeat or scene cleanup.
+An isolated `$BB29` Firebreather spends 32 frames entering at the initializer's
+first-tier heading, captures Billy's heading, waits 40 frames, then advances at
+the second tier until both axis distances are below 96 NES pixels. A further
+20-frame ready wait leads to decisions at frame 156 and every 52 frames after
+that. One random-byte branch accepts aim sectors `10..22`, emits dispatch `0x34`
+from the actor coordinate with a measured `-1` NES Y-pixel offset, and holds a
+39-frame attack animation. The other selects a 24-frame movement action from
+the same byte's low bits, player distance and relative X lane. Entity code `21`
+enters downward; code `22` uses the mirrored side heading and masks emitted
+fireballs to an even direction sector.
+Fixed-player top-entry traces disprove the former fixed `156/364/416` schedule:
+the center route fired at `260/312/520`, the left route at
+`260/312/416/572/832/884`, and the right route at
+`156/208/312/364/520/884`. The actor has no 644-frame lifetime; it remains until
+collision, defeat, offscreen cleanup, or scene transition. The web runtime uses
+the decoded collision probes and action state machine while retaining its own
+random stream. Non-ROM fallback formations keep their procedural three-way
+spread.
 An isolated `$BA51` top-entry Spear Thrower reaches about 68 NES pixels by
 frame 24, pauses through frame 65, then follows a measured arc to roughly
 `(x+36,y=21)` by frame 96. Attack opportunities recur every 72 frames; a

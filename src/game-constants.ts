@@ -383,7 +383,7 @@ export function hatchetTurnHeading(remainingFrames: number, lowerArc: boolean, m
   return mirrored ? (32 - heading) & 31 : heading;
 }
 
-export function hatchetCollisionProbeOffset(heading: number): readonly [number, number] {
+export function nesActorCollisionProbeOffset(heading: number): readonly [number, number] {
   return HATCHET_COLLISION_PROBES_NES[(heading & 31) >> 1] ?? HATCHET_COLLISION_PROBES_NES[0];
 }
 
@@ -464,7 +464,7 @@ export function advanceHatchet(state: HatchetState, targetFrame: number, playerX
     const [velocityX, velocityY] = SNIPER_BULLET_VELOCITIES_NES[state.heading & 31] ?? SNIPER_BULLET_VELOCITIES_NES[0];
     const nextX = state.x + velocityX * 2;
     const nextY = state.y + velocityY * 2;
-    const [probeX, probeY] = hatchetCollisionProbeOffset(state.heading);
+    const [probeX, probeY] = nesActorCollisionProbeOffset(state.heading);
     if (blocked(nextX + probeX, nextY + probeY)) {
       state.y += NES_SCROLL_SPEED / NES_FRAME_RATE;
       if (!turning) state.turn = HATCHET_TURN_FRAMES;
@@ -485,49 +485,116 @@ export function hatchetCanThrow(originX: number, originY: number, targetX: numbe
   return heading >= 15 && heading <= 17;
 }
 
-export const FIREBREATHER_FIRST_SHOT_DELAY = 156 / NES_FRAME_RATE;
-export const FIREBREATHER_PROJECTILE_SPEED = 250;
-export const FIREBREATHER_SHOT_FRAMES = [156, 364, 416] as const;
-export const FIREBREATHER_LIFETIME = 644 / NES_FRAME_RATE;
-export const FIREBREATHER_SIDE_ATTACK_INTERVAL = 52 / NES_FRAME_RATE;
-export const FIREBREATHER_SIDE_LIFETIME = Number.POSITIVE_INFINITY;
+export const FIREBREATHER_FIRST_DECISION_DELAY = 156 / NES_FRAME_RATE;
+export const FIREBREATHER_LIFETIME = Number.POSITIVE_INFINITY;
 export const FIREBREATHER_PROJECTILE_OFFSET_NES = [0, -1] as const;
-export const FIREBREATHER_PATH_NES = [[0, 0, 0], [30, 0, 30], [40, 0, 34], [70, 0, 44], [78, 2, 57]] as const;
-export const FIREBREATHER_SIDE_PATH_NES = [[0, 0, 0], [20, 15, 0], [40, 25, 0], [74, 25, 0], [80, 32, 12], [100, 50, 45], [120, 56, 57], [209, 56, 57]] as const;
+export const FIREBREATHER_ENTRY_FRAMES = 32;
+export const FIREBREATHER_AIM_WAIT_FRAMES = 40;
+export const FIREBREATHER_READY_WAIT_FRAMES = 20;
+export const FIREBREATHER_DECISION_INTERVAL_FRAMES = 52;
+export const FIREBREATHER_MOVE_FRAMES = 24;
+export const FIREBREATHER_ATTACK_FRAMES = 39;
+export const FIREBREATHER_ACTIVATION_DISTANCE_NES = 96;
 
-export function firebreatherPosition(age: number): readonly [number, number] {
-  const frame = Math.max(0, age * NES_FRAME_RATE);
-  const nextIndex = FIREBREATHER_PATH_NES.findIndex(([at]) => at >= frame);
-  if (nextIndex < 0) {
-    const last = FIREBREATHER_PATH_NES.at(-1)!;
-    return [last[1], last[2]];
+export type FirebreatherState = {
+  frame: number;
+  mode: "entry" | "aimWait" | "approach" | "readyWait" | "hold" | "move" | "attack";
+  wait: number;
+  heading: number;
+  nextDecision: number;
+  x: number;
+  y: number;
+};
+
+export function createFirebreatherState(x: number, y: number, heading: number): FirebreatherState {
+  return { frame: 0, mode: "entry", wait: FIREBREATHER_ENTRY_FRAMES, heading: heading & 31, nextDecision: Math.round(FIREBREATHER_FIRST_DECISION_DELAY * NES_FRAME_RATE), x, y };
+}
+
+export function advanceFirebreather(state: FirebreatherState, targetFrame: number, playerX: number, playerY: number, blocked: (probeX: number, probeY: number) => boolean, randomByte: () => number): { readonly shots: readonly number[] } {
+  const shots: number[] = [];
+  const drift = () => { state.y += NES_SCROLL_SPEED / NES_FRAME_RATE; };
+  const move = (speed: number) => {
+    const [velocityX, velocityY] = SNIPER_BULLET_VELOCITIES_NES[state.heading & 31] ?? SNIPER_BULLET_VELOCITIES_NES[0];
+    const nextX = state.x + velocityX * speed;
+    const nextY = state.y + velocityY * speed;
+    const [probeX, probeY] = nesActorCollisionProbeOffset(state.heading);
+    if (blocked(nextX + probeX, nextY + probeY)) drift();
+    else {
+      state.x = nextX;
+      state.y = nextY;
+    }
+  };
+  while (state.frame < targetFrame) {
+    state.frame += 1;
+    if (state.mode === "entry") {
+      state.wait -= 1;
+      if (state.wait === 0) {
+        state.heading = nesAimHeading(state.x * NES_WORLD_X_SCALE, state.y * NES_WORLD_Y_SCALE, playerX * NES_WORLD_X_SCALE, playerY * NES_WORLD_Y_SCALE);
+        state.mode = "aimWait";
+        state.wait = FIREBREATHER_AIM_WAIT_FRAMES;
+      } else move(1);
+      continue;
+    }
+    if (state.mode === "aimWait") {
+      drift();
+      state.wait -= 1;
+      if (state.wait === 0) state.mode = "approach";
+      continue;
+    }
+    if (state.mode === "approach") {
+      if (Math.abs(state.x - playerX) < FIREBREATHER_ACTIVATION_DISTANCE_NES && Math.abs(state.y - playerY) < FIREBREATHER_ACTIVATION_DISTANCE_NES) {
+        state.mode = "readyWait";
+        state.wait = FIREBREATHER_READY_WAIT_FRAMES;
+        drift();
+      } else move(2);
+      continue;
+    }
+    if (state.mode === "readyWait") {
+      drift();
+      state.wait -= 1;
+      if (state.wait === 0) state.mode = "hold";
+      continue;
+    }
+    if (state.mode === "move") {
+      move(2);
+      state.wait -= 1;
+      if (state.wait === 0) state.mode = "hold";
+      continue;
+    }
+    if (state.mode === "attack") {
+      drift();
+      state.wait -= 1;
+      if (state.wait === 0) state.mode = "hold";
+      continue;
+    }
+    if (state.frame < state.nextDecision) {
+      drift();
+      continue;
+    }
+    state.nextDecision += FIREBREATHER_DECISION_INTERVAL_FRAMES;
+    const random = randomByte() & 0xff;
+    const aim = nesAimHeading(state.x * NES_WORLD_X_SCALE, state.y * NES_WORLD_Y_SCALE, playerX * NES_WORLD_X_SCALE, playerY * NES_WORLD_Y_SCALE);
+    if (state.y < 208 && !(random & 4) && aim >= 10 && aim <= 22) {
+      shots.push(aim);
+      state.mode = "attack";
+      state.wait = FIREBREATHER_ATTACK_FRAMES;
+      drift();
+      continue;
+    }
+    if (state.y >= 208) state.heading = 16;
+    else if (!(random & 4)) state.heading = 0;
+    else {
+      const far = Math.abs(state.y - playerY) >= 64 || Math.abs(state.x - playerX) >= 64;
+      const special = ((random & 3) === 0) === far;
+      state.heading = special ? state.x < playerX ? 28 : 4 : aim;
+    }
+    state.mode = "move";
+    state.wait = FIREBREATHER_MOVE_FRAMES;
+    drift();
   }
-  if (nextIndex === 0) return [0, 0];
-  const previous = FIREBREATHER_PATH_NES[nextIndex - 1]!;
-  const next = FIREBREATHER_PATH_NES[nextIndex]!;
-  const amount = (frame - previous[0]) / (next[0] - previous[0]);
-  return [previous[1] + (next[1] - previous[1]) * amount, previous[2] + (next[2] - previous[2]) * amount];
+  return { shots };
 }
 
-export function firebreatherSidePosition(age: number, fromLeft: boolean): readonly [number, number] {
-  const frame = Math.max(0, age * NES_FRAME_RATE);
-  const nextIndex = FIREBREATHER_SIDE_PATH_NES.findIndex(([at]) => at >= frame);
-  const direction = fromLeft ? 1 : -1;
-  if (nextIndex < 0) {
-    const last = FIREBREATHER_SIDE_PATH_NES.at(-1)!;
-    return [last[1] * direction, last[2]];
-  }
-  if (nextIndex === 0) return [0, 0];
-  const previous = FIREBREATHER_SIDE_PATH_NES[nextIndex - 1]!;
-  const next = FIREBREATHER_SIDE_PATH_NES[nextIndex]!;
-  const amount = (frame - previous[0]) / (next[0] - previous[0]);
-  return [(previous[1] + (next[1] - previous[1]) * amount) * direction, previous[2] + (next[2] - previous[2]) * amount];
-}
-
-export function firebreatherSideCanAttack(actorX: number, actorY: number, playerX: number, playerY: number, random: number): boolean {
-  const heading = nesAimHeading(actorX, actorY, playerX, playerY);
-  return playerY > actorY && random < 0.5 && heading >= 10 && heading <= 22;
-}
 export const SPEAR_FIRST_SHOT_DELAY = 72 / NES_FRAME_RATE;
 export const SPEAR_PROJECTILE_SPEED = 250;
 export const SPEAR_PROJECTILE_OFFSET_NES = [0, 0] as const;

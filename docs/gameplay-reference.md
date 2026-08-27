@@ -212,9 +212,13 @@ collision map. A blocked path starts a 34-frame curved turn; after crossing NES
 holds the actor through a 26-frame throw animation and captures the projectile
 heading before that delay. Their route-dependent lifetimes release between 620
 and 1,042 measured frames instead of using a fixed attack interval.
-side Firebreathers require Billy below them, a 50% random gate, and aim sectors
-`10..22` at every 52-frame attack check, including the first. Top-entry Spear
-Throwers accept sectors `10..23`.
+Top- and side-entry Firebreathers share one movement state machine: a 32-frame
+entry, 40-frame captured-aim wait, approach until both player-axis distances are
+under 96 NES pixels, and a 20-frame ready wait. Starting at frame 156, decisions
+repeat every 52 frames. The ROM random-byte branch either checks aim sectors
+`10..22` and starts a 39-frame fire animation, or selects a 24-frame movement
+action; side fireballs quantize the captured heading to an even sector. Top-entry
+Spear Throwers accept sectors `10..23`.
 
 Round 1 Bombers descend into range, choose among eight measured movement
 directions and durations, and make a half-probability throw decision between

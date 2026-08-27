@@ -106,8 +106,10 @@ Rifle increases unlimited Pistol bullet speed without extending lifetime. Bullet
 weapon-specific refill amounts, with Machine Gun receiving more rounds per
 pickup than Magnum. Stored special weapons and their ammo persist
 independently, while the equipped special weapon is lost on an unshielded
-death; Select opens the inventory to equip any owned weapon, and a Bullet
-pickup refills every owned special weapon by its own amount.
+death; Select opens the inventory to equip any weapon with nonzero stock, and a
+Bullet pickup refills every active special weapon by its own amount. A depleted
+weapon can be bought again at a weapon shop to restore its full stock, but Bullet
+pickups skip it until then.
 
 Shotgun fire emits five projectiles and consumes one round per trigger. A
 single-side shot spans straight ahead through horizontal fire on that side;

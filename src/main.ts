@@ -33,7 +33,7 @@ import { DEVIL_HAWK_ENTRY_DURATION, devilHawkFanHeadings, DEVIL_HAWK_FIRST_VOLLE
 import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_PREPARE_DELAY, NINJA_BOSS_PREPARE_CONTROLLER_DURATION, NINJA_BOSS_PREPARE_DURATION, NINJA_BOSS_SHURIKEN_LIFETIME, NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES, NINJA_BOSS_SHURIKEN_VELOCITIES_NES, NINJA_BOSS_TELEPORT_DELAY, ninjaBossCombatY, ninjaBossPreparePosition } from "./game-constants";
 import { canSpawnEnemyProjectile } from "./game-constants";
 import { canSpawnBossProjectile } from "./game-constants";
-import { hasSpecialAmmoStock, romEnemyDrop, romEnemyScore } from "./game-constants";
+import { hasSpecialAmmoStock, hasWeaponStock, romEnemyDrop, romEnemyScore } from "./game-constants";
 import { roundCollisionAtNes, roundCollisionBlocks, ROUND_COLLISION_ROWS } from "./round-collision";
 import { canSpawnRomPool, compareRomEventOrder, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_FALLING_ROCK_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
 import type { RomEnemyEvent, RomObjectEvent } from "./rom-event-data";
@@ -709,13 +709,13 @@ class GunSmokeGame {
 
   private canRefillAmmo(): boolean {
     return (["shotgun", "machinegun", "magnum"] as const).some((weapon) =>
-      this.ownedWeapons.has(weapon) && this.weaponAmmo[weapon] < WEAPONS[weapon].maxAmmo,
+      hasWeaponStock(this.weaponAmmo[weapon]) && this.weaponAmmo[weapon] < WEAPONS[weapon].maxAmmo,
     );
   }
 
   private refillAmmo(multiplier: number): void {
     for (const weapon of ["shotgun", "machinegun", "magnum"] as const) {
-      if (!this.ownedWeapons.has(weapon)) continue;
+      if (!hasWeaponStock(this.weaponAmmo[weapon])) continue;
       this.weaponAmmo[weapon] = Math.min(
         WEAPONS[weapon].maxAmmo,
         this.weaponAmmo[weapon] + AMMO_GAIN[weapon] * multiplier,
@@ -1150,7 +1150,7 @@ class GunSmokeGame {
       const isWeapon = key === "shotgun" || key === "machinegun" || key === "magnum" || key === "smartBomb";
       const available = shopType === "weapons" ? isWeapon : !isWeapon;
       item.hidden = !available;
-      item.disabled = !available || key === "horse" ? !available || this.hasHorse || this.score < cost : key === "ammo" ? !available || !this.canRefillAmmo() || this.score < cost : key === "wanted" ? !available || this.shopIndex < 2 || this.hasWanted || this.score < cost : key === "smartBomb" ? !available || this.smartBombs >= SMART_BOMB_CAPACITY || this.score < cost : key ? !available || this.ownedWeapons.has(key) || this.score < cost : true;
+      item.disabled = !available || key === "horse" ? !available || this.hasHorse || this.score < cost : key === "ammo" ? !available || !this.canRefillAmmo() || this.score < cost : key === "wanted" ? !available || this.shopIndex < 2 || this.hasWanted || this.score < cost : key === "smartBomb" ? !available || this.smartBombs >= SMART_BOMB_CAPACITY || this.score < cost : key ? !available || hasWeaponStock(this.weaponAmmo[key]) || this.score < cost : true;
     }
   }
 
@@ -1163,7 +1163,7 @@ class GunSmokeGame {
       return;
     }
     const cost = key === "horse" ? SHOP_COSTS.horse : key === "ammo" ? SHOP_COSTS.ammo : key === "smartBomb" ? SHOP_COSTS.smartBomb : key === "wanted" ? WANTED_COSTS[this.stage - 1] ?? 50_000 : WEAPONS[key]?.cost;
-    const alreadyOwned = key === "horse" ? this.hasHorse : key === "wanted" ? this.hasWanted : key === "smartBomb" ? this.smartBombs >= SMART_BOMB_CAPACITY : isWeapon ? this.ownedWeapons.has(key) : false;
+    const alreadyOwned = key === "horse" ? this.hasHorse : key === "wanted" ? this.hasWanted : key === "smartBomb" ? this.smartBombs >= SMART_BOMB_CAPACITY : isWeapon ? hasWeaponStock(this.weaponAmmo[key as WeaponName]) : false;
     if (alreadyOwned) {
       shopMessage.textContent = "ALREADY OWNED";
       return;

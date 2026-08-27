@@ -3,6 +3,7 @@ import { AMMO_GAIN, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER
 import { GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, GUNMAN_BOTTOM_NEAR_DISTANCE_NES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, gunmanCanFire, GUNMAN_ENTRY_PATH_NES, GUNMAN_FIRST_OPPORTUNITY_FRAMES, GUNMAN_FLANK_LIFETIMES, GUNMAN_FLANK_SHOT_FRAMES, GUNMAN_LIFETIME, gunmanFirstOpportunityFrame, gunmanFlankPosition, gunmanOpeningY, gunmanProjectileVelocity, GUNMAN_SHOT_OPPORTUNITY_INTERVAL } from "../src/game-constants";
 import { RIFLEMAN_LIFETIME, RIFLEMAN_PATH_NES, riflemanCanAttack, riflemanPosition, riflemanShotHeading, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_PATH_NES, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition, mediumProjectileHeadingVelocity, mediumProjectileVelocity } from "../src/game-constants";
 import { bossSpriteVisible, NINJA_BOSS_TELEPORT_DELAY } from "../src/game-constants";
+import { hasWeaponStock } from "../src/game-constants";
 import { addScore, MAX_SCORE } from "../src/game-constants";
 import { PLAYER_ENTRY_X, PLAYER_ENTRY_X_NES, PLAYER_ENTRY_Y, PLAYER_ENTRY_Y_NES } from "../src/game-constants";
 import { NINJA_ACTIVATION_DISTANCE_NES, NINJA_LIFETIME, ninjaCanThrow } from "../src/game-constants";
@@ -189,6 +190,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(SHOP_COSTS).toEqual({ shotgun: 6_000, machinegun: 10_000, magnum: 20_000, horse: 20_000, ammo: 1_500, smartBomb: 8_000 });
     expect(SMART_BOMB_CAPACITY).toBe(1);
     expect(AMMO_GAIN).toEqual({ pistol: 0, shotgun: 20, machinegun: 40, magnum: 10 });
+    expect([hasWeaponStock(0), hasWeaponStock(1), hasWeaponStock(WEAPONS.shotgun.maxAmmo)]).toEqual([false, true, true]);
     expect(WANTED_COSTS).toEqual([20_000, 24_000, 50_000, 40_000, 40_000, 60_000]);
     expect(BOSS_REWARDS).toEqual(WANTED_COSTS.map((cost) => cost / 2));
     expect(ROUND_ENEMY_TYPES).toHaveLength(MAX_STAGE);

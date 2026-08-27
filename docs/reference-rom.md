@@ -182,6 +182,11 @@ therefore labels them `weaponShop` and `supplyShop`; other no-behavior records
 remain `sceneObject`. These labels are research semantics, not copied ROM code.
 The web shop entry now calls the same ordinary-projectile clear before pausing;
 rocks remain enemy-slot actors and low Boss weapon slots remain separate.
+Weapon shop code `$BE2F-$BE43` refuses a selected weapon only while its
+`$90/$94/$98/$9C` stock is nonzero, so a depleted weapon can be purchased again.
+The Bullet loop at `$BE64-$BE87` skips zero stocks and increments only active,
+not-yet-capped weapons; runtime shop/refill checks use that current-stock
+distinction.
 An isolated `$B501` actor descends one NES pixel per frame until it enters the
 player's 64-pixel vertical range, then chooses among eight movement headings.
 Their durations are `64/38/32/14/16/14/32/38` frames and use the ROM's

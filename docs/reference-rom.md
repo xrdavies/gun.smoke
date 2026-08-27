@@ -225,6 +225,11 @@ enters its attack state at age 122, and emits five dispatch `0x30` shots at ages
 retreats toward the top edge, and releases after roughly 364 frames. The runtime
 preserves this measured vertical path, volley cadence, actor-relative launch
 coordinate and slot lifetime for ROM-tagged Riflemen.
+Entity code `15` is a side-entry Rifleman. A right-edge isolation advances 65
+NES pixels inward, fires three dispatch `0x30` shots at ages 97, 113 and 129,
+then returns to the edge and releases at age 259. Runtime mirrors this path for
+the left-edge records instead of applying code `14`'s top-entry five-shot
+cycle.
 An isolated `$B671` Ninja emits one dispatch `0x31` Shuriken at age 103
 frames. Its entrance holds the authored lane for 16 frames while descending
 to 32 NES pixels, pauses through frame 36, then descends to 126 NES pixels by

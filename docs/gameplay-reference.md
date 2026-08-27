@@ -169,7 +169,9 @@ hold their entry lane through a short pause, descend to the combat line, then
 make a brief player-relative diagonal retreat after their frame-103 Shuriken.
 Riflemen advance,
 enter their attack state at 122 NES frames, fire five shots at 138/154/170/186/202,
-and retreat toward the top of the playfield.
+and retreat toward the top of the playfield. Entity code `15` instead enters
+from either edge, fires three shots at 97/113/129 frames, and returns to its
+edge before releasing at frame 259.
 Top-entry Shotgunners fire two measured three-shot fans; entity code `4`
 instead enters from either side, fires one fan at frame 114, and returns to its
 edge before releasing at frame 232.

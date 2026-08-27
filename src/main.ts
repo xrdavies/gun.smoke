@@ -17,7 +17,7 @@ import { AMMO_GAIN, banditBillOpeningY, backstabberRaidOffset, BACKSTABBER_AMBUS
 import { GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, GUNMAN_BULLET_SPEED, GUNMAN_ENTRY_PATH_NES, GUNMAN_FLANK_LIFETIMES, GUNMAN_FLANK_SHOT_FRAMES, GUNMAN_LIFETIME, gunmanFlankPosition, gunmanOpeningY } from "./game-constants";
 import { BOMBER_ENTRY_DURATION, bomberOpeningY } from "./game-constants";
 import { firebreatherSideCanAttack, FIREBREATHER_SIDE_ATTACK_INTERVAL, FIREBREATHER_SIDE_LIFETIME, FIREBREATHER_SIDE_PATH_NES, firebreatherSidePosition, FIREBREATHER_FIRST_SHOT_DELAY, FIREBREATHER_LIFETIME, FIREBREATHER_PATH_NES, FIREBREATHER_PROJECTILE_OFFSET_NES, firebreatherPosition, FIREBREATHER_SHOT_FRAMES, HATCHET_PATH_NES, hatchetPosition, SPEAR_PATH_NES, SPEAR_PROJECTILE_OFFSET_NES, SPEAR_SIDE_LIFETIME, SPEAR_SIDE_PATH_NES, SPEAR_SIDE_SHOT_FRAMES, spearPosition, spearSidePosition } from "./game-constants";
-import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanPosition } from "./game-constants";
+import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanPosition, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition } from "./game-constants";
 import { BANDIT_BILL_BULLET_SPEED, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, banditBillCombatX, banditBillCombatY } from "./game-constants";
 import { banditBillCooldown } from "./game-constants";
 import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "./game-constants";
@@ -802,9 +802,10 @@ class GunSmokeGame {
     const eventX = romEventWorldX(event);
     const flankCode = event.behavior === 2 && (event.entityCode === 7 || event.entityCode === 8 || event.entityCode === 9) ? event.entityCode : undefined;
     const sideShotgunner = event.behavior === 1 && event.entityCode === 4;
+    const sideRifleman = event.behavior === 7 && event.entityCode === 15;
     const enemy = this.spawnUnit(
       "enemy",
-      event.behavior === 3 || flankCode !== undefined || sideShotgunner ? eventX : clamp(eventX, 40, 920),
+      event.behavior === 3 || flankCode !== undefined || sideShotgunner || sideRifleman ? eventX : clamp(eventX, 40, 920),
       this.scroll + romEventWorldY(event),
       1 + Number(this.stage >= 4),
       enemyType,
@@ -824,6 +825,7 @@ class GunSmokeGame {
     if (event.behavior === 3) enemy.maxAge = BACKSTABBER_RAID_LIFETIME;
     if (event.behavior === 8) enemy.maxAge = BACKSTABBER_AMBUSH_LIFETIME;
     if (event.behavior === 7) enemy.maxAge = RIFLEMAN_LIFETIME;
+    if (sideRifleman) enemy.maxAge = RIFLEMAN_SIDE_LIFETIME;
     if (event.behavior === 4) {
       enemy.bomberState = "entry";
       enemy.bomberDirection = 4;
@@ -1259,7 +1261,12 @@ class GunSmokeGame {
         }
       } else if (unit.enemyType === "rifleman") {
         const tracedRifleman = unit.romBehavior === 7;
-        if (tracedRifleman) {
+        const sideRifleman = tracedRifleman && unit.romEntityCode === 15;
+        if (sideRifleman) {
+          const [offsetX, offsetY] = riflemanSidePosition(unit.age, (unit.romOriginX ?? unit.x) < 480);
+          unit.x = (unit.romOriginX ?? unit.x) + offsetX * NES_WORLD_X_SCALE;
+          unit.y = this.scroll + (unit.romOriginY ?? 0) + offsetY * NES_WORLD_Y_SCALE;
+        } else if (tracedRifleman) {
           const [, y] = riflemanPosition(unit.age);
           unit.x = unit.romOriginX ?? unit.x;
           unit.y = this.scroll + (unit.romOriginY ?? 0) + y * NES_WORLD_Y_SCALE;
@@ -1267,9 +1274,11 @@ class GunSmokeGame {
           unit.x += unit.vx * delta;
           unit.y += (unit.age * NES_FRAME_RATE < RIFLEMAN_ATTACK_STATE_FRAME ? unit.vy : -unit.vy * 0.75) * delta;
         }
-        if (unit.nextFireAt === 0) unit.nextFireAt = RIFLEMAN_FIRST_SHOT_DELAY;
-        if (unit.age >= unit.nextFireAt && unit.volleysFired < RIFLEMAN_SHOTS_PER_VOLLEY) {
-          unit.nextFireAt += RIFLEMAN_SHOT_INTERVAL;
+        if (!sideRifleman && unit.nextFireAt === 0) unit.nextFireAt = RIFLEMAN_FIRST_SHOT_DELAY;
+        const sideShotFrame = sideRifleman ? RIFLEMAN_SIDE_SHOT_FRAMES[unit.volleysFired] : undefined;
+        const nextRiflemanShot = sideRifleman ? sideShotFrame === undefined ? undefined : sideShotFrame / NES_FRAME_RATE : unit.nextFireAt;
+        if (nextRiflemanShot !== undefined && unit.age >= nextRiflemanShot && unit.volleysFired < (sideRifleman ? RIFLEMAN_SIDE_SHOT_FRAMES.length : RIFLEMAN_SHOTS_PER_VOLLEY)) {
+          if (!sideRifleman) unit.nextFireAt += RIFLEMAN_SHOT_INTERVAL;
           unit.volleysFired += 1;
           const projectile = this.spawnEnemyProjectile(unit.x, tracedRifleman ? unit.y : unit.y + 12);
           if (projectile) {

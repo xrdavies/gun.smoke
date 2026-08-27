@@ -406,27 +406,28 @@ export const CUTTER_ENTRY_DURATION = 324 / NES_FRAME_RATE;
 export const CUTTER_ENTRY_SPEED_Y = (136 / 324) * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
 export const CUTTER_FIRST_ATTACK_DELAY = 350 / NES_FRAME_RATE;
 export const CUTTER_ATTACK_INTERVAL = 256 / NES_FRAME_RATE;
-export const CUTTER_BOOMERANG_SPEED = Math.hypot(63 * NES_WORLD_X_SCALE, 40 * NES_WORLD_Y_SCALE) * NES_FRAME_RATE / 29;
 export const CUTTER_BOOMERANG_SPAWN_NES = [[-3, 3], [3, 2]] as const;
-export const CUTTER_BOOMERANG_VELOCITIES_NES = [[2.16, 1.35], [-2, 1.77]] as const;
-export const CUTTER_BOOMERANG_PATH_NES = [
-  [[0, 0, 0], [5, 8, 11], [10, 19, 17], [15, 31, 23], [20, 42, 29], [25, 54, 35], [29, 63, 39]],
-  [[0, 0, 0], [5, -9, 11], [10, -19, 20], [15, -29, 28], [20, -39, 37], [25, -49, 45], [29, -57, 52]],
-] as const;
+export const CUTTER_BOOMERANG_HEADINGS = [14, 18] as const;
+export const CUTTER_BOOMERANG_OUTWARD_TARGETS_NES = [[224, 176], [32, 176]] as const;
+export const CUTTER_BOOMERANG_REAIM_Y_NES = 176;
+export const CUTTER_BOOMERANG_FIRST_TURN_DELAY = 1 / NES_FRAME_RATE;
+export const CUTTER_BOOMERANG_TURN_INTERVAL = 2 / NES_FRAME_RATE;
+export const CUTTER_BOOMERANG_LIFETIME = 180 / NES_FRAME_RATE;
 
-export function cutterBoomerangPosition(age: number, index: number): readonly [number, number] {
-  const path = CUTTER_BOOMERANG_PATH_NES[index] ?? CUTTER_BOOMERANG_PATH_NES[0];
-  const frame = Math.max(0, age * NES_FRAME_RATE);
-  const nextIndex = path.findIndex(([at]) => at >= frame);
-  if (nextIndex < 0) {
-    const last = path.at(-1)!;
-    return [last[1], last[2]];
-  }
-  if (nextIndex === 0) return [0, 0];
-  const previous = path[nextIndex - 1]!;
-  const next = path[nextIndex]!;
-  const amount = (frame - previous[0]) / (next[0] - previous[0]);
-  return [previous[1] + (next[1] - previous[1]) * amount, previous[2] + (next[2] - previous[2]) * amount];
+export function cutterBoomerangVelocity(heading: number): readonly [number, number] {
+  const angle = ((heading & 31) - 8) * Math.PI / 16;
+  return [Math.cos(angle) * 2.5 * NES_FRAME_RATE * NES_WORLD_X_SCALE, Math.sin(angle) * 3 * NES_FRAME_RATE * NES_WORLD_Y_SCALE];
+}
+
+export function cutterBoomerangHeadingToward(originX: number, originY: number, targetX: number, targetY: number): number {
+  const x = (targetX - originX) / NES_WORLD_X_SCALE / 2.5;
+  const y = (targetY - originY) / NES_WORLD_Y_SCALE / 3;
+  return (Math.round(Math.atan2(y, x) / (Math.PI / 16)) + 8 + 32) % 32;
+}
+
+export function cutterBoomerangTurn(heading: number, target: number): number {
+  const difference = (target - heading + 48) % 32 - 16;
+  return difference === 0 ? heading : (heading + Math.sign(difference) + 32) % 32;
 }
 export const CUTTER_MOVEMENT_SPEED = (31 / 18) * NES_FRAME_RATE * NES_WORLD_X_SCALE;
 

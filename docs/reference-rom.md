@@ -271,12 +271,12 @@ the calibrated downward opening, then follows the measured 136-to-40/99 NES
 vertical combat profile while resuming horizontal movement at about
 1.72 NES X pixels per frame. At frame 350 it creates the paired `0x98/0x99`
 boomerangs from Boss-relative offsets `(-3,+3)` and `(+3,+2)` NES pixels,
-repeating every 256 frames. Their first 29-frame path measures about 63 NES X
-pixels and 40 NES Y pixels, converting to roughly 524 world pixels/s; the
-initial outward/downward vectors average `(2.16,1.35)` and `(-2,1.77)` NES
-pixels per frame. The runtime preserves the pair, measured launch geometry,
-timing, and sampled first-curve checkpoints before resuming its opposite
-procedural curves on later volleys.
+repeating every 256 frames. Both use a 32-direction steering state: initial
+headings `14/18` turn toward fixed NES points `(224,176)/(32,176)` by one
+heading step every two frames. On reaching NES `y=176`, each captures Billy's
+position, turns toward it, then recalculates that return heading once. The
+runtime uses this measured state machine for every volley rather than a fixed
+angular curve.
 After clearing only ordinary slots at the next real gate, Round 3 produces
 Devil Hawk as dispatch `0x9a`, variant `0x61`, entering from the top edge
 (`y=0`). Controlled traces observe NES horizontal entry lanes near

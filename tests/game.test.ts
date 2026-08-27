@@ -19,7 +19,7 @@ import { BOSS_PROJECTILE_CAPACITY, canSpawnBossProjectile, canSpawnEnemyProjecti
 import { MAX_POWERUP_STOCK, POWERUP_OVERFLOW_SCORE, storedPowerupPickup } from "../src/game-constants";
 import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, FATMAN_JOE_MOVEMENT_SPEED, FATMAN_JOE_SHOT_INTERVAL, FATMAN_JOE_VOLLEY_GAP, FATMAN_JOE_VOLLEY_INTERVAL, FATMAN_JOE_VOLLEY_SIZE } from "../src/game-constants";
 import { WINGATE_BULLET_SPEED, WINGATE_ENTRY_RUSH_DELAY, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_FIRST_VOLLEY_GAP, WINGATE_FIRST_VOLLEY_SIZE, WINGATE_MOVEMENT_SPEED, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_SECOND_FIRST_SHOT_DELAY, WINGATE_SECOND_VOLLEY_GAP, WINGATE_SECOND_VOLLEY_SIZE, WINGATE_SHOT_INTERVAL, wingateCombatY, wingateShotCooldown } from "../src/game-constants";
-import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_PATH_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_SPEED, CUTTER_BOOMERANG_VELOCITIES_NES, cutterBoomerangPosition, CUTTER_FIRST_ATTACK_DELAY } from "../src/game-constants";
+import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_LIFETIME, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "../src/game-constants";
 import { CUTTER_MOVEMENT_SPEED } from "../src/game-constants";
 import { DEVIL_HAWK_FIREBALL_FAN_NES, DEVIL_HAWK_FIREBALL_SIDE_FANS_NES, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_JUMP_PERIOD, DEVIL_HAWK_VOLLEY_INTERVAL } from "../src/game-constants";
 import { devilHawkCombatY } from "../src/game-constants";
@@ -446,15 +446,31 @@ describe("Gun.Smoke vertical slice", () => {
     expect(cutterCombatY(CUTTER_ENTRY_DURATION + 311 / NES_FRAME_RATE)).toBe(90);
     expect(CUTTER_FIRST_ATTACK_DELAY).toBeCloseTo(350 / NES_FRAME_RATE, 9);
     expect(CUTTER_ATTACK_INTERVAL).toBeCloseTo(256 / NES_FRAME_RATE, 9);
-    expect(CUTTER_BOOMERANG_SPEED).toBeCloseTo(Math.hypot(63 * NES_WORLD_X_SCALE, 40 * (540 / 240)) * NES_FRAME_RATE / 29, 9);
     expect(CUTTER_BOOMERANG_SPAWN_NES).toEqual([[-3, 3], [3, 2]]);
-    expect(CUTTER_BOOMERANG_VELOCITIES_NES).toEqual([[2.16, 1.35], [-2, 1.77]]);
-    expect(CUTTER_BOOMERANG_PATH_NES).toEqual([
-      [[0, 0, 0], [5, 8, 11], [10, 19, 17], [15, 31, 23], [20, 42, 29], [25, 54, 35], [29, 63, 39]],
-      [[0, 0, 0], [5, -9, 11], [10, -19, 20], [15, -29, 28], [20, -39, 37], [25, -49, 45], [29, -57, 52]],
-    ]);
-    expect(cutterBoomerangPosition(5 / NES_FRAME_RATE, 0)).toEqual([8, 11]);
-    expect(cutterBoomerangPosition(29 / NES_FRAME_RATE, 1)).toEqual([-57, 52]);
+    expect(CUTTER_BOOMERANG_HEADINGS).toEqual([14, 18]);
+    expect(CUTTER_BOOMERANG_OUTWARD_TARGETS_NES).toEqual([[224, 176], [32, 176]]);
+    expect(CUTTER_BOOMERANG_REAIM_Y_NES).toBe(176);
+    expect(CUTTER_BOOMERANG_FIRST_TURN_DELAY).toBeCloseTo(1 / NES_FRAME_RATE, 9);
+    expect(CUTTER_BOOMERANG_TURN_INTERVAL).toBeCloseTo(2 / NES_FRAME_RATE, 9);
+    expect(CUTTER_BOOMERANG_LIFETIME).toBeCloseTo(180 / NES_FRAME_RATE, 9);
+    expect(cutterBoomerangTurn(14, 10)).toBe(13);
+    expect(cutterBoomerangTurn(18, 22)).toBe(19);
+    expect(cutterBoomerangTurn(31, 1)).toBe(0);
+    expect(cutterBoomerangHeadingToward(126 * NES_WORLD_X_SCALE, 139 * (540 / 240), 224 * NES_WORLD_X_SCALE, 176 * (540 / 240))).toBe(10);
+    expect(cutterBoomerangHeadingToward(103 * NES_WORLD_X_SCALE, 99 * (540 / 240), 32 * NES_WORLD_X_SCALE, 176 * (540 / 240))).toBe(20);
+    expect(cutterBoomerangHeadingToward(184 * NES_WORLD_X_SCALE, 176 * (540 / 240), 128 * NES_WORLD_X_SCALE, 216 * (540 / 240))).toBe(21);
+    expect(cutterBoomerangVelocity(16)[0]).toBeCloseTo(0, 9);
+    expect(cutterBoomerangVelocity(16)[1]).toBeCloseTo(3 * NES_FRAME_RATE * (540 / 240), 9);
+    let heading: number = CUTTER_BOOMERANG_HEADINGS[0];
+    let x = 0;
+    let y = 0;
+    for (let frame = 1; frame <= 10; frame += 1) {
+      if (frame % 2 === 1) heading = cutterBoomerangTurn(heading, 10);
+      const [vx, vy] = cutterBoomerangVelocity(heading);
+      x += vx / NES_FRAME_RATE / NES_WORLD_X_SCALE;
+      y += vy / NES_FRAME_RATE / (540 / 240);
+    }
+    expect([x, y]).toEqual([expect.closeTo(19.7, 1), expect.closeTo(17.2, 1)]);
     expect(CUTTER_MOVEMENT_SPEED).toBeCloseTo((31 / 18) * NES_FRAME_RATE * NES_WORLD_X_SCALE, 9);
   });
 

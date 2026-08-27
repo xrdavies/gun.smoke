@@ -7,7 +7,7 @@ names are cross-checked against the public NES walkthrough on
 | Round | Terrain cue | Boss | Current web status |
 | --- | --- | --- | --- |
 | 1 | Hicksville / western road | Bandit Bill | gate, poster, shop, measured entrance and volley |
-| 2 | Rocky pass / cliffs | Cutter | gate, poster, shop, measured entrance, attack approximation |
+| 2 | Rocky pass / cliffs | Cutter | gate, poster, shop, measured entrance and boomerang steering |
 | 3 | Native village | Devil Hawk | gate, poster, shop, measured entrance and opening fan |
 | 4 | Cliff valley | Ninja | gate, poster, shop, measured entrance and shuriken volley |
 | 5 | Forest / bridges | Fatman Joe | gate, poster, shop, measured entrance, attack approximation |
@@ -126,8 +126,9 @@ Ordinary screen clears do not erase active low-slot Boss shots.
 Cutter enters from the top edge on one of the measured NES X lanes
 (`x=88/144/168`) and reaches approximately `y=136` after 324 frames, then
 resumes horizontal movement. Its first paired boomerangs appear at frame 350
-and repeat every 256 frames at the measured roughly 524 world-pixel/s
-projectile speed.
+and repeat every 256 frames. Both turn through measured 32-direction headings,
+capture Billy's position at NES `y=176`, and recalculate their return heading
+once before leaving the arena.
 
 The decoded enemy event stream runs until the Wanted gate; once the poster is
 owned and the Boss arena locks, scrolling and regular enemy-event spawning

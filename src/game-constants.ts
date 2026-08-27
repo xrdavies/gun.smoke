@@ -263,6 +263,11 @@ export function sniperProjectileVelocity(originX: number, originY: number, targe
   const [x, y] = SNIPER_BULLET_VELOCITIES_NES[nesAimHeading(originX, originY, targetX, targetY)] ?? SNIPER_BULLET_VELOCITIES_NES[0];
   return [x * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE];
 }
+
+export function gunmanProjectileVelocity(originX: number, originY: number, targetX: number, targetY: number): readonly [number, number] {
+  const [x, y] = SNIPER_BULLET_VELOCITIES_NES[nesAimHeading(originX, originY, targetX, targetY)] ?? SNIPER_BULLET_VELOCITIES_NES[0];
+  return [x * 2 * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * 2 * NES_FRAME_RATE * NES_WORLD_Y_SCALE];
+}
 export const RIFLEMAN_FIRST_SHOT_DELAY = 138 / NES_FRAME_RATE;
 export const RIFLEMAN_ATTACK_STATE_FRAME = 122;
 export const RIFLEMAN_SHOT_INTERVAL = 16 / NES_FRAME_RATE;

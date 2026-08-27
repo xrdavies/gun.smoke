@@ -206,8 +206,9 @@ The opposite-side entity code `2` keeps the same lifetime but hits every middle
 window, firing at ages 134, 224, 314, 404, 495 and 585. Runtime selects the
 schedule by entity code rather than dropping code `2`'s third shot.
 An isolated `$B284` Gunman fires one dispatch `0x30` bullet at age 39 frames
-and releases its slot at age 289. The projectile's measured 20-frame travel
-maps to roughly 266 world pixels/s; ROM-tagged Gunmen use this per-actor timing
+and releases its slot at age 289. The projectile uses the ROM's quantized
+32-direction speed table at the second tier (about 266 world pixels/s on its
+diagonal), and ROM-tagged Gunmen use this per-actor timing
 instead of the procedural global firing clock. A clean Round 1 isolation also
 shows the actor rising from `y=0` to approximately `y=53` at frame 40 and
 `y=128/132` at frames 100/104 before its horizontal combat state; the runtime

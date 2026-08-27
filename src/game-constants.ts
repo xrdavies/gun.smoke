@@ -33,6 +33,8 @@ export const ROUND_BOSS_GATE_SCROLL_NES = [2_767, 2_799, 4_863, 3_487, 2_879, 4_
 export const ROUND_LOOP_SCROLL_NES = [3_087, 3_055, 5_119, 3_839, 3_055, 5_119] as const;
 export const ROUND_BOSS_TRIGGERS = ROUND_BOSS_GATE_SCROLL_NES.map((value) => value * NES_WORLD_Y_SCALE);
 export const ROUND_LENGTHS = ROUND_LOOP_SCROLL_NES.map((value) => value * NES_WORLD_Y_SCALE);
+export const ROUND2_LOOP_HORSE_X = 310;
+export const ROUND2_LOOP_HORSE_Y = 300;
 export const NES_SCROLL_SPEED = 20 * (NES_FRAME_RATE / 60);
 export const WORLD_SCROLL_SPEED = NES_SCROLL_SPEED * NES_WORLD_Y_SCALE;
 // ROM object Y advances with the camera scroll plus one screen-speed descent.

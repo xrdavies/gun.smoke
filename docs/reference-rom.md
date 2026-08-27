@@ -341,6 +341,11 @@ NES X positions are `[200,64,216,216,72,216]`. Unflagged weapon-shop counts are
 runtime preserves their exact script order, coordinates, flags, and enemy-pool
 identity.
 
+Round 2's free Horse near the left cactus is a loop-only branch rather than a
+record in the first-pass `$8c00` object stream. The runtime emits that
+self-generated breakable barrel only when the Wanted gate has caused a Round
+loop, at the authored world position `(310,300)`.
+
 Pattern-table previews remain grayscale for bitplane inspection; nametable
 previews apply each tile's expanded attribute and the live NES background
 palette so terrain colors match the captured scene.

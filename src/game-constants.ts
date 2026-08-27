@@ -203,6 +203,18 @@ export const BACKSTABBER_RAID_LIFETIME = 369 / NES_FRAME_RATE;
 export const GUNMAN_FIRST_SHOT_DELAY = 39 / NES_FRAME_RATE;
 export const GUNMAN_BULLET_SPEED = 266;
 export const GUNMAN_LIFETIME = 289 / NES_FRAME_RATE;
+export const GUNMAN_ENTRY_PATH_NES = [[0, 0], [40, 53], [100, 128], [104, 132]] as const;
+
+export function gunmanOpeningY(age: number): number {
+  const frame = Math.max(0, age * NES_FRAME_RATE);
+  const nextIndex = GUNMAN_ENTRY_PATH_NES.findIndex(([at]) => at >= frame);
+  if (nextIndex < 0) return GUNMAN_ENTRY_PATH_NES.at(-1)![1] * NES_WORLD_Y_SCALE;
+  if (nextIndex === 0) return 0;
+  const previous = GUNMAN_ENTRY_PATH_NES[nextIndex - 1]!;
+  const next = GUNMAN_ENTRY_PATH_NES[nextIndex]!;
+  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  return (previous[1] + (next[1] - previous[1]) * amount) * NES_WORLD_Y_SCALE;
+}
 export const BANDIT_BILL_FIRST_VOLLEY_DELAY = 107 / NES_FRAME_RATE;
 export const BANDIT_BILL_SHOT_INTERVAL = 12 / NES_FRAME_RATE;
 export const BANDIT_BILL_VOLLEY_GAP = 72 / NES_FRAME_RATE;

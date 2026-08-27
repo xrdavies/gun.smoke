@@ -178,7 +178,10 @@ the X lane stays fixed; the runtime carries ROM-tagged Snipers with that scroll.
 An isolated `$B284` Gunman fires one dispatch `0x30` bullet at age 39 frames
 and releases its slot at age 289. The projectile's measured 20-frame travel
 maps to roughly 266 world pixels/s; ROM-tagged Gunmen use this per-actor timing
-instead of the procedural global firing clock.
+instead of the procedural global firing clock. A clean Round 1 isolation also
+shows the actor rising from `y=0` to approximately `y=53` at frame 40 and
+`y=128/132` at frames 100/104 before its horizontal combat state; the runtime
+uses these entry checkpoints and keeps the later movement procedural.
 On defeat, `$CD4E-$CDAA` converts an event's `0x80` flag into dispatch `0x4e`.
 If `$90/$94/$98/$9c` show no special stock, it increments that to `0x4f`;
 the `$E192` conversion table then maps them to Bullet (`0x29`) and Money

@@ -398,8 +398,8 @@ the four-value initializer table defines NES horizontal entry lanes
 lane through frame 258, then curves 15 pixels left while returning to `y=136`.
 The web runtime selects one measured lane and follows this two-axis opening,
 then holds the final entry X until its first attack at frame 350 and follows
-the recorded X/Y combat route through frame 900, including its 136-to-40/99 NES
-vertical profile. At frame 350 it creates the paired `0x98/0x99`
+the recorded X/Y combat route through frame 3,264, including its 136-to-40/99 NES
+vertical profile and later return loops. At frame 350 it creates the paired `0x98/0x99`
 boomerangs from Boss-relative offsets `(-3,+3)` and `(+3,+2)` NES pixels,
 holding those launch coordinates for the allocation frame and repeating every
 256 frames. Both use a 32-direction steering state: initial

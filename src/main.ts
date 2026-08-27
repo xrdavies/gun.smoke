@@ -1825,6 +1825,7 @@ class GunSmokeGame {
         this.showMessage("DECOY DOWN");
         return;
       }
+      this.score = addScore(this.score, target.value);
       this.bossSpawned = false;
       this.stageClearClock = 1.5;
       this.showMessage(this.stage === MAX_STAGE ? "TRAIL COMPLETE" : "BOSS DOWN");

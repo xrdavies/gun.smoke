@@ -1280,6 +1280,10 @@ export function bossReward(stage: number, phase = 0): number {
   return BOSS_REWARDS[stage - 1] ?? 0;
 }
 
+export function scoreBossDefeat(score: number, stage: number, phase = 0): number {
+  return addScore(score, bossReward(stage, phase));
+}
+
 export function formationEntryY(scroll: number, bossEncounter = false): number {
   return scroll + (bossEncounter ? -40 : 55);
 }

@@ -265,7 +265,12 @@ export function sniperProjectileVelocity(originX: number, originY: number, targe
 }
 
 export function gunmanProjectileVelocity(originX: number, originY: number, targetX: number, targetY: number): readonly [number, number] {
-  const [x, y] = SNIPER_BULLET_VELOCITIES_NES[nesAimHeading(originX, originY, targetX, targetY)] ?? SNIPER_BULLET_VELOCITIES_NES[0];
+  return mediumProjectileVelocity(originX, originY, targetX, targetY);
+}
+
+export function mediumProjectileVelocity(originX: number, originY: number, targetX: number, targetY: number, evenHeading = false): readonly [number, number] {
+  const aimHeading = nesAimHeading(originX, originY, targetX, targetY);
+  const [x, y] = SNIPER_BULLET_VELOCITIES_NES[evenHeading ? aimHeading & 0x1e : aimHeading] ?? SNIPER_BULLET_VELOCITIES_NES[0];
   return [x * 2 * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * 2 * NES_FRAME_RATE * NES_WORLD_Y_SCALE];
 }
 
@@ -369,11 +374,11 @@ export function hatchetCanThrow(originX: number, originY: number, targetX: numbe
 }
 
 export const FIREBREATHER_FIRST_SHOT_DELAY = 156 / NES_FRAME_RATE;
+export const FIREBREATHER_PROJECTILE_SPEED = 250;
 export const FIREBREATHER_SHOT_FRAMES = [156, 364, 416] as const;
 export const FIREBREATHER_LIFETIME = 644 / NES_FRAME_RATE;
 export const FIREBREATHER_SIDE_ATTACK_INTERVAL = 52 / NES_FRAME_RATE;
 export const FIREBREATHER_SIDE_LIFETIME = Number.POSITIVE_INFINITY;
-export const FIREBREATHER_PROJECTILE_SPEED = 250;
 export const FIREBREATHER_PROJECTILE_OFFSET_NES = [0, -1] as const;
 export const FIREBREATHER_PATH_NES = [[0, 0, 0], [30, 0, 30], [40, 0, 34], [70, 0, 44], [78, 2, 57]] as const;
 export const FIREBREATHER_SIDE_PATH_NES = [[0, 0, 0], [20, 15, 0], [40, 25, 0], [74, 25, 0], [80, 32, 12], [100, 50, 45], [120, 56, 57], [209, 56, 57]] as const;

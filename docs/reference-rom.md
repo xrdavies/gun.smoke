@@ -262,7 +262,10 @@ to 32 NES pixels, pauses through frame 36, then descends to 126 NES pixels by
 frame 83. After the throw it moves diagonally for about 15 frames toward a
 player-relative offset before holding position. The runtime preserves these
 ROM-tagged keyframes and one-shot timing with a 300-world-pixel/s
-self-generated projectile.
+self-generated projectile. ROM-tagged Ninja, Hatchet, Spear, and Firebreather
+shots use the same second-tier 32-direction table as Gunmen; side Firebreathers
+mask the selected heading to an even sector before allocation. Non-ROM fallback
+formations retain their continuous procedural aim.
 An isolated `$B8F4` Hatchet Thrower enters its throw state at age 78 frames only
 when Billy is in aim sectors `15..17`, then emits dispatch `0x32` toward Billy
 at roughly 230 world pixels/s. Its clean

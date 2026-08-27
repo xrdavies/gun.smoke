@@ -14,7 +14,7 @@ import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
 import { AMMO_GAIN, banditBillOpeningY, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, BOMBER_FIRST_THROW_DELAY, BOMBER_THROW_INTERVAL, bossReward, BOOTS_SPEED_MULTIPLIER, canSpawnPlayerBullet, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_LIFETIME, dynamiteVerticalOffset, EMPTY_BARREL_EXPLOSION_LIFETIME, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X, FATMAN_JOE_ENTRY_Y, fatmanJoeOpeningY, FIREBREATHER_FIRST_SHOT_DELAY, FIREBREATHER_PROJECTILE_SPEED, formationEntryY, HATCHET_FIRST_SHOT_DELAY, HATCHET_PROJECTILE_SPEED, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_X_LANES, NINJA_BOSS_ENTRY_Y_LANES, NINJA_FIRST_SHOT_DELAY, NINJA_PROJECTILE_SPEED, ninjaAttackPosition, ninjaOpeningY, RIFLEMAN_BULLET_SPEED, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_LIFETIME, ROCK_WORLD_SPEED_X, ROCK_WORLD_SPEED_Y, ROAD_WIDTHS, ROM_ENEMY_SCREEN_MAX_Y, ROM_OBJECT_DROP_SPEED, ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_VOLLEY_INTERVAL, shotgunnerPosition, shouldLoopStage, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, SPEAR_FIRST_SHOT_DELAY, SPEAR_PROJECTILE_SPEED, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_DURATION, WINGATE_ENTRY_X, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_X, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, wingateOpeningY, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
-import { GUNMAN_BOTTOM_LIFETIMES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, GUNMAN_BULLET_SPEED, GUNMAN_ENTRY_PATH_NES, GUNMAN_FLANK_LIFETIMES, GUNMAN_FLANK_SHOT_FRAMES, GUNMAN_LIFETIME, gunmanFlankPosition, gunmanOpeningY } from "./game-constants";
+import { GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, GUNMAN_BULLET_SPEED, GUNMAN_ENTRY_PATH_NES, GUNMAN_FLANK_LIFETIMES, GUNMAN_FLANK_SHOT_FRAMES, GUNMAN_LIFETIME, gunmanFlankPosition, gunmanOpeningY } from "./game-constants";
 import { bomberFirstManeuverPosition, bomberOpeningY } from "./game-constants";
 import { FIREBREATHER_PATH_NES, FIREBREATHER_PROJECTILE_OFFSET_NES, firebreatherPosition, HATCHET_PATH_NES, hatchetPosition, SPEAR_PATH_NES, SPEAR_PROJECTILE_OFFSET_NES, spearPosition } from "./game-constants";
 import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanPosition } from "./game-constants";
@@ -97,6 +97,7 @@ interface Unit {
   romOriginY?: number;
   targetX?: number;
   targetY?: number;
+  gunmanBottomRoute?: "near" | "far";
   bossEntryX?: number;
   bossEntryY?: number;
   bossProjectile?: boolean;
@@ -810,11 +811,10 @@ class GunSmokeGame {
     enemy.romPool = event.pool;
     enemy.romOriginX = enemy.x;
     enemy.romOriginY = romEventWorldY(event);
-    if (event.behavior === 2 && event.entityCode === 5) enemy.targetX = this.player.x;
     if (event.behavior === 0) enemy.maxAge = SNIPER_LIFETIME;
     if (event.behavior === 1) enemy.maxAge = SHOTGUNNER_LIFETIME;
     if (event.behavior === 2) enemy.maxAge = GUNMAN_LIFETIME;
-    if (event.behavior === 2 && event.entityCode === 5) enemy.maxAge = GUNMAN_BOTTOM_LIFETIMES[gunmanBottomRoute(eventX, this.player.x)];
+    if (event.behavior === 2 && event.entityCode === 5) enemy.maxAge = GUNMAN_BOTTOM_LIFETIMES.far;
     if (flankCode !== undefined) enemy.maxAge = GUNMAN_FLANK_LIFETIMES[flankCode];
     if (event.behavior === 3) enemy.maxAge = BACKSTABBER_RAID_LIFETIME;
     if (event.behavior === 8) enemy.maxAge = BACKSTABBER_AMBUSH_LIFETIME;
@@ -1163,7 +1163,7 @@ class GunSmokeGame {
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: frameDuration },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, boomerangPathIndex: undefined, bossCycleStart: undefined,
+      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, boomerangPathIndex: undefined, bossCycleStart: undefined,
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" || sceneObject ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
@@ -1407,8 +1407,15 @@ class GunSmokeGame {
         }
       } else if (unit.enemyType === "gunman") {
         const tracedGunman = unit.romBehavior === 2;
-        const bottomGunmanFromLeft = tracedGunman && unit.romEntityCode === 5 ? (unit.romOriginX ?? unit.x) <= (unit.targetX ?? this.player.x) : undefined;
-        const bottomGunmanRoute = bottomGunmanFromLeft !== undefined ? gunmanBottomRoute(unit.romOriginX ?? unit.x, unit.targetX ?? this.player.x) : undefined;
+        const bottomGunman = tracedGunman && unit.romEntityCode === 5;
+        if (bottomGunman && unit.gunmanBottomRoute === undefined && unit.age >= GUNMAN_BOTTOM_BRANCH_FRAME / NES_FRAME_RATE) {
+          unit.targetX = this.player.x;
+          unit.targetY = this.player.y;
+          unit.gunmanBottomRoute = gunmanBottomRoute(unit.romOriginX ?? unit.x, unit.y, unit.targetX, unit.targetY);
+          unit.maxAge = GUNMAN_BOTTOM_LIFETIMES[unit.gunmanBottomRoute];
+        }
+        const bottomGunmanFromLeft = bottomGunman ? (unit.romOriginX ?? unit.x) <= (unit.targetX ?? this.player.x) : undefined;
+        const bottomGunmanRoute = bottomGunman ? unit.gunmanBottomRoute ?? "near" : undefined;
         const flankGunman = tracedGunman && (unit.romEntityCode === 7 || unit.romEntityCode === 8 || unit.romEntityCode === 9) ? unit.romEntityCode : undefined;
         if (bottomGunmanFromLeft !== undefined && bottomGunmanRoute !== undefined) {
           const [offsetX, offsetY] = gunmanBottomPosition(bottomGunmanRoute, bottomGunmanFromLeft, unit.age);

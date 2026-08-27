@@ -291,6 +291,7 @@ export const GUNMAN_FIRST_SHOT_DELAY = 39 / NES_FRAME_RATE;
 export const GUNMAN_BULLET_SPEED = 266;
 export const GUNMAN_LIFETIME = 289 / NES_FRAME_RATE;
 export const GUNMAN_ENTRY_PATH_NES = [[0, 0], [40, 53], [100, 128], [104, 132]] as const;
+export const GUNMAN_BOTTOM_BRANCH_FRAME = 50;
 export const GUNMAN_BOTTOM_NEAR_DISTANCE_NES = 56;
 export const GUNMAN_BOTTOM_SHOT_FRAMES = { near: [219], far: [241] } as const;
 export const GUNMAN_BOTTOM_LIFETIMES = { near: 318 / NES_FRAME_RATE, far: 479 / NES_FRAME_RATE } as const;
@@ -321,8 +322,9 @@ export function gunmanFlankPosition(entityCode: 7 | 8 | 9, age: number): readonl
   return [previous[1] + (next[1] - previous[1]) * amount, previous[2] + (next[2] - previous[2]) * amount];
 }
 
-export function gunmanBottomRoute(originX: number, targetX: number): "near" | "far" {
-  return Math.abs(originX - targetX) < GUNMAN_BOTTOM_NEAR_DISTANCE_NES * NES_WORLD_X_SCALE ? "near" : "far";
+export function gunmanBottomRoute(originX: number, originY: number, targetX: number, targetY: number): "near" | "far" {
+  return Math.abs(originX - targetX) < GUNMAN_BOTTOM_NEAR_DISTANCE_NES * NES_WORLD_X_SCALE
+    && Math.abs(originY - targetY) < GUNMAN_BOTTOM_NEAR_DISTANCE_NES * NES_WORLD_Y_SCALE ? "near" : "far";
 }
 
 export function gunmanBottomPosition(route: "near" | "far", fromLeft: boolean, age: number): readonly [number, number] {

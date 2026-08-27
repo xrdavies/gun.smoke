@@ -197,8 +197,8 @@ Entity code `5` initializes the same routine with the opposite heading and
 enters from the bottom edge. Its 56-NES-pixel proximity branch is visible in
 two isolated routes: the near route fires at frame 219 and releases at frame
 318, while the far route fires at frame 241 and releases at frame 479. Runtime
-records the player's spawn-side distance, mirrors the matching measured route,
-and does not apply the top-entry Gunman timing.
+samples both player axes when the branch runs at frame 50, mirrors the matching
+measured route, and does not apply the top-entry Gunman timing.
 The same routine has distinct side-entry initializers. Entity code `7` enters
 from either edge on a mirrored route, fires at frames 64/410 and releases at
 frame 642. Entity code `8` holds the left edge while scrolling, lunges inward at

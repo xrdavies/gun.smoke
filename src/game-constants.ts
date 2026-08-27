@@ -897,25 +897,40 @@ export function devilHawkProjectileVelocity(heading: number): readonly [number, 
 export function devilHawkOpeningY(age: number): number {
   return Math.max(0, Math.min(1, age / DEVIL_HAWK_ENTRY_DURATION)) * DEVIL_HAWK_ENTRY_END_Y;
 }
-const DEVIL_HAWK_COMBAT_PATH_NES = [[0, 96], [31, 96], [52, 48], [77, 48], [87, 46], [113, 46], [146, 67], [180, 70], [217, 77], [234, 77]] as const;
-const DEVIL_HAWK_COMBAT_X_NES = [[0, 208], [113, 208], [146, 157], [180, 157], [217, 137], [432, 137], [477, 155]] as const;
+// Keyframes sampled from the unhurt Round 3 Boss trace. The ROM updates these
+// coordinates in coarse steps; interpolation keeps the web runtime frame-rate
+// independent while preserving the authored route through the recorded run.
+const DEVIL_HAWK_COMBAT_PATH_NES = [
+  [0, 96], [26, 96], [27, 91], [31, 72], [32, 68], [38, 48], [42, 44], [47, 45], [50, 48],
+  [52, 48], [87, 46], [113, 46], [145, 67], [146, 67], [173, 68], [175, 70], [187, 73], [199, 76], [209, 77],
+  [237, 79], [249, 82], [261, 85], [273, 88], [283, 90], [310, 90], [326, 38], [334, 42],
+  [362, 40], [388, 41], [399, 47], [419, 98], [447, 100], [459, 108], [471, 114], [483, 119],
+  [522, 125], [534, 131], [546, 136], [558, 142], [592, 142], [640, 142], [667, 137], [678, 94], [682, 90],
+  [690, 94], [721, 86], [757, 62], [792, 60], [807, 46], [834, 46], [865, 87], [905, 79],
+  [937, 63], [950, 53], [963, 46], [990, 47], [1001, 54], [1021, 105], [1048, 107], [1049, 109],
+  [1057, 109],
+] as const;
+const DEVIL_HAWK_COMBAT_X_NES = [
+  [0, 208], [113, 208], [114, 207], [118, 196], [122, 192], [130, 180], [145, 157], [146, 157], [173, 155],
+  [175, 152], [187, 146], [199, 140], [209, 137], [236, 135], [249, 128], [261, 122], [273, 116],
+  [283, 113], [334, 113], [390, 111], [391, 109], [392, 110], [399, 114], [402, 115], [409, 117],
+  [419, 120], [480, 127], [483, 130], [491, 131], [522, 135], [534, 140], [546, 145], [558, 149],
+  [596, 156], [608, 162], [620, 169], [632, 174], [640, 176], [691, 176], [764, 176], [807, 176],
+  [834, 175], [837, 166], [847, 157], [865, 136], [950, 137], [953, 141], [963, 143], [990, 143],
+  [991, 142], [1001, 136], [1008, 134], [1021, 130], [1057, 130],
+] as const;
 export const DEVIL_HAWK_JUMP_PERIOD = 121;
 
 export function devilHawkCombatY(age: number): number {
   const frame = Math.max(0, age * NES_FRAME_RATE - DEVIL_HAWK_ENTRY_DURATION * NES_FRAME_RATE);
   if (frame <= DEVIL_HAWK_COMBAT_PATH_NES[0]![0]) return DEVIL_HAWK_COMBAT_PATH_NES[0]![1] * NES_WORLD_Y_SCALE;
   const last = DEVIL_HAWK_COMBAT_PATH_NES.at(-1)!;
-  if (frame <= last[0]) {
-    const nextIndex = DEVIL_HAWK_COMBAT_PATH_NES.findIndex(([at]) => at >= frame);
-    const previous = DEVIL_HAWK_COMBAT_PATH_NES[nextIndex - 1]!;
-    const next = DEVIL_HAWK_COMBAT_PATH_NES[nextIndex]!;
-    const amount = (frame - previous[0]) / (next[0] - previous[0]);
-    return (previous[1] + (next[1] - previous[1]) * amount) * NES_WORLD_Y_SCALE;
-  }
-  const cycle = (frame - last[0]) % DEVIL_HAWK_JUMP_PERIOD;
-  if (cycle < 11) return (77 - (23 * cycle) / 11) * NES_WORLD_Y_SCALE;
-  if (cycle < 24) return (54 + (23 * (cycle - 11)) / 13) * NES_WORLD_Y_SCALE;
-  return 77 * NES_WORLD_Y_SCALE;
+  if (frame >= last[0]) return last[1] * NES_WORLD_Y_SCALE;
+  const nextIndex = DEVIL_HAWK_COMBAT_PATH_NES.findIndex(([at]) => at >= frame);
+  const previous = DEVIL_HAWK_COMBAT_PATH_NES[nextIndex - 1]!;
+  const next = DEVIL_HAWK_COMBAT_PATH_NES[nextIndex]!;
+  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  return (previous[1] + (next[1] - previous[1]) * amount) * NES_WORLD_Y_SCALE;
 }
 
 export function devilHawkCombatX(age: number, entryX = 208 * NES_WORLD_X_SCALE): number {

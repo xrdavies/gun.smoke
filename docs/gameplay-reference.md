@@ -176,7 +176,8 @@ teleports after each lost health bar. The runtime hides the Boss for the
 measured 90-frame teleport delay, then restarts its entry smoke window and
 attack clock from the newly selected lane. Devil Hawk fireballs use the ROM's
 discrete directional velocity table and their measured 45/36-frame lifetimes;
-the jump and random attack scheduler remain an approximation.
+its recorded X/Y movement route is replayed through the available trace, while
+the random attack scheduler remains an approximation.
 Fatman Joe begins attack decisions after his measured entrance. A successful
 downward-sector check launches one aimed shell; after 31 frames it stops and
 splits into five stationary mines at four-frame intervals. The mines use the

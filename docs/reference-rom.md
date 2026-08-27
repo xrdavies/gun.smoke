@@ -85,6 +85,8 @@ original order and compete for shared slots in the same sequence as the ROM.
 At `$FA89-$FA92`, a full selected pool skips the record and `$FAD8` advances
 the script pointer; runtime applies the same one-shot capacity check to shops,
 containers, props and behavior entities instead of retrying or exempting shops.
+Each shop retains its original per-Round script ordinal, so a skipped earlier
+shop does not cause a later supply/weapon visit to use the wrong inventory.
 The generated `ROUND_ROM_OBJECT_EVENTS` stream retains no-behavior object
 records. The runtime consumes dispatch `30/31` weapon and supply-shop triggers,
 renders dispatch `0x08` scene props, and preserves dispatch `0x07`

@@ -134,6 +134,7 @@ describe("Gun.Smoke vertical slice", () => {
       ["weapons", "supplies"], ["weapons", "supplies"], ["weapons", "supplies", "weapons"],
     ]);
     expect(shopEvents.map((events) => events.map((event) => event.semantic === "weaponShop" ? "weapons" : "supplies"))).toEqual(SHOP_TYPES);
+    expect(shopEvents.map((events) => events.map((event) => event.shopIndex))).toEqual(SHOP_TYPES.map((types) => types.map((_, index) => index + 1)));
     expect(shopEvents.map((events) => events.map((event) => event.at))).toEqual([
       [959, 1_695], [815, 1_455], [623, 2_031, 3_311], [543, 1_471], [79, 1_631], [383, 1_951, 2_335],
     ]);

@@ -751,7 +751,8 @@ class GunSmokeGame {
     if (event.semantic === "weaponShop" || event.semantic === "supplyShop") {
       const keeper = this.spawnUnit("shopkeeper", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), 1);
       keeper.vy = ROM_OBJECT_DROP_SPEED;
-      keeper.shopIndex = ++this.shopSpawnCursor;
+      keeper.shopIndex = event.shopIndex;
+      this.shopSpawnCursor = Math.max(this.shopSpawnCursor, event.shopIndex ?? 0);
       keeper.romEntityCode = event.entityCode;
       keeper.romFlags = event.flags;
       keeper.romPool = event.pool;

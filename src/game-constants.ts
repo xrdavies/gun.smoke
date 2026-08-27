@@ -891,19 +891,36 @@ export function cutterOpeningX(age: number, entryX = 144 * NES_WORLD_X_SCALE): n
 export function cutterOpeningY(age: number): number {
   return cutterOpeningPosition(age)[1];
 }
-const CUTTER_COMBAT_PATH_NES = [[0, 136], [26, 136], [71, 41], [131, 40], [256, 99], [311, 40]] as const;
+const CUTTER_COMBAT_PATH_NES = [[0, 129, 136], [16, 129, 136], [26, 129, 136], [27, 127, 134], [32, 119, 123], [48, 91, 90], [64, 63, 56], [71, 51, 41], [80, 51, 41], [112, 51, 41], [128, 51, 41], [131, 50, 40], [144, 56, 47], [176, 66, 59], [208, 80, 76], [240, 77, 92], [256, 71, 99], [288, 81, 86], [304, 109, 52], [311, 119, 40], [320, 119, 40], [352, 119, 40], [384, 126, 40], [416, 141, 40], [448, 159, 40], [464, 164, 45], [496, 176, 61], [512, 182, 68], [528, 182, 68], [544, 172, 55], [560, 160, 40], [576, 160, 40]] as const;
 
-export function cutterCombatY(age: number): number {
+function cutterCombatPosition(age: number, entryX = 144 * NES_WORLD_X_SCALE): readonly [number, number] {
   const frame = Math.max(0, age * NES_FRAME_RATE - CUTTER_ENTRY_DURATION * NES_FRAME_RATE);
+  const laneOffset = entryX / NES_WORLD_X_SCALE - 144;
   const first = CUTTER_COMBAT_PATH_NES[0]!;
-  if (frame <= first[0]) return first[1] * NES_WORLD_Y_SCALE;
+  const point = (sample: readonly [number, number, number]): readonly [number, number] => [
+    (sample[1] + laneOffset) * NES_WORLD_X_SCALE,
+    sample[2] * NES_WORLD_Y_SCALE,
+  ];
+  if (frame <= first[0]) return point(first);
   const last = CUTTER_COMBAT_PATH_NES.at(-1)!;
-  if (frame >= last[0]) return last[1] * NES_WORLD_Y_SCALE;
+  if (frame >= last[0]) return point(last);
   const nextIndex = CUTTER_COMBAT_PATH_NES.findIndex(([at]) => at >= frame);
   const previous = CUTTER_COMBAT_PATH_NES[nextIndex - 1]!;
   const next = CUTTER_COMBAT_PATH_NES[nextIndex]!;
   const amount = (frame - previous[0]) / (next[0] - previous[0]);
-  return (previous[1] + (next[1] - previous[1]) * amount) * NES_WORLD_Y_SCALE;
+  return point([
+    frame,
+    previous[1] + (next[1] - previous[1]) * amount,
+    previous[2] + (next[2] - previous[2]) * amount,
+  ]);
+}
+
+export function cutterCombatY(age: number): number {
+  return cutterCombatPosition(age)[1];
+}
+
+export function cutterCombatX(age: number, entryX = 144 * NES_WORLD_X_SCALE): number {
+  return cutterCombatPosition(age, entryX)[0];
 }
 export const DEVIL_HAWK_ENTRY_X_NES = [88, 128, 168, 208] as const;
 export const DEVIL_HAWK_ENTRY_X_LANES = DEVIL_HAWK_ENTRY_X_NES.map((value) => value * NES_WORLD_X_SCALE);

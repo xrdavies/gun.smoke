@@ -140,7 +140,9 @@ with an initial smoke/invulnerability window,
 Fatman Joe enters from NES `x=152` at the top edge before using short hops and
 stationary grenade traps, while Wingate's two encounters use top-edge NES
 lanes `x=152` and `x=192` before a short horizontal rush and slower cruise; the Ninja enters a smoke/invulnerability phase and
-teleports after each lost health bar.
+teleports after each lost health bar. The runtime hides the Boss for the
+measured 90-frame teleport delay, then restarts its entry smoke window and
+attack clock from the newly selected lane.
 Fatman Joe's measured opening volley begins at frame 205, emits five stationary
 grenade traps four NES frames apart, and repeats after roughly 131 frames; each
 trap lasts about 30 NES frames. His multi-hop vertical profile follows the

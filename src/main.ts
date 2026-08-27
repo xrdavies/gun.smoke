@@ -28,7 +28,7 @@ import { WINGATE_BULLET_SPEED, WINGATE_ENTRY_RUSH_DELAY, WINGATE_ENTRY_RUSH_DURA
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_VELOCITIES_NES, cutterBoomerangPosition, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { CUTTER_ENTRY_DURATION, CUTTER_MOVEMENT_SPEED, cutterCombatY, cutterOpeningY } from "./game-constants";
 import { DEVIL_HAWK_ENTRY_DURATION, DEVIL_HAWK_FIREBALL_FAN_NES, DEVIL_HAWK_FIREBALL_SIDE_FANS_NES, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_POST_ENTRY_X_HOLD, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY } from "./game-constants";
-import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_ATTACK_DELAY, NINJA_BOSS_SHURIKEN_LIFETIME, NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES, NINJA_BOSS_SHURIKEN_VELOCITIES_NES, ninjaBossCombatY } from "./game-constants";
+import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_ATTACK_DELAY, NINJA_BOSS_SHURIKEN_LIFETIME, NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES, NINJA_BOSS_SHURIKEN_VELOCITIES_NES, NINJA_BOSS_TELEPORT_DELAY, ninjaBossCombatY } from "./game-constants";
 import { canSpawnEnemyProjectile } from "./game-constants";
 import { canSpawnBossProjectile } from "./game-constants";
 import { romEnemyDrop } from "./game-constants";
@@ -98,6 +98,7 @@ interface Unit {
   bossEntryY?: number;
   bossProjectile?: boolean;
   boomerangPathIndex?: number;
+  bossCycleStart?: number;
   nextFireAt: number;
   volleysFired: number;
 }
@@ -1154,7 +1155,7 @@ class GunSmokeGame {
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: frameDuration },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, boomerangPathIndex: undefined,
+      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, boomerangPathIndex: undefined, bossCycleStart: undefined,
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" || sceneObject ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
@@ -1398,12 +1399,15 @@ class GunSmokeGame {
       if (followsRomScroll) unit.y = Math.min(unit.y, this.scroll + ROM_ENEMY_SCREEN_MAX_Y);
       if (unit.x < 32 || unit.x > 928) unit.vx *= -1;
     } else if (unit.kind === "boss") {
+      const ninjaCycleStart = this.stage === 4 ? unit.bossCycleStart ?? 0 : 0;
+      const ninjaCycleAge = unit.age - ninjaCycleStart;
+      const ninjaTeleporting = this.stage === 4 && ninjaCycleStart > 0 && ninjaCycleAge < 0;
       if (this.stage === 1 && unit.age <= BANDIT_BILL_ENTRY_DURATION) unit.x = unit.bossEntryX ?? unit.x;
       else if (this.stage === 1) unit.x = banditBillCombatX(unit.age, unit.bossEntryX ?? unit.x);
       else if (this.stage === 2 && unit.age <= CUTTER_ENTRY_DURATION) unit.x = unit.bossEntryX ?? unit.x;
       else if (this.stage === 3 && unit.age <= DEVIL_HAWK_ENTRY_DURATION + DEVIL_HAWK_POST_ENTRY_X_HOLD) unit.x = unit.bossEntryX ?? unit.x;
       else if (this.stage === 3) unit.x = devilHawkCombatX(unit.age, unit.bossEntryX ?? unit.x);
-      else if (this.stage === 4 && unit.age <= NINJA_BOSS_ENTRY_INVULNERABILITY) unit.x = unit.bossEntryX ?? unit.x;
+      else if (this.stage === 4 && (ninjaTeleporting || ninjaCycleAge <= NINJA_BOSS_ENTRY_INVULNERABILITY)) unit.x = unit.bossEntryX ?? unit.x;
       else if (this.stage === 5 && unit.age <= FATMAN_JOE_ENTRY_DURATION) unit.x = unit.bossEntryX ?? unit.x;
       else if (this.stage === 6 && unit.bossEntryY !== undefined && unit.age <= WINGATE_ENTRY_DURATION) unit.x = unit.bossEntryX ?? unit.x;
       else {
@@ -1425,13 +1429,13 @@ class GunSmokeGame {
       else if (this.stage === 3) unit.y = this.scroll + (unit.age <= DEVIL_HAWK_ENTRY_DURATION ? devilHawkOpeningY(unit.age) : devilHawkCombatY(unit.age));
       else if (this.stage === 4) {
         const entryY = unit.bossEntryY ?? NINJA_BOSS_ENTRY_Y_LANES[0] ?? 144;
-        unit.y = this.scroll + (unit.age <= NINJA_BOSS_ENTRY_INVULNERABILITY ? entryY : ninjaBossCombatY(unit.age, entryY));
+        unit.y = this.scroll + (ninjaCycleAge <= NINJA_BOSS_ENTRY_INVULNERABILITY ? entryY : ninjaBossCombatY(ninjaCycleAge, entryY));
       }
       else if (this.stage === 5) unit.y = this.scroll + (unit.age <= FATMAN_JOE_ENTRY_DURATION ? fatmanJoeOpeningY(unit.age) : fatmanJoeCombatY(unit.age));
       else if (this.stage === 6 && unit.bossEntryY !== undefined) unit.y = this.scroll + (unit.age <= WINGATE_ENTRY_DURATION ? wingateOpeningY(unit.age) : wingateCombatY(unit.age, this.wingatePhase));
       else if (this.stage === 6) unit.y = this.scroll + 92 + Math.min(unit.age * 110, 170);
       else unit.y = this.scroll + 92 + Math.sin(unit.age * 2) * 18;
-      unit.sprite.visible = unit.age >= unit.invulnerableUntil;
+      unit.sprite.visible = !ninjaTeleporting && unit.age >= unit.invulnerableUntil;
     } else if (unit.kind === "shopkeeper" || unit.kind === "sceneObject") {
       if (unit.vy !== 0) unit.y += unit.vy * delta;
     } else if (unit.kind === "moneyBag" || unit.kind === "item" || unit.kind === "ammo") {
@@ -1598,8 +1602,12 @@ class GunSmokeGame {
       unit.invulnerableUntil = unit.age + 1.1;
       this.showMessage("BANDIT BILL CRAWLS");
     } else if (this.stage === 4) {
-      unit.invulnerableUntil = unit.age + 0.45;
-      unit.x = clamp(unit.x + (this.nextRandom() - 0.5) * 220, 300, 660);
+      unit.bossCycleStart = unit.age + NINJA_BOSS_TELEPORT_DELAY;
+      unit.invulnerableUntil = unit.bossCycleStart + NINJA_BOSS_ENTRY_INVULNERABILITY;
+      unit.x = NINJA_BOSS_ENTRY_X_LANES[Math.floor(this.nextRandom() * NINJA_BOSS_ENTRY_X_LANES.length)] ?? unit.x;
+      unit.bossEntryX = unit.x;
+      unit.bossEntryY = NINJA_BOSS_ENTRY_Y_LANES[Math.floor(this.nextRandom() * NINJA_BOSS_ENTRY_Y_LANES.length)] ?? unit.bossEntryY;
+      this.bossFireClock = NINJA_BOSS_TELEPORT_DELAY + NINJA_BOSS_FIRST_ATTACK_DELAY;
       this.showMessage("NINJA SMOKE");
     }
   }

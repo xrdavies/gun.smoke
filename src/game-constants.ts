@@ -220,6 +220,12 @@ export function dynamiteVerticalOffset(age: number): number {
 export function dynamiteContactIsDefusable(age: number): boolean {
   return age < DYNAMITE_AIRBORNE_DURATION;
 }
+
+export function contactSourceShouldClear(kind: "enemy" | "boss" | "enemyBullet", projectileType?: string, dynamiteInFlight = false): boolean {
+  if (kind !== "enemyBullet") return false;
+  if (projectileType === "dynamite") return dynamiteInFlight;
+  return projectileType !== "boomerang" && projectileType !== "grenade" && projectileType !== "grenadeShell" && projectileType !== "rock";
+}
 export const SHOTGUNNER_FIRST_VOLLEY_DELAY = 108 / NES_FRAME_RATE;
 export const SHOTGUNNER_VOLLEY_INTERVAL = 51 / NES_FRAME_RATE;
 export const SHOTGUNNER_LIFETIME = 228 / NES_FRAME_RATE;

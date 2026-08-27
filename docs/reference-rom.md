@@ -170,8 +170,10 @@ resets Horse, Wanted, actor and map state.
 On a Horse-protected collision, `$CABC-$CAC5` first removes only the colliding
 ordinary projectile, then `$CAEF-$CB29` decrements Horse health and starts a
 60-frame protection timer without calling the screen-clear routine. The runtime
-uses the same 60 NES-frame window and does not erase unrelated projectiles on a
-Horse hit.
+uses the same 60 NES-frame window and does not erase enemy actors, high-dispatch
+hazards, or unrelated projectiles on a Horse hit. Low-dispatch ordinary bullets
+and airborne dynamite are cleared by the ROM contact branch; boomerangs, shells,
+mines, rocks, and landed dynamite remain active.
 The Round transition path at `$B9BD-$B9DA` clears `$77` before incrementing the
 Round, so Horse health does not carry into the next Round. Runtime stage changes
 apply the same reset while preserving stored Boots/Rifle and weapon stocks.

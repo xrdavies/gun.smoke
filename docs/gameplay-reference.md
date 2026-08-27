@@ -61,9 +61,9 @@ Entering either shop clears ordinary enemy projectiles before the menu freezes;
 falling-rock actors and the separate Boss weapon pool are not part of that clear.
 
 The Horse is a three-hit shield rather than a speed bonus. A blocked hit removes
-only its collision source and grants 60 NES frames of protection; it does not
-clear every enemy projectile. Horse health resets when advancing to the next
-Round. The ROM stores five mutable score digits plus a fixed zero
+the colliding low-dispatch projectile but leaves enemy actors and high-dispatch
+hazards active, then grants 60 NES frames of protection. Horse health resets
+when advancing to the next Round. The ROM stores five mutable score digits plus a fixed zero
 ones digit, so the score caps at 999,990. Extra lives come from the Life pickup
 and are capped at five.
 

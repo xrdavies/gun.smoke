@@ -165,12 +165,24 @@ export const SHOTGUNNER_LIFETIME = 228 / NES_FRAME_RATE;
 export const SHOTGUNNER_FAN_NES = [[-1, 8], [0, 8], [1, 8]] as const;
 export const SNIPER_SHOT_FRAMES = [134, 224, 405, 495, 585] as const;
 export const SNIPER_LIFETIME = 732 / NES_FRAME_RATE;
-export const RIFLEMAN_FIRST_SHOT_DELAY = 96 / NES_FRAME_RATE;
-export const RIFLEMAN_ATTACK_STATE_FRAME = 80;
+export const RIFLEMAN_FIRST_SHOT_DELAY = 138 / NES_FRAME_RATE;
+export const RIFLEMAN_ATTACK_STATE_FRAME = 122;
 export const RIFLEMAN_SHOT_INTERVAL = 16 / NES_FRAME_RATE;
 export const RIFLEMAN_SHOTS_PER_VOLLEY = 5;
 export const RIFLEMAN_LIFETIME = 364 / NES_FRAME_RATE;
 export const RIFLEMAN_BULLET_SPEED = 0.375 * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
+export const RIFLEMAN_PATH_NES = [[0, 0], [121, 121], [211, 151], [363, 0]] as const;
+
+export function riflemanPosition(age: number): readonly [number, number] {
+  const frame = Math.max(0, age * NES_FRAME_RATE);
+  const nextIndex = RIFLEMAN_PATH_NES.findIndex(([at]) => at >= frame);
+  if (nextIndex < 0) return [0, RIFLEMAN_PATH_NES.at(-1)![1]];
+  if (nextIndex === 0) return [0, 0];
+  const previous = RIFLEMAN_PATH_NES[nextIndex - 1]!;
+  const next = RIFLEMAN_PATH_NES[nextIndex]!;
+  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  return [0, previous[1] + (next[1] - previous[1]) * amount];
+}
 export const NINJA_FIRST_SHOT_DELAY = 103 / NES_FRAME_RATE;
 export const NINJA_PROJECTILE_SPEED = 300;
 export const ROCK_WORLD_SPEED_X = 230;

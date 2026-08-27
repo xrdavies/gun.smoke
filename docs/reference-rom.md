@@ -183,13 +183,12 @@ On defeat, `$CD4E-$CDAA` converts an event's `0x80` flag into dispatch `0x4e`.
 If `$90/$94/$98/$9c` show no special stock, it increments that to `0x4f`;
 the `$E192` conversion table then maps them to Bullet (`0x29`) and Money
 (`0x24`) pickups respectively. Unflagged ROM enemies produce no random drop.
-An isolated `$B775` Rifleman enters its attack state at age 80 frames, emits
-five dispatch `0x30` shots at ages 96, 112, 128, 144 and 160, then returns to
-its movement state. The runtime preserves the 80-frame state transition, the
-five-shot vertical volley and its 16-frame cadence. A separate Round 2 trace
-shows the slot returning to the top edge and releasing after roughly 364 frames;
-ROM-tagged Riflemen now use that measured lifetime instead of the generic enemy
-timeout.
+An isolated `$B775` Rifleman descends one NES pixel per frame through age 121,
+enters its attack state at age 122, and emits five dispatch `0x30` shots at ages
+138, 154, 170, 186 and 202. It returns to its movement state at age 212,
+retreats toward the top edge, and releases after roughly 364 frames. The runtime
+preserves this measured vertical path, volley cadence, actor-relative launch
+coordinate and slot lifetime for ROM-tagged Riflemen.
 An isolated `$B671` Ninja emits one dispatch `0x31` Shuriken at age 103
 frames. Its measured path is diagonal toward Billy; the runtime uses the
 same one-shot timing and a 300-world-pixel/s self-generated projectile.

@@ -1786,7 +1786,7 @@ class GunSmokeGame {
       const horseBarrel = this.spawnUnit("barrel", ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, 1, undefined, "horse");
       horseBarrel.romEntityCode = 37;
       horseBarrel.romFlags = 0;
-      horseBarrel.romPool = "enemy";
+      horseBarrel.romPool = "object";
     }
     this.showMessage("SEARCH AGAIN");
   }

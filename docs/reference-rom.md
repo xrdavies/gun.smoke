@@ -247,7 +247,8 @@ repeating every 256 frames. Their first 29-frame path measures about 63 NES X
 pixels and 40 NES Y pixels, converting to roughly 524 world pixels/s; the
 initial outward/downward vectors average `(2.16,1.35)` and `(-2,1.77)` NES
 pixels per frame. The runtime preserves the pair, measured launch geometry,
-timing, speed and opposite curves.
+timing, and sampled first-curve checkpoints before resuming its opposite
+procedural curves on later volleys.
 After clearing only ordinary slots at the next real gate, Round 3 produces
 Devil Hawk as dispatch `0x9a`, variant `0x61`, entering from the top edge
 (`y=0`). Controlled traces observe NES horizontal entry lanes near

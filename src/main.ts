@@ -25,7 +25,7 @@ import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, pistolBulle
 import { storedPowerupPickup } from "./game-constants";
 import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, FATMAN_JOE_MOVEMENT_SPEED, FATMAN_JOE_SHOT_INTERVAL, FATMAN_JOE_VOLLEY_GAP, FATMAN_JOE_VOLLEY_SIZE, fatmanJoeCombatY } from "./game-constants";
 import { WINGATE_BULLET_SPEED, WINGATE_ENTRY_RUSH_DELAY, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateCombatY, wingateShotCooldown } from "./game-constants";
-import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_VELOCITIES_NES, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
+import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_VELOCITIES_NES, cutterBoomerangPosition, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { CUTTER_ENTRY_DURATION, CUTTER_MOVEMENT_SPEED, cutterCombatY, cutterOpeningY } from "./game-constants";
 import { DEVIL_HAWK_ENTRY_DURATION, DEVIL_HAWK_FIREBALL_FAN_NES, DEVIL_HAWK_FIREBALL_SIDE_FANS_NES, DEVIL_HAWK_FIREBALL_SPEED, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_POST_ENTRY_X_HOLD, DEVIL_HAWK_VOLLEY_INTERVAL, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY } from "./game-constants";
 import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_ATTACK_DELAY, NINJA_BOSS_SHURIKEN_LIFETIME, NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES, NINJA_BOSS_SHURIKEN_VELOCITIES_NES, ninjaBossCombatY } from "./game-constants";
@@ -97,6 +97,7 @@ interface Unit {
   bossEntryX?: number;
   bossEntryY?: number;
   bossProjectile?: boolean;
+  boomerangPathIndex?: number;
   nextFireAt: number;
   volleysFired: number;
 }
@@ -863,6 +864,7 @@ class GunSmokeGame {
       return;
     }
     if (this.stage === 2) {
+      const traceFirstPath = boss.volleysFired === 0;
       for (let index = 0; index < CUTTER_BOOMERANG_SPAWN_NES.length; index += 1) {
         const [spawnX, spawnY] = CUTTER_BOOMERANG_SPAWN_NES[index]!;
         const [velocityX, velocityY] = CUTTER_BOOMERANG_VELOCITIES_NES[index]!;
@@ -872,8 +874,12 @@ class GunSmokeGame {
         projectile.vx = velocityX * NES_FRAME_RATE * NES_WORLD_X_SCALE;
         projectile.vy = velocityY * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
         projectile.turnRate = index === 0 ? -1.1 : 1.1;
+        projectile.boomerangPathIndex = traceFirstPath ? index : undefined;
+        projectile.romOriginX = projectile.x;
+        projectile.romOriginY = projectile.y;
         projectile.radius = 7;
       }
+      boss.volleysFired += 1;
       boss.fired = true;
       this.bossFireClock = CUTTER_ATTACK_INTERVAL;
       this.beep(186, 0.045);
@@ -1148,7 +1154,7 @@ class GunSmokeGame {
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: frameDuration },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined,
+      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, boomerangPathIndex: undefined,
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" || sceneObject ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
@@ -1464,15 +1470,24 @@ class GunSmokeGame {
           this.beep(95, 0.14);
         }
       }
-      if (unit.kind === "enemyBullet" && unit.turnRate !== 0) {
+      let boomerangPathDriven = false;
+      if (unit.kind === "enemyBullet" && unit.projectileType === "boomerang" && unit.boomerangPathIndex !== undefined && unit.age < 30 / NES_FRAME_RATE) {
+        boomerangPathDriven = true;
+        const [offsetX, offsetY] = cutterBoomerangPosition(unit.age, unit.boomerangPathIndex);
+        unit.x = (unit.romOriginX ?? unit.x) + offsetX * NES_WORLD_X_SCALE;
+        unit.y = (unit.romOriginY ?? unit.y) + offsetY * NES_WORLD_Y_SCALE;
+      }
+      if (!boomerangPathDriven && unit.kind === "enemyBullet" && unit.turnRate !== 0) {
         const speed = Math.hypot(unit.vx, unit.vy);
         const angle = Math.atan2(unit.vy, unit.vx) + unit.turnRate * delta;
         unit.vx = Math.cos(angle) * speed;
         unit.vy = Math.sin(angle) * speed;
       }
       if (unit.kind === "enemyBullet" && (unit.projectileType === "shuriken" || unit.projectileType === "hatchet")) unit.sprite.rotation += delta * 10;
-      unit.x += unit.vx * delta;
-      unit.y += unit.vy * delta;
+      if (!boomerangPathDriven) {
+        unit.x += unit.vx * delta;
+        unit.y += unit.vy * delta;
+      }
     }
     unit.sprite.position = { x: unit.x, y: unit.y };
   }

@@ -321,6 +321,25 @@ export const CUTTER_ATTACK_INTERVAL = 256 / NES_FRAME_RATE;
 export const CUTTER_BOOMERANG_SPEED = Math.hypot(63 * NES_WORLD_X_SCALE, 40 * NES_WORLD_Y_SCALE) * NES_FRAME_RATE / 29;
 export const CUTTER_BOOMERANG_SPAWN_NES = [[-3, 3], [3, 2]] as const;
 export const CUTTER_BOOMERANG_VELOCITIES_NES = [[2.16, 1.35], [-2, 1.77]] as const;
+export const CUTTER_BOOMERANG_PATH_NES = [
+  [[0, 0, 0], [5, 8, 11], [10, 19, 17], [15, 31, 23], [20, 42, 29], [25, 54, 35], [29, 63, 39]],
+  [[0, 0, 0], [5, -9, 11], [10, -19, 20], [15, -29, 28], [20, -39, 37], [25, -49, 45], [29, -57, 52]],
+] as const;
+
+export function cutterBoomerangPosition(age: number, index: number): readonly [number, number] {
+  const path = CUTTER_BOOMERANG_PATH_NES[index] ?? CUTTER_BOOMERANG_PATH_NES[0];
+  const frame = Math.max(0, age * NES_FRAME_RATE);
+  const nextIndex = path.findIndex(([at]) => at >= frame);
+  if (nextIndex < 0) {
+    const last = path.at(-1)!;
+    return [last[1], last[2]];
+  }
+  if (nextIndex === 0) return [0, 0];
+  const previous = path[nextIndex - 1]!;
+  const next = path[nextIndex]!;
+  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  return [previous[1] + (next[1] - previous[1]) * amount, previous[2] + (next[2] - previous[2]) * amount];
+}
 export const CUTTER_MOVEMENT_SPEED = (31 / 18) * NES_FRAME_RATE * NES_WORLD_X_SCALE;
 
 export function cutterOpeningY(age: number): number {

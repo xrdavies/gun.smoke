@@ -889,7 +889,7 @@ class GunSmokeGame {
       return;
     }
     if (this.stage === MAX_STAGE) {
-      if (wingateCanFire(boss.x, boss.y, this.player.x, this.player.y, this.nextRandom())) {
+      if (wingateCanFire(boss.x, boss.y, this.player.x, this.player.y, this.nextRandom(), this.wingatePhase > 0)) {
         const projectile = this.spawnEnemyProjectile(boss.x + WINGATE_PROJECTILE_X_OFFSET_NES * NES_WORLD_X_SCALE, boss.y + WINGATE_PROJECTILE_Y_OFFSET_NES * NES_WORLD_Y_SCALE, true);
         if (projectile) {
           [projectile.vx, projectile.vy] = wingateProjectileVelocity(boss.x, boss.y, this.player.x, this.player.y);

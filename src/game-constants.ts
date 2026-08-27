@@ -798,6 +798,8 @@ export const WINGATE_FIRST_SHOT_DELAY = 4 / NES_FRAME_RATE;
 export const WINGATE_SECOND_FIRST_SHOT_DELAY = 277 / NES_FRAME_RATE;
 export const WINGATE_ATTACK_INTERVAL = 12 / NES_FRAME_RATE;
 export const WINGATE_FIRE_CHANCE = 0.75;
+export const WINGATE_DECOY_AIM_RANGE = [11, 21] as const;
+export const WINGATE_REAL_AIM_RANGE = [14, 17] as const;
 export const WINGATE_BULLET_LIFETIME = 64 / NES_FRAME_RATE;
 export const WINGATE_BULLET_VELOCITIES_NES = [[1.15625, 1.40625], [0.9140625, 1.65625], [0.625, 1.8515625], [0.3125, 1.9453125], [0, 2], [-0.3125, 1.9453125], [-0.625, 1.8515625], [-0.9140625, 1.65625], [-1.15625, 1.40625]] as const;
 export const WINGATE_PROJECTILE_X_OFFSET_NES = -8;
@@ -829,9 +831,10 @@ export function wingateAimHeading(originX: number, originY: number, targetX: num
   return nesAimHeading(originX, originY, targetX, targetY);
 }
 
-export function wingateCanFire(originX: number, originY: number, targetX: number, targetY: number, random: number): boolean {
+export function wingateCanFire(originX: number, originY: number, targetX: number, targetY: number, random: number, realEncounter = false): boolean {
   const heading = wingateAimHeading(originX, originY, targetX, targetY);
-  return random >= 1 - WINGATE_FIRE_CHANCE && heading >= 12 && heading <= 20;
+  const [minimum, maximum] = realEncounter ? WINGATE_REAL_AIM_RANGE : WINGATE_DECOY_AIM_RANGE;
+  return random >= 1 - WINGATE_FIRE_CHANCE && heading >= minimum && heading <= maximum;
 }
 
 export function wingateProjectileVelocity(originX: number, originY: number, targetX: number, targetY: number): readonly [number, number] {

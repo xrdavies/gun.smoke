@@ -1031,19 +1031,31 @@ export function fatmanJoeMineCount(age: number): number {
 export function fatmanJoeOpeningY(age: number): number {
   return Math.max(0, Math.min(1, age / FATMAN_JOE_ENTRY_DURATION)) * FATMAN_JOE_ENTRY_END_Y;
 }
-const FATMAN_JOE_COMBAT_PATH_NES = [[0, 112], [50, 142], [80, 124], [110, 93], [130, 94], [180, 89], [280, 56], [350, 158], [390, 158], [420, 54], [450, 40], [480, 75], [500, 98], [530, 121]] as const;
+const FATMAN_JOE_COMBAT_PATH_NES = [[0, 152, 112], [16, 152, 120], [32, 152, 136], [48, 152, 142], [64, 152, 134], [80, 152, 124], [96, 152, 124], [112, 139, 93], [128, 133, 94], [144, 125, 89], [160, 117, 89], [176, 110, 89], [192, 98, 89], [208, 90, 89], [224, 84, 89], [240, 73, 85], [256, 68, 78], [272, 63, 73], [288, 58, 67], [304, 58, 67], [320, 58, 73], [336, 58, 123], [352, 58, 169], [368, 74, 120], [384, 102, 91], [400, 114, 85], [416, 121, 77], [432, 128, 71], [448, 128, 85], [464, 123, 79], [480, 117, 72], [496, 117, 72], [512, 127, 41], [528, 136, 41], [544, 136, 41], [560, 127, 53], [576, 122, 58], [592, 115, 58], [608, 102, 58], [624, 102, 58], [640, 102, 64], [656, 102, 80], [672, 102, 154], [688, 103, 154], [704, 118, 74], [720, 132, 55], [730, 132, 55]] as const;
 
-export function fatmanJoeCombatY(age: number): number {
+function fatmanJoeCombatPosition(age: number, entryX = 152 * NES_WORLD_X_SCALE): readonly [number, number] {
   const frame = Math.max(0, age * NES_FRAME_RATE - FATMAN_JOE_ENTRY_DURATION * NES_FRAME_RATE);
+  const laneOffset = entryX / NES_WORLD_X_SCALE - 152;
   const first = FATMAN_JOE_COMBAT_PATH_NES[0]!;
-  if (frame <= first[0]) return first[1] * NES_WORLD_Y_SCALE;
+  if (frame <= first[0]) return [(first[1] + laneOffset) * NES_WORLD_X_SCALE, first[2] * NES_WORLD_Y_SCALE];
   const last = FATMAN_JOE_COMBAT_PATH_NES.at(-1)!;
-  if (frame >= last[0]) return last[1] * NES_WORLD_Y_SCALE;
+  if (frame >= last[0]) return [(last[1] + laneOffset) * NES_WORLD_X_SCALE, last[2] * NES_WORLD_Y_SCALE];
   const nextIndex = FATMAN_JOE_COMBAT_PATH_NES.findIndex(([at]) => at >= frame);
   const previous = FATMAN_JOE_COMBAT_PATH_NES[nextIndex - 1]!;
   const next = FATMAN_JOE_COMBAT_PATH_NES[nextIndex]!;
   const amount = (frame - previous[0]) / (next[0] - previous[0]);
-  return (previous[1] + (next[1] - previous[1]) * amount) * NES_WORLD_Y_SCALE;
+  return [
+    (previous[1] + (next[1] - previous[1]) * amount + laneOffset) * NES_WORLD_X_SCALE,
+    (previous[2] + (next[2] - previous[2]) * amount) * NES_WORLD_Y_SCALE,
+  ];
+}
+
+export function fatmanJoeCombatY(age: number): number {
+  return fatmanJoeCombatPosition(age)[1];
+}
+
+export function fatmanJoeCombatX(age: number, entryX = 152 * NES_WORLD_X_SCALE): number {
+  return fatmanJoeCombatPosition(age, entryX)[0];
 }
 export const WINGATE_ENTRY_X_NES = [64, 104, 152, 192] as const;
 export const WINGATE_ENTRY_X_LANES = WINGATE_ENTRY_X_NES.map((value) => value * NES_WORLD_X_SCALE);

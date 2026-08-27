@@ -181,10 +181,11 @@ the random attack scheduler remains an approximation.
 Fatman Joe begins attack decisions after his measured entrance. A successful
 downward-sector check launches one aimed shell; after 31 frames it stops and
 splits into five stationary mines at four-frame intervals. The mines use the
-measured symmetric offsets and last about 29 NES frames. His multi-hop vertical
-profile follows the measured Boss trace. The runtime pauses the 76-frame attack
-counter during the measured 53-frame short or 122-frame long movement action;
-later random movement direction remains an approximation.
+measured symmetric offsets and last about 29 NES frames. His multi-hop X/Y
+profile follows the controlled Boss trace through combat frame 730. The runtime
+pauses the 76-frame attack counter during the measured 53-frame short or
+122-frame long movement action; later random movement direction remains an
+approximation.
 Ninja's measured first shuriken volley appears at frame 179 as a four-way
 diagonal cross spawned just above Billy; each shot lasts about 40 frames and the
 attack uses a common 60-frame repeat interval. A non-damaging low-slot smoke

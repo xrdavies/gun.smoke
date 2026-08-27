@@ -1725,6 +1725,15 @@ class GunSmokeGame {
       unit.sprite.visible = bossSpriteVisible(this.stage, unit.age, unit.invulnerableUntil, ninjaTeleporting);
     } else if (unit.kind === "shopkeeper" || unit.kind === "sceneObject") {
       if (unit.vy !== 0) unit.y += unit.vy * delta;
+    } else if (unit.kind === "barrel") {
+      if (!unit.exploding) unit.y += unit.vy * delta;
+      if (unit.exploding) {
+        const start = unit.maxAge - EMPTY_BARREL_EXPLOSION_LIFETIME;
+        const progress = clamp((unit.age - start) / EMPTY_BARREL_EXPLOSION_LIFETIME, 0, 1);
+        unit.sprite.visible = Math.floor(progress * 12) % 2 === 0;
+        unit.sprite.size = { x: 54 + progress * 28, y: 54 + progress * 28 };
+        unit.sprite.color = [1, 0.55 + progress * 0.45, 0.2 + progress * 0.8, 1];
+      }
     } else if (unit.kind === "moneyBag" || unit.kind === "item" || unit.kind === "ammo") {
       unit.y += 40 * delta;
       unit.x += Math.sin(unit.age * 4 + unit.phase) * 14 * delta;
@@ -1735,13 +1744,6 @@ class GunSmokeGame {
           unit.sprite.size = style.size;
           unit.sprite.color = style.color;
         }
-      }
-      if (unit.kind === "barrel" && unit.exploding) {
-        const start = unit.maxAge - EMPTY_BARREL_EXPLOSION_LIFETIME;
-        const progress = clamp((unit.age - start) / EMPTY_BARREL_EXPLOSION_LIFETIME, 0, 1);
-        unit.sprite.visible = Math.floor(progress * 12) % 2 === 0;
-        unit.sprite.size = { x: 54 + progress * 28, y: 54 + progress * 28 };
-        unit.sprite.color = [1, 0.55 + progress * 0.45, 0.2 + progress * 0.8, 1];
       }
       if (unit.kind === "enemyBullet" && unit.projectileType === "rock") {
         if (unit.age >= ROCK_IMPACT_DELAY) unit.vx = unit.vy = 0;

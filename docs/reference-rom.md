@@ -230,9 +230,9 @@ Billy. `$0540` advances by three until wrapping at 192, so failed checks recur
 64 frames later; isolated first phases appear at frames `40/52/58/62`. The
 runtime preserves those observed phases, the 64-frame retry, and the one-shot
 limit. The center trace releases at age 549 after its retreat, and the left
-trace releases at age 828 from the screen bottom. The runtime replays those
-measured center/left paths; the right path remains on the existing 560-frame
-pool-release cap until its player-relative retreat is traced.
+trace releases at age 828 from the screen bottom, while the right trace remains
+active through frame 1195 before its slot is reused. The runtime replays those
+measured center/left/right paths and uses release caps of 549/828/1196 frames.
 The projectile uses the ROM's quantized
 32-direction speed table at the second tier (about 266 world pixels/s on its
 diagonal), and ROM-tagged Gunmen use this per-actor timing

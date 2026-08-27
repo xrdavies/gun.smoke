@@ -289,8 +289,11 @@ The gate traces place his initial entity at the top edge (`y=0`) and observe
 four horizontal entry lanes, NES `x=96/128/160/192`; after 96 frames the actor
 reaches approximately `y=64`. The web runtime selects one of those measured
 lanes and uses the corresponding downward entry speed. After the opening, the
-runtime follows the measured lateral/vertical combat path while retaining the
-separate damage-phase approximation.
+runtime follows the measured lateral/vertical combat path. Controlled pulse
+fire shows each depleted health bar changing dispatch to hit state `0x8D` for
+8 frames and then invulnerable crawl state `0x8C` for 168 frames before
+returning to `0x88`. The actor continues from its current coordinate throughout
+that 176-frame recovery instead of moving to a fixed off-route position.
 The same controlled full-round trace identifies Round 2's Cutter as dispatch
 `0x90`, variant `0x5b`, entering from the top edge (`y=0`). Controlled runs
 observe NES horizontal entry lanes near `x=88/144/168`; one lane reaches about
@@ -419,6 +422,9 @@ world coordinates.
 `npm run trace:rom:boss -- --frames=18000` runs the first Round with a controlled
 poster-gate flag and temporary invulnerability, then records the real Bandit
 Bill slot (`$0400/$0420/$0480`) and projectile-slot changes for 720 frames.
+Adding `--attack` pulses A+B, follows the Boss's X coordinate and records raw
+zero-page observations through a 2,400-frame Boss window; `--boss-frames=N`
+overrides either window.
 The output is an ignored observation artifact under `.rom-traces/`; it is not
 runtime game data or copied ROM code.
 

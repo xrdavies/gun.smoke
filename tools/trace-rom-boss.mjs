@@ -6,12 +6,15 @@ import { Controller, NES } from "jsnes";
 const args = process.argv.slice(2);
 const filename = args.find((argument) => !argument.startsWith("--")) ?? "Gun.Smoke.ZH.NES";
 const frames = Number(args.find((argument) => argument.startsWith("--frames="))?.split("=")[1] ?? 18_000);
+const bossFramesLimit = Number(args.find((argument) => argument.startsWith("--boss-frames="))?.split("=")[1] ?? (args.includes("--attack") ? 2_400 : 720));
 const output = args.find((argument) => argument.startsWith("--out="))?.split("=")[1] ?? ".rom-traces/boss.json";
+const attack = args.includes("--attack");
 if (!fs.existsSync(filename)) {
   console.log(`Reference ROM not found: ${filename}`);
   process.exit(0);
 }
 if (!Number.isInteger(frames) || frames <= 0) throw new Error("--frames must be a positive integer");
+if (!Number.isInteger(bossFramesLimit) || bossFramesLimit <= 0) throw new Error("--boss-frames must be a positive integer");
 
 const romBytes = fs.readFileSync(filename);
 const nes = new NES({ onFrame: () => {}, onAudioSample: () => {} });
@@ -32,6 +35,7 @@ nes.buttonDown(1, Controller.BUTTON_A);
 nes.buttonDown(1, Controller.BUTTON_B);
 
 const bossChanges = [];
+const bossFrames = [];
 const projectileEvents = [];
 let bossStart;
 let previousBoss;
@@ -57,16 +61,33 @@ for (let frame = 0; frame < frames; frame += 1) {
   const mapEnd = (memory[0x5e] ?? 0) | ((memory[0x5f] ?? 0) << 8);
   if (memory[0x4b] === 0 && mapPointer >= mapEnd - 24) memory[0x49] = 1;
   memory[0x7c] = 255;
+  if (attack && bossStart !== undefined) {
+    memory[0x74] = memory[0x5ee] ?? memory[0x74];
+    const pressed = (frame - bossStart) % 5 === 0;
+    for (const button of [Controller.BUTTON_A, Controller.BUTTON_B]) {
+      if (pressed) nes.buttonDown(1, button);
+      else nes.buttonUp(1, button);
+    }
+  }
   nes.frame();
 
   const boss = activeEntity(14);
   if (bossStart === undefined && boss?.dispatch === 0x88) {
     bossStart = frame;
-    nes.buttonUp(1, Controller.BUTTON_A);
-    nes.buttonUp(1, Controller.BUTTON_B);
+    if (!attack) {
+      nes.buttonUp(1, Controller.BUTTON_A);
+      nes.buttonUp(1, Controller.BUTTON_B);
+    }
   }
   if (bossStart === undefined || !boss) continue;
   const relativeFrame = frame - bossStart;
+  if (attack) {
+    bossFrames.push({
+      frame: relativeFrame,
+      ...boss,
+      zeroPage: { b0: memory[0xb0], b4: memory[0xb4], b5: memory[0xb5], ba: memory[0xba], bc: memory[0xbc] },
+    });
+  }
   const bossSignature = `${boss.state}:${boss.dispatch}:${boss.variant}`;
   if (bossSignature !== previousBoss) {
     bossChanges.push({ frame: relativeFrame, ...boss });
@@ -84,7 +105,7 @@ for (let frame = 0; frame < frames; frame += 1) {
       previousProjectiles.set(slot, signature);
     }
   }
-  if (relativeFrame >= 720) break;
+  if (relativeFrame >= bossFramesLimit) break;
 }
 nes.buttonUp(1, Controller.BUTTON_A);
 nes.buttonUp(1, Controller.BUTTON_B);
@@ -98,6 +119,7 @@ const trace = {
   roundState: roundState(),
   mapperBank,
   bossChanges,
+  ...(attack ? { bossFrames } : {}),
   projectileEvents,
 };
 fs.mkdirSync(path.dirname(output), { recursive: true });

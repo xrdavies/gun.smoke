@@ -18,7 +18,7 @@ import { GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, gunmanBottomPositi
 import { BOMBER_ENTRY_DURATION, bomberOpeningY } from "./game-constants";
 import { firebreatherSideCanAttack, FIREBREATHER_SIDE_ATTACK_INTERVAL, FIREBREATHER_SIDE_LIFETIME, FIREBREATHER_SIDE_PATH_NES, firebreatherSidePosition, FIREBREATHER_FIRST_SHOT_DELAY, FIREBREATHER_LIFETIME, FIREBREATHER_PATH_NES, FIREBREATHER_PROJECTILE_OFFSET_NES, firebreatherPosition, FIREBREATHER_SHOT_FRAMES, HATCHET_PATH_NES, hatchetPosition, SPEAR_PATH_NES, SPEAR_PROJECTILE_OFFSET_NES, SPEAR_SIDE_LIFETIME, SPEAR_SIDE_PATH_NES, SPEAR_SIDE_SHOT_FRAMES, spearPosition, spearSidePosition, spearTopCanAttack, SPEAR_TOP_ATTACK_FRAMES, SPEAR_TOP_LIFETIME } from "./game-constants";
 import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanPosition, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition } from "./game-constants";
-import { BANDIT_BILL_BULLET_SPEED, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, banditBillCombatX, banditBillCombatY } from "./game-constants";
+import { BANDIT_BILL_BULLET_SPEED, BANDIT_BILL_DAMAGE_RECOVERY_DURATION, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, banditBillCombatX, banditBillCombatY } from "./game-constants";
 import { banditBillCooldown } from "./game-constants";
 import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "./game-constants";
 import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, pistolBulletSpeedFactor, pistolVelocities, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
@@ -1572,7 +1572,7 @@ class GunSmokeGame {
       const minBossX = edgeEntryBoss ? 0 : 380;
       const maxBossX = edgeEntryBoss ? 960 : 580;
       if (unit.x < minBossX || unit.x > maxBossX) unit.vx *= -1;
-      if (this.stage === 1) unit.y = this.scroll + (unit.age < unit.invulnerableUntil ? 430 : unit.age <= BANDIT_BILL_ENTRY_DURATION ? banditBillOpeningY(unit.age) : banditBillCombatY(unit.age, unit.bossEntryX ?? 192 * (960 / 256)));
+      if (this.stage === 1) unit.y = this.scroll + (unit.age <= BANDIT_BILL_ENTRY_DURATION ? banditBillOpeningY(unit.age) : banditBillCombatY(unit.age, unit.bossEntryX ?? 192 * (960 / 256)));
       else if (this.stage === 2) unit.y = this.scroll + (unit.age <= CUTTER_ENTRY_DURATION ? cutterOpeningY(unit.age) : cutterCombatY(unit.age));
       else if (this.stage === 3) unit.y = this.scroll + (unit.age <= DEVIL_HAWK_ENTRY_DURATION ? devilHawkOpeningY(unit.age) : devilHawkCombatY(unit.age));
       else if (this.stage === 4) {
@@ -1778,7 +1778,7 @@ class GunSmokeGame {
     if (unit.kind !== "boss") return;
     if (Math.ceil(previousHp / 4) === Math.ceil(unit.hp / 4)) return;
     if (this.stage === 1) {
-      unit.invulnerableUntil = unit.age + 1.1;
+      unit.invulnerableUntil = unit.age + BANDIT_BILL_DAMAGE_RECOVERY_DURATION;
       this.showMessage("BANDIT BILL CRAWLS");
     } else if (this.stage === 4) {
       unit.bossCycleStart = unit.age + NINJA_BOSS_TELEPORT_DELAY;

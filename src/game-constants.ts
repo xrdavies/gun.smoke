@@ -56,6 +56,10 @@ export function scoreExtraLives(_score: number, threshold: number): { lives: num
 export const WORLD_VIEWPORT_HEIGHT = 540;
 export const NES_WORLD_Y_SCALE = WORLD_VIEWPORT_HEIGHT / 240;
 export const NES_WORLD_X_SCALE = 960 / 256;
+export const PLAYER_ENTRY_X_NES = 136;
+export const PLAYER_ENTRY_Y_NES = 188;
+export const PLAYER_ENTRY_X = PLAYER_ENTRY_X_NES * NES_WORLD_X_SCALE;
+export const PLAYER_ENTRY_Y = PLAYER_ENTRY_Y_NES * NES_WORLD_Y_SCALE;
 const NES_AIM_HEADINGS = [
   [8, 9, 10, 11, 12], [16, 15, 14, 13, 12], [16, 17, 18, 19, 20], [24, 23, 22, 21, 20],
   [8, 7, 6, 5, 4], [0, 1, 2, 3, 4], [0, 31, 30, 29, 28], [24, 25, 26, 27, 28],

@@ -4,6 +4,7 @@ import { GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, GUNMAN_BOTTOM_NEAR
 import { RIFLEMAN_LIFETIME, RIFLEMAN_PATH_NES, riflemanPosition, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_PATH_NES, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition } from "../src/game-constants";
 import { NINJA_BOSS_TELEPORT_DELAY } from "../src/game-constants";
 import { addScore, MAX_SCORE } from "../src/game-constants";
+import { PLAYER_ENTRY_X, PLAYER_ENTRY_X_NES, PLAYER_ENTRY_Y, PLAYER_ENTRY_Y_NES } from "../src/game-constants";
 import { NINJA_ATTACK_MOVE_DURATION, NINJA_ENTRY_PATH_NES, ninjaAttackPosition, ninjaOpeningY } from "../src/game-constants";
 import { ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y } from "../src/game-constants";
 import { BOMBER_ENTRY_DURATION, BOMBER_ENTRY_END_Y, BOMBER_ENTRY_END_Y_NES, bomberOpeningY } from "../src/game-constants";
@@ -50,6 +51,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROUND_BOSS_GATE_SCROLL_NES).toEqual([2_767, 2_799, 4_863, 3_487, 2_879, 4_879]);
     expect(ROUND_LOOP_SCROLL_NES).toEqual([3_087, 3_055, 5_119, 3_839, 3_055, 5_119]);
     expect(ROUND_BOSS_TRIGGERS[0]).toBe(6_225.75);
+    expect([PLAYER_ENTRY_X_NES, PLAYER_ENTRY_Y_NES]).toEqual([136, 188]);
+    expect([PLAYER_ENTRY_X, PLAYER_ENTRY_Y]).toEqual([510, 423]);
     expect(ROUND_LENGTHS[5]).toBe(11_517.75);
     expect([ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y]).toEqual([310, 300]);
     expect(NES_SCROLL_SPEED).toBeCloseTo(20.032667, 6);

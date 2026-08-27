@@ -21,7 +21,7 @@ import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanPosition, RIFLE
 import { BANDIT_BILL_BULLET_SPEED, BANDIT_BILL_DAMAGE_RECOVERY_DURATION, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, banditBillCombatX, banditBillCombatY } from "./game-constants";
 import { banditBillCooldown } from "./game-constants";
 import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "./game-constants";
-import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, pistolBulletSpeedFactor, pistolVelocities, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
+import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, PLAYER_ENTRY_X, PLAYER_ENTRY_Y, pistolBulletSpeedFactor, pistolVelocities, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
 import { addScore } from "./game-constants";
 import { FATMAN_JOE_ATTACK_CHANCE, FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_MOVEMENT_SPEED, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, fatmanJoeCombatY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "./game-constants";
@@ -302,7 +302,7 @@ class GunSmokeGame {
   musicTimer: number | undefined;
   musicStep = 0;
   randomState = 0x6d2b79f5;
-  player = { entity: 0, x: 480, y: 410, sprite: undefined as unknown as Sprite };
+  player = { entity: 0, x: PLAYER_ENTRY_X, y: PLAYER_ENTRY_Y, sprite: undefined as unknown as Sprite };
   horseSprite: Sprite;
   playerAnimation: SpriteAnimationBinding | undefined;
 
@@ -413,8 +413,8 @@ class GunSmokeGame {
       this.mapTextures.push(pixelTexture(engine, collisionTextureRows(ROUND_COLLISION_ROWS[index] ?? [], index + 1), palette));
     }
     this.player.entity = this.world.createEntity();
-    this.horseSprite = new Sprite({ texture: this.textures.horse, sampler: this.sampler, position: { x: 480, y: 426 }, size: { x: 64, y: 54 }, anchor: { x: 0.5, y: 0.5 }, layer: 19, visible: false });
-    this.player.sprite = new Sprite({ texture: this.textures.player, sampler: this.sampler, frame: { x: 0, y: 0, width: 0.5, height: 1 }, position: { x: 480, y: 410 }, size: { x: 45, y: 54 }, anchor: { x: 0.5, y: 0.5 }, layer: 20 });
+    this.horseSprite = new Sprite({ texture: this.textures.horse, sampler: this.sampler, position: { x: PLAYER_ENTRY_X, y: PLAYER_ENTRY_Y + 16 }, size: { x: 64, y: 54 }, anchor: { x: 0.5, y: 0.5 }, layer: 19, visible: false });
+    this.player.sprite = new Sprite({ texture: this.textures.player, sampler: this.sampler, frame: { x: 0, y: 0, width: 0.5, height: 1 }, position: { x: PLAYER_ENTRY_X, y: PLAYER_ENTRY_Y }, size: { x: 45, y: 54 }, anchor: { x: 0.5, y: 0.5 }, layer: 20 });
     this.playerAnimation = new SpriteAnimationBinding(this.player.sprite, new AnimationPlayer().play(new SpriteFrameClip([
       { x: 0, y: 0, width: 0.5, height: 1, duration: 0.12 },
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: 0.12 },
@@ -1955,8 +1955,8 @@ class GunSmokeGame {
     this.shopSpawnCursor = 0;
     this.units.length = 0;
     this.buildBackground();
-    this.player.x = 480;
-    this.player.y = 410;
+    this.player.x = PLAYER_ENTRY_X;
+    this.player.y = PLAYER_ENTRY_Y;
     this.showMessage(`STAGE ${this.stage}`);
     this.showBriefing();
   }
@@ -1965,7 +1965,7 @@ class GunSmokeGame {
     this.stageLoopCount += 1;
     this.scroll = 0;
     this.camera.position.y = 270;
-    this.player.y = 410;
+    this.player.y = PLAYER_ENTRY_Y;
     this.player.sprite.position = { x: this.player.x, y: this.player.y };
     this.wingateRespawnClock = 0;
     this.romObjectCursor = 0;

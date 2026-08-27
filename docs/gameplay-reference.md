@@ -214,6 +214,10 @@ match the Round 5 traversal cue; traversal remains governed by the decoded ROM
 mask. Cemetery segments also draw grouped center gravestones between the side
 buildings.
 
+Round entry places Billy at the measured first-collision coordinate `(136,188)`
+NES pixels (world `(510,423)`), and each new Round or loop resets to that same
+coordinate.
+
 Enemy spawning now consumes decoded Round event records with a verified
 behavior routine and preserves the NES enemy/object pool bit. Each runtime
 unit retains its behavior, entity code and pool for trace comparison; the

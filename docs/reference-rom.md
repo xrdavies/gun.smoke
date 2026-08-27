@@ -472,7 +472,8 @@ Both trace modes include the verified zero-based Round index at `$41`, the
 state, and Billy's `$74/$71` X/Y coordinates. The initializer at `$E7E5` and
 collision lookup at `$C6C4` provide the map-field evidence; `$E85E` seeds
 `$74/$71` at `(128, 188)`, and the first collision pass produces the observed
-Round-entry position `(136, 188)`.
+Round-entry position `(136, 188)`. The web runtime uses that post-collision
+coordinate for each Round and loop reset.
 Both trace formats also decode `hudScore` from the six visible OAM digit tiles
 at `y=16`: runtime tiles 88 through 97 map directly to digits 0 through 9.
 This gives a verified score observation without assigning semantics to an

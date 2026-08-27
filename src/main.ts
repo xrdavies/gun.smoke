@@ -796,7 +796,7 @@ class GunSmokeGame {
     if (!canSpawnRomPool(event.pool, active)) return;
     const enemyType = ROM_BEHAVIOR_ENEMY_TYPES[event.behavior] ?? "gunman";
     const eventX = romEventWorldX(event);
-    const flankCode = event.behavior === 2 && (event.entityCode === 8 || event.entityCode === 9) ? event.entityCode : undefined;
+    const flankCode = event.behavior === 2 && (event.entityCode === 7 || event.entityCode === 8 || event.entityCode === 9) ? event.entityCode : undefined;
     const enemy = this.spawnUnit(
       "enemy",
       event.behavior === 3 || flankCode !== undefined ? eventX : clamp(eventX, 40, 920),
@@ -1405,10 +1405,11 @@ class GunSmokeGame {
         }
       } else if (unit.enemyType === "gunman") {
         const tracedGunman = unit.romBehavior === 2;
-        const flankGunman = tracedGunman && (unit.romEntityCode === 8 || unit.romEntityCode === 9) ? unit.romEntityCode : undefined;
+        const flankGunman = tracedGunman && (unit.romEntityCode === 7 || unit.romEntityCode === 8 || unit.romEntityCode === 9) ? unit.romEntityCode : undefined;
         if (flankGunman !== undefined) {
           const [offsetX, offsetY] = gunmanFlankPosition(flankGunman, unit.age);
-          unit.x = (unit.romOriginX ?? unit.x) + offsetX * NES_WORLD_X_SCALE;
+          const mirror = flankGunman === 7 && (unit.romOriginX ?? unit.x) > 480 ? -1 : 1;
+          unit.x = (unit.romOriginX ?? unit.x) + offsetX * NES_WORLD_X_SCALE * mirror;
           unit.y = this.scroll + (unit.romOriginY ?? 0) + offsetY * NES_WORLD_Y_SCALE;
         } else if (tracedGunman && unit.age <= GUNMAN_ENTRY_PATH_NES.at(-1)![0] / NES_FRAME_RATE) {
           unit.y = this.scroll + (unit.romOriginY ?? 0) + gunmanOpeningY(unit.age);

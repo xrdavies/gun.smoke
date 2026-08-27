@@ -291,14 +291,15 @@ export const GUNMAN_FIRST_SHOT_DELAY = 39 / NES_FRAME_RATE;
 export const GUNMAN_BULLET_SPEED = 266;
 export const GUNMAN_LIFETIME = 289 / NES_FRAME_RATE;
 export const GUNMAN_ENTRY_PATH_NES = [[0, 0], [40, 53], [100, 128], [104, 132]] as const;
-export const GUNMAN_FLANK_SHOT_FRAMES = { 8: [309], 9: [399, 463] } as const;
-export const GUNMAN_FLANK_LIFETIMES = { 8: 508 / NES_FRAME_RATE, 9: 826 / NES_FRAME_RATE } as const;
+export const GUNMAN_FLANK_SHOT_FRAMES = { 7: [64, 410], 8: [309], 9: [399, 463] } as const;
+export const GUNMAN_FLANK_LIFETIMES = { 7: 642 / NES_FRAME_RATE, 8: 508 / NES_FRAME_RATE, 9: 826 / NES_FRAME_RATE } as const;
 const GUNMAN_FLANK_PATHS_NES = {
+  7: [[0, 0, 0], [48, 38, 16], [64, 46, 31], [120, 75, 95], [126, 78, 101], [160, 104, 103], [200, 137, 116], [234, 165, 128], [270, 195, 141], [310, 209, 186], [338, 192, 212], [370, 170, 211], [410, 158, 186], [442, 148, 168], [460, 149, 162], [480, 158, 165], [540, 158, 185], [600, 158, 205], [641, 158, 218]],
   8: [[0, 0, 0], [247, 0, 82], [250, 3, 77], [260, 16, 68], [270, 25, 68], [280, 35, 76], [290, 44, 92], [300, 47, 120], [309, 51, 128], [324, 61, 142], [338, 67, 135], [370, 84, 122], [420, 123, 149], [460, 153, 178], [500, 182, 209], [507, 184, 217]],
   9: [[0, 0, 0], [50, -48, 30], [65, -54, 49], [104, -73, 36], [200, -117, -12], [300, -162, -61], [350, -185, -86], [358, -188, -89], [400, -184, -42], [460, -160, 30], [468, -157, 38], [550, -90, 58], [663, -44, 144], [684, -57, 140], [740, -32, 111], [800, -4, 82], [825, 7, 69]],
 } as const;
 
-export function gunmanFlankPosition(entityCode: 8 | 9, age: number): readonly [number, number] {
+export function gunmanFlankPosition(entityCode: 7 | 8 | 9, age: number): readonly [number, number] {
   const path = GUNMAN_FLANK_PATHS_NES[entityCode];
   const frame = Math.max(0, age * NES_FRAME_RATE);
   const nextIndex = path.findIndex(([at]) => at >= frame);

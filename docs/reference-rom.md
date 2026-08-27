@@ -193,9 +193,10 @@ instead of the procedural global firing clock. A clean Round 1 isolation also
 shows the actor rising from `y=0` to approximately `y=53` at frame 40 and
 `y=128/132` at frames 100/104 before its horizontal combat state; the runtime
 uses these entry checkpoints and keeps the later movement procedural.
-The same routine has distinct side-entry initializers. Entity code `8` holds
-the left edge while scrolling, lunges inward at about frame 247, fires at frame
-309 and releases at frame 508. Entity code `9` enters from the right, follows a
+The same routine has distinct side-entry initializers. Entity code `7` enters
+from either edge on a mirrored route, fires at frames 64/410 and releases at
+frame 642. Entity code `8` holds the left edge while scrolling, lunges inward at
+about frame 247, fires at frame 309 and releases at frame 508. Entity code `9` enters from the right, follows a
 long mirrored loop, fires at frames 399/463 and releases at frame 826. Runtime
 uses separate measured keyframes and lifetimes for these ROM-tagged variants
 instead of applying the top-entry Gunman timing.

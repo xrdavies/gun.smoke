@@ -925,7 +925,7 @@ class GunSmokeGame {
     if (boss) {
       if (this.stage === 1 && boss.age < boss.invulnerableUntil) return;
       this.bossFireClock -= delta;
-      if (this.bossFireClock <= 0) this.fireBoss(boss);
+      if (this.bossFireClock <= 0) this.fireBoss(boss, boss.age + delta);
       return;
     }
     this.enemyFireClock -= delta;
@@ -944,7 +944,7 @@ class GunSmokeGame {
     this.enemyFireClock = Math.max(0.6, 1.75 - this.stage * 0.18);
   }
 
-  private fireBoss(boss: Unit): void {
+  private fireBoss(boss: Unit, effectiveAge = boss.age): void {
     if (this.stage === 1) {
       const projectile = this.spawnEnemyProjectile(boss.x, boss.y + 24);
       if (projectile) {
@@ -1007,7 +1007,7 @@ class GunSmokeGame {
       if (headings.length > 0) {
         this.beep(204, 0.045);
       }
-      this.bossFireClock = devilHawkAttackDelay(boss.age);
+      this.bossFireClock = devilHawkAttackDelay(effectiveAge);
       return;
     }
     if (this.stage === 5) {

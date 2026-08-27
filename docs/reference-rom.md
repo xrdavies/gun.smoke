@@ -211,10 +211,9 @@ when the actor's movement heading is within two sectors of its integer aim at
 Billy. `$0540` advances by three until wrapping at 192, so failed checks recur
 64 frames later; isolated first phases appear at frames `40/52/58/62`. The
 runtime preserves those observed phases, the 64-frame retry, and the one-shot
-limit. Clean top-entry routes can release around ages 550/560 after their turn
-and retreat states, while player-relative routes remain active past 650 frames;
-the runtime no longer truncates them at a fixed age and instead lets state/space
-cleanup release the slot. The projectile uses the ROM's quantized
+limit. Two clean top-entry routes release at ages 550 and 560 after their turn
+and retreat states; the runtime uses the longer measured value as its current
+pool-release cap until the full player-relative route state is ported. The projectile uses the ROM's quantized
 32-direction speed table at the second tier (about 266 world pixels/s on its
 diagonal), and ROM-tagged Gunmen use this per-actor timing
 instead of the procedural global firing clock. A clean Round 1 isolation also

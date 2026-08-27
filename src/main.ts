@@ -102,6 +102,7 @@ interface Unit {
   targetX?: number;
   targetY?: number;
   gunmanBottomRoute?: "near" | "far";
+  riflemanAimHeading?: number;
   bomberState?: "entry" | "moving" | "throwing";
   bomberDirection?: number;
   bossEntryX?: number;
@@ -1190,7 +1191,7 @@ class GunSmokeGame {
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: frameDuration },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, bomberState: undefined, bomberDirection: undefined, boomerangHeading: undefined, bossCycleStart: undefined,
+      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, riflemanAimHeading: undefined, bomberState: undefined, bomberDirection: undefined, boomerangHeading: undefined, bossCycleStart: undefined,
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" || sceneObject ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
@@ -1294,12 +1295,13 @@ class GunSmokeGame {
         const sideShotFrame = sideRifleman ? RIFLEMAN_SIDE_SHOT_FRAMES[unit.volleysFired] : undefined;
         const nextRiflemanShot = sideRifleman ? sideShotFrame === undefined ? undefined : sideShotFrame / NES_FRAME_RATE : unit.nextFireAt;
         if (nextRiflemanShot !== undefined && unit.age >= nextRiflemanShot && unit.volleysFired < (sideRifleman ? RIFLEMAN_SIDE_SHOT_FRAMES.length : RIFLEMAN_SHOTS_PER_VOLLEY) && riflemanCanAttack(unit.y - this.scroll, this.player.y - this.scroll)) {
+          unit.riflemanAimHeading ??= nesAimHeading(unit.x, unit.y, this.player.x, this.player.y);
           if (!sideRifleman) unit.nextFireAt += RIFLEMAN_SHOT_INTERVAL;
           const shotIndex = unit.volleysFired;
           unit.volleysFired += 1;
           const projectile = this.spawnEnemyProjectile(unit.x, tracedRifleman ? unit.y : unit.y + 12);
           if (projectile) {
-            const heading = riflemanShotHeading(nesAimHeading(unit.x, unit.y, this.player.x, this.player.y), shotIndex);
+            const heading = riflemanShotHeading(unit.riflemanAimHeading, shotIndex);
             [projectile.vx, projectile.vy] = mediumProjectileHeadingVelocity(heading);
           }
         }

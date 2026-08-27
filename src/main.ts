@@ -588,7 +588,7 @@ class GunSmokeGame {
     this.updateEnemyFire(delta);
     for (const unit of this.units) this.updateUnit(unit, delta);
     this.resolveCollisions();
-    this.units.splice(0, this.units.length, ...this.units.filter((unit) => unit.age < unit.maxAge && unit.hp > 0 && unit.y > this.scroll - 340 && unit.y < this.scroll + 760));
+    this.units.splice(0, this.units.length, ...this.units.filter((unit) => unit.age < unit.maxAge && unit.hp > 0 && unit.x > -96 && unit.x < 1056 && unit.y > this.scroll - 340 && unit.y < this.scroll + 760));
     this.updateHud();
   }
 

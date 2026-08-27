@@ -367,6 +367,7 @@ export const ROCK_IMPACT_DELAY = 24 / NES_FRAME_RATE;
 export const ROCK_LIFETIME = 49 / NES_FRAME_RATE;
 export const HATCHET_FIRST_SHOT_DELAY = 78 / NES_FRAME_RATE;
 export const HATCHET_PROJECTILE_SPEED = 230;
+export const HATCHET_LIFETIME = 1042 / NES_FRAME_RATE;
 export const HATCHET_PATH_NES = [[0, 0, 0], [20, 0, 40], [40, 0, 40], [60, 18, 43], [78, 18, 48]] as const;
 
 export function hatchetPosition(age: number): readonly [number, number] {

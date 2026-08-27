@@ -501,9 +501,9 @@ Current behavior map:
 | `$BA51` | Spear Thrower | isolated dispatch/OAM timing trace |
 | `$BB29` | Firebreather | isolated dispatch/OAM timing trace |
 
-The elimination entries remain behavior approximations until their complete
-state machines are traced; the runtime stores the original routine and entity
-codes alongside each spawned unit for comparison.
+All core behavior entries in the table above have an identified runtime
+mapping. The runtime still stores each original routine and entity code so
+long-tail random branches can be compared without changing the mapped types.
 
 The one supply-shop record per Round carries entity flag `0x40`; its decoded
 NES X positions are `[200,64,216,216,72,216]`. Unflagged weapon-shop counts are

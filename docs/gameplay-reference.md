@@ -195,11 +195,10 @@ proxy starts at frame 140, travels toward the captured player-relative launch
 point for 40 frames, then remains as a hidden seven-frame controller while the
 four shuriken slots are active.
 
-The ROM event stream is data-driven per Round. Its behavior routines currently
-map to the recognizable roster of gunmen, bombers, snipers, back-stabbers,
-riflemen, ninjas, shotgunners, spear throwers, firebreathers and Hatchet
-Throwers; individual routine names remain explicit approximations until their
-full state machines are traced.
+The ROM event stream is data-driven per Round. Its behavior routines map to the
+recognizable roster of gunmen, bombers, snipers, back-stabbers, riflemen,
+ninjas, shotgunners, spear throwers, firebreathers and Hatchet Throwers; only
+some long-tail random branches remain marked as approximations.
 Snipers are edge-mounted static shooters that aim once using the ROM's
 32-direction projectile table, enter their window/tee-pee cover for 90 NES
 frames after each shot, and do not walk with field enemies. The code `2`
@@ -277,8 +276,8 @@ coordinate.
 Enemy spawning now consumes decoded Round event records with a verified
 behavior routine and preserves the NES enemy/object pool bit. Each runtime
 unit retains its behavior, entity code and pool for trace comparison; the
-visible type is an explicit procedural approximation until its state machine
-is identified. The pools are capped independently at seven enemy slots and
+visible type is selected from the identified behavior mapping. The pools are
+capped independently at seven enemy slots and
 six object slots, matching the ROM allocator. The `$B5BF` Round 4 records are
 rendered as falling rock hazards with enemy-pool capacity and player collision,
 rather than being misclassified as ordinary walking enemies.
@@ -289,9 +288,9 @@ ROM behavior actors are anchored in world space at their event trigger, then
 carry the camera scroll while their routine updates screen-relative movement.
 Hatchet and Spear state machines own their full screen-relative Y path, including
 the final offscreen retreat, and are exempt from the generic 160-NES-pixel clamp.
-The current procedural fallback limits that descent to 160 NES pixels so
-untraced routines remain staged in the playable area instead of drifting
-through the camera indefinitely.
+Non-ROM fallback formations limit that descent to 160 NES pixels so authored
+fallback actors remain staged in the playable area instead of drifting through
+the camera indefinitely.
 Dispatch `0x07` records with verified pickup conversions render as breakable
 barrels; codes 32 and 41 are also empty breakable barrels that enter a short
 post-hit explosion state without yielding a pickup. The web runtime exposes the

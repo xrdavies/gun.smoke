@@ -11,7 +11,7 @@ names are cross-checked against the public NES walkthrough on
 | 3 | Native village | Devil Hawk | gate, poster, shop, measured entrance and opening fan |
 | 4 | Cliff valley | Ninja | gate, poster, shop, measured entrance and shuriken volley |
 | 5 | Forest / bridges | Fatman Joe | gate, poster, shop, measured entrance and shell split |
-| 6 | Wingate town / cemetery | Wingate (two encounters) | gate, poster, shop, measured entrances and recorded X/Y movement; attack checks remain approximate |
+| 6 | Wingate town / cemetery | Wingate (two encounters) | gate, poster, shop, measured entrances/X/Y movement and attack gates; later random routes remain approximate |
 
 The NES version's stage rule is important: the wanted poster for the round's
 outlaw must be collected before the boss gate can resolve. The web build keeps
@@ -182,15 +182,15 @@ hides the Boss for the measured 90-frame teleport delay, then restarts its entry
 smoke window and attack clock from the newly selected lane. Devil Hawk fireballs use the ROM's
 discrete directional velocity table and their measured 45/36-frame lifetimes;
 its recorded X/Y movement route is replayed through the available trace, while
-the random attack scheduler remains an approximation.
+only the post-trace random route remains an approximation.
 Fatman Joe begins attack decisions after his measured entrance. A successful
 downward-sector check launches one aimed shell; after 31 frames it stops and
 splits into five stationary mines at four-frame intervals. The mines use the
 measured symmetric offsets and last about 29 NES frames. His multi-hop X/Y
 profile follows the controlled Boss trace through combat frame 730. The runtime
 pauses the 76-frame attack counter during the measured 53-frame short or
-122-frame long movement action; later random movement direction remains an
-approximation.
+122-frame long movement action; only later random movement direction remains
+an approximation.
 Ninja's measured first shuriken volley appears at frame 179 as a four-way
 diagonal cross spawned just above Billy; each shot lasts about 40 frames and the
 attack uses a common 60-frame repeat interval. A non-damaging low-slot smoke

@@ -81,7 +81,7 @@ export const romEventWorldAt = (event: RomEnemyEvent): number => event.at * WORL
 export const romEventWorldX = (event: RomEnemyEvent): number => event.x * (960 / 256);
 export const romEventWorldY = (event: RomEnemyEvent): number => event.y * WORLD_PER_NES_PIXEL;
 
-// Behavior routines are mechanically identified; these names are gameplay approximations until each routine is fully traced.
+// Behavior routines are mechanically identified; only long-tail random branches remain approximate.
 export const ROM_BEHAVIOR_ENEMY_TYPES = [
   "sniper", "shotgunner", "gunman", "backstabber", "bomber", undefined,
   "ninja", "rifleman", "backstabber", "hatchet", "spear", "firebreather",

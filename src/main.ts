@@ -1884,6 +1884,7 @@ class GunSmokeGame {
       } else if ((unit.kind === "enemy" || unit.kind === "boss" || unit.kind === "enemyBullet") && this.invulnerable <= 0 && distance(unit, this.player) <= unit.radius + 20) {
         this.takeHit();
         if (contactSourceShouldClear(unit.kind, unit.projectileType, unit.projectileType === "dynamite" && dynamiteContactIsDefusable(unit.age))) unit.hp = 0;
+        if (this.deathClock > 0) break;
       }
     }
   }

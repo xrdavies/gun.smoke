@@ -8,6 +8,7 @@ const filename = args.find((argument) => !argument.startsWith("--")) ?? "Gun.Smo
 const frames = Number(args.find((argument) => argument.startsWith("--frames="))?.split("=")[1] ?? 18_000);
 const bossFramesLimit = Number(args.find((argument) => argument.startsWith("--boss-frames="))?.split("=")[1] ?? (args.includes("--attack") ? 2_400 : 720));
 const output = args.find((argument) => argument.startsWith("--out="))?.split("=")[1] ?? ".rom-traces/boss.json";
+const stateFile = args.find((argument) => argument.startsWith("--state="))?.split("=")[1];
 const attack = args.includes("--attack");
 const clearField = args.includes("--clear-field");
 if (!fs.existsSync(filename)) {
@@ -16,10 +17,12 @@ if (!fs.existsSync(filename)) {
 }
 if (!Number.isInteger(frames) || frames <= 0) throw new Error("--frames must be a positive integer");
 if (!Number.isInteger(bossFramesLimit) || bossFramesLimit <= 0) throw new Error("--boss-frames must be a positive integer");
+if (stateFile && !fs.existsSync(stateFile)) throw new Error(`State file not found: ${stateFile}`);
 
 const romBytes = fs.readFileSync(filename);
 const nes = new NES({ onFrame: () => {}, onAudioSample: () => {} });
 nes.loadROM(romBytes.toString("binary"));
+if (stateFile) nes.fromJSON(JSON.parse(fs.readFileSync(stateFile, "utf8")));
 let mapperBank = 0;
 const mapperWrite = nes.mmap.write.bind(nes.mmap);
 nes.mmap.write = (address, value) => {
@@ -27,19 +30,21 @@ nes.mmap.write = (address, value) => {
   return mapperWrite(address, value);
 };
 
-for (let frame = 0; frame < 180; frame += 1) nes.frame();
-nes.buttonDown(1, Controller.BUTTON_START);
-for (let frame = 0; frame < 5; frame += 1) nes.frame();
-nes.buttonUp(1, Controller.BUTTON_START);
-for (let frame = 0; frame < 650; frame += 1) nes.frame();
-nes.buttonDown(1, Controller.BUTTON_A);
-nes.buttonDown(1, Controller.BUTTON_B);
+if (!stateFile) {
+  for (let frame = 0; frame < 180; frame += 1) nes.frame();
+  nes.buttonDown(1, Controller.BUTTON_START);
+  for (let frame = 0; frame < 5; frame += 1) nes.frame();
+  nes.buttonUp(1, Controller.BUTTON_START);
+  for (let frame = 0; frame < 650; frame += 1) nes.frame();
+  nes.buttonDown(1, Controller.BUTTON_A);
+  nes.buttonDown(1, Controller.BUTTON_B);
+}
 
 const bossChanges = [];
 const bossFrames = [];
 const projectileEvents = [];
 const projectileFrames = [];
-let bossStart;
+let bossStart = stateFile ? 0 : undefined;
 let previousBoss;
 const previousProjectiles = new Map();
 const roundState = () => ({
@@ -73,7 +78,9 @@ for (let frame = 0; frame < frames; frame += 1) {
   }
   if (clearField && bossStart !== undefined) {
     for (let slot = 2; slot < 32; slot += 1) {
-      if (slot !== 14 && !(nes.cpu.mem[0x400 + slot] & 0x80 && nes.cpu.mem[0x420 + slot] === 0x30)) nes.cpu.mem[0x400 + slot] = 0;
+      const lowBossSlot = stateFile && slot < 8;
+      const banditBillShot = nes.cpu.mem[0x400 + slot] & 0x80 && nes.cpu.mem[0x420 + slot] === 0x30;
+      if (slot !== 14 && !lowBossSlot && !banditBillShot) nes.cpu.mem[0x400 + slot] = 0;
     }
   }
   nes.frame();
@@ -104,10 +111,11 @@ for (let frame = 0; frame < frames; frame += 1) {
     bossChanges.push({ frame: relativeFrame, ...boss });
     previousBoss = bossSignature;
   }
-  for (let slot = clearField ? 2 : 24; slot < 32; slot += 1) {
+  for (let slot = clearField || stateFile ? 2 : 24; slot < 32; slot += 1) {
     if (slot === 14) continue;
     const projectile = activeEntity(slot);
-    if (!projectile || projectile.dispatch < 0x20 || projectile.dispatch >= 0x40) {
+    const lowBossProjectile = Boolean(stateFile && slot < 8);
+    if (!projectile || !lowBossProjectile && (projectile.dispatch < 0x20 || projectile.dispatch >= 0x40)) {
       previousProjectiles.delete(slot);
       continue;
     }
@@ -116,16 +124,17 @@ for (let frame = 0; frame < frames; frame += 1) {
       projectileEvents.push({ frame: relativeFrame, slot, ...projectile });
       previousProjectiles.set(slot, signature);
     }
-    if (clearField && projectile.dispatch === 0x30) projectileFrames.push({ frame: relativeFrame, slot, ...projectile });
+    if (clearField) projectileFrames.push({ frame: relativeFrame, slot, ...projectile });
   }
   if (relativeFrame >= bossFramesLimit) break;
 }
 nes.buttonUp(1, Controller.BUTTON_A);
 nes.buttonUp(1, Controller.BUTTON_B);
-if (bossStart === undefined) throw new Error(`Bandit Bill was not observed in ${frames} frames`);
+if (bossStart === undefined) throw new Error(`Boss slot was not observed in ${frames} frames`);
 
 const trace = {
   source: filename,
+  ...(stateFile ? { sourceState: stateFile } : {}),
   sourceSha256: crypto.createHash("sha256").update(romBytes).digest("hex"),
   frameRate: 60.098,
   bossStart,
@@ -138,4 +147,4 @@ const trace = {
 };
 fs.mkdirSync(path.dirname(output), { recursive: true });
 fs.writeFileSync(output, JSON.stringify(trace, null, 2));
-console.log(`Wrote Bandit Bill trace to ${output}`);
+console.log(`Wrote Boss trace to ${output}`);

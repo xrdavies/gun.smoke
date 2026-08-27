@@ -182,7 +182,9 @@ Ordinary Ninjas
 hold their entry lane through a short pause, descend to the combat line, then
 make a brief player-relative diagonal retreat after their frame-103 Shuriken.
 Riflemen advance,
-enter their attack state at 122 NES frames, fire five shots at 138/154/170/186/202,
+enter their attack state at 122 NES frames once they are at least 48 NES pixels
+downscreen and within 96 NES Y pixels of Billy, then fire five shots at
+138/154/170/186/202,
 and retreat toward the top of the playfield. Entity code `15` instead enters
 from either edge, fires three shots at 97/113/129 frames, and returns to its
 edge before releasing at frame 259.

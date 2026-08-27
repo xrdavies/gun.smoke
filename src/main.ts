@@ -14,7 +14,7 @@ import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
 import { AMMO_GAIN, banditBillOpeningY, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, bomberCanThrow, bomberMovementDuration, bomberMovementVelocity, BOMBER_THROW_DURATION, bossReward, BOOTS_SPEED_MULTIPLIER, bossSpriteVisible, canSpawnPlayerBullet, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_LIFETIME, dynamiteVerticalOffset, EMPTY_BARREL_EXPLOSION_LIFETIME, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X_LANES, FATMAN_JOE_ENTRY_Y, fatmanJoeOpeningY, formationEntryY, HATCHET_FIRST_SHOT_DELAY, HATCHET_LIFETIME, HORSE_HIT_INVULNERABILITY, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_LANES, NINJA_FIRST_SHOT_DELAY, NINJA_LIFETIME, ninjaAttackPosition, ninjaOpeningY, obstacleBlocks, PLAYER_DEATH_ANIMATION_DURATION, PLAYER_DEATH_RECOVERY_DURATION, playerDeathPhase, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_LIFETIME, ROCK_WORLD_SPEED_X, ROCK_WORLD_SPEED_Y, ROAD_WIDTHS, ROM_ENEMY_SCREEN_MAX_Y, ROM_OBJECT_DROP_SPEED, ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_SIDE_LIFETIME, SHOTGUNNER_SIDE_SHOT_FRAME, SHOTGUNNER_VOLLEY_INTERVAL, shotgunnerPosition, shotgunnerSidePosition, shouldLoopStage, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_CODE2_SHOT_FRAMES, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_DURATION, WINGATE_ENTRY_X_LANES, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, wingateOpeningY, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
-import { GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, gunmanCanFire, GUNMAN_ENTRY_PATH_NES, GUNMAN_FLANK_LIFETIMES, GUNMAN_FLANK_SHOT_FRAMES, GUNMAN_LIFETIME, gunmanFlankPosition, gunmanOpeningY, gunmanProjectileVelocity, GUNMAN_FIRST_SHOT_DELAY, GUNMAN_TOP_SHOT_END_FRAME, mediumProjectileHeadingVelocity, mediumProjectileVelocity } from "./game-constants";
+import { GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, gunmanCanFire, GUNMAN_ENTRY_PATH_NES, GUNMAN_FLANK_LIFETIMES, GUNMAN_FLANK_SHOT_FRAMES, GUNMAN_LIFETIME, gunmanFirstOpportunityFrame, gunmanFlankPosition, gunmanOpeningY, gunmanProjectileVelocity, GUNMAN_SHOT_OPPORTUNITY_INTERVAL, mediumProjectileHeadingVelocity, mediumProjectileVelocity } from "./game-constants";
 import { BOMBER_ENTRY_DURATION, bomberOpeningY } from "./game-constants";
 import { firebreatherSideCanAttack, FIREBREATHER_SIDE_ATTACK_INTERVAL, FIREBREATHER_SIDE_LIFETIME, FIREBREATHER_SIDE_PATH_NES, firebreatherSidePosition, FIREBREATHER_FIRST_SHOT_DELAY, FIREBREATHER_LIFETIME, FIREBREATHER_PATH_NES, FIREBREATHER_PROJECTILE_OFFSET_NES, firebreatherPosition, FIREBREATHER_SHOT_FRAMES, HATCHET_ATTACK_INTERVAL, HATCHET_PATH_NES, hatchetCanThrow, hatchetPosition, SPEAR_PATH_NES, SPEAR_PROJECTILE_OFFSET_NES, SPEAR_SIDE_LIFETIME, SPEAR_SIDE_PATH_NES, SPEAR_SIDE_SHOT_FRAMES, spearPosition, spearSidePosition, spearTopCanAttack, SPEAR_TOP_ATTACK_FRAMES, SPEAR_TOP_LIFETIME } from "./game-constants";
 import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanCanAttack, riflemanPosition, riflemanShotHeading, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition, sniperProjectileVelocity } from "./game-constants";
@@ -1553,20 +1553,22 @@ class GunSmokeGame {
         }
         if (bottomGunmanFromLeft === undefined && flankGunman === undefined && tracedGunman && unit.age <= GUNMAN_ENTRY_PATH_NES.at(-1)![0] / NES_FRAME_RATE) unit.x = unit.romOriginX ?? unit.x;
         if (bottomGunmanFromLeft === undefined && flankGunman === undefined && (!tracedGunman || unit.age > GUNMAN_ENTRY_PATH_NES[1]![0] / NES_FRAME_RATE)) unit.x += Math.sin(unit.age * 3 + unit.phase) * 18 * delta;
+        const topGunman = bottomGunmanRoute === undefined && flankGunman === undefined;
+        if (topGunman && unit.nextFireAt === 0) unit.nextFireAt = gunmanFirstOpportunityFrame(unit.phase) / NES_FRAME_RATE;
         const shotFrames = bottomGunmanRoute !== undefined ? GUNMAN_BOTTOM_SHOT_FRAMES[bottomGunmanRoute] : flankGunman !== undefined ? GUNMAN_FLANK_SHOT_FRAMES[flankGunman] : undefined;
         const nextShotFrame = shotFrames?.[unit.volleysFired];
-        const topOpportunity = bottomGunmanRoute === undefined && flankGunman === undefined && !unit.fired && unit.age >= GUNMAN_FIRST_SHOT_DELAY && unit.age * NES_FRAME_RATE < GUNMAN_TOP_SHOT_END_FRAME;
+        const topOpportunity = topGunman && !unit.fired && unit.age >= unit.nextFireAt;
         if (unit.romBehavior === 2 && (topOpportunity || nextShotFrame !== undefined && unit.age >= nextShotFrame / NES_FRAME_RATE)) {
           const facingHeading = nesAimHeading(previousX, previousY, unit.x, unit.y);
           const aimHeading = nesAimHeading(unit.x, unit.y, this.player.x, this.player.y);
           if (bottomGunmanRoute !== undefined || flankGunman !== undefined || gunmanCanFire(facingHeading, aimHeading)) {
-            unit.fired = true;
-            unit.volleysFired += 1;
             const projectile = this.spawnEnemyProjectile(unit.x, unit.y);
             if (projectile) {
+              unit.fired = true;
+              unit.volleysFired += 1;
               [projectile.vx, projectile.vy] = gunmanProjectileVelocity(unit.x, unit.y, this.player.x, this.player.y);
-            }
-          }
+            } else if (topOpportunity) unit.nextFireAt += GUNMAN_SHOT_OPPORTUNITY_INTERVAL;
+          } else if (topOpportunity) unit.nextFireAt += GUNMAN_SHOT_OPPORTUNITY_INTERVAL;
         }
       }
       if (followsRomScroll) unit.y = Math.min(unit.y, this.scroll + ROM_ENEMY_SCREEN_MAX_Y);

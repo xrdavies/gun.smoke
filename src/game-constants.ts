@@ -482,8 +482,8 @@ export const BACKSTABBER_AMBUSH_DEPTH = 191;
 export const BACKSTABBER_AMBUSH_LIFETIME = 407 / NES_FRAME_RATE;
 export const BACKSTABBER_RAID_PATH = [[0, 0, 0], [40, 66, -15], [80, 103, 42], [120, 129, 44], [160, 174, 89], [200, 184, 83], [368, 213, 74]] as const;
 export const BACKSTABBER_RAID_LIFETIME = 369 / NES_FRAME_RATE;
-export const GUNMAN_FIRST_SHOT_DELAY = 39 / NES_FRAME_RATE;
-export const GUNMAN_TOP_SHOT_END_FRAME = 105;
+export const GUNMAN_FIRST_OPPORTUNITY_FRAMES = [40, 52, 58, 62] as const;
+export const GUNMAN_SHOT_OPPORTUNITY_INTERVAL = 64 / NES_FRAME_RATE;
 export const GUNMAN_LIFETIME = 560 / NES_FRAME_RATE;
 export const GUNMAN_ENTRY_PATH_NES = [[0, 0], [40, 53], [100, 128], [104, 132]] as const;
 export const GUNMAN_BOTTOM_BRANCH_FRAME = 50;
@@ -547,6 +547,9 @@ export function gunmanOpeningY(age: number): number {
   const next = GUNMAN_ENTRY_PATH_NES[nextIndex]!;
   const amount = (frame - previous[0]) / (next[0] - previous[0]);
   return (previous[1] + (next[1] - previous[1]) * amount) * NES_WORLD_Y_SCALE;
+}
+export function gunmanFirstOpportunityFrame(phase: number): number {
+  return GUNMAN_FIRST_OPPORTUNITY_FRAMES[Math.floor((phase % (Math.PI * 2)) / (Math.PI * 2) * GUNMAN_FIRST_OPPORTUNITY_FRAMES.length)] ?? GUNMAN_FIRST_OPPORTUNITY_FRAMES[0];
 }
 export function gunmanCanFire(facingHeading: number, aimHeading: number): boolean {
   return Math.abs((aimHeading - facingHeading + 48) % 32 - 16) < 3;

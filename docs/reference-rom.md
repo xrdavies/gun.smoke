@@ -208,8 +208,10 @@ schedule by entity code rather than dropping code `2`'s third shot.
 Three isolated `$B284` top-entry Gunmen first create a dispatch `0x30` bullet
 at ages 52, 58, and 62. Later opportunities are 192 frames apart and only fire
 when the actor's movement heading is within two sectors of its integer aim at
-Billy. The runtime retries the first opportunity from frame 39 through frame
-104 until that gate passes, then applies the same gate to the route. Two clean top-entry
+Billy. `$0540` advances by three until wrapping at 192, so failed checks recur
+64 frames later; isolated first phases appear at frames `40/52/58/62`. The
+runtime preserves those observed phases, the 64-frame retry, and the one-shot
+limit. Two clean top-entry
 routes release at ages 550 and 560 after their turn and
 retreat states; the runtime no longer truncates them at the earlier partial
 289-frame observation. The projectile uses the ROM's quantized

@@ -1372,7 +1372,7 @@ class GunSmokeGame {
       } else if (unit.enemyType === "gunman") {
         const tracedGunman = unit.romBehavior === 2;
         if (tracedGunman && unit.age <= GUNMAN_ENTRY_PATH_NES.at(-1)![0] / NES_FRAME_RATE) {
-          unit.y = this.scroll + (unit.romOriginY ?? 0) * NES_WORLD_Y_SCALE + gunmanOpeningY(unit.age);
+          unit.y = this.scroll + (unit.romOriginY ?? 0) + gunmanOpeningY(unit.age);
         } else {
           unit.x += unit.vx * delta;
           unit.y += unit.vy * delta;

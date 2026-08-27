@@ -401,7 +401,7 @@ export const DEVIL_HAWK_FIREBALL_SIDE_FANS_NES = [
 export function devilHawkOpeningY(age: number): number {
   return Math.max(0, Math.min(1, age / DEVIL_HAWK_ENTRY_DURATION)) * DEVIL_HAWK_ENTRY_END_Y;
 }
-const DEVIL_HAWK_COMBAT_PATH_NES = [[0, 96], [27, 96], [52, 48], [77, 48], [87, 46], [113, 46], [146, 67], [180, 70], [217, 77], [234, 77]] as const;
+const DEVIL_HAWK_COMBAT_PATH_NES = [[0, 96], [31, 96], [52, 48], [77, 48], [87, 46], [113, 46], [146, 67], [180, 70], [217, 77], [234, 77]] as const;
 const DEVIL_HAWK_COMBAT_X_NES = [[0, 208], [113, 208], [146, 157], [180, 157], [217, 137], [432, 137], [477, 155]] as const;
 export const DEVIL_HAWK_JUMP_PERIOD = 121;
 

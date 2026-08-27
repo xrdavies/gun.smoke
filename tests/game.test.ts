@@ -433,6 +433,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(DEVIL_HAWK_FIREBALL_SIDE_FANS_NES).toEqual([[[-2, 2], [-1, 3], [0, 3]], [[0, 3], [1, 3], [2, 2]]]);
     expect(DEVIL_HAWK_JUMP_PERIOD).toBe(121);
     expect(devilHawkCombatY(DEVIL_HAWK_ENTRY_DURATION)).toBe(216);
+    expect(devilHawkCombatY(DEVIL_HAWK_FIRST_VOLLEY_DELAY)).toBe(216);
     expect(devilHawkCombatY(DEVIL_HAWK_ENTRY_DURATION + 52 / NES_FRAME_RATE)).toBe(108);
     expect(devilHawkCombatX(DEVIL_HAWK_ENTRY_DURATION)).toBe(780);
     expect(devilHawkCombatX(DEVIL_HAWK_ENTRY_DURATION + 146 / NES_FRAME_RATE)).toBeCloseTo(588.75, 9);

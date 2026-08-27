@@ -183,7 +183,10 @@ the `$E192` conversion table then maps them to Bullet (`0x29`) and Money
 An isolated `$B775` Rifleman enters its attack state at age 80 frames, emits
 five dispatch `0x30` shots at ages 96, 112, 128, 144 and 160, then returns to
 its movement state. The runtime preserves the 80-frame state transition, the
-five-shot vertical volley and its 16-frame cadence.
+five-shot vertical volley and its 16-frame cadence. A separate Round 2 trace
+shows the slot returning to the top edge and releasing after roughly 364 frames;
+ROM-tagged Riflemen now use that measured lifetime instead of the generic enemy
+timeout.
 An isolated `$B671` Ninja emits one dispatch `0x31` Shuriken at age 103
 frames. Its measured path is diagonal toward Billy; the runtime uses the
 same one-shot timing and a 300-world-pixel/s self-generated projectile.

@@ -69,6 +69,10 @@ animation, then deducts the life and clears ordinary enemies/projectiles. Billy
 remains hidden for 100 frames and visible but frozen for another 40 before play
 resumes. Barrels, scene objects, Boss actors and low-slot Boss weapons survive
 the ordinary-enemy clear.
+At zero lives, Game Over defaults to Continue. Continuing restarts the current
+Round with three lives and retains score, stored Boots/Rifle, unlost special
+weapons, ammunition and Smart Bomb stock; Horse, Wanted progress, actors and
+map progress reset. End returns to the title.
 
 Shop funds now use the NES point scale: Money Bags are 200 points and the
 Wanted poster prices are 20,000 (Round 1), 24,000 (Round 2), 50,000 (Round 3),

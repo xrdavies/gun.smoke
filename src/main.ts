@@ -150,6 +150,7 @@ const briefingButton = requireElement<HTMLButtonElement>("#briefing-button");
 const briefingRound = requireElement<HTMLElement>("#briefing-round");
 const briefingBoss = requireElement<HTMLElement>("#briefing-boss");
 const restartButton = requireElement<HTMLButtonElement>("#restart-button");
+const gameOverContinueButton = requireElement<HTMLButtonElement>("#game-over-continue");
 const endingButton = requireElement<HTMLButtonElement>("#ending-button");
 const resumeButton = requireElement<HTMLButtonElement>("#resume-button");
 const inventoryClose = requireElement<HTMLButtonElement>("#inventory-close");
@@ -483,6 +484,49 @@ class GunSmokeGame {
     if (this.engine.status === "paused") this.engine.resume();
     else this.engine.start();
     canvas.focus();
+  }
+
+  continueGame(): void {
+    if (this.mode !== "gameover") return;
+    this.lives = 3;
+    this.scroll = 0;
+    this.camera.position.y = 270;
+    this.spawnClock = 0.8;
+    this.enemyFireClock = 1.2;
+    this.bossFireClock = 1;
+    this.fireClock = 0;
+    this.fireMask = 0;
+    this.bombLatch = false;
+    this.invulnerable = 0;
+    this.deathClock = 0;
+    this.deathCommitted = false;
+    this.bossSpawned = false;
+    this.stageClearClock = 0;
+    this.hasWanted = false;
+    this.wingatePhase = 0;
+    this.wingateRespawnClock = 0;
+    this.romObjectCursor = 0;
+    this.romEventCursor = 0;
+    this.stageLoopCount = 0;
+    this.shopIndex = 0;
+    this.shopSpawnCursor = 0;
+    this.shopOpen = false;
+    this.inventoryOpen = false;
+    this.hasHorse = false;
+    this.horseHealth = 0;
+    this.smartBombArmed = false;
+    this.units.length = 0;
+    this.buildBackground();
+    this.player.x = PLAYER_ENTRY_X;
+    this.player.y = PLAYER_ENTRY_Y;
+    this.player.sprite.position = { x: this.player.x, y: this.player.y };
+    this.player.sprite.visible = true;
+    this.player.sprite.rotation = 0;
+    gameOver.hidden = true;
+    shop.hidden = true;
+    inventoryScreen.hidden = true;
+    this.updateHud();
+    this.showBriefing();
   }
 
   private showBriefing(): void {
@@ -2047,6 +2091,8 @@ class GunSmokeGame {
       endingScreen.hidden = true;
       gameOver.querySelector("h2")!.textContent = "WANTED: ALIVE";
       finalScore.textContent = `SCORE ${String(this.score).padStart(6, "0")}`;
+      gameOverContinueButton.focus();
+      this.pollPausedGamepad();
     }
   }
 
@@ -2153,7 +2199,7 @@ class GunSmokeGame {
     if (this.pausePollHandle !== undefined) return;
     const poll = (): void => {
       this.pausePollHandle = undefined;
-      if (this.mode !== "paused" && this.mode !== "briefing") return;
+      if (this.mode !== "paused" && this.mode !== "briefing" && this.mode !== "gameover") return;
       this.engine.input?.pollGamepads();
       const active = this.actions.active("start");
       if (!active) this.startLatch = false;
@@ -2171,6 +2217,7 @@ class GunSmokeGame {
     if (this.mode === "title") this.start();
     else if (this.mode === "intro") this.continueFromIntro();
     else if (this.mode === "briefing") this.continueFromBriefing();
+    else if (this.mode === "gameover") this.continueGame();
     else if (this.mode === "playing" || this.mode === "paused") this.togglePause();
   }
 
@@ -2396,9 +2443,11 @@ class ReferenceRomGame {
 let game: GunSmokeGame | undefined;
 let referenceGame: ReferenceRomGame | undefined;
 if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeInvulnerable", { value: (duration: number) => { if (game) game.invulnerable = duration; } });
+if (import.meta.env.DEV) Object.defineProperty(window, "__showGunSmokeGameOver", { value: () => { if (game) (game as unknown as { finish(won: boolean): void }).finish(false); } });
 startButton.addEventListener("click", () => void game?.start());
 continueButton.addEventListener("click", () => game?.continueFromIntro());
 briefingButton.addEventListener("click", () => game?.continueFromBriefing());
+gameOverContinueButton.addEventListener("click", () => game?.continueGame());
 restartButton.addEventListener("click", () => window.location.reload());
 endingButton.addEventListener("click", () => window.location.reload());
 resumeButton.addEventListener("click", () => game?.togglePause());
@@ -2420,7 +2469,8 @@ window.addEventListener("keydown", (event) => {
   else if (game?.mode === "intro") game.continueFromIntro();
   else if (game?.mode === "briefing") game.continueFromBriefing();
   else if (game?.mode === "playing" || game?.mode === "paused") game.togglePause();
-  else if (game?.mode === "gameover" || game?.mode === "ending") window.location.reload();
+  else if (game?.mode === "gameover") game.continueGame();
+  else if (game?.mode === "ending") window.location.reload();
 });
 try {
   game = await GunSmokeGame.create();

@@ -89,6 +89,21 @@ test("accepts gamepad Start from the title flow", async ({ page }) => {
   await expect(page.locator("#pause-screen")).toBeHidden();
 });
 
+test("continues the current Round after Game Over", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#start-button").click();
+  await page.locator("#continue-button").click();
+  await page.locator("#briefing-button").click();
+  await page.evaluate(() => (window as unknown as { __showGunSmokeGameOver: () => void }).__showGunSmokeGameOver());
+  await expect(page.locator("#game-over")).toBeVisible();
+  await expect(page.locator("#game-over-continue")).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#briefing-screen")).toBeVisible();
+  await expect(page.locator("#briefing-round")).toContainText("ROUND 1");
+  await page.locator("#briefing-button").click();
+  await expect(page.locator("#lives-label")).toHaveText("LIVES 3");
+});
+
 test("does not spawn a trading post before the first ROM event", async ({ page }) => {
   await page.clock.install();
   await page.goto("/");

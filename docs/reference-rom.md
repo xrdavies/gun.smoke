@@ -159,6 +159,12 @@ before decrementing `$7A`; Billy stays hidden for 100 more frames, reappears for
 a 40-frame ready hold, then scrolling resumes. The runtime applies the same
 292-frame sequence and enemy-only clear while leaving Boss actors and low-slot
 weapons intact.
+At zero lives, `$F3F4-$F515` enters the Game Over selector. Select toggles
+`$07`; Start with the default zero choice sets `$AB=-1`, calls `$E711`, restores
+three lives, preserves `$78/$79/$88` and `$90-$9F`, and reinitializes the current
+Round. The other choice clears `$41` and returns to the title path. Runtime
+Continue preserves the corresponding score/power-up/weapon/ammo/bomb state and
+resets Horse, Wanted, actor and map state.
 On a Horse-protected collision, `$CABC-$CAC5` first removes only the colliding
 ordinary projectile, then `$CAEF-$CB29` decrements Horse health and starts a
 60-frame protection timer without calling the screen-clear routine. The runtime

@@ -617,7 +617,7 @@ export const DEVIL_HAWK_FULL_FAN_MAX_Y_NES = 62;
 const DEVIL_HAWK_FIREBALL_VELOCITIES_NES = [[1.734375, 2.109375], [1.37109375, 2.484375], [0.9375, 2.77734375], [0.46875, 2.91796875], [0, 3], [-0.46875, 2.91796875], [-0.9375, 2.77734375], [-1.37109375, 2.484375], [-1.734375, 2.109375]] as const;
 
 export function devilHawkFanHeadings(fullFan: boolean, aimHeading: number): readonly number[] {
-  if (fullFan) return aimHeading >= 12 && aimHeading <= 20 ? DEVIL_HAWK_FULL_FAN_HEADINGS : [];
+  if (fullFan) return aimHeading >= 8 && aimHeading <= 24 ? DEVIL_HAWK_FULL_FAN_HEADINGS : [];
   if (aimHeading < 8 || aimHeading >= 25) return [];
   const start = aimHeading < 15 ? 12 : aimHeading < 18 ? 14 : 16;
   return [start, start + 2, start + 4];

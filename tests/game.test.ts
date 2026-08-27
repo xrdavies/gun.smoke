@@ -565,6 +565,10 @@ describe("Gun.Smoke vertical slice", () => {
     expect(DEVIL_HAWK_SIDE_FAN_LIFETIME).toBeCloseTo(36 / NES_FRAME_RATE, 9);
     expect(DEVIL_HAWK_FULL_FAN_MAX_Y_NES).toBe(62);
     expect(devilHawkFanHeadings(true, 16)).toEqual([12, 14, 16, 18, 20]);
+    expect(devilHawkFanHeadings(true, 8)).toEqual([12, 14, 16, 18, 20]);
+    expect(devilHawkFanHeadings(true, 24)).toEqual([12, 14, 16, 18, 20]);
+    expect(devilHawkFanHeadings(true, 7)).toEqual([]);
+    expect(devilHawkFanHeadings(true, 25)).toEqual([]);
     expect(devilHawkFanHeadings(false, 8)).toEqual([12, 14, 16]);
     expect(devilHawkFanHeadings(false, 16)).toEqual([14, 16, 18]);
     expect(devilHawkFanHeadings(false, 20)).toEqual([16, 18, 20]);

@@ -331,7 +331,9 @@ Their 32-direction headings are `12/14/16/18/20`, with the ROM's discrete
 velocity table and a 45-frame lifetime. Later position-dependent attacks select
 three adjacent headings from Billy's integer aim sector, using a 36-frame
 lifetime. A common repeat interval is 125 frames. The runtime preserves these
-measured 5/3 fan geometries and lifetimes. The first post-entry jump profile is
+measured 5/3 fan geometries and lifetimes. The five-shot branch accepts aim
+sectors 8 through 24 (inclusive), as enforced by the ROM's `$C7E6` check. The
+first post-entry jump profile is
 sampled from the Boss trace; later short jumps repeat as a measured 121-frame
 cycle approximation.
 The same campaign reaches Round 4 and identifies its Ninja Boss as dispatch

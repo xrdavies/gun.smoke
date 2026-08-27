@@ -131,8 +131,8 @@ and emits a fixed downward fan. An isolated instance fires at age 108 and 159
 frames, then exits at age 228; the three shots begin at the actor coordinate,
 move about one NES Y pixel per frame, and use approximately `-1/8, 0, +1/8`
 NES X velocity. The runtime preserves both volleys and this ROM-tagged fan;
-the actor follows the measured entry path from the initial lane through its
-first lateral retreat before the generic fallback takes over;
+the actor follows the measured full path through its final top-edge retreat and
+releases at frame 228;
 non-ROM fallback formations retain their procedural aim.
 Entity code `4` uses the same `$B0E5` routine but initializes at NES side lanes
 `x=4/248`. A right-edge isolation moves inward to offset `(-72,-22)` by frame

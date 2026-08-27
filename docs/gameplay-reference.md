@@ -218,7 +218,13 @@ under 96 NES pixels, and a 20-frame ready wait. Starting at frame 156, decisions
 repeat every 52 frames. The ROM random-byte branch either checks aim sectors
 `10..22` and starts a 39-frame fire animation, or selects a 24-frame movement
 action; side fireballs quantize the captured heading to an even sector. Top-entry
-Spear Throwers accept sectors `10..23`.
+and side-entry Spear Throwers use 24- and 40-frame entrances, then share a
+72-frame cycle: 40 frames still, followed by a 32-count composite arc. The
+eighth movement frame can throw only when the current random route points along
+one of two eligible axes and Billy's aim sector is `10..23`; emitted headings are
+masked to an even sector. Later arcs alternate between reversing the previous
+route and selecting a new four-way random route, so neither form has a fixed
+shot schedule or actor lifetime.
 
 Round 1 Bombers descend into range, choose among eight measured movement
 directions and durations, and make a half-probability throw decision between

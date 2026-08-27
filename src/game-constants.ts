@@ -595,48 +595,77 @@ export function advanceFirebreather(state: FirebreatherState, targetFrame: numbe
   return { shots };
 }
 
-export const SPEAR_FIRST_SHOT_DELAY = 72 / NES_FRAME_RATE;
-export const SPEAR_PROJECTILE_SPEED = 250;
 export const SPEAR_PROJECTILE_OFFSET_NES = [0, 0] as const;
-export const SPEAR_TOP_ATTACK_FRAMES = [72, 144, 216, 288, 360, 432, 504, 576, 648] as const;
-export const SPEAR_TOP_LIFETIME = 656 / NES_FRAME_RATE;
-export const SPEAR_SIDE_SHOT_FRAMES = [89, 305, 449, 593, 737, 809] as const;
-export const SPEAR_SIDE_LIFETIME = 813 / NES_FRAME_RATE;
-export const SPEAR_SIDE_PATH_NES = [[0, 0, 0], [20, -32, -5], [40, -65, 37], [82, -66, 33], [89, -74, 6], [113, -101, -9]] as const;
-export const SPEAR_PATH_NES = [[0, 0, 0], [24, 0, 68], [65, 0, 68], [66, 1, 63], [72, 8, 40], [80, 17, 23], [89, 27, 14], [96, 36, 21]] as const;
+export const SPEAR_LIFETIME = Number.POSITIVE_INFINITY;
+export const SPEAR_TOP_ENTRY_FRAMES = 24;
+export const SPEAR_SIDE_ENTRY_FRAMES = 40;
+export const SPEAR_WAIT_FRAMES = 40;
+export const SPEAR_MOVE_FRAMES = 32;
+export const SPEAR_ATTACK_REMAINING_FRAME = 24;
+const SPEAR_ENTRY_HEADINGS = [0x90, 0x50, 0x10, 0xc0, 0x00] as const;
+const SPEAR_MOVE_HEADINGS = [0x90, 0x50, 0x10, 0xc0, 0xc0, 0x00, 0x40, 0x80] as const;
 
-export function spearPosition(age: number): readonly [number, number] {
-  const frame = Math.max(0, age * NES_FRAME_RATE);
-  const nextIndex = SPEAR_PATH_NES.findIndex(([at]) => at >= frame);
-  if (nextIndex < 0) {
-    const last = SPEAR_PATH_NES.at(-1)!;
-    return [last[1], last[2]];
-  }
-  if (nextIndex === 0) return [0, 0];
-  const previous = SPEAR_PATH_NES[nextIndex - 1]!;
-  const next = SPEAR_PATH_NES[nextIndex]!;
-  const amount = (frame - previous[0]) / (next[0] - previous[0]);
-  return [previous[1] + (next[1] - previous[1]) * amount, previous[2] + (next[2] - previous[2]) * amount];
+export type SpearState = {
+  frame: number;
+  mode: "entry" | "wait" | "move";
+  remaining: number;
+  heading: number;
+  reverseAtEnd: boolean;
+  x: number;
+  y: number;
+};
+
+export function createSpearState(x: number, y: number, sideEntry: boolean): SpearState {
+  return {
+    frame: 0,
+    mode: "entry",
+    remaining: sideEntry ? SPEAR_SIDE_ENTRY_FRAMES : SPEAR_TOP_ENTRY_FRAMES,
+    heading: sideEntry ? x >= 128 ? 0x58 : 0x48 : 0x10,
+    reverseAtEnd: true,
+    x,
+    y: y + 1,
+  };
 }
 
-export function spearSidePosition(age: number, fromLeft: boolean): readonly [number, number] {
-  const frame = Math.max(0, age * NES_FRAME_RATE);
-  const nextIndex = SPEAR_SIDE_PATH_NES.findIndex(([at]) => at >= frame);
-  const direction = fromLeft ? -1 : 1;
-  if (nextIndex < 0) {
-    const last = SPEAR_SIDE_PATH_NES.at(-1)!;
-    return [last[1] * direction, last[2]];
-  }
-  if (nextIndex === 0) return [0, 0];
-  const previous = SPEAR_SIDE_PATH_NES[nextIndex - 1]!;
-  const next = SPEAR_SIDE_PATH_NES[nextIndex]!;
-  const amount = (frame - previous[0]) / (next[0] - previous[0]);
-  return [(previous[1] + (next[1] - previous[1]) * amount) * direction, previous[2] + (next[2] - previous[2]) * amount];
+function moveEncodedHeading(state: SpearState, encodedHeading: number): void {
+  const [velocityX, velocityY] = SNIPER_BULLET_VELOCITIES_NES[encodedHeading & 31] ?? SNIPER_BULLET_VELOCITIES_NES[0];
+  const tier = encodedHeading & 0xc0;
+  const speed = tier === 0xc0 ? 0 : (tier >> 6) + 1;
+  state.x += velocityX * speed;
+  state.y += velocityY * speed;
 }
 
-export function spearTopCanAttack(actorX: number, actorY: number, playerX: number, playerY: number, random: number): boolean {
-  const heading = nesAimHeading(actorX, actorY, playerX, playerY);
-  return random < 0.5 && heading >= 10 && heading <= 23;
+export function advanceSpear(state: SpearState, targetFrame: number, playerX: number, playerY: number, randomByte: () => number): { readonly shots: readonly number[] } {
+  const shots: number[] = [];
+  while (state.frame < targetFrame) {
+    state.frame += 1;
+    state.y += NES_SCROLL_SPEED / NES_FRAME_RATE;
+    if (state.mode === "wait") {
+      state.remaining -= 1;
+      if (state.remaining === 0) {
+        state.mode = "move";
+        state.remaining = SPEAR_MOVE_FRAMES;
+      }
+      continue;
+    }
+    state.remaining -= 1;
+    if (state.remaining === 0) {
+      if (state.mode === "move" && state.reverseAtEnd) state.heading = (state.heading + 0x10) & 0xdf;
+      else state.heading = 0x44 | ((randomByte() & 3) << 3);
+      if (state.mode === "move") state.reverseAtEnd = !state.reverseAtEnd;
+      state.mode = "wait";
+      state.remaining = SPEAR_WAIT_FRAMES;
+      continue;
+    }
+    const profile = state.mode === "entry" ? SPEAR_ENTRY_HEADINGS[state.remaining >> 3] : SPEAR_MOVE_HEADINGS[state.remaining >> 2];
+    moveEncodedHeading(state, profile ?? 0);
+    moveEncodedHeading(state, state.heading & 0xdf);
+    if (state.mode === "move" && state.remaining === SPEAR_ATTACK_REMAINING_FRAME && (state.heading < 0x48 || state.heading >= 0x59)) {
+      const aim = nesAimHeading(state.x * NES_WORLD_X_SCALE, state.y * NES_WORLD_Y_SCALE, playerX * NES_WORLD_X_SCALE, playerY * NES_WORLD_Y_SCALE);
+      if (aim >= 10 && aim <= 23) shots.push(aim & 0x1e);
+    }
+  }
+  return { shots };
 }
 
 export const BACKSTABBER_AMBUSH_DROP_SPEED = 45;

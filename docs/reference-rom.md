@@ -306,18 +306,25 @@ collision, defeat, offscreen cleanup, or scene transition. The web runtime uses
 the decoded collision probes and action state machine while retaining its own
 random stream. Non-ROM fallback formations keep their procedural three-way
 spread.
-An isolated `$BA51` top-entry Spear Thrower reaches about 68 NES pixels by
-frame 24, pauses through frame 65, then follows a measured arc to roughly
-`(x+36,y=21)` by frame 96. Attack opportunities recur every 72 frames; a
-direction/random gate accepts headings 10 through 23 and decides whether that
-opportunity creates dispatch `0x33`
-at the actor coordinate. The runtime preserves the entry path, repeated
-opportunity clock and actor-relative launch coordinate.
-Entity code `20` is the side-entry Spear Thrower. Its first isolated route
-reaches the combat line by frame 40, throws at frames `89/305/449/593/737/809`,
-and leaves the screen at frame 813. The runtime mirrors the first 113-frame
-side path for left and right edge records and preserves the measured throw
-schedule.
+The `$BA51` Spear Thrower uses entity code `19` for a 24-frame top entrance and
+code `20` for a 40-frame side entrance. Each combines a five-step movement
+profile with the initializer heading; fixed-center traces reach NES `(144,77)`
+at top frame 24 and `(184,83)` at side frame 40. Both then repeat a 40-frame
+wait and 32-count composite movement action. The first action begins at frames
+65/81, and its eighth movement frame is the first attack opportunity at
+`72/88`. The current route must be encoded direction `4` or `28`; directions
+`12/20` skip the opportunity. The player aim must then fall within `10..23`, is
+masked to an even heading, and creates dispatch `0x33` at the actor coordinate.
+At action boundaries the routine alternates reversing its route and selecting
+a new route from `4/12/20/28`, making each opportunity 72 frames apart without
+making every opportunity a throw.
+The fixed-center natural samples fired at top frames `144/216/360` and side
+frames `160/232`; their initial random direction skipped frames `72/88`.
+Deterministic runtime replays reproduce the entry checkpoints and eligible
+`144/288` top and `160/304` side opportunities for a controlled direction
+sequence. The former `656/813` lifetime and side shot table were trace-specific,
+not ROM timers; actors now remain until defeat, contact, offscreen cleanup, or
+scene transition.
 The `$B82F` Round 5 Backstabber variant is an ambush actor rather than a
 projectile shooter: its X remains fixed, it descends roughly 85 NES pixels, and
 its slot is released after about 407 frames. The runtime keeps this state

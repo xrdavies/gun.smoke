@@ -17,7 +17,7 @@ import { AMMO_GAIN, banditBillOpeningY, backstabberRaidOffset, BACKSTABBER_AMBUS
 import { GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, GUNMAN_BULLET_SPEED, GUNMAN_ENTRY_PATH_NES, GUNMAN_FLANK_LIFETIMES, GUNMAN_FLANK_SHOT_FRAMES, GUNMAN_LIFETIME, gunmanFlankPosition, gunmanOpeningY } from "./game-constants";
 import { BOMBER_ENTRY_DURATION, bomberOpeningY } from "./game-constants";
 import { firebreatherSideCanAttack, FIREBREATHER_SIDE_ATTACK_INTERVAL, FIREBREATHER_SIDE_LIFETIME, FIREBREATHER_SIDE_PATH_NES, firebreatherSidePosition, FIREBREATHER_FIRST_SHOT_DELAY, FIREBREATHER_LIFETIME, FIREBREATHER_PATH_NES, FIREBREATHER_PROJECTILE_OFFSET_NES, firebreatherPosition, FIREBREATHER_SHOT_FRAMES, HATCHET_PATH_NES, hatchetCanThrow, hatchetPosition, SPEAR_PATH_NES, SPEAR_PROJECTILE_OFFSET_NES, SPEAR_SIDE_LIFETIME, SPEAR_SIDE_PATH_NES, SPEAR_SIDE_SHOT_FRAMES, spearPosition, spearSidePosition, spearTopCanAttack, SPEAR_TOP_ATTACK_FRAMES, SPEAR_TOP_LIFETIME } from "./game-constants";
-import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanPosition, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition } from "./game-constants";
+import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanCanAttack, riflemanPosition, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition } from "./game-constants";
 import { BANDIT_BILL_BULLET_SPEED, BANDIT_BILL_DAMAGE_RECOVERY_DURATION, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, banditBillCombatX, banditBillCombatY } from "./game-constants";
 import { banditBillCooldown } from "./game-constants";
 import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "./game-constants";
@@ -1294,7 +1294,7 @@ class GunSmokeGame {
         if (!sideRifleman && unit.nextFireAt === 0) unit.nextFireAt = RIFLEMAN_FIRST_SHOT_DELAY;
         const sideShotFrame = sideRifleman ? RIFLEMAN_SIDE_SHOT_FRAMES[unit.volleysFired] : undefined;
         const nextRiflemanShot = sideRifleman ? sideShotFrame === undefined ? undefined : sideShotFrame / NES_FRAME_RATE : unit.nextFireAt;
-        if (nextRiflemanShot !== undefined && unit.age >= nextRiflemanShot && unit.volleysFired < (sideRifleman ? RIFLEMAN_SIDE_SHOT_FRAMES.length : RIFLEMAN_SHOTS_PER_VOLLEY)) {
+        if (nextRiflemanShot !== undefined && unit.age >= nextRiflemanShot && unit.volleysFired < (sideRifleman ? RIFLEMAN_SIDE_SHOT_FRAMES.length : RIFLEMAN_SHOTS_PER_VOLLEY) && riflemanCanAttack(unit.y - this.scroll, this.player.y - this.scroll)) {
           if (!sideRifleman) unit.nextFireAt += RIFLEMAN_SHOT_INTERVAL;
           unit.volleysFired += 1;
           const projectile = this.spawnEnemyProjectile(unit.x, tracedRifleman ? unit.y : unit.y + 12);

@@ -268,6 +268,12 @@ export const RIFLEMAN_SIDE_SHOT_FRAMES = [97, 113, 129] as const;
 export const RIFLEMAN_SIDE_LIFETIME = 259 / NES_FRAME_RATE;
 export const RIFLEMAN_SIDE_PATH_NES = [[0, 0, 0], [80, 65, 0], [169, 65, 0], [180, 58, 0], [240, 8, 0], [258, -7, 0]] as const;
 
+export function riflemanCanAttack(actorY: number, playerY: number): boolean {
+  const actorNesY = Math.round(actorY / NES_WORLD_Y_SCALE);
+  const playerNesY = Math.round(playerY / NES_WORLD_Y_SCALE);
+  return actorNesY >= 0x30 && Math.abs(playerNesY - actorNesY) < 0x60;
+}
+
 export function riflemanPosition(age: number): readonly [number, number] {
   const frame = Math.max(0, age * NES_FRAME_RATE);
   const nextIndex = RIFLEMAN_PATH_NES.findIndex(([at]) => at >= frame);

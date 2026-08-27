@@ -235,7 +235,8 @@ The routine updates five score tiles at `$06F2/$06F4/$06F6/$06F8/$06FA`;
 `$06FC` remains the fixed zero ones digit, and overflow clamps those five
 tiles to `9`, yielding a maximum displayed score of `999990`.
 An isolated `$B775` Rifleman descends one NES pixel per frame through age 121,
-enters its attack state at age 122, and emits five dispatch `0x30` shots at ages
+enters its attack state at age 122 only when its screen Y is at least 48 NES
+pixels and Billy is within 96 NES Y pixels, then emits five dispatch `0x30` shots at ages
 138, 154, 170, 186 and 202. It returns to its movement state at age 212,
 retreats toward the top edge, and releases after roughly 364 frames. The runtime
 preserves this measured vertical path, volley cadence, actor-relative launch

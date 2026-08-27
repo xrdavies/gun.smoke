@@ -1490,7 +1490,7 @@ class GunSmokeGame {
           if (unit.nextFireAt === 0) unit.nextFireAt = FIREBREATHER_FIRST_SHOT_DELAY;
           if (unit.age >= unit.nextFireAt) {
             unit.nextFireAt += FIREBREATHER_SIDE_ATTACK_INTERVAL;
-            shouldFire = !unit.fired || firebreatherSideCanAttack(unit.x, unit.y, this.player.x, this.player.y, this.nextRandom());
+            shouldFire = firebreatherSideCanAttack(unit.x, unit.y, this.player.x, this.player.y, this.nextRandom());
             unit.fired = true;
           }
         } else {

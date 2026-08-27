@@ -203,7 +203,8 @@ instead enters from either side, fires one fan at frame 114, and returns to its
 edge before releasing at frame 232.
 Hatchet Throwers wait for aim sectors `15..17` before their frame-78 throw;
 side Firebreathers require Billy below them, a 50% random gate, and aim sectors
-`10..22` for later attacks. Top-entry Spear Throwers accept sectors `10..23`.
+`10..22` at every 52-frame attack check, including the first. Top-entry Spear
+Throwers accept sectors `10..23`.
 
 Round 1 Bombers descend into range, choose among eight measured movement
 directions and durations, and make a half-probability throw decision between

@@ -284,8 +284,8 @@ approximately `(x+2,y=57)` at frame 78; the runtime preserves this short path
 before the procedural combat loop resumes. The fallback remains a three-way
 spread for non-ROM formations.
 Entity code `22` is the side-entry Firebreather variant. A left-edge isolation
-reaches about `(x+56,y+57)` by frame 120, performs its first attack at frame
-156, and remains active beyond 1500 frames when not defeated. Later attack
+reaches about `(x+56,y+57)` by frame 120, checks its first attack at frame
+156, and remains active beyond 1500 frames when not defeated. That and later
 checks recur every 52 frames and require Billy below the actor plus the
 routine's random gate and an aim heading in the inclusive `10..22` range.
 Runtime mirrors the measured opening for right-edge

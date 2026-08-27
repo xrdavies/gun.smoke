@@ -227,6 +227,21 @@ export function hatchetPosition(age: number): readonly [number, number] {
 export const FIREBREATHER_FIRST_SHOT_DELAY = 156 / NES_FRAME_RATE;
 export const FIREBREATHER_PROJECTILE_SPEED = 250;
 export const FIREBREATHER_PROJECTILE_OFFSET_NES = [0, -1] as const;
+export const FIREBREATHER_PATH_NES = [[0, 0, 0], [30, 0, 30], [40, 0, 34], [70, 0, 44], [78, 2, 57]] as const;
+
+export function firebreatherPosition(age: number): readonly [number, number] {
+  const frame = Math.max(0, age * NES_FRAME_RATE);
+  const nextIndex = FIREBREATHER_PATH_NES.findIndex(([at]) => at >= frame);
+  if (nextIndex < 0) {
+    const last = FIREBREATHER_PATH_NES.at(-1)!;
+    return [last[1], last[2]];
+  }
+  if (nextIndex === 0) return [0, 0];
+  const previous = FIREBREATHER_PATH_NES[nextIndex - 1]!;
+  const next = FIREBREATHER_PATH_NES[nextIndex]!;
+  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  return [previous[1] + (next[1] - previous[1]) * amount, previous[2] + (next[2] - previous[2]) * amount];
+}
 export const SPEAR_FIRST_SHOT_DELAY = 72 / NES_FRAME_RATE;
 export const SPEAR_PROJECTILE_SPEED = 250;
 export const BACKSTABBER_AMBUSH_DROP_SPEED = 45;

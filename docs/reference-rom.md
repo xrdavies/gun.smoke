@@ -302,8 +302,8 @@ Neither isolated Backstabber routine creates a projectile, so only Gunmen
 remain eligible for the runtime's generic field-enemy firing clock.
 An early Boss-gate trace identifies Bandit Bill as dispatch `0x88`, variant
 `0x56`. His first four-shot volley starts at age 107, repeats every 12 frames,
-and the next volley starts 72 frames after the fourth shot. Dispatch `0x30`
-projectiles travel at roughly 444 world pixels/s; Round 1 uses these measured
+and the next volley starts 72 frames after the fourth shot. Bandit Bill's
+dispatch `0x30` projectiles travel at roughly 444 world pixels/s; Round 1 uses these measured
 values instead of its former single slow shot.
 The gate traces place his initial entity at the top edge (`y=0`) and observe
 four horizontal entry lanes, NES `x=96/128/160/192`; after 96 frames the actor

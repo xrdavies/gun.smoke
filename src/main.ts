@@ -746,6 +746,7 @@ class GunSmokeGame {
     if (!weaponCanRepeat(this.weapon) && newlyPressed === 0) return;
     if (this.fireClock > 0) return;
     if (this.weapon !== "pistol" && this.ammo <= 0) {
+      this.ownedWeapons.delete(this.weapon);
       this.weapon = "pistol";
       weapon = WEAPONS.pistol;
       this.showMessage("OUT OF AMMO");

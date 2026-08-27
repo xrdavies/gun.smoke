@@ -1036,16 +1036,17 @@ const FATMAN_JOE_COMBAT_PATH_NES = [[0, 152, 112], [16, 152, 120], [32, 152, 136
 function fatmanJoeCombatPosition(age: number, entryX = 152 * NES_WORLD_X_SCALE): readonly [number, number] {
   const frame = Math.max(0, age * NES_FRAME_RATE - FATMAN_JOE_ENTRY_DURATION * NES_FRAME_RATE);
   const laneOffset = entryX / NES_WORLD_X_SCALE - 152;
+  const toWorldX = (x: number): number => clamp((x + laneOffset) * NES_WORLD_X_SCALE, ...fatmanJoeArenaXBounds());
   const first = FATMAN_JOE_COMBAT_PATH_NES[0]!;
-  if (frame <= first[0]) return [(first[1] + laneOffset) * NES_WORLD_X_SCALE, first[2] * NES_WORLD_Y_SCALE];
+  if (frame <= first[0]) return [toWorldX(first[1]), first[2] * NES_WORLD_Y_SCALE];
   const last = FATMAN_JOE_COMBAT_PATH_NES.at(-1)!;
-  if (frame >= last[0]) return [(last[1] + laneOffset) * NES_WORLD_X_SCALE, last[2] * NES_WORLD_Y_SCALE];
+  if (frame >= last[0]) return [toWorldX(last[1]), last[2] * NES_WORLD_Y_SCALE];
   const nextIndex = FATMAN_JOE_COMBAT_PATH_NES.findIndex(([at]) => at >= frame);
   const previous = FATMAN_JOE_COMBAT_PATH_NES[nextIndex - 1]!;
   const next = FATMAN_JOE_COMBAT_PATH_NES[nextIndex]!;
   const amount = (frame - previous[0]) / (next[0] - previous[0]);
   return [
-    (previous[1] + (next[1] - previous[1]) * amount + laneOffset) * NES_WORLD_X_SCALE,
+    toWorldX(previous[1] + (next[1] - previous[1]) * amount),
     (previous[2] + (next[2] - previous[2]) * amount) * NES_WORLD_Y_SCALE,
   ];
 }

@@ -393,7 +393,9 @@ describe("Gun.Smoke vertical slice", () => {
     expect(FIREBREATHER_SIDE_PATH_NES).toEqual([[0, 0, 0], [20, 15, 0], [40, 25, 0], [74, 25, 0], [80, 32, 12], [100, 50, 45], [120, 56, 57], [209, 56, 57]]);
     expect(firebreatherSidePosition(40 / NES_FRAME_RATE, true)).toEqual([25, 0]);
     expect(firebreatherSidePosition(120 / NES_FRAME_RATE, false)).toEqual([-56, 57]);
-    expect([firebreatherSideCanAttack(100, 120, 0.49), firebreatherSideCanAttack(100, 120, 0.5), firebreatherSideCanAttack(120, 100, 0)]).toEqual([true, false, false]);
+    expect([firebreatherSideCanAttack(100, 100, 100, 120, 0.49), firebreatherSideCanAttack(100, 100, 100, 120, 0.5), firebreatherSideCanAttack(100, 120, 100, 100, 0)]).toEqual([true, false, false]);
+    expect(firebreatherSideCanAttack(8 * NES_WORLD_X_SCALE, 0, 0, 4 * NES_WORLD_Y_SCALE, 0.49)).toBe(true);
+    expect(firebreatherSideCanAttack(8 * NES_WORLD_X_SCALE, 0, 0, 2 * NES_WORLD_Y_SCALE, 0.49)).toBe(false);
   });
 
   it("matches the traced Spear timing", () => {

@@ -383,8 +383,9 @@ export function firebreatherSidePosition(age: number, fromLeft: boolean): readon
   return [(previous[1] + (next[1] - previous[1]) * amount) * direction, previous[2] + (next[2] - previous[2]) * amount];
 }
 
-export function firebreatherSideCanAttack(actorY: number, playerY: number, random: number): boolean {
-  return playerY > actorY && random < 0.5;
+export function firebreatherSideCanAttack(actorX: number, actorY: number, playerX: number, playerY: number, random: number): boolean {
+  const heading = nesAimHeading(actorX, actorY, playerX, playerY);
+  return playerY > actorY && random < 0.5 && heading >= 10 && heading <= 22;
 }
 export const SPEAR_FIRST_SHOT_DELAY = 72 / NES_FRAME_RATE;
 export const SPEAR_PROJECTILE_SPEED = 250;

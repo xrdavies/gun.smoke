@@ -207,8 +207,8 @@ make a brief player-relative diagonal retreat after their frame-103 Shuriken
 and release within the measured 303-frame route cap.
 Gunmen use the same quantized table at the faster second tier, check their
 movement-facing gate on an observed `40/52/58/62` first phase and every 64
-frames after a miss, fire at most once, and retain their slot through the measured 550/560-frame
-top-entry retreat. Riflemen advance,
+frames after a miss, fire at most once, and replay the measured top-entry
+movement through the current 560-frame pool-release cap. Riflemen advance,
 enter their attack state at 122 NES frames once they are at least 48 NES pixels
 downscreen and within 96 NES Y pixels of Billy, then fire five shots at
 138/154/170/186/202 through one quantized five-heading fan captured at attack

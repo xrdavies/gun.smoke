@@ -676,6 +676,9 @@ export const BACKSTABBER_RAID_LIFETIME = 369 / NES_FRAME_RATE;
 export const GUNMAN_FIRST_OPPORTUNITY_FRAMES = [40, 52, 58, 62] as const;
 export const GUNMAN_SHOT_OPPORTUNITY_INTERVAL = 64 / NES_FRAME_RATE;
 export const GUNMAN_LIFETIME = 560 / NES_FRAME_RATE;
+// The measured center route releases at 549; side routes are kept at the
+// existing 560-frame pool cap until their player-relative retreat is traced.
+export const GUNMAN_TOP_LIFETIMES_FRAMES = { center: 549, left: 560, right: 560 } as const;
 export const GUNMAN_ENTRY_PATH_NES = [[0, 0], [40, 53], [100, 128], [104, 132]] as const;
 export const GUNMAN_BOTTOM_BRANCH_FRAME = 50;
 export const GUNMAN_BOTTOM_NEAR_DISTANCE_NES = 56;
@@ -692,6 +695,41 @@ const GUNMAN_FLANK_PATHS_NES = {
   8: [[0, 0, 0], [247, 0, 82], [250, 3, 77], [260, 16, 68], [270, 25, 68], [280, 35, 76], [290, 44, 92], [300, 47, 120], [309, 51, 128], [324, 61, 142], [338, 67, 135], [370, 84, 122], [420, 123, 149], [460, 153, 178], [500, 182, 209], [507, 184, 217]],
   9: [[0, 0, 0], [50, -48, 30], [65, -54, 49], [104, -73, 36], [200, -117, -12], [300, -162, -61], [350, -185, -86], [358, -188, -89], [400, -184, -42], [460, -160, 30], [468, -157, 38], [550, -90, 58], [663, -44, 144], [684, -57, 140], [740, -32, 111], [800, -4, 82], [825, 7, 69]],
 } as const;
+
+const GUNMAN_TOP_PATHS_NES = {
+  center: [[0, 88, 1], [16, 88, 22], [32, 88, 43], [48, 88, 64], [64, 92, 83], [80, 97, 103], [96, 102, 124], [112, 110, 134], [128, 122, 132], [144, 135, 134], [160, 148, 136], [176, 161, 138], [192, 174, 141], [208, 187, 143], [224, 200, 148], [240, 211, 163], [256, 205, 177], [272, 191, 183], [288, 191, 174], [304, 191, 163], [320, 191, 152], [336, 191, 142], [352, 191, 131], [368, 191, 120], [384, 191, 110], [400, 191, 99], [416, 191, 88], [432, 191, 78], [448, 191, 67], [464, 191, 56], [480, 191, 46], [496, 191, 35], [512, 191, 24], [528, 191, 14], [544, 191, 3], [548, 191, 0]],
+  left: [[0, 88, 1], [16, 88, 22], [32, 88, 43], [48, 88, 64], [64, 83, 83], [80, 78, 103], [96, 73, 124], [112, 65, 134], [128, 53, 132], [144, 45, 132], [160, 47, 122], [176, 50, 111], [192, 52, 101], [208, 55, 91], [224, 57, 80], [240, 60, 71], [256, 62, 60], [272, 65, 50], [288, 67, 41], [304, 74, 51], [320, 71, 72], [336, 69, 94], [352, 66, 114], [368, 62, 133], [384, 50, 133], [400, 38, 132], [416, 25, 130], [432, 13, 130], [448, 13, 133], [464, 18, 133], [480, 12, 136], [496, 12, 141], [512, 12, 146], [528, 12, 152], [544, 12, 157], [560, 12, 162], [576, 12, 168], [592, 12, 173], [608, 12, 178], [624, 12, 184], [640, 12, 189], [650, 12, 192]],
+  right: [[0, 88, 1], [16, 88, 22], [32, 88, 43], [48, 88, 64], [64, 96, 80], [80, 106, 95], [96, 117, 110], [112, 128, 124], [128, 139, 138], [144, 151, 151], [160, 163, 162], [176, 169, 156], [192, 174, 147], [208, 179, 137], [224, 185, 129], [240, 196, 127], [256, 209, 134], [272, 215, 130], [288, 217, 131], [304, 207, 137], [320, 194, 142], [336, 181, 148], [352, 168, 153], [368, 154, 158], [384, 141, 164], [400, 128, 169], [416, 115, 174], [432, 101, 180], [448, 88, 185], [464, 75, 190], [480, 62, 196], [496, 48, 201], [512, 44, 201], [528, 56, 204], [544, 69, 209], [560, 82, 211], [576, 95, 214], [592, 108, 216], [608, 121, 218], [624, 134, 221], [640, 146, 219], [650, 154, 219]],
+} as const;
+
+export type GunmanTopBranch = keyof typeof GUNMAN_TOP_PATHS_NES;
+
+export function gunmanTopBranch(targetX: number, originX: number): GunmanTopBranch {
+  const relative = targetX - originX;
+  return relative < 0 ? "left" : relative > 96 ? "right" : "center";
+}
+
+export function gunmanTopPosition(age: number, targetX: number, originX = 88, originY = 0): readonly [number, number] {
+  const path = GUNMAN_TOP_PATHS_NES[gunmanTopBranch(targetX, originX)];
+  const frame = Math.max(0, age * NES_FRAME_RATE);
+  const first = path[0]!;
+  const last = path.at(-1)!;
+  const point = (entry: readonly [number, number, number]): readonly [number, number] => [
+    (originX + entry[1] - 88) * NES_WORLD_X_SCALE,
+    (originY + entry[2]) * NES_WORLD_Y_SCALE,
+  ];
+  if (frame <= first[0]) return point(first);
+  if (frame >= last[0]) return point(last);
+  const nextIndex = path.findIndex(([at]) => at >= frame);
+  const previous = path[nextIndex - 1]!;
+  const next = path[nextIndex]!;
+  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  return point([
+    frame,
+    previous[1] + (next[1] - previous[1]) * amount,
+    previous[2] + (next[2] - previous[2]) * amount,
+  ]);
+}
 
 export function gunmanFlankPosition(entityCode: 7 | 8 | 9, age: number): readonly [number, number] {
   const path = GUNMAN_FLANK_PATHS_NES[entityCode];

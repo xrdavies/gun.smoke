@@ -209,7 +209,8 @@ during flight and treats the landed fuse as damaging.
 The same Round 1 traces show the Bomber actor reaching `y=126` at age 125 while
 its X coordinate remains fixed. Runtime then uses the measured movement-state
 durations and velocities for every later segment instead of interpolating one
-captured random route.
+captured random route, and releases the actor when its post-entry path leaves
+the NES screen rather than applying the generic enemy age cap.
 An isolated `$B080` Sniper fires at ages 134, 224, 405, 495 and 585 frames,
 then releases its slot at age 732. The routine's 90-frame base cooldown is
 visible directly; the longer middle gap is a missed discrete aiming window.

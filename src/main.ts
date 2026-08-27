@@ -909,6 +909,7 @@ class GunSmokeGame {
     }
     if (event.behavior === 11) enemy.maxAge = FIREBREATHER_LIFETIME;
     if (event.behavior === 10) enemy.maxAge = SPEAR_LIFETIME;
+    if (event.behavior === 4) enemy.maxAge = Number.POSITIVE_INFINITY;
     enemy.vx = enemyType === "sniper" ? 0 : (this.nextRandom() - 0.5) * (42 + this.stage * 6);
     enemy.vy = enemyType === "backstabber" ? -100 : enemyType === "sniper" ? 0 : 24 + this.stage * 6;
   }
@@ -1454,6 +1455,7 @@ class GunSmokeGame {
             }
           }
         }
+        if (tracedBomber && unit.age > BOMBER_ENTRY_DURATION && (unit.y - this.scroll <= 0 || unit.y - this.scroll >= 240 * NES_WORLD_Y_SCALE)) unit.hp = 0;
       } else if (unit.enemyType === "shotgunner") {
         const tracedSpread = unit.romBehavior === 1;
         const sideShotgunner = tracedSpread && unit.romEntityCode === 4;

@@ -200,6 +200,8 @@ then releases its slot at age 732. The routine's 90-frame base cooldown is
 visible directly; the longer middle gap is a missed discrete aiming window.
 Its ROM Y coordinate advances with the camera at the measured scroll rate while
 the X lane stays fixed; the runtime carries ROM-tagged Snipers with that scroll.
+Their dispatch `0x2f` bullets use the ROM's quantized 32-direction speed table
+at the first speed tier rather than continuous-angle velocity.
 The opposite-side entity code `2` keeps the same lifetime but hits every middle
 window, firing at ages 134, 224, 314, 404, 495 and 585. Runtime selects the
 schedule by entity code rather than dropping code `2`'s third shot.

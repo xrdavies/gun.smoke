@@ -9,6 +9,7 @@ const numberOption = (name, fallback) => Number.parseInt(option(name) ?? String(
 const filename = args.find((argument) => !argument.startsWith("--")) ?? "Gun.Smoke.ZH.NES";
 const stateFile = option("state");
 const dispatch = numberOption("dispatch", Number.NaN);
+const followDispatches = (option("follow")?.split(",") ?? []).filter(Boolean).map((value) => Number.parseInt(value, 0));
 const variant = option("variant") === undefined ? undefined : numberOption("variant", 0);
 const skip = numberOption("skip", 0);
 const round = option("round") === undefined ? undefined : numberOption("round", 1);
@@ -24,6 +25,7 @@ if (!fs.existsSync(filename)) {
 }
 if (stateFile && !fs.existsSync(stateFile)) throw new Error(`State file not found: ${stateFile}`);
 if (!Number.isInteger(dispatch)) throw new Error("--dispatch is required and accepts decimal or 0x-prefixed values");
+if (followDispatches.some((value) => !Number.isInteger(value))) throw new Error("--follow must contain comma-separated decimal or 0x-prefixed dispatches");
 if (!Number.isInteger(skip) || skip < 0) throw new Error("--skip must be a non-negative integer");
 if (round !== undefined && (!Number.isInteger(round) || round < 1 || round > 6)) throw new Error("--round must be an integer from 1 through 6");
 if (!Number.isInteger(frames) || frames <= 0 || !Number.isInteger(traceFrames) || traceFrames <= 0) throw new Error("--frames and --trace-frames must be positive integers");
@@ -68,8 +70,10 @@ let targetSlot;
 let targetStart;
 const entityFrames = [];
 const projectileFrames = [];
+const allowedDispatches = new Set([dispatch - 2, dispatch - 1, dispatch, dispatch + 1, ...followDispatches]);
 const matchingSlots = new Set();
 let matchesSeen = 0;
+let termination;
 for (let frame = 0; frame < frames; frame += 1) {
   const memory = nes.cpu.mem;
   memory[0x7c] = 255;
@@ -119,7 +123,10 @@ for (let frame = 0; frame < frames; frame += 1) {
     }
   }
   if (targetSlot === undefined || targetStart === undefined) continue;
-  if (!active(targetSlot) || memory[0x420 + targetSlot] < dispatch - 2 || memory[0x420 + targetSlot] > dispatch + 1) break;
+  if (!active(targetSlot) || !allowedDispatches.has(memory[0x420 + targetSlot])) {
+    termination = { frame: frame - targetStart, active: active(targetSlot), entity: entity(targetSlot) };
+    break;
+  }
 
   const relativeFrame = frame - targetStart;
   entityFrames.push({
@@ -146,12 +153,14 @@ const trace = {
   sourceSha256: crypto.createHash("sha256").update(romBytes).digest("hex"),
   frameRate: 60.098,
   dispatch,
+  followDispatches,
   skip,
   ...(round === undefined ? {} : { round }),
   ...(variant === undefined ? {} : { variant }),
   targetSlot,
   targetStart,
   player: { x: playerX, y: playerY },
+  termination,
   entityFrames,
   projectileFrames,
 };

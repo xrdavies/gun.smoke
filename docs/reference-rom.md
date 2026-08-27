@@ -523,6 +523,10 @@ health clamped to one before searching that Round, so the target actor still
 comes from its authored event and initializer state.
 `--skip=1` ignores the first matching initialization, which separates authored
 forms that share one dispatch and variant without mutating either entity.
+`--follow=0x59,0x5b,0x5e` keeps explicitly named non-adjacent continuation
+states in the same locked slot; all other dispatch changes still terminate the
+trace as slot reuse. The output records the final active-state snapshot when a
+trace stops, so an omitted continuation is distinguishable from slot release.
 
 `npm run trace:rom:scenes -- --frames=12000 --every=60` writes a longer,
 machine-readable trace to `.rom-traces/scenes.json`. In addition to the state

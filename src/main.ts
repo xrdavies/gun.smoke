@@ -1957,7 +1957,7 @@ class GunSmokeGame {
   private updateNinjaBossTeleport(): void {
     if (this.stage !== 4) return;
     const boss = this.units.find((unit) => unit.kind === "boss" && unit.hp > 0 && !unit.exploding);
-    if (!boss || boss.bossNextTeleportAt === undefined || boss.age < boss.bossNextTeleportAt) return;
+    if (!boss || boss.bossNextTeleportAt === undefined || boss.age + 1 / NES_FRAME_RATE < boss.bossNextTeleportAt) return;
     this.startNinjaBossTeleport(boss);
   }
 

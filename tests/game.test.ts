@@ -67,7 +67,14 @@ describe("Gun.Smoke vertical slice", () => {
   it("matches the NES integer aim sectors", () => {
     const x = NES_WORLD_X_SCALE;
     const y = 540 / 240;
-    expect([nesAimHeading(0, 0, 100 * x, 0), nesAimHeading(0, 0, 0, 100 * y), nesAimHeading(0, 0, -70 * x, 127 * y)]).toEqual([8, 16, 18]);
+    expect([
+      nesAimHeading(0, 0, 100 * x, 0),
+      nesAimHeading(0, 0, 0, 100 * y),
+      nesAimHeading(0, 0, -100 * x, 0),
+      nesAimHeading(0, 0, 0, -100 * y),
+      nesAimHeading(0, 0, -70 * x, 127 * y),
+      nesAimHeading(0, 0, -70 * x, -100 * y),
+    ]).toEqual([8, 16, 24, 0, 18, 29]);
   });
 
   it("matches the NES two-gun pistol directions", () => {

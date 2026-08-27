@@ -37,14 +37,13 @@ const NES_AIM_HEADINGS = [
 export function nesAimHeading(originX: number, originY: number, targetX: number, targetY: number): number {
   const dx = Math.round(targetX / NES_WORLD_X_SCALE) - Math.round(originX / NES_WORLD_X_SCALE);
   const dy = Math.round(targetY / NES_WORLD_Y_SCALE) - Math.round(originY / NES_WORLD_Y_SCALE);
-  let quadrant = dy < 0 ? 4 : 0;
-  if (dx < 0) quadrant += 2;
-  let minor = Math.abs(dy);
-  let major = Math.abs(dx);
-  if (major < minor) {
-    [minor, major] = [major, minor];
-    if (quadrant === 0 || quadrant === 4) quadrant += 1;
-  }
+  const absX = Math.abs(dx);
+  const absY = Math.abs(dy);
+  const verticalDominant = absX < absY;
+  let quadrant = (dy < 0 ? 4 : 0) + (dx < 0 ? 2 : 0);
+  if (verticalDominant ? quadrant === 0 || quadrant === 4 : quadrant === 2 || quadrant === 6) quadrant += 1;
+  const minor = Math.min(absX, absY);
+  const major = Math.max(absX, absY);
   const step = major >> 3;
   let band = 0;
   let threshold = step;

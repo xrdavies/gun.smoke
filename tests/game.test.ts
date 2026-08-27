@@ -188,11 +188,16 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROM_BEHAVIOR_ENEMY_TYPES).toHaveLength(12);
     expect(ROM_BEHAVIOR_ENEMY_TYPES[1]).toBe("shotgunner");
     expect(ROM_BEHAVIOR_ENEMY_TYPES[3]).toBe("backstabber");
+    expect(ROM_BEHAVIOR_ENEMY_TYPES[5]).toBeUndefined();
+    expect(ROM_BEHAVIOR_ENEMY_TYPES[7]).toBe("rifleman");
     expect(ROM_ENEMY_SLOT_CAPACITY).toBe(7);
     expect(ROM_OBJECT_SLOT_CAPACITY).toBe(6);
     expect(ROM_EMPTY_BARREL_ENTITY_CODES).toEqual([32, 41]);
     expect(EMPTY_BARREL_EXPLOSION_LIFETIME).toBeCloseTo(10 / NES_FRAME_RATE, 9);
     expect(ROM_NON_ENEMY_OBJECT_BEHAVIORS).toEqual([5]);
+    const fallingRockEvents = ROUND_ROM_ENEMY_EVENTS.flatMap((stream) => stream).filter((event) => event.behavior === 5);
+    expect(fallingRockEvents.length).toBeGreaterThan(0);
+    expect(fallingRockEvents.every((event) => event.pool === "object")).toBe(true);
     expect(ROM_OBJECT_PICKUPS).toEqual({ 33: "boots", 34: "rifle", 35: "pow", 36: "money", 37: "horse", 38: "redYashichi", 39: "skull", 42: "blueYashichi" });
     expect(ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES).toEqual([7]);
     expect(ROM_SCENE_PROP_DISPATCH_TYPES).toEqual([8]);

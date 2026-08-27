@@ -807,7 +807,7 @@ class GunSmokeGame {
       if (event.behavior === 2) enemy.maxAge = GUNMAN_LIFETIME;
       if (event.behavior === 3) enemy.maxAge = BACKSTABBER_RAID_LIFETIME;
       if (event.behavior === 8) enemy.maxAge = BACKSTABBER_AMBUSH_LIFETIME;
-      if (event.behavior === 5) enemy.maxAge = RIFLEMAN_LIFETIME;
+      if (event.behavior === 7) enemy.maxAge = RIFLEMAN_LIFETIME;
       enemy.vx = enemyType === "sniper" ? 0 : (this.nextRandom() - 0.5) * (42 + this.stage * 6);
       enemy.vy = enemyType === "backstabber" ? -100 : enemyType === "sniper" ? 0 : 24 + this.stage * 6;
       activePools[event.pool] += 1;
@@ -1197,7 +1197,7 @@ class GunSmokeGame {
     unit.age += delta;
     unit.animation?.update(delta);
     if (unit.kind === "enemy") {
-      const followsRomScroll = unit.romBehavior !== undefined && unit.romBehavior !== 1 && unit.romBehavior !== 2 && unit.romBehavior !== 5 && unit.romBehavior !== 11 && !(unit.enemyType === "backstabber" && (unit.romBehavior === 3 || unit.romBehavior === 8));
+      const followsRomScroll = unit.romBehavior !== undefined && unit.romBehavior !== 1 && unit.romBehavior !== 2 && unit.romBehavior !== 7 && unit.romBehavior !== 11 && !(unit.enemyType === "backstabber" && (unit.romBehavior === 3 || unit.romBehavior === 8));
       if (followsRomScroll) unit.y += WORLD_SCROLL_SPEED * delta;
       if (unit.enemyType === "backstabber") {
         if (unit.romBehavior === 3) {
@@ -1226,7 +1226,7 @@ class GunSmokeGame {
           }
         }
       } else if (unit.enemyType === "rifleman") {
-        const tracedRifleman = unit.romBehavior === 5;
+        const tracedRifleman = unit.romBehavior === 7;
         if (tracedRifleman) {
           const [, y] = riflemanPosition(unit.age);
           unit.x = unit.romOriginX ?? unit.x;

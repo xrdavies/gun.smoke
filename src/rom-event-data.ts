@@ -77,6 +77,6 @@ export const romEventWorldY = (event: RomEnemyEvent): number => event.y * WORLD_
 
 // Behavior routines are mechanically identified; these names are gameplay approximations until each routine is fully traced.
 export const ROM_BEHAVIOR_ENEMY_TYPES = [
-  "sniper", "shotgunner", "gunman", "backstabber", "bomber", "rifleman",
+  "sniper", "shotgunner", "gunman", "backstabber", "bomber", undefined,
   "ninja", "rifleman", "backstabber", "hatchet", "spear", "firebreather",
 ] as const;

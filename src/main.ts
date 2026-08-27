@@ -20,7 +20,7 @@ import { advanceFirebreather, advanceHatchet, advanceSpear, createFirebreatherSt
 import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanCanAttack, riflemanPosition, riflemanShotHeading, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition, sniperProjectileVelocity } from "./game-constants";
 import { BANDIT_BILL_DAMAGE_RECOVERY_DURATION, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, banditBillCombatX, banditBillCombatY, banditBillProjectileVelocity } from "./game-constants";
 import { banditBillCooldown } from "./game-constants";
-import { BLUE_YASHICHI_DURATION, MAX_LIVES, shouldClearProjectilesAfterBossDefeat } from "./game-constants";
+import { BLUE_YASHICHI_DURATION, MAX_LIVES, scoreBossDefeat, shouldClearProjectilesAfterBossDefeat } from "./game-constants";
 import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, PLAYER_ENTRY_X, PLAYER_ENTRY_Y, pistolBulletSpeedFactor, pistolVelocities, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
 import { addScore } from "./game-constants";
@@ -1795,7 +1795,7 @@ class GunSmokeGame {
 
   private defeatTarget(target: Unit): void {
     target.hp = 0;
-    this.score = addScore(this.score, target.value);
+    if (target.kind !== "boss") this.score = addScore(this.score, target.value);
     if (target.kind === "barrel") {
       if (ROM_EMPTY_BARREL_ENTITY_CODES.includes(target.romEntityCode as 32 | 41)) {
         target.hp = 1;
@@ -1817,6 +1817,7 @@ class GunSmokeGame {
         else if (this.ownedWeapons.size > 1 && drop < 0.38) this.spawnUnit("ammo", target.x, target.y, 1);
       }
     } else if (target.kind === "boss") {
+      this.score = scoreBossDefeat(this.score, this.stage, this.wingatePhase);
       if (this.stage === MAX_STAGE && this.wingatePhase === 0) {
         this.wingatePhase = 1;
         this.wingateRespawnClock = WINGATE_SECOND_SPAWN_DELAY;
@@ -1825,7 +1826,6 @@ class GunSmokeGame {
         this.showMessage("DECOY DOWN");
         return;
       }
-      this.score = addScore(this.score, target.value);
       if (shouldClearProjectilesAfterBossDefeat(this.stage, this.wingatePhase)) {
         this.clearEnemyProjectiles();
         this.clearBossProjectiles();

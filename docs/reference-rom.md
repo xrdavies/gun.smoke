@@ -448,8 +448,10 @@ encounter opening without reusing it for the second, real Wingate. After the
 opening, both encounters hold X for about 17 frames before completing a
 measured 17-frame horizontal rush. The runtime now uses decoded unhurt-record X
 keyframes, mirrored from the selected entry lane, through the later combat
-sequence instead of constant-speed horizontal drift; its Y path and random
-attack scheduler remain explicit approximations beyond those recorded frames.
+sequence instead of constant-speed horizontal drift. The runtime now replays
+compressed X/Y keyframes from both unhurt traces through combat frame 1,049;
+the random attack scheduler remains an explicit approximation beyond those
+recorded decisions.
 The first encounter clears both ordinary and low-slot projectile actors before
 entering a 264-frame empty interval. The real Wingate
 then reuses dispatch `0xa3`, variant `0x65` and the same 151-frame vertical
@@ -466,8 +468,8 @@ non-fixed volley lengths in longer traces. Each `0x30` bullet begins at Boss
 offset `(-8,+6)` NES pixels, uses the routine's quantized 32-direction aim, and
 releases after about 64 frames. Runtime applies this shared state rule instead
 of the former fixed six-shot/three-shot sequences. The remaining Round 6
-approximation is the unrecorded Y movement and later random direction sequence
-between these measured attack checks.
+approximation is the later random direction sequence between these measured
+attack checks and the route after the recorded frame window.
 
 Current behavior map:
 

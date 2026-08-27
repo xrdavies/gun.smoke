@@ -11,7 +11,7 @@ names are cross-checked against the public NES walkthrough on
 | 3 | Native village | Devil Hawk | gate, poster, shop, measured entrance and opening fan |
 | 4 | Cliff valley | Ninja | gate, poster, shop, measured entrance and shuriken volley |
 | 5 | Forest / bridges | Fatman Joe | gate, poster, shop, measured entrance and shell split |
-| 6 | Wingate town / cemetery | Wingate (two encounters) | gate, poster, shop, measured entrances, X movement and attack checks; Y movement approximation |
+| 6 | Wingate town / cemetery | Wingate (two encounters) | gate, poster, shop, measured entrances and recorded X/Y movement; attack checks remain approximate |
 
 The NES version's stage rule is important: the wanted poster for the round's
 outlaw must be collected before the boss gate can resolve. The web build keeps
@@ -171,7 +171,7 @@ Fatman Joe enters from NES `x=64/104/152/192` at the top edge before using short
 stationary grenade traps across the Round 5 road, while Wingate's two encounters use top-edge NES
 lanes `x=64/104/152/192` before a 17-frame measured horizontal rush toward the
 centerline after a
-short hold, then a slower cruise; the Ninja enters a smoke/invulnerability phase and
+short hold, then replay their recorded X/Y routes; the Ninja enters a smoke/invulnerability phase and
 teleports after each lost health bar. The runtime hides the Boss for the
 measured 90-frame teleport delay, then restarts its entry smoke window and
 attack clock from the newly selected lane. Devil Hawk fireballs use the ROM's

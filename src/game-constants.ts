@@ -1069,15 +1069,13 @@ export const WINGATE_PROJECTILE_Y_OFFSET_NES = 6;
 export function wingateOpeningY(age: number): number {
   return Math.max(0, Math.min(1, age / WINGATE_ENTRY_DURATION)) * WINGATE_ENTRY_END_Y;
 }
-const WINGATE_COMBAT_PATHS_NES = [
-  [[0, 98], [34, 46], [39, 57], [149, 69], [269, 97], [279, 79], [299, 47], [309, 54], [369, 87], [383, 99], [399, 58], [419, 85], [439, 95], [449, 63], [459, 57], [479, 83]] as const,
-  [[0, 98], [34, 42], [39, 50], [269, 50], [279, 39], [309, 40], [319, 41], [419, 79], [439, 47], [449, 57], [469, 60], [579, 95], [599, 47], [609, 58], [619, 60]] as const,
-] as const;
-const WINGATE_COMBAT_X_PATHS_NES = [
-  [[0, 152], [32, 128], [64, 109], [96, 91], [128, 76], [160, 56], [192, 38], [224, 60], [256, 76], [288, 56], [320, 71], [352, 83], [416, 83], [448, 76], [480, 79], [576, 82], [608, 95], [640, 110], [672, 110], [704, 110], [736, 140], [768, 157], [800, 138], [832, 123], [864, 118], [896, 118], [928, 142], [960, 150], [992, 150], [1024, 124]] as const,
-  [[0, 192], [32, 167], [64, 147], [96, 129], [128, 114], [160, 107], [192, 107], [224, 107], [256, 94], [288, 77], [320, 72], [352, 72], [384, 83], [416, 108], [448, 126], [480, 133], [512, 133], [544, 133], [576, 110], [608, 105], [640, 105], [672, 98], [704, 80], [736, 65], [768, 65], [800, 100], [832, 115], [864, 133], [896, 113], [928, 98], [960, 80], [992, 67], [1024, 67]] as const,
-] as const;
+// [combat frame, NES x, NES y] keyframes from the unhurt decoy/real traces.
 const WINGATE_RUSH_PATH_NES = [[0, 0], [17, 0], [18, -1], [19, -3], [20, -4], [21, -6], [22, -8], [23, -9], [24, -11], [25, -13], [26, -13], [27, -15], [28, -17], [29, -18], [30, -19], [31, -21], [32, -22], [33, -23], [34, -26]] as const;
+
+const WINGATE_TRACE_PATHS_NES = [
+  [[0, 152, 98], [16, 152, 58], [32, 128, 56], [34, 126, 56], [48, 117, 58], [64, 109, 60], [80, 102, 62], [96, 91, 64], [112, 83, 66], [128, 76, 68], [144, 65, 69], [160, 56, 69], [176, 50, 69], [192, 38, 69], [208, 35, 58], [224, 60, 53], [240, 83, 53], [256, 76, 53], [272, 68, 53], [288, 56, 53], [304, 63, 53], [320, 71, 53], [336, 83, 53], [368, 83, 53], [416, 83, 53], [448, 76, 53], [464, 71, 52], [480, 79, 42], [496, 79, 50], [512, 79, 60], [528, 79, 74], [544, 79, 82], [560, 80, 91], [576, 82, 83], [592, 71, 60], [608, 95, 60], [624, 104, 60], [640, 110, 60], [656, 110, 74], [672, 110, 84], [688, 110, 92], [704, 110, 60], [720, 128, 46], [736, 140, 57], [752, 151, 59], [768, 157, 61], [784, 149, 61], [800, 138, 61], [816, 131, 61], [832, 123, 61], [848, 118, 69], [864, 118, 77], [880, 118, 87], [896, 118, 87], [912, 119, 56], [928, 142, 63], [944, 150, 67], [960, 150, 75], [976, 150, 89], [992, 150, 82], [1008, 146, 52], [1024, 124, 57], [1040, 117, 59], [1049, 111, 60]] as const,
+  [[0, 192, 98], [16, 192, 58], [32, 167, 50], [34, 165, 50], [48, 155, 50], [64, 147, 50], [80, 140, 50], [96, 129, 50], [112, 121, 50], [128, 114, 50], [144, 107, 50], [224, 107, 50], [240, 102, 50], [256, 94, 50], [272, 87, 50], [279, 82, 50], [288, 77, 54], [304, 72, 61], [320, 72, 69], [336, 72, 83], [352, 72, 93], [368, 72, 63], [384, 83, 40], [400, 100, 51], [416, 108, 51], [432, 120, 51], [448, 126, 51], [464, 133, 53], [480, 133, 67], [496, 133, 75], [512, 133, 85], [528, 133, 93], [544, 133, 59], [560, 114, 74], [576, 110, 80], [592, 105, 85], [672, 98, 85], [688, 92, 85], [704, 80, 85], [720, 72, 85], [736, 65, 85], [752, 65, 99], [768, 65, 59], [784, 90, 51], [800, 100, 51], [816, 107, 51], [832, 115, 51], [848, 127, 51], [864, 133, 51], [880, 125, 51], [896, 113, 51], [912, 107, 51], [928, 98, 51], [944, 87, 51], [960, 80, 51], [976, 72, 51], [992, 67, 51], [1024, 67, 51], [1049, 67, 51]] as const,
+] as const;
 
 export function wingateRushOffset(frame: number, entryX = 152): number {
   const clamped = Math.max(0, Math.min(WINGATE_ENTRY_RUSH_DURATION * NES_FRAME_RATE, frame));
@@ -1092,21 +1090,21 @@ export function wingateRushOffset(frame: number, entryX = 152): number {
 
 export function wingateCombatY(age: number, phase = 0): number {
   const frame = Math.max(0, age * NES_FRAME_RATE - WINGATE_ENTRY_DURATION * NES_FRAME_RATE);
-  const path = WINGATE_COMBAT_PATHS_NES[phase > 0 ? 1 : 0];
+  const path = WINGATE_TRACE_PATHS_NES[phase > 0 ? 1 : 0];
   const first = path[0]!;
-  if (frame <= first[0]) return first[1] * NES_WORLD_Y_SCALE;
+  if (frame <= first[0]) return first[2] * NES_WORLD_Y_SCALE;
   const last = path.at(-1)!;
-  if (frame >= last[0]) return last[1] * NES_WORLD_Y_SCALE;
+  if (frame >= last[0]) return last[2] * NES_WORLD_Y_SCALE;
   const nextIndex = path.findIndex(([at]) => at >= frame);
   const previous = path[nextIndex - 1]!;
   const next = path[nextIndex]!;
   const amount = (frame - previous[0]) / (next[0] - previous[0]);
-  return (previous[1] + (next[1] - previous[1]) * amount) * NES_WORLD_Y_SCALE;
+  return (previous[2] + (next[2] - previous[2]) * amount) * NES_WORLD_Y_SCALE;
 }
 
 export function wingateCombatX(age: number, phase = 0, entryX = 152): number {
   const frame = Math.max(0, age * NES_FRAME_RATE - WINGATE_ENTRY_DURATION * NES_FRAME_RATE);
-  const path = WINGATE_COMBAT_X_PATHS_NES[phase > 0 ? 1 : 0];
+  const path = WINGATE_TRACE_PATHS_NES[phase > 0 ? 1 : 0];
   const base = path[0]![1];
   const mirror = entryX < 128 ? -1 : 1;
   const position = (at: number): number => entryX + (at - base) * mirror;

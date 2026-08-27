@@ -33,7 +33,7 @@ import { DEVIL_HAWK_ENTRY_DURATION, devilHawkFanHeadings, DEVIL_HAWK_FIRST_VOLLE
 import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_PREPARE_DELAY, NINJA_BOSS_PREPARE_CONTROLLER_DURATION, NINJA_BOSS_PREPARE_DURATION, NINJA_BOSS_SHURIKEN_LIFETIME, NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES, NINJA_BOSS_SHURIKEN_VELOCITIES_NES, NINJA_BOSS_TELEPORT_DELAY, ninjaBossCombatY, ninjaBossPreparePosition } from "./game-constants";
 import { canSpawnEnemyProjectile } from "./game-constants";
 import { canSpawnBossProjectile } from "./game-constants";
-import { romEnemyDrop, romEnemyScore } from "./game-constants";
+import { hasSpecialAmmoStock, romEnemyDrop, romEnemyScore } from "./game-constants";
 import { roundCollisionBlocks, ROUND_COLLISION_ROWS } from "./round-collision";
 import { canSpawnRomPool, compareRomEventOrder, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_FALLING_ROCK_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
 import type { RomEnemyEvent, RomObjectEvent } from "./rom-event-data";
@@ -1790,7 +1790,7 @@ class GunSmokeGame {
       if (target.itemType) this.spawnUnit("item", target.x, target.y, 1, undefined, target.itemType);
     } else if (target.kind === "enemy") {
       if (target.romFlags !== undefined) {
-        const hasSpecialStock = this.smartBombs > 0 || (["shotgun", "machinegun", "magnum"] as const).some((weapon) => this.weaponAmmo[weapon] > 0);
+        const hasSpecialStock = hasSpecialAmmoStock(this.weaponAmmo);
         const drop = romEnemyDrop(target.romFlags, hasSpecialStock);
         if (drop) this.spawnUnit(drop, target.x, target.y, 1);
       } else {

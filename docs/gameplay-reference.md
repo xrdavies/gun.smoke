@@ -274,7 +274,7 @@ object speed, keeping the barrel and pickup interaction in the playable area.
 Breaking a barrel itself awards no points; only a collected Money Bag adds its
 200-point value.
 Enemy Money Bag and ammunition drops follow the decoded event flag: marked
-enemies drop Bullet supplies while any special stock remains, otherwise they
+enemies drop Bullet supplies while any special-gun ammunition remains, otherwise they
 drop a Money Bag; unmarked enemies do not drop either pickup. Defeat score also
 uses the ROM dispatch table: Gunmen, Snipers, Bombers and Firebreathers are 100;
 Ninjas, Riflemen and Hatchet Throwers are 200; Shotgunners are 300; and

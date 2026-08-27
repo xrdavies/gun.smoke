@@ -235,9 +235,10 @@ long mirrored loop, fires at frames 399/463 and releases at frame 826. Runtime
 uses separate measured keyframes and lifetimes for these ROM-tagged variants
 instead of applying the top-entry Gunman timing.
 On defeat, `$CD4E-$CDAA` converts an event's `0x80` flag into dispatch `0x4e`.
-If `$90/$94/$98/$9c` show no special stock, it increments that to `0x4f`;
+If `$90/$94/$98/$9c` show no special-gun ammunition, it increments that to `0x4f`;
 the `$E192` conversion table then maps them to Bullet (`0x29`) and Money
-(`0x24`) pickups respectively. Unflagged ROM enemies produce no random drop.
+(`0x24`) pickups respectively. Smart Bomb inventory is not part of this stock
+test; unflagged ROM enemies produce no random drop.
 The same defeat path calls `$E297`, which maps the initial dispatch through
 `$E335` and the BCD increment table at `$E2E9`; the resulting ordinary enemy
 score values are 100 (Gunman/Sniper/Bomber/Firebreather), 200

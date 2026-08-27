@@ -1035,6 +1035,10 @@ export const AMMO_GAIN: Record<WeaponName, number> = {
   magnum: 10,
 };
 
+export function hasSpecialAmmoStock(ammo: Record<"shotgun" | "machinegun" | "magnum", number>): boolean {
+  return ammo.shotgun > 0 || ammo.machinegun > 0 || ammo.magnum > 0;
+}
+
 export function clamp(value: number, minimum: number, maximum: number): number {
   return Math.max(minimum, Math.min(maximum, value));
 }

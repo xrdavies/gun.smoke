@@ -271,8 +271,8 @@ Round 6 bounty.
 The decoy begins its first attack checks immediately; real Wingate waits until
 frame 277. Both then check every 12 NES frames and fire only when Billy is in
 the downward aiming sector and the ROM's three-of-four random gate passes.
-Their bullets use quantized directional aim and a 64-frame lifetime rather
-than fixed-size simultaneous volleys.
+Their bullets use quantized directional aim in the ROM's `12..20` downward
+sector and a 64-frame lifetime rather than fixed-size simultaneous volleys.
 
 Each Round begins with a Wanted briefing for its named Boss. Later-Round
 briefings pause the engine loop until the player rides out, matching the

@@ -281,6 +281,8 @@ script index, preserving the original spawn order before either pool-capacity
 check is applied.
 ROM behavior actors are anchored in world space at their event trigger, then
 carry the camera scroll while their routine updates screen-relative movement.
+Hatchet and Spear state machines own their full screen-relative Y path, including
+the final offscreen retreat, and are exempt from the generic 160-NES-pixel clamp.
 The current procedural fallback limits that descent to 160 NES pixels so
 untraced routines remain staged in the playable area instead of drifting
 through the camera indefinitely.

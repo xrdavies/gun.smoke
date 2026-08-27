@@ -1293,7 +1293,7 @@ class GunSmokeGame {
     unit.age += delta;
     unit.animation?.update(delta);
     if (unit.kind === "enemy") {
-      const followsRomScroll = unit.romBehavior !== undefined && unit.romBehavior !== 1 && unit.romBehavior !== 2 && unit.romBehavior !== 6 && unit.romBehavior !== 7 && unit.romBehavior !== 11 && !(unit.enemyType === "backstabber" && (unit.romBehavior === 3 || unit.romBehavior === 8));
+      const followsRomScroll = unit.romBehavior !== undefined && unit.romBehavior !== 1 && unit.romBehavior !== 2 && unit.romBehavior !== 6 && unit.romBehavior !== 7 && unit.romBehavior !== 9 && unit.romBehavior !== 10 && unit.romBehavior !== 11 && !(unit.enemyType === "backstabber" && (unit.romBehavior === 3 || unit.romBehavior === 8));
       if (followsRomScroll) unit.y += WORLD_SCROLL_SPEED * delta;
       if (unit.enemyType === "backstabber") {
         if (unit.romBehavior === 3) {

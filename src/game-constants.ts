@@ -999,7 +999,7 @@ export function obstacleBlocks(obstacle: RoundObstacle, x: number, y: number, ra
 }
 
 export function unitMaxAge(kind: "boss" | "enemy" | "pickup" | "projectile"): number {
-  return kind === "boss" ? Number.POSITIVE_INFINITY : kind === "projectile" ? 2.5 : 18;
+  return kind === "boss" || kind === "projectile" ? Number.POSITIVE_INFINITY : 18;
 }
 
 export function bossReward(stage: number, phase = 0): number {

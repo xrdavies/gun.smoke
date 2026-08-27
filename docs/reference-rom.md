@@ -527,6 +527,8 @@ NES pixels per frame (mirrored on the left). Normal pistol shots persist for
 roughly 15 frames. These map
 to 811.323 straight, 450.735/676.1025 diagonal world pixels per second and a
 15/60.098-second base lifetime in the procedural world.
+Enemy projectiles use their ROM movement and screen bounds for cleanup unless
+their typed routine provides an explicit fuse or lifetime.
 With `$79/$88` set for an active Rifle stock, the straight A+B projectile moves
 8 pixels per frame but still persists for 15 frames. The runtime therefore
 applies a non-stacking `4 / 3` speed multiplier to Pistol shots rather than

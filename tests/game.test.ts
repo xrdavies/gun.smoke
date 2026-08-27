@@ -268,7 +268,7 @@ describe("Gun.Smoke vertical slice", () => {
   it("keeps Boss units alive until their health reaches zero", () => {
     expect(unitMaxAge("boss")).toBe(Number.POSITIVE_INFINITY);
     expect(unitMaxAge("enemy")).toBe(18);
-    expect(unitMaxAge("projectile")).toBe(2.5);
+    expect(unitMaxAge("projectile")).toBe(Number.POSITIVE_INFINITY);
   });
 
   it("matches the traced Bomber and dynamite frame timing", () => {

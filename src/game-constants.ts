@@ -120,9 +120,27 @@ export const DYNAMITE_LANDED_DURATION = 53 / NES_FRAME_RATE;
 export const DYNAMITE_LIFETIME = DYNAMITE_AIRBORNE_DURATION + DYNAMITE_LANDED_DURATION;
 export const DYNAMITE_WORLD_SPEED = 89 * (540 / 240) / DYNAMITE_AIRBORNE_DURATION;
 export const DYNAMITE_AIM_FACTOR = 0.045;
+export const BOMBER_FIRST_MANEUVER_NES = [[0, 0, 0], [125, 0, 126], [150, 21, 126], [175, 37, 114], [190, 41, 111], [198, 35, 113]] as const;
 
 export function bomberOpeningY(age: number): number {
   return Math.max(0, Math.min(1, age / BOMBER_ENTRY_DURATION)) * BOMBER_ENTRY_END_Y;
+}
+
+export function bomberFirstManeuverPosition(age: number, direction = 1): readonly [number, number] {
+  const frame = Math.max(0, age * NES_FRAME_RATE);
+  const nextIndex = BOMBER_FIRST_MANEUVER_NES.findIndex(([at]) => at >= frame);
+  if (nextIndex < 0) {
+    const last = BOMBER_FIRST_MANEUVER_NES.at(-1)!;
+    return [last[1] * direction, last[2]];
+  }
+  if (nextIndex === 0) return [0, 0];
+  const previous = BOMBER_FIRST_MANEUVER_NES[nextIndex - 1]!;
+  const next = BOMBER_FIRST_MANEUVER_NES[nextIndex]!;
+  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  return [
+    (previous[1] + (next[1] - previous[1]) * amount) * direction,
+    previous[2] + (next[2] - previous[2]) * amount,
+  ];
 }
 export const SHOTGUNNER_FIRST_VOLLEY_DELAY = 108 / NES_FRAME_RATE;
 export const SHOTGUNNER_VOLLEY_INTERVAL = 51 / NES_FRAME_RATE;

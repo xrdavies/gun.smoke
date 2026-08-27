@@ -156,9 +156,10 @@ for 212 frames, changes to landed dispatch `0x3E` for 53 frames, then clears;
 the runtime uses these measured timings at 60.098 Hz.
 The same Round 1 traces show the Bomber actor descending one NES pixel per frame
 for 125 frames to `y=126` while its X coordinate remains fixed, then holding
-that combat height while its horizontal
-state runs. The runtime keeps this measured entrance profile before applying
-the existing procedural lateral movement.
+that height briefly before moving through relative NES checkpoints
+`(+21,126)`, `(+37,114)`, `(+41,111)` and `(+35,113)` at frames
+150/175/190/198. The runtime mirrors this first maneuver according to its
+selected horizontal direction; later movement cycles remain procedural.
 An isolated `$B080` Sniper fires at ages 134, 224, 405, 495 and 585 frames,
 then releases its slot at age 732. The routine's 90-frame base cooldown is
 visible directly; the longer middle gap is a missed discrete aiming window.

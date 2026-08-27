@@ -399,9 +399,8 @@ phase-specific vertical combat profile.
 Both encounters begin attack checks at their measured phase time: frame 4 for
 the decoy and frame 277 for real Wingate. A check repeats every 12 frames, then
 requires a three-of-four random gate and Billy inside the downward heading
-sector before allocating a projectile. This explains skipped checks and the
-non-fixed volley lengths in longer traces. The decoy accepts aim sectors
-`11..21`, while the real encounter narrows that range to `14..17`. Each `0x30` bullet begins at Boss
+sector `12..20` before allocating a projectile. This explains skipped checks and the
+non-fixed volley lengths in longer traces. Each `0x30` bullet begins at Boss
 offset `(-8,+6)` NES pixels, uses the routine's quantized 32-direction aim, and
 releases after about 64 frames. Runtime applies this shared state rule instead
 of the former fixed six-shot/three-shot sequences. The remaining Round 6

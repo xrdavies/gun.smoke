@@ -304,6 +304,7 @@ export function riflemanSidePosition(age: number, fromLeft: boolean): readonly [
 }
 export const NINJA_FIRST_SHOT_DELAY = 103 / NES_FRAME_RATE;
 export const NINJA_PROJECTILE_SPEED = 300;
+export const NINJA_ACTIVATION_DISTANCE_NES = 64;
 export const NINJA_ATTACK_MOVE_DURATION = 15 / NES_FRAME_RATE;
 export const NINJA_ENTRY_PATH_NES = [[0, 0], [16, 32], [36, 32], [83, 126], [103, 126]] as const;
 
@@ -321,6 +322,10 @@ export function ninjaOpeningY(age: number): number {
 export function ninjaAttackPosition(age: number, originX: number, originY: number, targetX: number, targetY: number): readonly [number, number] {
   const amount = Math.min(1, Math.max(0, (age - NINJA_FIRST_SHOT_DELAY) / NINJA_ATTACK_MOVE_DURATION));
   return [originX + (targetX - originX) * amount, originY + (targetY - originY) * amount];
+}
+
+export function ninjaCanThrow(actorY: number, playerY: number): boolean {
+  return Math.abs(playerY - actorY) < NINJA_ACTIVATION_DISTANCE_NES * NES_WORLD_Y_SCALE;
 }
 
 export const ROCK_WORLD_SPEED_X = 230;

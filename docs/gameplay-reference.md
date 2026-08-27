@@ -146,7 +146,8 @@ Snipers are likewise non-colliding while inside cover. Bandit Bill and Fatman
 Joe remain visible during their recovery/launch protection windows.
 Most Boss weapons use a six-slot projectile pool separate from the eight slots
 used by ordinary enemy gunfire, so field bullets cannot suppress those attacks;
-Bandit Bill's traced `0x30` shots are the exception and use the ordinary pool.
+Bandit Bill's traced `0x30` shots are the exception and use the ordinary pool;
+his clean-trace X/Y movement path is replayed through the measured combat window.
 Ordinary screen clears do not erase active low-slot Boss shots. ROM-tagged
 Ninja, Hatchet, Spear, and Firebreather shots use the shared discrete second-tier
 direction table; only procedural fallback formations use continuous aim.

@@ -562,8 +562,11 @@ describe("Gun.Smoke vertical slice", () => {
     expect(banditBillOpeningY(BANDIT_BILL_ENTRY_DURATION)).toBe(144);
     expect(banditBillProjectileVelocity(192 * NES_WORLD_X_SCALE, 72 * NES_WORLD_Y_SCALE, 88 * NES_WORLD_X_SCALE, 215 * NES_WORLD_Y_SCALE)).toEqual([-1.37109375 * NES_FRAME_RATE * NES_WORLD_X_SCALE, 2.484375 * NES_FRAME_RATE * NES_WORLD_Y_SCALE]);
     expect(banditBillCombatX(BANDIT_BILL_ENTRY_DURATION)).toBe(720);
+    expect(banditBillCombatY(BANDIT_BILL_ENTRY_DURATION + 11 / NES_FRAME_RATE)).toBe(162);
     expect(banditBillCombatY(BANDIT_BILL_ENTRY_DURATION + 119 / NES_FRAME_RATE)).toBeCloseTo(110.25, 9);
     expect(banditBillCombatX(BANDIT_BILL_ENTRY_DURATION + 227 / NES_FRAME_RATE)).toBeCloseTo(551.25, 9);
+    expect(banditBillCombatY(BANDIT_BILL_ENTRY_DURATION + 768 / NES_FRAME_RATE)).toBe(256.5);
+    expect(banditBillCombatX(BANDIT_BILL_ENTRY_DURATION + 1104 / NES_FRAME_RATE)).toBe(622.5);
   });
 
   it("matches the traced Bandit Bill damage recovery", () => {

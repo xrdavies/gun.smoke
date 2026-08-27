@@ -270,7 +270,11 @@ export function gunmanProjectileVelocity(originX: number, originY: number, targe
 
 export function mediumProjectileVelocity(originX: number, originY: number, targetX: number, targetY: number, evenHeading = false): readonly [number, number] {
   const aimHeading = nesAimHeading(originX, originY, targetX, targetY);
-  const [x, y] = SNIPER_BULLET_VELOCITIES_NES[evenHeading ? aimHeading & 0x1e : aimHeading] ?? SNIPER_BULLET_VELOCITIES_NES[0];
+  return mediumProjectileHeadingVelocity(evenHeading ? aimHeading & 0x1e : aimHeading);
+}
+
+export function mediumProjectileHeadingVelocity(heading: number): readonly [number, number] {
+  const [x, y] = SNIPER_BULLET_VELOCITIES_NES[heading & 31] ?? SNIPER_BULLET_VELOCITIES_NES[0];
   return [x * 2 * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * 2 * NES_FRAME_RATE * NES_WORLD_Y_SCALE];
 }
 
@@ -283,7 +287,6 @@ export const RIFLEMAN_ATTACK_STATE_FRAME = 122;
 export const RIFLEMAN_SHOT_INTERVAL = 16 / NES_FRAME_RATE;
 export const RIFLEMAN_SHOTS_PER_VOLLEY = 5;
 export const RIFLEMAN_LIFETIME = 364 / NES_FRAME_RATE;
-export const RIFLEMAN_BULLET_SPEED = 0.375 * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
 export const RIFLEMAN_PATH_NES = [[0, 0], [121, 121], [211, 151], [363, 0]] as const;
 export const RIFLEMAN_SIDE_SHOT_FRAMES = [97, 113, 129] as const;
 export const RIFLEMAN_SIDE_LIFETIME = 259 / NES_FRAME_RATE;
@@ -293,6 +296,13 @@ export function riflemanCanAttack(actorY: number, playerY: number): boolean {
   const actorNesY = Math.round(actorY / NES_WORLD_Y_SCALE);
   const playerNesY = Math.round(playerY / NES_WORLD_Y_SCALE);
   return actorNesY >= 0x30 && Math.abs(playerNesY - actorNesY) < 0x60;
+}
+
+const RIFLEMAN_SHOT_HEADINGS = [[20, 22, 20, 18, 20], [16, 18, 16, 14, 16], [12, 14, 12, 10, 12]] as const;
+
+export function riflemanShotHeading(aimHeading: number, shotIndex: number): number {
+  const group = aimHeading >= 18 ? 0 : aimHeading >= 14 ? 1 : 2;
+  return RIFLEMAN_SHOT_HEADINGS[group][shotIndex % RIFLEMAN_SHOTS_PER_VOLLEY] ?? 16;
 }
 
 export function riflemanPosition(age: number): readonly [number, number] {

@@ -246,7 +246,9 @@ tiles to `9`, yielding a maximum displayed score of `999990`.
 An isolated `$B775` Rifleman descends one NES pixel per frame through age 121,
 enters its attack state at age 122 only when its screen Y is at least 48 NES
 pixels and Billy is within 96 NES Y pixels, then emits five dispatch `0x30` shots at ages
-138, 154, 170, 186 and 202. It returns to its movement state at age 212,
+138, 154, 170, 186 and 202. The integer aim selects one of three five-heading
+fans centered on sectors `12`, `16`, or `20`; each bullet uses the second-tier
+direction table at about two NES pixels per frame. It returns to its movement state at age 212,
 retreats toward the top edge, and releases after roughly 364 frames. The runtime
 preserves this measured vertical path, volley cadence, actor-relative launch
 coordinate and slot lifetime for ROM-tagged Riflemen.

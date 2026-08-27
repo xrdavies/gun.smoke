@@ -2025,10 +2025,8 @@ class GunSmokeGame {
     if (this.smartBombArmed && this.smartBombs > 0) {
       this.smartBombs -= 1;
       this.smartBombArmed = false;
-      this.invulnerableDestroysEnemies = true;
       this.clearEnemyUnits();
       this.clearEnemyProjectiles();
-      this.invulnerable = 1;
       this.beep(75, 0.35);
       this.showMessage("SMART BOMB");
       this.updateInventory();

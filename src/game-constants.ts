@@ -29,6 +29,31 @@ export function storedPowerupPickup(stock: number): { stock: number; score: numb
 export const WORLD_VIEWPORT_HEIGHT = 540;
 export const NES_WORLD_Y_SCALE = WORLD_VIEWPORT_HEIGHT / 240;
 export const NES_WORLD_X_SCALE = 960 / 256;
+const NES_AIM_HEADINGS = [
+  [8, 9, 10, 11, 12], [16, 15, 14, 13, 12], [16, 17, 18, 19, 20], [24, 23, 22, 21, 20],
+  [8, 7, 6, 5, 4], [0, 1, 2, 3, 4], [0, 31, 30, 29, 28], [24, 25, 26, 27, 28],
+] as const;
+
+export function nesAimHeading(originX: number, originY: number, targetX: number, targetY: number): number {
+  const dx = Math.round(targetX / NES_WORLD_X_SCALE) - Math.round(originX / NES_WORLD_X_SCALE);
+  const dy = Math.round(targetY / NES_WORLD_Y_SCALE) - Math.round(originY / NES_WORLD_Y_SCALE);
+  let quadrant = dy < 0 ? 4 : 0;
+  if (dx < 0) quadrant += 2;
+  let minor = Math.abs(dy);
+  let major = Math.abs(dx);
+  if (major < minor) {
+    [minor, major] = [major, minor];
+    if (quadrant === 0 || quadrant === 4) quadrant += 1;
+  }
+  const step = major >> 3;
+  let band = 0;
+  let threshold = step;
+  while (band < 4 && threshold < minor) {
+    band += 1;
+    threshold += step * 2;
+  }
+  return NES_AIM_HEADINGS[quadrant]![band]!;
+}
 export const ROUND_BOSS_GATE_SCROLL_NES = [2_767, 2_799, 4_863, 3_487, 2_879, 4_879] as const;
 export const ROUND_LOOP_SCROLL_NES = [3_087, 3_055, 5_119, 3_839, 3_055, 5_119] as const;
 export const ROUND_BOSS_TRIGGERS = ROUND_BOSS_GATE_SCROLL_NES.map((value) => value * NES_WORLD_Y_SCALE);
@@ -580,13 +605,39 @@ export const FATMAN_JOE_ENTRY_END_Y_NES = 112;
 export const FATMAN_JOE_ENTRY_END_Y = FATMAN_JOE_ENTRY_END_Y_NES * NES_WORLD_Y_SCALE;
 export const FATMAN_JOE_ENTRY_DURATION = 170 / NES_FRAME_RATE;
 export const FATMAN_JOE_MOVEMENT_SPEED = (40 / 75) * NES_FRAME_RATE * NES_WORLD_X_SCALE;
-export const FATMAN_JOE_FIRST_VOLLEY_DELAY = 205 / NES_FRAME_RATE;
-export const FATMAN_JOE_VOLLEY_INTERVAL = 131 / NES_FRAME_RATE;
-export const FATMAN_JOE_VOLLEY_SIZE = 5;
-export const FATMAN_JOE_SHOT_INTERVAL = 4 / NES_FRAME_RATE;
-export const FATMAN_JOE_VOLLEY_GAP = FATMAN_JOE_VOLLEY_INTERVAL - FATMAN_JOE_SHOT_INTERVAL * (FATMAN_JOE_VOLLEY_SIZE - 1);
+export const FATMAN_JOE_FIRST_ATTACK_DELAY = 248 / NES_FRAME_RATE;
+export const FATMAN_JOE_ATTACK_DECISION_INTERVAL = 76 / NES_FRAME_RATE;
+export const FATMAN_JOE_ATTACK_CHANCE = 0.5;
+export const FATMAN_JOE_SHELL_FLIGHT_DURATION = 31 / NES_FRAME_RATE;
+export const FATMAN_JOE_SHELL_SPLIT_DELAY = 35 / NES_FRAME_RATE;
+export const FATMAN_JOE_SHELL_LIFETIME = 61 / NES_FRAME_RATE;
+export const FATMAN_JOE_MINE_INTERVAL = 4 / NES_FRAME_RATE;
+export const FATMAN_JOE_MINE_OFFSETS_NES = [[-16, 4], [-10, 12], [0, 16], [10, 12], [16, 4]] as const;
 export const FATMAN_JOE_GRENADE_LIFETIME = 30 / NES_FRAME_RATE;
 export const FATMAN_JOE_LAUNCH_INVULNERABILITY = 0.75;
+const FATMAN_JOE_SHELL_VELOCITIES_NES = [[0.9375, 2.77734375], [0.46875, 2.91796875], [0, 3], [-0.46875, 2.91796875], [-0.9375, 2.77734375]] as const;
+
+export function fatmanJoeAimHeading(originX: number, originY: number, targetX: number, targetY: number): number {
+  return nesAimHeading(originX, originY, targetX, targetY);
+}
+
+export function fatmanJoeCanLaunch(originX: number, originY: number, targetX: number, targetY: number, random: number): boolean {
+  const heading = fatmanJoeAimHeading(originX, originY, targetX, targetY);
+  return random >= 1 - FATMAN_JOE_ATTACK_CHANCE && heading >= 14 && heading <= 18;
+}
+
+export function fatmanJoeShellVelocity(originX: number, originY: number, targetX: number, targetY: number): readonly [number, number] {
+  const velocity = FATMAN_JOE_SHELL_VELOCITIES_NES[fatmanJoeAimHeading(originX, originY, targetX, targetY) - 14] ?? FATMAN_JOE_SHELL_VELOCITIES_NES[2];
+  return [velocity[0] * NES_FRAME_RATE * NES_WORLD_X_SCALE, velocity[1] * NES_FRAME_RATE * NES_WORLD_Y_SCALE];
+}
+
+export function fatmanJoeMineCount(age: number): number {
+  const frame = Math.round(age * NES_FRAME_RATE);
+  const splitFrame = Math.round(FATMAN_JOE_SHELL_SPLIT_DELAY * NES_FRAME_RATE);
+  const intervalFrames = Math.round(FATMAN_JOE_MINE_INTERVAL * NES_FRAME_RATE);
+  if (frame < splitFrame) return 0;
+  return Math.min(FATMAN_JOE_MINE_OFFSETS_NES.length, Math.floor((frame - splitFrame) / intervalFrames) + 1);
+}
 
 export function fatmanJoeOpeningY(age: number): number {
   return Math.max(0, Math.min(1, age / FATMAN_JOE_ENTRY_DURATION)) * FATMAN_JOE_ENTRY_END_Y;
@@ -653,8 +704,7 @@ export function wingateCombatY(age: number, phase = 0): number {
 }
 
 export function wingateAimHeading(originX: number, originY: number, targetX: number, targetY: number): number {
-  const angle = Math.atan2((targetY - originY) / NES_WORLD_Y_SCALE, (targetX - originX) / NES_WORLD_X_SCALE);
-  return (Math.round(angle / (Math.PI / 16)) + 8 + 32) % 32;
+  return nesAimHeading(originX, originY, targetX, targetY);
 }
 
 export function wingateCanFire(originX: number, originY: number, targetX: number, targetY: number, random: number): boolean {

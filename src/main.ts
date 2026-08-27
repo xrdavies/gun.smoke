@@ -23,7 +23,7 @@ import { banditBillCooldown } from "./game-constants";
 import { BLUE_YASHICHI_DURATION, MAX_LIVES } from "./game-constants";
 import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, pistolBulletSpeedFactor, pistolVelocities, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
-import { FATMAN_JOE_FIRST_VOLLEY_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, FATMAN_JOE_MOVEMENT_SPEED, FATMAN_JOE_SHOT_INTERVAL, FATMAN_JOE_VOLLEY_GAP, FATMAN_JOE_VOLLEY_SIZE, fatmanJoeCombatY } from "./game-constants";
+import { FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_MOVEMENT_SPEED, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, fatmanJoeCombatY, fatmanJoeShellVelocity } from "./game-constants";
 import { WINGATE_ATTACK_INTERVAL, WINGATE_BULLET_LIFETIME, wingateCanFire, WINGATE_ENTRY_RUSH_DELAY, WINGATE_ENTRY_RUSH_DURATION, WINGATE_ENTRY_RUSH_SPEED, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateCombatY } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_LIFETIME, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { CUTTER_ENTRY_DURATION, CUTTER_MOVEMENT_SPEED, cutterCombatY, cutterOpeningY } from "./game-constants";
@@ -49,13 +49,14 @@ type GameAction =
   | "start";
 type GameMode = "title" | "intro" | "briefing" | "playing" | "paused" | "gameover" | "ending";
 type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "moneyBag" | "ammo" | "barrel" | "item" | "shopkeeper" | "sceneObject";
-type ProjectileType = "bullet" | "dynamite" | "grenade" | "boomerang" | "fireball" | "shuriken" | "spear" | "hatchet" | "rock";
+type ProjectileType = "bullet" | "dynamite" | "grenade" | "grenadeShell" | "boomerang" | "fireball" | "shuriken" | "spear" | "hatchet" | "rock";
 type TextureName = "player" | "horse" | "shopkeeper" | "bullet" | "moneyBag" | "ammo" | "barrel" | "terrain" | "road" | "landmark";
 type Rgba = [number, number, number, number];
 
 const PROJECTILE_STYLES: Partial<Record<ProjectileType, { size: { x: number; y: number }; color: Rgba }>> = {
   dynamite: { size: { x: 18, y: 18 }, color: [0.95, 0.55, 0.16, 1] },
   grenade: { size: { x: 18, y: 18 }, color: [0.9, 0.25, 0.15, 1] },
+  grenadeShell: { size: { x: 20, y: 20 }, color: [1, 0.52, 0.12, 1] },
   fireball: { size: { x: 18, y: 18 }, color: [1, 0.45, 0.08, 1] },
   boomerang: { size: { x: 24, y: 12 }, color: [0.6, 0.85, 1, 1] },
   shuriken: { size: { x: 16, y: 16 }, color: [0.85, 0.85, 0.9, 1] },
@@ -900,19 +901,21 @@ class GunSmokeGame {
       return;
     }
     if (this.stage === 5) {
-      const shotInVolley = boss.volleysFired + 1;
-      const projectile = this.spawnEnemyProjectile(boss.x, boss.y + 24, true);
-      if (projectile) {
-        projectile.projectileType = "grenade";
-        projectile.vx = 0;
-        projectile.vy = 0;
-        projectile.maxAge = FATMAN_JOE_GRENADE_LIFETIME;
+      if (fatmanJoeCanLaunch(boss.x, boss.y, this.player.x, this.player.y, this.nextRandom())) {
+        const projectile = this.spawnEnemyProjectile(boss.x - 8 * NES_WORLD_X_SCALE, boss.y + 6 * NES_WORLD_Y_SCALE, true);
+        if (projectile) {
+          projectile.projectileType = "grenadeShell";
+          [projectile.vx, projectile.vy] = fatmanJoeShellVelocity(boss.x, boss.y, this.player.x, this.player.y);
+          projectile.phase = 0;
+          projectile.volleysFired = 0;
+          projectile.maxAge = FATMAN_JOE_SHELL_LIFETIME;
+          boss.volleysFired += 1;
+          boss.invulnerableUntil = boss.age + FATMAN_JOE_LAUNCH_INVULNERABILITY;
+          boss.fired = true;
+          this.beep(240, 0.045);
+        }
       }
-      boss.volleysFired = shotInVolley === FATMAN_JOE_VOLLEY_SIZE ? 0 : shotInVolley;
-      this.bossFireClock = shotInVolley === FATMAN_JOE_VOLLEY_SIZE ? FATMAN_JOE_VOLLEY_GAP : FATMAN_JOE_SHOT_INTERVAL;
-      boss.invulnerableUntil = boss.age + FATMAN_JOE_LAUNCH_INVULNERABILITY;
-      boss.fired = true;
-      this.beep(150 + this.stage * 18, 0.045);
+      this.bossFireClock = FATMAN_JOE_ATTACK_DECISION_INTERVAL;
       return;
     }
     if (this.stage === 4) {
@@ -1120,7 +1123,7 @@ class GunSmokeGame {
 
   private spawnBoss(): void {
     this.bossSpawned = true;
-    this.bossFireClock = this.stage === 1 ? BANDIT_BILL_FIRST_VOLLEY_DELAY : this.stage === 2 ? CUTTER_FIRST_ATTACK_DELAY : this.stage === 3 ? DEVIL_HAWK_FIRST_VOLLEY_DELAY : this.stage === 4 ? NINJA_BOSS_FIRST_ATTACK_DELAY : this.stage === 5 ? FATMAN_JOE_FIRST_VOLLEY_DELAY : this.stage === MAX_STAGE ? WINGATE_FIRST_SHOT_DELAY : 0.6;
+    this.bossFireClock = this.stage === 1 ? BANDIT_BILL_FIRST_VOLLEY_DELAY : this.stage === 2 ? CUTTER_FIRST_ATTACK_DELAY : this.stage === 3 ? DEVIL_HAWK_FIRST_VOLLEY_DELAY : this.stage === 4 ? NINJA_BOSS_FIRST_ATTACK_DELAY : this.stage === 5 ? FATMAN_JOE_FIRST_ATTACK_DELAY : this.stage === MAX_STAGE ? WINGATE_FIRST_SHOT_DELAY : 0.6;
     const definition = STAGES[this.stage - 1] ?? STAGES[0]!;
     const isBanditBill = this.stage === 1;
     const isCutter = this.stage === 2;
@@ -1554,6 +1557,25 @@ class GunSmokeGame {
           if (distance(unit, this.player) <= 85 && this.invulnerable <= 0) this.takeHit();
           unit.hp = 0;
           this.beep(95, 0.14);
+        }
+      }
+      if (unit.kind === "enemyBullet" && unit.projectileType === "grenadeShell" && unit.age >= FATMAN_JOE_SHELL_FLIGHT_DURATION) {
+        unit.targetX ??= unit.x;
+        unit.targetY ??= unit.y;
+        unit.x = unit.targetX;
+        unit.y = unit.targetY;
+        unit.vx = 0;
+        unit.vy = 0;
+        const mineCount = fatmanJoeMineCount(unit.age);
+        while (unit.volleysFired < mineCount) {
+          const [offsetX, offsetY] = FATMAN_JOE_MINE_OFFSETS_NES[unit.volleysFired]!;
+          const mine = this.spawnEnemyProjectile(unit.targetX + offsetX * NES_WORLD_X_SCALE, unit.targetY + offsetY * NES_WORLD_Y_SCALE, true);
+          if (!mine) break;
+          mine.projectileType = "grenade";
+          mine.vx = 0;
+          mine.vy = 0;
+          mine.maxAge = FATMAN_JOE_GRENADE_LIFETIME;
+          unit.volleysFired += 1;
         }
       }
       const boomerangPathDriven = unit.kind === "enemyBullet" && unit.projectileType === "boomerang" && unit.boomerangHeading !== undefined;

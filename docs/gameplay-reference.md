@@ -10,7 +10,7 @@ names are cross-checked against the public NES walkthrough on
 | 2 | Rocky pass / cliffs | Cutter | gate, poster, shop, measured entrance and boomerang steering |
 | 3 | Native village | Devil Hawk | gate, poster, shop, measured entrance and opening fan |
 | 4 | Cliff valley | Ninja | gate, poster, shop, measured entrance and shuriken volley |
-| 5 | Forest / bridges | Fatman Joe | gate, poster, shop, measured entrance, attack approximation |
+| 5 | Forest / bridges | Fatman Joe | gate, poster, shop, measured entrance and shell split |
 | 6 | Wingate town / cemetery | Wingate (two encounters) | gate, poster, shop, measured first entrance, two-phase approximation |
 
 The NES version's stage rule is important: the wanted poster for the round's
@@ -145,10 +145,12 @@ lanes `x=152` and `x=192` before a short horizontal rush and slower cruise; the 
 teleports after each lost health bar. The runtime hides the Boss for the
 measured 90-frame teleport delay, then restarts its entry smoke window and
 attack clock from the newly selected lane.
-Fatman Joe's measured opening volley begins at frame 205, emits five stationary
-grenade traps four NES frames apart, and repeats after roughly 131 frames; each
-trap lasts about 30 NES frames. His multi-hop vertical profile follows the
-measured Boss trace.
+Fatman Joe begins attack decisions after his measured entrance. A successful
+downward-sector check launches one aimed shell; after 31 frames it stops and
+splits into five stationary mines at four-frame intervals. The mines use the
+measured symmetric offsets and last about 30 NES frames. His multi-hop vertical
+profile follows the measured Boss trace while random action selection remains
+an approximation.
 Ninja's measured first shuriken volley appears at frame 179 as a four-way
 diagonal cross spawned just above Billy; each shot lasts about 40 frames and the
 attack uses a common 60-frame repeat interval. Smoke preparation remains
@@ -171,9 +173,9 @@ Round 1 Bomber dynamite has explicit flight, landed, defusable, and delayed
 explosion phases. Boss and enemy projectiles are typed separately as bullets,
 boomerangs, fireballs, shuriken, spears, hatchets, dynamite, or grenades. Spear and
 hatchet projectiles also use distinct proportions and rotation behavior rather
-than sharing the Ninja shuriken representation. Fatman Joe's grenade traps are
-stationary and short-lived; they do not share Bomber dynamite's flight or
-defusable delayed-explosion phases.
+than sharing the Ninja shuriken representation. Fatman Joe's shell is aimed and
+mobile before it splits into stationary, short-lived mines; neither phase
+shares Bomber dynamite's defusable delayed-explosion behavior.
 
 Landmark timing remains represented as four deterministic segments per Round,
 with explicit formation metadata and a landmark type (`town`, `rock`, `village`,

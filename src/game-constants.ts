@@ -22,6 +22,17 @@ export const MAX_LIVES = 5;
 export const BLUE_YASHICHI_DURATION = 180 / NES_FRAME_RATE;
 export const MAX_POWERUP_STOCK = 4;
 export const POWERUP_OVERFLOW_SCORE = 100;
+export const PLAYER_DEATH_ANIMATION_DURATION = 152 / NES_FRAME_RATE;
+export const PLAYER_RESPAWN_HIDDEN_DURATION = 100 / NES_FRAME_RATE;
+export const PLAYER_RESPAWN_READY_DURATION = 40 / NES_FRAME_RATE;
+export const PLAYER_DEATH_RECOVERY_DURATION = PLAYER_DEATH_ANIMATION_DURATION + PLAYER_RESPAWN_HIDDEN_DURATION + PLAYER_RESPAWN_READY_DURATION;
+
+export function playerDeathPhase(age: number): "dying" | "hidden" | "ready" | "active" {
+  if (age < PLAYER_DEATH_ANIMATION_DURATION) return "dying";
+  if (age < PLAYER_DEATH_ANIMATION_DURATION + PLAYER_RESPAWN_HIDDEN_DURATION) return "hidden";
+  if (age < PLAYER_DEATH_RECOVERY_DURATION) return "ready";
+  return "active";
+}
 
 export function storedPowerupPickup(stock: number): { stock: number; score: number } {
   return stock >= MAX_POWERUP_STOCK ? { stock: MAX_POWERUP_STOCK, score: POWERUP_OVERFLOW_SCORE } : { stock: stock + 1, score: 0 };

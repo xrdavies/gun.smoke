@@ -63,6 +63,12 @@ only its collision source and grants brief protection; it does not clear every
 enemy projectile. Score awards an extra life at 30,000, again at 100,000, and
 at each later 100,000-point threshold.
 
+An unshielded hit freezes scrolling and actors for a 152-frame death
+animation, then deducts the life and clears ordinary enemies/projectiles. Billy
+remains hidden for 100 frames and visible but frozen for another 40 before play
+resumes. Barrels, scene objects, Boss actors and low-slot Boss weapons survive
+the ordinary-enemy clear.
+
 Shop funds now use the NES point scale: Money Bags are 200 points and the
 Wanted poster prices are 20,000 (Round 1), 24,000 (Round 2), 50,000 (Round 3),
 40,000 (Rounds 4 and 5), and 60,000 (Round 6).

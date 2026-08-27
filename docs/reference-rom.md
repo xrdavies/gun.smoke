@@ -153,8 +153,12 @@ not the low-slot Boss projectile pool. Runtime projectile-only clears leave
 falling rocks active, while POW, Smart Bomb and life-loss enemy clears remove
 them with the other enemy-slot actors.
 The Round 1 life-loss trace also clears active ordinary enemy actors in the same
-frame as the life decrement while leaving breakable barrels and scene objects;
-the runtime now applies that enemy-only death clear before continuing recovery.
+frame as the life decrement while leaving breakable barrels and scene objects.
+The hit creates player death dispatch `0xB7` and freezes the map for 152 frames
+before decrementing `$7A`; Billy stays hidden for 100 more frames, reappears for
+a 40-frame ready hold, then scrolling resumes. The runtime applies the same
+292-frame sequence and enemy-only clear while leaving Boss actors and low-slot
+weapons intact.
 On a Horse-protected collision, `$CABC-$CAC5` first removes only the colliding
 ordinary projectile, then `$CAEF-$CB29` decrements Horse health and starts a
 60-frame protection timer without calling the screen-clear routine. The runtime

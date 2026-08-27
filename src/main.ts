@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, banditBillOpeningY, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, bomberCanThrow, bomberMovementDuration, bomberMovementVelocity, BOMBER_THROW_DURATION, bossReward, BOOTS_SPEED_MULTIPLIER, canSpawnPlayerBullet, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_LIFETIME, dynamiteVerticalOffset, EMPTY_BARREL_EXPLOSION_LIFETIME, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X, FATMAN_JOE_ENTRY_Y, fatmanJoeOpeningY, FIREBREATHER_PROJECTILE_SPEED, formationEntryY, HATCHET_FIRST_SHOT_DELAY, HATCHET_PROJECTILE_SPEED, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_X_LANES, NINJA_BOSS_ENTRY_Y_LANES, NINJA_FIRST_SHOT_DELAY, NINJA_PROJECTILE_SPEED, ninjaAttackPosition, ninjaOpeningY, RIFLEMAN_BULLET_SPEED, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_LIFETIME, ROCK_WORLD_SPEED_X, ROCK_WORLD_SPEED_Y, ROAD_WIDTHS, ROM_ENEMY_SCREEN_MAX_Y, ROM_OBJECT_DROP_SPEED, ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_SIDE_LIFETIME, SHOTGUNNER_SIDE_SHOT_FRAME, SHOTGUNNER_VOLLEY_INTERVAL, shotgunnerPosition, shotgunnerSidePosition, shouldLoopStage, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_CODE2_SHOT_FRAMES, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, SPEAR_PROJECTILE_SPEED, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_DURATION, WINGATE_ENTRY_X, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_X, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, wingateOpeningY, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, banditBillOpeningY, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, bomberCanThrow, bomberMovementDuration, bomberMovementVelocity, BOMBER_THROW_DURATION, bossReward, BOOTS_SPEED_MULTIPLIER, canSpawnPlayerBullet, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_LIFETIME, dynamiteVerticalOffset, EMPTY_BARREL_EXPLOSION_LIFETIME, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X, FATMAN_JOE_ENTRY_Y, fatmanJoeOpeningY, FIREBREATHER_PROJECTILE_SPEED, formationEntryY, HATCHET_FIRST_SHOT_DELAY, HATCHET_PROJECTILE_SPEED, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_X_LANES, NINJA_BOSS_ENTRY_Y_LANES, NINJA_FIRST_SHOT_DELAY, NINJA_PROJECTILE_SPEED, ninjaAttackPosition, ninjaOpeningY, PLAYER_DEATH_ANIMATION_DURATION, PLAYER_DEATH_RECOVERY_DURATION, playerDeathPhase, RIFLEMAN_BULLET_SPEED, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_LIFETIME, ROCK_WORLD_SPEED_X, ROCK_WORLD_SPEED_Y, ROAD_WIDTHS, ROM_ENEMY_SCREEN_MAX_Y, ROM_OBJECT_DROP_SPEED, ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_SIDE_LIFETIME, SHOTGUNNER_SIDE_SHOT_FRAME, SHOTGUNNER_VOLLEY_INTERVAL, shotgunnerPosition, shotgunnerSidePosition, shouldLoopStage, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_CODE2_SHOT_FRAMES, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, SPEAR_PROJECTILE_SPEED, scoreExtraLives, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_DURATION, WINGATE_ENTRY_X, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_X, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, wingateOpeningY, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
 import { GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, GUNMAN_BULLET_SPEED, GUNMAN_ENTRY_PATH_NES, GUNMAN_FLANK_LIFETIMES, GUNMAN_FLANK_SHOT_FRAMES, GUNMAN_LIFETIME, gunmanFlankPosition, gunmanOpeningY } from "./game-constants";
 import { BOMBER_ENTRY_DURATION, bomberOpeningY } from "./game-constants";
 import { firebreatherSideCanAttack, FIREBREATHER_SIDE_ATTACK_INTERVAL, FIREBREATHER_SIDE_LIFETIME, FIREBREATHER_SIDE_PATH_NES, firebreatherSidePosition, FIREBREATHER_FIRST_SHOT_DELAY, FIREBREATHER_LIFETIME, FIREBREATHER_PATH_NES, FIREBREATHER_PROJECTILE_OFFSET_NES, firebreatherPosition, FIREBREATHER_SHOT_FRAMES, HATCHET_PATH_NES, hatchetPosition, SPEAR_PATH_NES, SPEAR_PROJECTILE_OFFSET_NES, SPEAR_SIDE_LIFETIME, SPEAR_SIDE_PATH_NES, SPEAR_SIDE_SHOT_FRAMES, spearPosition, spearSidePosition, spearTopCanAttack, SPEAR_TOP_ATTACK_FRAMES, SPEAR_TOP_LIFETIME } from "./game-constants";
@@ -273,6 +273,8 @@ class GunSmokeGame {
   enemyFireClock = 1.2;
   bossFireClock = 1;
   invulnerable = 0;
+  deathClock = 0;
+  deathCommitted = false;
   bossSpawned = false;
   stageClearClock = 0;
   hasWanted = false;
@@ -511,7 +513,7 @@ class GunSmokeGame {
   }
 
   toggleInventory(): void {
-    if (this.mode !== "playing") return;
+    if (this.mode !== "playing" || this.deathClock > 0) return;
     this.inventoryOpen = !this.inventoryOpen;
     inventoryScreen.hidden = !this.inventoryOpen;
     if (this.inventoryOpen) this.updateInventory();
@@ -527,6 +529,11 @@ class GunSmokeGame {
       this.activateStart();
     }
     if (this.mode !== "playing") return;
+    if (this.deathClock > 0) {
+      this.time += delta;
+      this.updateDeath(delta);
+      return;
+    }
     this.updateInventoryInput();
     if (this.inventoryOpen) {
       this.updateInventorySelection();
@@ -1847,6 +1854,7 @@ class GunSmokeGame {
   }
 
   private takeHit(): void {
+    if (this.deathClock > 0) return;
     if (this.horseHealth > 0) {
       this.horseHealth -= 1;
       this.hasHorse = this.horseHealth > 0;
@@ -1871,6 +1879,34 @@ class GunSmokeGame {
       this.updateHud();
       return;
     }
+    this.deathClock = Number.EPSILON;
+    this.deathCommitted = false;
+    this.beep(120, 0.16);
+    this.showMessage("HIT!");
+  }
+
+  private updateDeath(delta: number): boolean {
+    if (this.deathClock <= 0) return false;
+    this.deathClock += delta;
+    const phase = playerDeathPhase(this.deathClock);
+    this.player.sprite.visible = phase === "dying" ? Math.floor(this.deathClock * NES_FRAME_RATE / 8) % 2 === 0 : phase === "ready";
+    this.player.sprite.rotation = phase === "dying" ? this.deathClock * 10 : 0;
+    this.horseSprite.visible = false;
+    if (!this.deathCommitted && this.deathClock >= PLAYER_DEATH_ANIMATION_DURATION) this.commitDeath();
+    if (this.mode !== "playing") return true;
+    if (this.deathClock < PLAYER_DEATH_RECOVERY_DURATION) {
+      this.updateHud();
+      return true;
+    }
+    this.deathClock = 0;
+    this.deathCommitted = false;
+    this.player.sprite.visible = true;
+    this.player.sprite.rotation = 0;
+    return true;
+  }
+
+  private commitDeath(): void {
+    this.deathCommitted = true;
     this.lives -= 1;
     this.powerups.boots = Math.max(0, this.powerups.boots - 1);
     this.powerups.rifle = Math.max(0, this.powerups.rifle - 1);
@@ -1879,12 +1915,13 @@ class GunSmokeGame {
       this.ownedWeapons.delete(this.weapon);
       this.weapon = "pistol";
     }
-    this.invulnerable = 2;
-    this.beep(120, 0.16);
-    this.showMessage(this.lives > 0 ? "HIT!" : "OUT OF LIVES");
     this.clearEnemyUnits();
     this.clearEnemyProjectiles();
-    if (this.lives <= 0) this.finish(false);
+    this.units.splice(0, this.units.length, ...this.units.filter((unit) => unit.hp > 0));
+    if (this.lives <= 0) {
+      this.showMessage("OUT OF LIVES");
+      this.finish(false);
+    }
   }
 
   private clearEnemyUnits(): void {
@@ -1922,6 +1959,8 @@ class GunSmokeGame {
     this.hasWanted = false;
     this.wingatePhase = 0;
     this.wingateRespawnClock = 0;
+    this.deathClock = 0;
+    this.deathCommitted = false;
     this.romObjectCursor = 0;
     this.romEventCursor = 0;
     this.stageLoopCount = 0;
@@ -2323,6 +2362,7 @@ class ReferenceRomGame {
 
 let game: GunSmokeGame | undefined;
 let referenceGame: ReferenceRomGame | undefined;
+if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeInvulnerable", { value: (duration: number) => { if (game) game.invulnerable = duration; } });
 startButton.addEventListener("click", () => void game?.start());
 continueButton.addEventListener("click", () => game?.continueFromIntro());
 briefingButton.addEventListener("click", () => game?.continueFromBriefing());

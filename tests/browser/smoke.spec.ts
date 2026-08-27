@@ -112,6 +112,7 @@ test("reaches the first ROM weapon shop", async ({ page }) => {
   await page.locator("#start-button").click();
   await page.locator("#continue-button").click();
   await page.locator("#briefing-button").click();
+  await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
   await page.keyboard.down("ArrowLeft");
   await runPistolWithClock(page, 45_000, ["x"]);
   await page.keyboard.up("ArrowLeft");

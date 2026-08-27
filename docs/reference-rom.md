@@ -292,7 +292,8 @@ Entity code `22` is the side-entry Firebreather variant. A left-edge isolation
 reaches about `(x+56,y+57)` by frame 120, checks its first attack at frame
 156, and remains active beyond 1500 frames when not defeated. That and later
 checks recur every 52 frames and require Billy below the actor plus the
-routine's random gate and an aim heading in the inclusive `10..22` range.
+routine's random gate and an aim heading in the inclusive `10..23` range; the
+odd final sector is normalized to its even `22` launch heading.
 Runtime mirrors the measured opening for right-edge
 records and keeps the actor until defeat or scene cleanup.
 An isolated `$BA51` top-entry Spear Thrower reaches about 68 NES pixels by

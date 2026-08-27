@@ -208,7 +208,8 @@ their measured route releases by frame 1042. Further opportunities recur about
 every 130 NES frames and recheck the aim sector; movement-coupled route details
 remain pending full state-machine parity.
 side Firebreathers require Billy below them, a 50% random gate, and aim sectors
-`10..22` at every 52-frame attack check, including the first. Top-entry Spear
+`10..23` at every 52-frame attack check, including the first; sector 23 is
+normalized to launch heading 22. Top-entry Spear
 Throwers accept sectors `10..23`.
 
 Round 1 Bombers descend into range, choose among eight measured movement

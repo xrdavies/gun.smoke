@@ -136,6 +136,9 @@ Projectile clear routine `$CDD4-$CDE0` only zeros those same eight slots. The
 POW path at `$CDAB-$CDD3` also handles ordinary enemy slots `$0410-$0416`, but
 neither path clears object-pool falling rocks; runtime screen clears preserve
 that boundary and retain the low-slot Boss projectile pool.
+The Round 1 life-loss trace also clears active ordinary enemy actors in the same
+frame as the life decrement while leaving breakable barrels and scene objects;
+the runtime now applies that enemy-only death clear before continuing recovery.
 On a Horse-protected collision, `$CABC-$CAC5` first removes only the colliding
 ordinary projectile, then `$CAEF-$CB29` decrements Horse health and starts a
 60-frame protection timer without calling the screen-clear routine. The runtime

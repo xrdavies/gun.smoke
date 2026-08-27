@@ -1621,8 +1621,13 @@ class GunSmokeGame {
     this.invulnerable = 2;
     this.beep(120, 0.16);
     this.showMessage(this.lives > 0 ? "HIT!" : "OUT OF LIVES");
+    this.clearEnemyUnits();
     this.clearEnemyProjectiles();
     if (this.lives <= 0) this.finish(false);
+  }
+
+  private clearEnemyUnits(): void {
+    for (const unit of this.units) if (unit.kind === "enemy") unit.hp = 0;
   }
 
   private clearEnemyProjectiles(): void {

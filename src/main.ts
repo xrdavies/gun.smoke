@@ -619,7 +619,7 @@ class GunSmokeGame {
     }
     if (this.stageClearClock > 0) {
       this.stageClearClock -= delta;
-      for (const unit of this.units) if (unit.kind === "boss" && unit.exploding) unit.animation?.update(delta);
+      for (const unit of this.units) if (unit.kind === "boss" && unit.exploding) this.updateUnit(unit, delta);
       if (this.stageClearClock <= 0) this.beginNextStage();
       this.updateHud();
       return;
@@ -914,7 +914,7 @@ class GunSmokeGame {
   }
 
   private updateEnemyFire(delta: number): void {
-    const boss = this.units.find((unit) => unit.kind === "boss" && unit.hp > 0);
+    const boss = this.units.find((unit) => unit.kind === "boss" && unit.hp > 0 && !unit.exploding);
     if (boss) {
       if (this.stage === 1 && boss.age < boss.invulnerableUntil) return;
       this.bossFireClock -= delta;
@@ -1294,6 +1294,14 @@ class GunSmokeGame {
   private updateUnit(unit: Unit, delta: number): void {
     unit.age += delta;
     unit.animation?.update(delta);
+    if (unit.kind === "boss" && unit.exploding) {
+      const progress = clamp((unit.age - (unit.maxAge - BOSS_DEFEAT_ANIMATION_DURATION)) / BOSS_DEFEAT_ANIMATION_DURATION, 0, 1);
+      unit.sprite.visible = unit.age < unit.maxAge && Math.floor(progress * 12) % 2 === 0;
+      unit.sprite.size = { x: 110 + progress * 48, y: 68 + progress * 48 };
+      unit.sprite.color = [1, 0.78 + progress * 0.22, 0.3 + progress * 0.7, 1];
+      unit.sprite.position = { x: unit.x, y: unit.y };
+      return;
+    }
     if (unit.kind === "enemy") {
       const followsRomScroll = unit.romBehavior !== undefined && unit.romBehavior !== 1 && unit.romBehavior !== 2 && unit.romBehavior !== 6 && unit.romBehavior !== 7 && unit.romBehavior !== 9 && unit.romBehavior !== 10 && unit.romBehavior !== 11 && !(unit.enemyType === "backstabber" && (unit.romBehavior === 3 || unit.romBehavior === 8));
       if (followsRomScroll) unit.y += WORLD_SCROLL_SPEED * delta;

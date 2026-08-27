@@ -1037,6 +1037,27 @@ export function ninjaBossNextTeleportAt(reentryStart?: number): number {
 
 const NINJA_BOSS_COMBAT_PATH_NES = [[0, 128], [26, 165], [51, 103], [67, 104], [126, 110], [196, 94], [253, 140], [296, 164], [386, 64], [431, 64], [448, 88], [474, 88], [508, 72], [534, 72], [551, 41]] as const;
 
+const NINJA_BOSS_INITIAL_X_PATH_NES = [[0, 176], [43, 176], [51, 169], [59, 162], [67, 154], [75, 147], [83, 155], [91, 164], [99, 159], [107, 149], [115, 139], [123, 129], [131, 125], [139, 112], [147, 102], [155, 102], [163, 114], [171, 127], [179, 119], [187, 105], [195, 104], [203, 106], [211, 109], [219, 111], [227, 114], [235, 116], [243, 117], [251, 117], [259, 117], [267, 117], [275, 117], [283, 117], [295, 117], [338, 117]] as const;
+const NINJA_BOSS_REENTRY_X_PATH_NES = [[0, 112], [80, 112], [128, 112], [136, 108], [144, 98], [152, 94], [176, 94], [216, 107], [224, 120], [248, 127], [256, 136], [264, 139], [288, 142], [304, 163], [312, 150], [320, 139], [352, 139], [368, 139], [400, 150], [408, 157], [423, 157]] as const;
+
+function interpolateNinjaX(path: readonly (readonly [number, number])[], age: number, entryX: number, baseX: number): number {
+  const frame = Math.max(0, age * NES_FRAME_RATE);
+  const laneOffset = entryX / NES_WORLD_X_SCALE - baseX;
+  const first = path[0]!;
+  const point = (sample: readonly [number, number]): number => (sample[1] + laneOffset) * NES_WORLD_X_SCALE;
+  if (frame <= first[0]) return point(first);
+  const last = path.at(-1)!;
+  if (frame >= last[0]) return point(last);
+  const nextIndex = path.findIndex(([at]) => at >= frame);
+  const previous = path[nextIndex - 1]!;
+  const next = path[nextIndex]!;
+  return point([frame, previous[1] + (next[1] - previous[1]) * ((frame - previous[0]) / (next[0] - previous[0]))]);
+}
+
+export function ninjaBossCombatX(age: number, entryX = 176 * NES_WORLD_X_SCALE, reentry = false): number {
+  return interpolateNinjaX(reentry ? NINJA_BOSS_REENTRY_X_PATH_NES : NINJA_BOSS_INITIAL_X_PATH_NES, age, entryX, reentry ? 112 : 176);
+}
+
 export function ninjaBossCombatY(age: number, entryY = 128 * NES_WORLD_Y_SCALE): number {
   const frame = Math.max(0, age * NES_FRAME_RATE - NINJA_BOSS_ENTRY_INVULNERABILITY * NES_FRAME_RATE);
   const laneOffset = entryY / NES_WORLD_Y_SCALE - 128;

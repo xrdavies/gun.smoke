@@ -412,14 +412,15 @@ Round 6's first Wingate encounter is dispatch `0xa3`, variant `0x65`. Both
 encounters select NES `x=64/104/152/192` at `y=0`, hold that lane and reach
 approximately `y=98` after 151 frames. The runtime preserves this first-
 encounter opening without reusing it for the second, real Wingate. After the
-opening, both encounters pause for about 19 frames before a short roughly 176
-world-pixel/s horizontal rush,
-then settle to about 123 world pixels/s; the later random movement-direction
+opening, both encounters hold X for about 17 frames before completing a
+measured 17-frame horizontal rush, then settle to about 123 world pixels/s; the later random movement-direction
 sequence remains an approximation.
 The first encounter clears both ordinary and low-slot projectile actors before
 entering a 264-frame empty interval. The real Wingate
 then reuses dispatch `0xa3`, variant `0x65` and the same 151-frame vertical
-opening; `$BA=1` distinguishes this second encounter rather than selecting a
+opening; its first rush holds the entry X for about 17 frames, then follows a
+measured 17-frame path to an offset of `-26` NES pixels before the normal
+movement state. `$BA=1` distinguishes this second encounter rather than selecting a
 fixed X lane. The runtime preserves the delay, a fresh lane selection, and the
 phase-specific vertical combat profile.
 Both encounters begin attack checks at their measured phase time: frame 4 for

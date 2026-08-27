@@ -846,7 +846,6 @@ export const WINGATE_ENTRY_DURATION = 151 / NES_FRAME_RATE;
 export const WINGATE_SECOND_ENTRY_Y_NES = 0;
 export const WINGATE_SECOND_ENTRY_Y = WINGATE_SECOND_ENTRY_Y_NES * NES_WORLD_Y_SCALE;
 export const WINGATE_ENTRY_RUSH_DURATION = 34 / NES_FRAME_RATE;
-export const WINGATE_ENTRY_RUSH_DELAY = 19 / NES_FRAME_RATE;
 export const WINGATE_ENTRY_RUSH_SPEED = (26.5 / 34) * NES_FRAME_RATE * NES_WORLD_X_SCALE;
 export const WINGATE_MOVEMENT_SPEED = (131 / 240) * NES_FRAME_RATE * NES_WORLD_X_SCALE;
 export const WINGATE_SECOND_SPAWN_DELAY = 264 / NES_FRAME_RATE;
@@ -866,6 +865,17 @@ const WINGATE_COMBAT_PATHS_NES = [
   [[0, 98], [34, 46], [39, 57], [149, 69], [269, 97], [279, 79], [299, 47], [309, 54], [369, 87], [383, 99], [399, 58], [419, 85], [439, 95], [449, 63], [459, 57], [479, 83]] as const,
   [[0, 98], [34, 42], [39, 50], [269, 50], [279, 39], [309, 40], [319, 41], [419, 79], [439, 47], [449, 57], [469, 60], [579, 95], [599, 47], [609, 58], [619, 60]] as const,
 ] as const;
+const WINGATE_RUSH_PATH_NES = [[0, 0], [17, 0], [18, -1], [19, -3], [20, -4], [21, -6], [22, -8], [23, -9], [24, -11], [25, -13], [26, -13], [27, -15], [28, -17], [29, -18], [30, -19], [31, -21], [32, -22], [33, -23], [34, -26]] as const;
+
+export function wingateRushOffset(frame: number): number {
+  const clamped = Math.max(0, Math.min(WINGATE_ENTRY_RUSH_DURATION * NES_FRAME_RATE, frame));
+  const nextIndex = WINGATE_RUSH_PATH_NES.findIndex(([at]) => at >= clamped);
+  if (nextIndex < 0) return WINGATE_RUSH_PATH_NES.at(-1)![1];
+  if (nextIndex === 0) return 0;
+  const previous = WINGATE_RUSH_PATH_NES[nextIndex - 1]!;
+  const next = WINGATE_RUSH_PATH_NES[nextIndex]!;
+  return previous[1] + (next[1] - previous[1]) * ((clamped - previous[0]) / (next[0] - previous[0]));
+}
 
 export function wingateCombatY(age: number, phase = 0): number {
   const frame = Math.max(0, age * NES_FRAME_RATE - WINGATE_ENTRY_DURATION * NES_FRAME_RATE);

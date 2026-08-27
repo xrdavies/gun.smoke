@@ -157,7 +157,8 @@ pairs (`112,64`, `192,64`, `120,144`, or `176,128`) with an initial
 smoke/invulnerability window,
 Fatman Joe enters from NES `x=64/104/152/192` at the top edge before using short hops and
 stationary grenade traps across the Round 5 road, while Wingate's two encounters use top-edge NES
-lanes `x=64/104/152/192` before a short horizontal rush and slower cruise; the Ninja enters a smoke/invulnerability phase and
+lanes `x=64/104/152/192` before a 17-frame measured horizontal rush after a
+short hold, then a slower cruise; the Ninja enters a smoke/invulnerability phase and
 teleports after each lost health bar. The runtime hides the Boss for the
 measured 90-frame teleport delay, then restarts its entry smoke window and
 attack clock from the newly selected lane. Devil Hawk fireballs use the ROM's

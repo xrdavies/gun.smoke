@@ -205,8 +205,12 @@ at the first speed tier rather than continuous-angle velocity.
 The opposite-side entity code `2` keeps the same lifetime but hits every middle
 window, firing at ages 134, 224, 314, 404, 495 and 585. Runtime selects the
 schedule by entity code rather than dropping code `2`'s third shot.
-An isolated `$B284` Gunman fires one dispatch `0x30` bullet at age 39 frames.
-Two clean top-entry routes release at ages 550 and 560 after their turn and
+Three isolated `$B284` top-entry Gunmen first create a dispatch `0x30` bullet
+at ages 52, 58, and 62. Later opportunities are 192 frames apart and only fire
+when the actor's movement heading is within two sectors of its integer aim at
+Billy. The runtime uses a representative first window at frame 58, repeats the
+192-frame opportunity, and applies that heading gate. Two clean top-entry
+routes release at ages 550 and 560 after their turn and
 retreat states; the runtime no longer truncates them at the earlier partial
 289-frame observation. The projectile uses the ROM's quantized
 32-direction speed table at the second tier (about 266 world pixels/s on its

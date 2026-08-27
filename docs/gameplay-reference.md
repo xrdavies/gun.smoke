@@ -183,8 +183,10 @@ opposite-side variant also fires at the otherwise missed age-314 aiming window.
 Ordinary Ninjas
 hold their entry lane through a short pause, descend to the combat line, then
 make a brief player-relative diagonal retreat after their frame-103 Shuriken.
-Gunmen use the same quantized table at the faster second tier and retain their
-slot through the measured 550/560-frame top-entry retreat. Riflemen advance,
+Gunmen use the same quantized table at the faster second tier, check their
+movement-facing gate at 192-frame intervals after the representative frame-58
+first window, and retain their slot through the measured 550/560-frame
+top-entry retreat. Riflemen advance,
 enter their attack state at 122 NES frames once they are at least 48 NES pixels
 downscreen and within 96 NES Y pixels of Billy, then fire five shots at
 138/154/170/186/202,

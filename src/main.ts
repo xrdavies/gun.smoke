@@ -2023,7 +2023,7 @@ class GunSmokeGame {
       this.score = addScore(this.score, 200);
     } else if (item === "pow") {
       for (const target of [...this.units]) {
-        if (target.kind === "enemy" && target.hp > 0) this.defeatTarget(target);
+        if (target.kind === "enemy" && target.hp > 0 && !target.exploding) this.defeatTarget(target);
       }
       this.clearEnemyUnits();
       this.clearEnemyProjectiles();

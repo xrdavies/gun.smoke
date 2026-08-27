@@ -3,7 +3,6 @@ import { AMMO_GAIN, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER
 import { GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, GUNMAN_BOTTOM_NEAR_DISTANCE_NES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, GUNMAN_BULLET_SPEED, GUNMAN_ENTRY_PATH_NES, GUNMAN_FIRST_SHOT_DELAY, GUNMAN_FLANK_LIFETIMES, GUNMAN_FLANK_SHOT_FRAMES, GUNMAN_LIFETIME, gunmanFlankPosition, gunmanOpeningY } from "../src/game-constants";
 import { RIFLEMAN_LIFETIME, RIFLEMAN_PATH_NES, riflemanPosition, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_PATH_NES, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition } from "../src/game-constants";
 import { NINJA_BOSS_TELEPORT_DELAY } from "../src/game-constants";
-import { ninjaBossCanTakeHit } from "../src/game-constants";
 import { addScore, MAX_SCORE } from "../src/game-constants";
 import { PLAYER_ENTRY_X, PLAYER_ENTRY_X_NES, PLAYER_ENTRY_Y, PLAYER_ENTRY_Y_NES } from "../src/game-constants";
 import { NINJA_ATTACK_MOVE_DURATION, NINJA_ENTRY_PATH_NES, ninjaAttackPosition, ninjaOpeningY } from "../src/game-constants";
@@ -152,10 +151,6 @@ describe("Gun.Smoke vertical slice", () => {
     expect(addScore(MAX_SCORE, 400)).toBe(MAX_SCORE);
     expect(spendPoints(10_000, 6_000)).toBe(4_000);
     expect(spendPoints(5_999, 6_000)).toBeUndefined();
-  });
-
-  it("keeps Ninja Boss smoke and teleport windows invulnerable", () => {
-    expect([ninjaBossCanTakeHit(43 / NES_FRAME_RATE, 44 / NES_FRAME_RATE), ninjaBossCanTakeHit(44 / NES_FRAME_RATE, 44 / NES_FRAME_RATE)]).toEqual([false, true]);
   });
 
   it("caps stored Boots and Rifle with the traced overflow reward", () => {

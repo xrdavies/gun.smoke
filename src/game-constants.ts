@@ -681,10 +681,6 @@ export const NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES = [6, -34] as const;
 export const NINJA_BOSS_SHURIKEN_VELOCITIES_NES = [[1.25, -1.5], [1.25, 1.5], [-1.25, 1.5], [-1.25, -1.5]] as const;
 export const NINJA_BOSS_SHURIKEN_LIFETIME = 40 / NES_FRAME_RATE;
 
-export function ninjaBossCanTakeHit(age: number, invulnerableUntil: number): boolean {
-  return age >= invulnerableUntil;
-}
-
 export function ninjaBossPreparePosition(age: number, originX: number, originY: number, targetX: number, targetY: number): readonly [number, number] {
   const progress = clamp(age / NINJA_BOSS_PREPARE_DURATION, 0, 1);
   return [originX + (targetX - originX) * progress, originY + (targetY - originY) * progress];

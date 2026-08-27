@@ -651,7 +651,7 @@ class GunSmokeGame {
     this.updatePlayerFire(delta);
     this.updateSmartBomb();
     this.updateSpawns(delta);
-    this.updateNinjaBossTeleport();
+    this.updateNinjaBossTeleport(delta);
     this.updateEnemyFire(delta);
     for (const unit of this.units) this.updateUnit(unit, delta);
     this.resolveCollisions();
@@ -1954,10 +1954,10 @@ class GunSmokeGame {
     }
   }
 
-  private updateNinjaBossTeleport(): void {
+  private updateNinjaBossTeleport(delta: number): void {
     if (this.stage !== 4) return;
     const boss = this.units.find((unit) => unit.kind === "boss" && unit.hp > 0 && !unit.exploding);
-    if (!boss || boss.bossNextTeleportAt === undefined || boss.age + 1 / NES_FRAME_RATE < boss.bossNextTeleportAt) return;
+    if (!boss || boss.bossNextTeleportAt === undefined || boss.age + delta < boss.bossNextTeleportAt) return;
     this.startNinjaBossTeleport(boss);
   }
 

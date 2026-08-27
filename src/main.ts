@@ -1431,7 +1431,7 @@ class GunSmokeGame {
         if (this.stage === 2 && unit.vx === 0) unit.vx = (unit.phase < Math.PI ? 1 : -1) * CUTTER_MOVEMENT_SPEED;
         if (this.stage === 6 && unit.bossEntryY !== undefined) {
           const direction = unit.vx === 0 ? (unit.phase < Math.PI ? 1 : -1) : unit.vx < 0 ? -1 : 1;
-          unit.vx = direction * (unit.age <= WINGATE_ENTRY_DURATION + WINGATE_ENTRY_RUSH_DURATION ? WINGATE_ENTRY_RUSH_SPEED : WINGATE_MOVEMENT_SPEED);
+          unit.vx = direction * (unit.age <= WINGATE_ENTRY_DURATION + WINGATE_ENTRY_RUSH_DELAY + WINGATE_ENTRY_RUSH_DURATION ? WINGATE_ENTRY_RUSH_SPEED : WINGATE_MOVEMENT_SPEED);
           if (unit.age <= WINGATE_ENTRY_DURATION + WINGATE_ENTRY_RUSH_DELAY) unit.vx = 0;
         }
         if (this.stage === 5) unit.vx = (unit.vx < 0 ? -1 : 1) * FATMAN_JOE_MOVEMENT_SPEED;

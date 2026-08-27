@@ -171,6 +171,9 @@ ordinary projectile, then `$CAEF-$CB29` decrements Horse health and starts a
 60-frame protection timer without calling the screen-clear routine. The runtime
 uses the same 60 NES-frame window and does not erase unrelated projectiles on a
 Horse hit.
+The Round transition path at `$B9BD-$B9DA` clears `$77` before incrementing the
+Round, so Horse health does not carry into the next Round. Runtime stage changes
+apply the same reset while preserving stored Boots/Rifle and weapon stocks.
 Round 1 uses exactly five behavior routines: `$B080`, `$B0E5`, `$B501`,
 `$B284` and `$B46E`. After the first four are identified as Sniper,
 Shotgunner, Bomber and Gunman, the remaining `$B46E` routine is the verified

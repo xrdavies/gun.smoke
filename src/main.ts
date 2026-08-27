@@ -2104,6 +2104,9 @@ class GunSmokeGame {
     this.stageLoopCount = 0;
     this.shopIndex = 0;
     this.shopSpawnCursor = 0;
+    this.hasHorse = false;
+    this.horseHealth = 0;
+    this.horseSprite.visible = false;
     this.units.length = 0;
     this.buildBackground();
     this.player.x = PLAYER_ENTRY_X;

@@ -558,7 +558,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(fatmanJoeCombatY(FATMAN_JOE_ENTRY_DURATION)).toBe(252);
     expect(fatmanJoeCombatY(FATMAN_JOE_ENTRY_DURATION + 50 / NES_FRAME_RATE)).toBe(319.5);
     expect(fatmanJoeCombatY(FATMAN_JOE_ENTRY_DURATION + 450 / NES_FRAME_RATE)).toBe(90);
-    expect(FATMAN_JOE_FIRST_ATTACK_DELAY).toBeCloseTo(248 / NES_FRAME_RATE, 9);
+    expect(FATMAN_JOE_FIRST_ATTACK_DELAY).toBeCloseTo(95 / NES_FRAME_RATE, 9);
     expect(FATMAN_JOE_ATTACK_DECISION_INTERVAL).toBeCloseTo(76 / NES_FRAME_RATE, 9);
     expect(FATMAN_JOE_ATTACK_CHANCE).toBe(0.5);
     expect(FATMAN_JOE_SHELL_FLIGHT_DURATION).toBeCloseTo(31 / NES_FRAME_RATE, 9);
@@ -567,7 +567,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(FATMAN_JOE_MINE_INTERVAL).toBeCloseTo(4 / NES_FRAME_RATE, 9);
     expect(FATMAN_JOE_MINE_OFFSETS_NES).toEqual([[-16, 4], [-10, 12], [0, 16], [10, 12], [16, 4]]);
     expect([34, 35, 38, 39, 51, 80].map((frame) => fatmanJoeMineCount(frame / NES_FRAME_RATE))).toEqual([0, 1, 1, 2, 5, 5]);
-    expect(FATMAN_JOE_GRENADE_LIFETIME).toBeCloseTo(30 / NES_FRAME_RATE, 9);
+    expect(FATMAN_JOE_GRENADE_LIFETIME).toBeCloseTo(29 / NES_FRAME_RATE, 9);
     expect(FATMAN_JOE_LAUNCH_INVULNERABILITY).toBe(0.75);
     expect(FATMAN_JOE_MOVEMENT_SPEED).toBeCloseTo((40 / 75) * NES_FRAME_RATE * NES_WORLD_X_SCALE, 9);
     const joe = { x: 90 * NES_WORLD_X_SCALE, y: 89 * (540 / 240) };

@@ -319,15 +319,16 @@ multi-height combat profile, opening timing and interval while keeping the smoke
 and teleport visuals procedural.
 Round 5's gate identifies Fatman Joe as dispatch `0x80`, variant `0x51`. He
 enters from the top at NES `(x=152, y=0)`, keeps that horizontal lane for the
-first 170 frames and reaches about `y=112`. His idle attack decision starts at
-frame 248 and uses a half-probability random gate plus the downward heading
-sector; movement actions pause that decision timer. A successful attack creates
+first 170 frames and reaches about `y=112`. His attack decision timer first
+expires at frame 95 and repeats every 76 active frames; each decision uses a
+half-probability random gate plus the downward heading sector, while movement
+actions pause the timer. A successful attack creates
 one moving `0x86` shell at Boss offset `(-8,+6)` NES pixels. The shell uses the
 shared integer direction quantizer, flies for 31 frames, and becomes a
 stationary split controller. Beginning four frames later, it emits five `0x3f`
 mines at 4-frame intervals with relative offsets
 `(-16,+4),(-10,+12),(0,+16),(+10,+12),(+16,+4)`. Each mine remains for about
-30 frames and the controller releases at age 61. Runtime preserves this full
+29 frames and the controller releases at age 61. Runtime preserves this full
 shell-to-mine chain; later random movement-action scheduling remains an
 approximation over the measured multi-hop profile.
 Round 6's first Wingate encounter is dispatch `0xa3`, variant `0x65`. It enters

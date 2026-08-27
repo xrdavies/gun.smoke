@@ -150,7 +150,7 @@ the jump and random attack scheduler remain an approximation.
 Fatman Joe begins attack decisions after his measured entrance. A successful
 downward-sector check launches one aimed shell; after 31 frames it stops and
 splits into five stationary mines at four-frame intervals. The mines use the
-measured symmetric offsets and last about 30 NES frames. His multi-hop vertical
+measured symmetric offsets and last about 29 NES frames. His multi-hop vertical
 profile follows the measured Boss trace while random action selection remains
 an approximation.
 Ninja's measured first shuriken volley appears at frame 179 as a four-way

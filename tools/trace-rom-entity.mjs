@@ -10,7 +10,8 @@ const filename = args.find((argument) => !argument.startsWith("--")) ?? "Gun.Smo
 const stateFile = option("state");
 const dispatch = numberOption("dispatch", Number.NaN);
 const variant = option("variant") === undefined ? undefined : numberOption("variant", 0);
-const frames = numberOption("frames", 12_000);
+const round = option("round") === undefined ? undefined : numberOption("round", 1);
+const frames = numberOption("frames", round === undefined ? 12_000 : round * 24_000);
 const traceFrames = numberOption("trace-frames", 1_200);
 const playerX = option("player-x") === undefined ? undefined : numberOption("player-x", 0);
 const playerY = option("player-y") === undefined ? undefined : numberOption("player-y", 0);
@@ -22,6 +23,7 @@ if (!fs.existsSync(filename)) {
 }
 if (stateFile && !fs.existsSync(stateFile)) throw new Error(`State file not found: ${stateFile}`);
 if (!Number.isInteger(dispatch)) throw new Error("--dispatch is required and accepts decimal or 0x-prefixed values");
+if (round !== undefined && (!Number.isInteger(round) || round < 1 || round > 6)) throw new Error("--round must be an integer from 1 through 6");
 if (!Number.isInteger(frames) || frames <= 0 || !Number.isInteger(traceFrames) || traceFrames <= 0) throw new Error("--frames and --trace-frames must be positive integers");
 
 const romBytes = fs.readFileSync(filename);
@@ -65,6 +67,25 @@ const projectileFrames = [];
 for (let frame = 0; frame < frames; frame += 1) {
   const memory = nes.cpu.mem;
   memory[0x7c] = 255;
+  const currentRound = (memory[0x41] ?? 0) + 1;
+  const advancing = round !== undefined && currentRound < round;
+  if (advancing) {
+    const mapPointer = (memory[0x5a] ?? 0) | ((memory[0x5b] ?? 0) << 8);
+    const mapEnd = (memory[0x5e] ?? 0) | ((memory[0x5f] ?? 0) << 8);
+    if (memory[0x4b] === 0 && mapPointer >= mapEnd - 24) memory[0x49] = 1;
+    const bossActive = active(14) && memory[0x420 + 14] >= 0x80;
+    if (bossActive) {
+      memory[0x74] = memory[0x5e0 + 14];
+      memory[0x540 + 14] = 1;
+    }
+    for (const button of [Controller.BUTTON_A, Controller.BUTTON_B]) {
+      if (bossActive && frame % 5 === 0) nes.buttonDown(1, button);
+      else nes.buttonUp(1, button);
+    }
+  } else if (round !== undefined) {
+    nes.buttonUp(1, Controller.BUTTON_A);
+    nes.buttonUp(1, Controller.BUTTON_B);
+  }
   if (targetSlot !== undefined) {
     if (playerX !== undefined) memory[0x74] = playerX;
     if (playerY !== undefined) memory[0x71] = playerY;
@@ -74,7 +95,7 @@ for (let frame = 0; frame < frames; frame += 1) {
 
   if (targetSlot === undefined) {
     for (let slot = 16; slot < 23; slot += 1) {
-      if (!active(slot) || memory[0x420 + slot] !== dispatch || variant !== undefined && memory[0x480 + slot] !== variant) continue;
+      if (advancing || !active(slot) || memory[0x420 + slot] !== dispatch || variant !== undefined && memory[0x480 + slot] !== variant) continue;
       targetSlot = slot;
       targetStart = frame;
       for (let other = 16; other < 23; other += 1) if (other !== slot) memory[0x400 + other] = 0;
@@ -86,7 +107,7 @@ for (let frame = 0; frame < frames; frame += 1) {
   if (!active(targetSlot)) break;
 
   const relativeFrame = frame - targetStart;
-  entityFrames.push({ frame: relativeFrame, ...entity(targetSlot) });
+  entityFrames.push({ frame: relativeFrame, ...entity(targetSlot), player: { x: memory[0x74], y: memory[0x71] } });
   for (let slot = 24; slot < 32; slot += 1) {
     if (active(slot)) projectileFrames.push({ frame: relativeFrame, ...entity(slot) });
   }
@@ -100,6 +121,7 @@ const trace = {
   sourceSha256: crypto.createHash("sha256").update(romBytes).digest("hex"),
   frameRate: 60.098,
   dispatch,
+  ...(round === undefined ? {} : { round }),
   ...(variant === undefined ? {} : { variant }),
   targetSlot,
   targetStart,

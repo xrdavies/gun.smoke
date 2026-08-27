@@ -503,6 +503,9 @@ first naturally initialized ordinary enemy with that dispatch, clears the other
 seven-slot actors, and records every parallel-array field plus the ordinary
 projectile pool. `--variant=0x43`, `--state=...`, and fixed `--player-x/--player-y`
 values narrow later-Round comparisons without synthesizing an entity state.
+`--round=3` accelerates earlier Boss gates with automated player fire and Boss
+health clamped to one before searching that Round, so the target actor still
+comes from its authored event and initializer state.
 
 `npm run trace:rom:scenes -- --frames=12000 --every=60` writes a longer,
 machine-readable trace to `.rom-traces/scenes.json`. In addition to the state

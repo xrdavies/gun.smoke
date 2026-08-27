@@ -441,7 +441,7 @@ describe("Gun.Smoke vertical slice", () => {
 
   it("matches the traced Gunman shot timing", () => {
     expect(GUNMAN_FIRST_SHOT_DELAY).toBeCloseTo(39 / NES_FRAME_RATE, 9);
-    expect(GUNMAN_LIFETIME).toBeCloseTo(289 / NES_FRAME_RATE, 9);
+    expect(GUNMAN_LIFETIME).toBeCloseTo(560 / NES_FRAME_RATE, 9);
     expect(GUNMAN_ENTRY_PATH_NES).toEqual([[0, 0], [40, 53], [100, 128], [104, 132]]);
     expect(gunmanOpeningY(40 / NES_FRAME_RATE)).toBeCloseTo(53 * (540 / 240), 9);
     expect(gunmanOpeningY(100 / NES_FRAME_RATE)).toBeCloseTo(128 * (540 / 240), 9);

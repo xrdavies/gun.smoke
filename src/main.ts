@@ -616,6 +616,7 @@ class GunSmokeGame {
         boss.bossEntryX = boss.x;
         boss.bossEntryY = WINGATE_SECOND_ENTRY_Y;
         boss.vx = (boss.x < 128 * NES_WORLD_X_SCALE ? 1 : -1) * WINGATE_MOVEMENT_SPEED;
+        this.bossSpawned = true;
         this.bossFireClock = WINGATE_SECOND_FIRST_SHOT_DELAY;
         this.showMessage("THE REAL WINGATE");
       }

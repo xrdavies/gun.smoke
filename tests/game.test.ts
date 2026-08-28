@@ -592,6 +592,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(GUNMAN_FLANK_INITIAL_STATE_FRAMES).toBe(250);
     expect([0, Math.PI / 2, Math.PI, Math.PI * 1.5].map(gunmanFlankFirstOpportunityFrame)).toEqual([64, 48, 32, 16]);
     expect([gunmanFlankLifetime(8), gunmanFlankLifetime(9), gunmanFlankLifetime(8, 32), gunmanFlankLifetime(9, 32), gunmanFlankLifetime(8, 64), gunmanFlankLifetime(9, 64)]).toEqual([508, 826, 569, 963, 371, 360].map((frames) => frames / NES_FRAME_RATE));
+    expect(gunmanFlankLifetime(8, 64, 3)).toBeCloseTo(508 / NES_FRAME_RATE, 9);
     expect(gunmanFlankPosition(7, 64 / NES_FRAME_RATE)).toEqual([47, 32]);
     expect(gunmanFlankPosition(7, 338 / NES_FRAME_RATE)).toEqual([192, 213]);
     expect(gunmanFlankPosition(7, 641 / NES_FRAME_RATE)).toEqual([158, 218]);
@@ -611,6 +612,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankPosition(9, 64 / NES_FRAME_RATE, 64)).toEqual([-46, 34]);
     expect(gunmanFlankPosition(9, 200 / NES_FRAME_RATE, 64)).toEqual([-127, 90]);
     expect(gunmanFlankPosition(9, 359 / NES_FRAME_RATE, 64)).toEqual([-248, 81]);
+    expect(gunmanFlankPosition(8, 96 / NES_FRAME_RATE, 64, 3)).toEqual([0, 31.870445344129553]);
+    expect(gunmanFlankPosition(9, 96 / NES_FRAME_RATE, 64, 3)).toEqual([-69.1025641025641, 38.66666666666667]);
   });
 
   it("matches the traced bottom-entry Gunman routes", () => {

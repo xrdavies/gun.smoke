@@ -309,11 +309,11 @@ initial side state, and then switches to the stored movement heading. Because
 `$0540/$04E0` are reused slot fields rather than event data, the web runtime
 uses a deterministic per-actor seed for this initial phase; exact slot-reuse
 seeding remains a documented parity boundary. Two complete Round 2 `y=32`
-side traces are now used when their entry coordinate matches: code 8 follows
-the 569-frame left-edge trace and code 9 follows the 963-frame right-edge
+side traces are now used when their entry coordinate matches in Round 2: code 8
+follows the 569-frame left-edge trace and code 9 follows the 963-frame right-edge
 trace; a code 8 trace at `y=64` follows 371 measured frames, and a code 9 trace
-at `y=64` follows 360 measured frames. Other entry heights retain the generic
-measured routes.
+at `y=64` follows 360 measured frames. Other rounds and entry heights retain
+the generic measured routes until their slot-state traces are captured.
 On defeat, `$CD4E-$CDAA` converts an event's `0x80` flag into dispatch `0x4e`.
 If `$90/$94/$98/$9c` show no special-gun ammunition, it increments that to `0x4f`;
 the `$E192` conversion table then maps them to Bullet (`0x29`) and Money

@@ -251,8 +251,8 @@ retain their separate measured keyframe routes, while their attack windows use
 the retained phase-driven 64-frame checks rather than fixed shot timestamps.
 Complete Round 2 side traces are selected for matching entries (569 frames for
 code 8 at `y=32`, 371 frames for code 8 at `y=64`, 963 frames for code 9 at
-`y=32`, and 360 frames for code 9 at `y=64`); other entry heights use the
-generic routes until their slot-state traces are captured.
+`y=32`, and 360 frames for code 9 at `y=64`); other rounds and entry heights
+use the generic routes until their slot-state traces are captured.
 Riflemen advance,
 enter their attack state at 122 NES frames once they are at least 48 NES pixels
 downscreen and within 96 NES Y pixels of Billy, then fire five shots at

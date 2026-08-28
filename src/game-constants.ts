@@ -1263,7 +1263,8 @@ export function advanceDevilHawkMovement(state: DevilHawkMovementState, targetFr
       }
       state.actionFrames -= 1;
       if (state.actionFrames >= 0) {
-        advanceDevilHawkGait(state, DEVIL_HAWK_ACTION_HEADINGS[Math.max(0, state.actionFrames) >> 1] ?? state.heading);
+        moveEncodedHeading(state, DEVIL_HAWK_ACTION_HEADINGS[Math.max(0, state.actionFrames) >> 1] ?? state.heading);
+        moveEncodedHeading(state, state.heading);
         continue;
       }
       if (state.correctionReleaseFrames > 0) {

@@ -789,7 +789,10 @@ describe("Gun.Smoke vertical slice", () => {
     expect([correction.mode, Math.floor(correction.x), Math.floor(correction.y), correction.heading, correction.correctionHoldFrames, correction.actionFrames]).toEqual(["correction", 122, 47, 0x50, 26, 32]);
     advanceDevilHawkMovement(correction, 3677, () => 0, () => 0);
     expect([correction.correctionHoldFrames, correction.actionFrames]).toEqual([0, 32]);
+    advanceDevilHawkMovement(correction, 3680, () => 0, () => 0);
+    expect([Math.floor(correction.x), Math.floor(correction.y)]).toEqual([120, 50]);
     advanceDevilHawkMovement(correction, 3709, () => 0, () => 0);
+    expect([Math.floor(correction.x), Math.floor(correction.y)]).toEqual([119, 107]);
     expect(correction.actionFrames).toBe(0);
     advanceDevilHawkMovement(correction, 3737, () => 0, () => 0);
     expect(correction.mode).toBe("move");

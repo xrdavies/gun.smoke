@@ -388,8 +388,8 @@ player-relative offset before holding position; clean routes release between
 281 and 302 frames. Round 4 events `at=47,x=152,phase=0` and
 `at=63,x=184,phase=1` have complete 244-frame coordinate traces, including
 their second post-throw movement and release transitions. Event
-`at=383,x=184,phase=1` and `at=751,x=184,phase=0` take random no-throw
-branches and release after 205/202 frames. Events
+`at=383,x=184,phase=1` and `at=751/1583,x=184,phase=0` take random
+no-throw branches and release after 205/202/202 frames. Events
 `at=815/1071/1199,x=184,phase=0` reach the activation range later, throw at
 frame 116, and release after 258/279/257 frames. Runtime binds those routes and throw frames to their event indexes
 and retains the 303-frame cap for other Ninja entries. ROM-tagged Ninja, Hatchet, Spear, and Firebreather

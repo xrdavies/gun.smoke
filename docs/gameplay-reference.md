@@ -236,8 +236,9 @@ combat line, then make a brief player-relative diagonal retreat after their
 frame-103 Shuriken and release within the measured 303-frame route cap. Round 4
 events `at=47,x=152,phase=0` and `at=63,x=184,phase=1` use their measured
 244-frame second movement and release traces. The later
-`at=383,x=184,phase=1` and `at=751,x=184,phase=0` events follow separate
-205/202-frame no-throw routes. Events `at=815/1071/1199,x=184,phase=0` delay
+`at=383,x=184,phase=1` and `at=751/1583,x=184,phase=0` events follow
+separate 205/202/202-frame no-throw routes. Events
+`at=815/1071/1199,x=184,phase=0` delay
 their Shuriken until frame 116 and follow separate 258/279/257-frame routes;
 other entries retain the parameterized route.
 Gunmen use the same quantized table at the faster second tier, check their

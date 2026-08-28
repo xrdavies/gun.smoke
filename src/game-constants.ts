@@ -85,6 +85,13 @@ export function mixRomRandomDifference(state: RomRandomState): RomRandomState {
   next[0] = (next[0]! - next[1]! - 1) & 0xff;
   return next;
 }
+
+export function mixRomRandomSpawn(state: RomRandomState): RomRandomState {
+  const next: RomRandomState = [...state];
+  const sum = next[0]! + next[1]!;
+  next[0] = (sum - next[2]! - Number(sum <= 0xff)) & 0xff;
+  return next;
+}
 export const BOSS_BAR_RECOVERY_DURATION = 8 / NES_FRAME_RATE;
 export const MAX_LIVES = 5;
 export const MAX_SCORE = 999_990;
@@ -825,7 +832,6 @@ export const BACKSTABBER_AMBUSH_DEPTH = 178;
 export const BACKSTABBER_AMBUSH_LIFETIME = 532 / NES_FRAME_RATE;
 export const BACKSTABBER_RAID_PATH = [[0, 0, 0], [40, 66, -15], [80, 103, 42], [120, 129, 44], [160, 174, 89], [200, 184, 83], [368, 213, 74]] as const;
 export const BACKSTABBER_RAID_LIFETIME = 369 / NES_FRAME_RATE;
-export const GUNMAN_FIRST_OPPORTUNITY_FRAMES = [40, 52, 58, 62] as const;
 export const GUNMAN_SHOT_OPPORTUNITY_INTERVAL = 64 / NES_FRAME_RATE;
 export const GUNMAN_LIFETIME = 560 / NES_FRAME_RATE;
 // The measured center route releases at 549; side routes are kept at the
@@ -951,9 +957,8 @@ export function gunmanFlankLifetime(entityCode: 7 | 8 | 9, originY = 0, stage = 
   return (scoped ?? Math.round(GUNMAN_FLANK_LIFETIMES[entityCode] * NES_FRAME_RATE)) / NES_FRAME_RATE;
 }
 
-export function gunmanFlankFirstOpportunityFrame(phase: number): number {
-  const normalized = ((phase % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2) / (Math.PI * 2);
-  return Math.max(1, 64 - Math.floor(normalized * 64));
+export function gunmanFlankFirstOpportunityFrame(seed: number): number {
+  return gunmanFirstOpportunityFrame(seed, 16);
 }
 
 const GUNMAN_TOP_PATHS_NES = {
@@ -1076,8 +1081,15 @@ export function gunmanOpeningY(age: number): number {
   const amount = (frame - previous[0]) / (next[0] - previous[0]);
   return (previous[1] + (next[1] - previous[1]) * amount) * NES_WORLD_Y_SCALE;
 }
-export function gunmanFirstOpportunityFrame(phase: number): number {
-  return GUNMAN_FIRST_OPPORTUNITY_FRAMES[Math.floor((phase % (Math.PI * 2)) / (Math.PI * 2) * GUNMAN_FIRST_OPPORTUNITY_FRAMES.length)] ?? GUNMAN_FIRST_OPPORTUNITY_FRAMES[0];
+export function gunmanFirstOpportunityFrame(seed: number, originY = 0): number {
+  let value = seed & 0xff;
+  let increments = 0;
+  do {
+    value = (value + 3) & 0xff;
+    increments += 1;
+  } while (value < 0xc0);
+  const firstIncrementFrame = originY >= 0x10 && originY < 0xe0 ? 1 : 13;
+  return firstIncrementFrame + increments - 1;
 }
 export function gunmanCanFire(facingHeading: number, aimHeading: number): boolean {
   return Math.abs((aimHeading - facingHeading + 48) % 32 - 16) < 3;

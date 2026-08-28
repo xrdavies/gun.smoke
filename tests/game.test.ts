@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { advanceRomRandom, mixRomRandomDifference, mixRomRandomFirstSum, mixRomRandomSecondSum, mixRomRandomSecondThirdSum, mixRomRandomSum, mixRomRandomThirdFirstSum, ROM_RANDOM_SEED } from "../src/game-constants";
+import { advanceRomRandom, mixRomRandomDifference, mixRomRandomFirstSum, mixRomRandomSecondSum, mixRomRandomSecondThirdSum, mixRomRandomSpawn, mixRomRandomSum, mixRomRandomThirdFirstSum, ROM_RANDOM_SEED } from "../src/game-constants";
 import { AMMO_GAIN, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, bomberCanThrow, bomberMovementDecision, bomberMovementDuration, BOMBER_MOVEMENT_DURATIONS, bomberMovementUsesRandom, bomberMovementVelocity, BOMBER_THROW_CHANCE, BOMBER_THROW_DURATION, bossReward, BOSS_DEFEAT_ANIMATION_DURATION, BOSS_REWARDS, BOOTS_SPEED_MULTIPLIER, clamp, distance, DYNAMITE_AIRBORNE_DURATION, DYNAMITE_LANDED_DURATION, DYNAMITE_LIFETIME, DYNAMITE_WORLD_SPEED, EMPTY_BARREL_EXPLOSION_LIFETIME, fallingRockOnScreen, fallingRockPosition, FIREBREATHER_FIRST_DECISION_DELAY, formationEntryY, HORSE_HIT_INVULNERABILITY, MACHINE_GUN_BULLET_LIFETIME, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_BULLET_SPEED, NES_DIAGONAL_BULLET_X, NES_DIAGONAL_BULLET_Y, NES_FRAME_RATE, NES_PLAYER_SPEED, NES_SCROLL_SPEED, NINJA_FIRST_SHOT_DELAY, NINJA_PROJECTILE_SPEED, obstacleBlocks, PISTOL_BULLET_LIFETIME, PLAYER_DEATH_ANIMATION_DURATION, PLAYER_DEATH_RECOVERY_DURATION, PLAYER_RESPAWN_HIDDEN_DURATION, PLAYER_RESPAWN_READY_DURATION, playerDeathPhase, RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_FLIGHT_PATH_NES, ROCK_FLIGHT_PATH_PHASE0_NES, ROCK_IMPACT_DELAY, ROCK_IMPACT_LIFETIME, ROCK_LIFETIME, ROM_OBJECT_DROP_SPEED, ROM_SCREEN_RELEASE_Y_NES, romActorScreenYReleased, ROAD_WIDTHS, ROUND_BOSS_GATE_SCROLL_NES, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_LOOP_SCROLL_NES, ROUND_OBSTACLES, ROUND_SEGMENTS, scoreBossDefeat, SHOTGUN_BULLET_LIFETIME, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_VOLLEY_INTERVAL, SHOP_COSTS, SHOP_TYPES, shouldClearProjectilesAfterBossDefeat, SMART_BOMB_CAPACITY, SNIPER_CODE2_SHOT_FRAMES, SNIPER_COVER_DURATION, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, sniperProjectileVelocity, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, shouldLoopStage } from "../src/game-constants";
-import { GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, GUNMAN_BOTTOM_NEAR_DISTANCE_NES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, gunmanCanFire, GUNMAN_ENTRY_PATH_NES, GUNMAN_FIRST_OPPORTUNITY_FRAMES, GUNMAN_FLANK_INITIAL_STATE_FRAMES, gunmanFlankFirstOpportunityFrame, gunmanFlankLifetime, GUNMAN_FLANK_LIFETIMES, GUNMAN_FLANK_SHOT_FRAMES, GUNMAN_LIFETIME, GUNMAN_TOP_LIFETIMES_FRAMES, gunmanFirstOpportunityFrame, gunmanFlankPosition, gunmanOpeningY, gunmanTopBranch, gunmanTopHeading, gunmanTopPosition, gunmanProjectileVelocity, GUNMAN_SHOT_OPPORTUNITY_INTERVAL } from "../src/game-constants";
+import { GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, GUNMAN_BOTTOM_NEAR_DISTANCE_NES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, gunmanCanFire, GUNMAN_ENTRY_PATH_NES, GUNMAN_FLANK_INITIAL_STATE_FRAMES, gunmanFlankFirstOpportunityFrame, gunmanFlankLifetime, GUNMAN_FLANK_LIFETIMES, GUNMAN_FLANK_SHOT_FRAMES, GUNMAN_LIFETIME, GUNMAN_TOP_LIFETIMES_FRAMES, gunmanFirstOpportunityFrame, gunmanFlankPosition, gunmanOpeningY, gunmanTopBranch, gunmanTopHeading, gunmanTopPosition, gunmanProjectileVelocity, GUNMAN_SHOT_OPPORTUNITY_INTERVAL } from "../src/game-constants";
 import { RIFLEMAN_LIFETIME, RIFLEMAN_PATH_NES, riflemanCanAttack, riflemanPosition, riflemanShotHeading, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_PATH_NES, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition, mediumProjectileHeadingVelocity, mediumProjectileVelocity } from "../src/game-constants";
 import { bossSpriteVisible, ninjaBossEntryLaneIndex, NINJA_BOSS_TELEPORT_DELAY } from "../src/game-constants";
 import { hasWeaponStock } from "../src/game-constants";
@@ -61,6 +61,14 @@ describe("Gun.Smoke vertical slice", () => {
     expect(mixRomRandomThirdFirstSum([93, 58, 115, 248])).toEqual([93, 58, 208, 248]);
     expect(mixRomRandomSecondThirdSum([93, 58, 115, 248])).toEqual([93, 173, 115, 248]);
     expect(mixRomRandomDifference([93, 58, 115, 248])).toEqual([34, 58, 115, 248]);
+    expect(mixRomRandomSpawn([162, 170, 20, 191])).toEqual([56, 170, 20, 191]);
+    let spawnState: [number, number, number, number] = [...ROM_RANDOM_SEED];
+    const advanceFrames = (frames: number) => {
+      for (let frame = 0; frame < frames; frame += 1) spawnState = advanceRomRandom(spawnState);
+      spawnState = mixRomRandomSpawn(spawnState);
+      return spawnState[0];
+    };
+    expect([advanceFrames(143), advanceFrames(144), advanceFrames(48)]).toEqual([56, 72, 22]);
   });
 
   it("matches the traced Horse hit protection", () => {
@@ -236,7 +244,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(shopEvents.map((events) => events.map((event) => event.x))).toEqual([
       [56, 200], [168, 64], [40, 216, 40], [40, 216], [152, 72], [216, 216, 56],
     ]);
-    expect(shopEvents.flat().every((event) => romObjectWorldAt(event) === event.at * (540 / 240) && romObjectWorldX(event) === event.x * (960 / 256))).toBe(true);
+    expect(shopEvents.flat().every((event) => romObjectWorldAt(event) === (event.at + 2 / 3) * NES_WORLD_Y_SCALE && romObjectWorldX(event) === event.x * NES_WORLD_X_SCALE)).toBe(true);
     expect(ROAD_WIDTHS).toHaveLength(MAX_STAGE);
     expect(ROAD_WIDTHS[0]).toBe(730);
     expect(ROAD_WIDTHS[2]).toBeLessThan(ROAD_WIDTHS[4]);
@@ -288,6 +296,8 @@ describe("Gun.Smoke vertical slice", () => {
   it("keeps the ROM enemy event streams ordered and bounded", () => {
     expect(ROUND_ROM_ENEMY_EVENT_COUNTS).toEqual([128, 137, 275, 299, 185, 313]);
     expect(ROUND_ROM_OBJECT_EVENT_COUNTS).toEqual([42, 20, 32, 22, 24, 23]);
+    expect(romEventWorldAt(ROUND_ROM_ENEMY_EVENTS[0]![0]!)).toBeCloseTo((47 + 2 / 3) * NES_WORLD_Y_SCALE, 9);
+    expect(romObjectWorldAt(ROUND_ROM_OBJECT_EVENTS[0]![0]!)).toBeCloseTo((63 + 2 / 3) * NES_WORLD_Y_SCALE, 9);
     expect(ROM_BEHAVIOR_ENEMY_TYPES).toHaveLength(12);
     expect(ROM_BEHAVIOR_ENEMY_TYPES[1]).toBe("shotgunner");
     expect(ROM_BEHAVIOR_ENEMY_TYPES[3]).toBe("backstabber");
@@ -608,8 +618,7 @@ describe("Gun.Smoke vertical slice", () => {
   });
 
   it("matches the traced Gunman shot timing", () => {
-    expect(GUNMAN_FIRST_OPPORTUNITY_FRAMES).toEqual([40, 52, 58, 62]);
-    expect([0, Math.PI / 2, Math.PI, Math.PI * 1.5].map(gunmanFirstOpportunityFrame)).toEqual([40, 52, 58, 62]);
+    expect([56, 72, 22].map((seed) => gunmanFirstOpportunityFrame(seed))).toEqual([58, 52, 69]);
     expect(GUNMAN_SHOT_OPPORTUNITY_INTERVAL).toBeCloseTo(64 / NES_FRAME_RATE, 9);
     expect(GUNMAN_LIFETIME).toBeCloseTo(560 / NES_FRAME_RATE, 9);
     expect([gunmanCanFire(16, 14), gunmanCanFire(16, 18), gunmanCanFire(16, 13), gunmanCanFire(31, 1)]).toEqual([true, true, false, true]);
@@ -648,7 +657,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(GUNMAN_FLANK_SHOT_FRAMES).toEqual({ 7: [64, 410], 8: [309], 9: [399, 463] });
     expect(GUNMAN_FLANK_LIFETIMES).toEqual({ 7: 642 / NES_FRAME_RATE, 8: 508 / NES_FRAME_RATE, 9: 826 / NES_FRAME_RATE });
     expect(GUNMAN_FLANK_INITIAL_STATE_FRAMES).toBe(250);
-    expect([0, Math.PI / 2, Math.PI, Math.PI * 1.5].map(gunmanFlankFirstOpportunityFrame)).toEqual([64, 48, 32, 16]);
+    expect([135, 188, 0, 70].map(gunmanFlankFirstOpportunityFrame)).toEqual([19, 2, 64, 41]);
     expect([gunmanFlankLifetime(8), gunmanFlankLifetime(9), gunmanFlankLifetime(8, 32), gunmanFlankLifetime(9, 32), gunmanFlankLifetime(8, 64), gunmanFlankLifetime(9, 64)]).toEqual([508, 826, 569, 963, 371, 360].map((frames) => frames / NES_FRAME_RATE));
     expect(gunmanFlankLifetime(8, 64, 3, 1)).toBeCloseTo(508 / NES_FRAME_RATE, 9);
     expect(gunmanFlankLifetime(8, 64, 3, 0)).toBeCloseTo(379 / NES_FRAME_RATE, 9);

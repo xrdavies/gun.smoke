@@ -84,6 +84,8 @@ event stream with separate capacities. The compressed behavior and object
 streams retain each record's original `$8C00` script index; runtime merges them
 by trigger and script index so mixed enemy/object/shop groups preserve their
 original order and compete for shared slots in the same sequence as the ROM.
+The map-row transition releases a record at decoded scroll plus `2/3` of one
+NES pixel; runtime retains that phase instead of spawning two frames early.
 At `$FA89-$FA92`, a full selected pool skips the record and `$FAD8` advances
 the script pointer; runtime applies the same one-shot capacity check to shops,
 containers, props and behavior entities instead of retrying or exempting shops.
@@ -265,8 +267,9 @@ at the first speed tier rather than continuous-angle velocity.
 The opposite-side entity code `2` keeps the same lifetime but hits every middle
 window, firing at ages 134, 224, 314, 404, 495 and 585. Runtime selects the
 schedule by entity code rather than dropping code `2`'s third shot.
-Three isolated `$B284` top-entry Gunmen first create a dispatch `0x30` bullet
-at ages 52, 58, and 62. `$0540` advances by three until wrapping at 192, so an
+Natural `$B284` top-entry Gunmen begin with scheduler seeds `56`, `72`, and
+`22`, producing first attack opportunities at ages 58, 52, and 69. `$0540`
+advances by three until wrapping at 192, so an
 attack opportunity repeats every 64 frames and only fires when the actor's
 stored movement heading is within two sectors of its integer aim at Billy.
 Isolated first phases appear at frames `40/52/58/62`; the complete left route
@@ -303,12 +306,13 @@ the right-edge initializer. Entity code `8` holds the left edge while scrolling,
 lunges inward at about frame 247, with a successful frame-309 window in one
 trace, and releases at frame 508. Entity code `9` enters from the right, follows
 a long mirrored loop, with successful windows at frames 399/463 in one trace,
-and releases at frame 826. The retained `$0540` phase can move these windows:
+and releases at frame 826. The generated `$0540` seed can move these windows:
 the runtime checks every 64 frames, uses the fixed heading `16` during the
 initial side state, and then switches to the stored movement heading. Because
-`$0540/$04E0` are reused slot fields rather than event data, the web runtime
-uses a deterministic per-actor seed for this initial phase; exact slot-reuse
-seeding remains a documented parity boundary. Two complete Round 2 `y=32`
+the scheduler computes `$0540` from `$AC + $AD - $AE` for every successfully
+allocated entity code below `0x20`, the runtime advances the same global RNG
+and derives the initial opportunity directly from that byte. `$04E0` remains
+a reused slot field. Two complete Round 2 `y=32`
 side traces are now used when their entry coordinate matches in Round 2: code 8
 follows the 569-frame left-edge trace and code 9 follows the 963-frame right-edge
 trace; a code 8 trace at `y=64` follows 371 measured frames, and a code 9 trace

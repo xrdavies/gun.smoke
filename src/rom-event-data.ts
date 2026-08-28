@@ -20,6 +20,7 @@ const ROUND_OBJECT_STREAMS = [
   "PwABAIgAIQcAgE8AAwCIACcHAIBfARMAKAAnBwCAbwEUACgAIgcAgH8BFwDYAB4eAAK/BEoASAAjBwCA7wVjANgAIgcAgI8GbgCoACwIAIC/BnIAOAAhBwCAzwZ0ACgAKQcAgO8GeQDoACcHAICfB4UA2AAfH0ABHwmcADgAHx8AAl8KrQAoACYHAIBfCq4AOAAnBwCAfwzfABgAIQcAgH8M4AAoACIHAICPDfIAaAAuCACA3w4KARgAIgcAgN8ODQHIACEHAIDfDg4B2AApBwCA3w8aAUgAJwcAgO8PHAFIACkHAIA="
 ] as const;
 const WORLD_PER_NES_PIXEL = 540 / 240;
+const ROM_EVENT_SCROLL_PHASE_NES = 2 / 3;
 
 const decodeStream = (encoded: string): readonly RomEnemyEvent[] => {
   const bytes = Uint8Array.from(atob(encoded), (character) => character.charCodeAt(0));
@@ -67,7 +68,7 @@ const decodeObjectStream = (encoded: string): readonly RomObjectEvent[] => {
 export const ROUND_ROM_OBJECT_EVENTS: readonly (readonly RomObjectEvent[])[] = ROUND_OBJECT_STREAMS.map(decodeObjectStream);
 export const ROUND_ROM_OBJECT_EVENT_COUNTS = ROUND_ROM_OBJECT_EVENTS.map((events) => events.length);
 export const compareRomEventOrder = (left: RomEnemyEvent | RomObjectEvent, right: RomEnemyEvent | RomObjectEvent): number => left.at - right.at || left.order - right.order;
-export const romObjectWorldAt = (event: RomObjectEvent): number => event.at * WORLD_PER_NES_PIXEL;
+export const romObjectWorldAt = (event: RomObjectEvent): number => (event.at + ROM_EVENT_SCROLL_PHASE_NES) * WORLD_PER_NES_PIXEL;
 export const romObjectWorldX = (event: RomObjectEvent): number => event.x * (960 / 256);
 export const romObjectWorldY = (event: RomObjectEvent): number => event.y * WORLD_PER_NES_PIXEL;
 export const ROM_ENEMY_SLOT_CAPACITY = 7;
@@ -78,7 +79,7 @@ export const ROM_FALLING_ROCK_BEHAVIORS = [5] as const; // $B5BF is handled as a
 export const ROM_OBJECT_PICKUPS = { 33: "boots", 34: "rifle", 35: "pow", 36: "money", 37: "horse", 38: "redYashichi", 39: "skull", 42: "blueYashichi" } as const;
 export const ROM_EMPTY_BARREL_ENTITY_CODES = [32, 41] as const;
 export const canSpawnRomPool = (pool: RomEnemyEvent["pool"], active: number): boolean => active < (pool === "object" ? ROM_OBJECT_SLOT_CAPACITY : ROM_ENEMY_SLOT_CAPACITY);
-export const romEventWorldAt = (event: RomEnemyEvent): number => event.at * WORLD_PER_NES_PIXEL;
+export const romEventWorldAt = (event: RomEnemyEvent): number => (event.at + ROM_EVENT_SCROLL_PHASE_NES) * WORLD_PER_NES_PIXEL;
 export const romEventWorldX = (event: RomEnemyEvent): number => event.x * (960 / 256);
 export const romEventWorldY = (event: RomEnemyEvent): number => event.y * WORLD_PER_NES_PIXEL;
 

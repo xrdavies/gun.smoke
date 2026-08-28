@@ -11,7 +11,7 @@ import {
   World,
 } from "@xrdavies/2d-engine";
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
-import { advanceRomRandom, mixRomRandomDifference, mixRomRandomFirstSum, mixRomRandomSecondSum, mixRomRandomSecondThirdSum, mixRomRandomSum, mixRomRandomThirdFirstSum, ROM_RANDOM_SEED } from "./game-constants";
+import { advanceRomRandom, mixRomRandomDifference, mixRomRandomFirstSum, mixRomRandomSecondSum, mixRomRandomSecondThirdSum, mixRomRandomSpawn, mixRomRandomSum, mixRomRandomThirdFirstSum, ROM_RANDOM_SEED } from "./game-constants";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
 import { AMMO_GAIN, banditBillOpeningY, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, bomberCanThrow, bomberMovementDecision, bomberMovementDuration, bomberMovementUsesRandom, bomberMovementVelocity, BOMBER_THROW_DURATION, BOSS_DEFEAT_ANIMATION_DURATION, bossReward, bossSpriteVisible, canSpawnPlayerBullet, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, DEVIL_HAWK_RANDOM_ROUTE_START_FRAME, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, contactSourceShouldClear, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_LIFETIME, dynamiteVerticalOffset, EMPTY_BARREL_EXPLOSION_LIFETIME, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X_LANES, FATMAN_JOE_ENTRY_Y, fallingRockOnScreen, fallingRockPosition, fatmanJoeOpeningY, HATCHET_LIFETIME, HORSE_HIT_INVULNERABILITY, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_LANES, NINJA_FIRST_SHOT_DELAY, NINJA_LIFETIME, ninjaAttackPosition, ninjaBossEntryLaneIndex, ninjaOpeningY, PLAYER_DEATH_ANIMATION_DURATION, PLAYER_DEATH_RECOVERY_DURATION, playerDeathPhase, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_IMPACT_LIFETIME, ROCK_LIFETIME, ROAD_WIDTHS, ROM_OBJECT_DROP_SPEED, ROM_SCREEN_RELEASE_Y_NES, romActorScreenYReleased, ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_SIDE_LIFETIME, SHOTGUNNER_SIDE_SHOT_FRAME, SHOTGUNNER_VOLLEY_INTERVAL, shotgunnerPosition, shotgunnerSidePosition, shouldLoopStage, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_CODE2_SHOT_FRAMES, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_X_LANES, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type ItemType, type ShopType, type WeaponName } from "./game-constants";
@@ -101,6 +101,7 @@ interface Unit {
   romBehavior?: number;
   romEntityCode?: number;
   romEventAt?: number;
+  romRandomSeed?: number;
   romPhase?: number;
   romFlags?: number;
   romPool?: "enemy" | "object";
@@ -855,12 +856,14 @@ class GunSmokeGame {
   private spawnRomObjectEvent(event: RomObjectEvent): void {
     const activeObjects = this.units.filter((unit) => unit.romPool === event.pool && unit.romEntityCode !== undefined && unit.hp > 0).length;
     if (!canSpawnRomPool(event.pool, activeObjects)) return;
+    const romRandomSeed = event.entityCode < 0x20 ? this.nextRomSpawnSeedByte() : undefined;
     if (event.semantic === "weaponShop" || event.semantic === "supplyShop") {
       const keeper = this.spawnUnit("shopkeeper", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), 1);
       keeper.vy = ROM_OBJECT_DROP_SPEED;
       keeper.shopIndex = event.shopIndex;
       this.shopSpawnCursor = Math.max(this.shopSpawnCursor, event.shopIndex ?? 0);
       keeper.romEntityCode = event.entityCode;
+      keeper.romRandomSeed = romRandomSeed;
       keeper.romFlags = event.flags;
       keeper.romPool = event.pool;
       return;
@@ -868,6 +871,7 @@ class GunSmokeGame {
     if (event.semantic === "sceneObject" && ROM_SCENE_PROP_DISPATCH_TYPES.includes(event.dispatchType as 8)) {
       const prop = this.spawnUnit("sceneObject", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), 1);
       prop.romEntityCode = event.entityCode;
+      prop.romRandomSeed = romRandomSeed;
       prop.romFlags = event.flags;
       prop.romPool = event.pool;
       prop.vy = ROM_OBJECT_DROP_SPEED;
@@ -879,18 +883,21 @@ class GunSmokeGame {
     const container = this.spawnUnit(pickup || ROM_EMPTY_BARREL_ENTITY_CODES.includes(event.entityCode as 32 | 41) ? "barrel" : "sceneObject", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), romEntityHitPoints(event.entityCode), undefined, pickup);
     container.vy = ROM_OBJECT_DROP_SPEED;
     container.romEntityCode = event.entityCode;
+    container.romRandomSeed = romRandomSeed;
     container.romFlags = event.flags;
     container.romPool = event.pool;
   }
 
   private spawnRomEnemyEvent(event: RomEnemyEvent): void {
     const active = this.units.filter((unit) => unit.romPool === event.pool && unit.romEntityCode !== undefined && unit.hp > 0).length;
+    if (!canSpawnRomPool(event.pool, active)) return;
+    const romRandomSeed = event.entityCode < 0x20 ? this.nextRomSpawnSeedByte() : undefined;
     if (ROM_FALLING_ROCK_BEHAVIORS.includes(event.behavior as 5)) {
-      if (!canSpawnRomPool(event.pool, active)) return;
       const rock = this.spawnUnit("enemyBullet", romEventWorldX(event), this.scroll + romEventWorldY(event), 1);
       rock.projectileType = "rock";
       rock.romBehavior = event.behavior;
       rock.romEntityCode = event.entityCode;
+      rock.romRandomSeed = romRandomSeed;
       rock.romFlags = event.flags;
       rock.romPool = event.pool;
       rock.romOriginX = rock.x;
@@ -907,7 +914,6 @@ class GunSmokeGame {
       rock.sprite.color = [0.55, 0.58, 0.62, 1];
       return;
     }
-    if (!canSpawnRomPool(event.pool, active)) return;
     const enemyType = ROM_BEHAVIOR_ENEMY_TYPES[event.behavior] ?? "gunman";
     const eventX = romEventWorldX(event);
     const flankCode = event.behavior === 2 && (event.entityCode === 7 || event.entityCode === 8 || event.entityCode === 9) ? event.entityCode : undefined;
@@ -924,6 +930,7 @@ class GunSmokeGame {
     enemy.romBehavior = event.behavior;
     enemy.romEntityCode = event.entityCode;
     enemy.romEventAt = event.at;
+    enemy.romRandomSeed = romRandomSeed;
     enemy.romPhase = event.phase;
     enemy.romFlags = event.flags;
     enemy.romPool = event.pool;
@@ -1286,7 +1293,7 @@ class GunSmokeGame {
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: frameDuration },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romEventAt: undefined, romPhase: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, riflemanAimHeading: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, banditState: undefined, cutterState: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined, rockPhase: undefined,
+      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romEventAt: undefined, romRandomSeed: undefined, romPhase: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, riflemanAimHeading: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, banditState: undefined, cutterState: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined, rockPhase: undefined,
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" || sceneObject ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
@@ -1768,7 +1775,9 @@ class GunSmokeGame {
         if (!tracedGunman && bottomGunmanFromLeft === undefined && flankGunman === undefined) unit.x += Math.sin(unit.age * 3 + unit.phase) * 18 * delta;
         const topGunman = bottomGunmanRoute === undefined && flankGunman === undefined;
         const timedGunman = topGunman || flankGunman !== undefined;
-        if (timedGunman && unit.nextFireAt === 0) unit.nextFireAt = (flankGunman === undefined ? gunmanFirstOpportunityFrame(unit.phase) : gunmanFlankFirstOpportunityFrame(unit.phase)) / NES_FRAME_RATE;
+        if (timedGunman && unit.nextFireAt === 0) unit.nextFireAt = (flankGunman === undefined
+          ? gunmanFirstOpportunityFrame(unit.romRandomSeed ?? 0, (unit.romOriginY ?? 0) / NES_WORLD_Y_SCALE)
+          : gunmanFlankFirstOpportunityFrame(unit.romRandomSeed ?? 0)) / NES_FRAME_RATE;
         const shotFrames = bottomGunmanRoute !== undefined ? GUNMAN_BOTTOM_SHOT_FRAMES[bottomGunmanRoute] : undefined;
         const nextShotFrame = shotFrames?.[unit.volleysFired];
         const timedOpportunity = timedGunman && unit.age >= unit.nextFireAt;
@@ -2491,6 +2500,11 @@ class GunSmokeGame {
 
   private nextRomRandomDifferenceByte(): number {
     this.randomState = mixRomRandomDifference(this.randomState);
+    return this.randomState[0]!;
+  }
+
+  private nextRomSpawnSeedByte(): number {
+    this.randomState = mixRomRandomSpawn(this.randomState);
     return this.randomState[0]!;
   }
 

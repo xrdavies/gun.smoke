@@ -1924,23 +1924,10 @@ export function fatmanJoeArenaXBounds(): readonly [number, number] {
 export const WANTED_COSTS = [20_000, 24_000, 50_000, 40_000, 40_000, 60_000] as const;
 export const BOSS_REWARDS = [10_000, 12_000, 25_000, 20_000, 20_000, 30_000] as const;
 
-export const ROUND_ENEMY_TYPES: readonly (readonly EnemyType[])[] = [
-  ["gunman", "bomber", "sniper", "backstabber", "shotgunner"],
-  ["gunman", "backstabber", "rifleman"],
-  ["gunman", "spear", "sniper", "firebreather", "hatchet"],
-  ["ninja", "gunman", "sniper", "shotgunner"],
-  ["gunman", "rifleman", "bomber", "backstabber"],
-  ["gunman", "sniper", "bomber", "backstabber"],
-];
-
-export type Formation = "line" | "wedge" | "cross" | "rear";
 export type LandmarkType = "town" | "rock" | "village" | "cliff" | "forest" | "cemetery" | "open";
 
 export interface RoundSegment {
   at: number;
-  formation: Formation;
-  enemyTypes: readonly EnemyType[];
-  interval: number;
   landmark: LandmarkType;
 }
 
@@ -1953,12 +1940,12 @@ export interface RoundObstacle {
 }
 
 export const ROUND_SEGMENTS: readonly (readonly RoundSegment[])[] = [
-  [{ at: 146, formation: "line", enemyTypes: ["gunman", "bomber"], interval: 1.1, landmark: "town" }, { at: 416, formation: "wedge", enemyTypes: ["sniper", "backstabber"], interval: 1, landmark: "town" }, { at: 551, formation: "line", enemyTypes: ["gunman", "bomber"], interval: 0.9, landmark: "open" }, { at: 731, formation: "cross", enemyTypes: ["gunman", "sniper", "shotgunner"], interval: 0.8, landmark: "town" }],
-  [{ at: 146, formation: "wedge", enemyTypes: ["gunman", "rifleman"], interval: 1, landmark: "rock" }, { at: 500, formation: "line", enemyTypes: ["backstabber", "rifleman"], interval: 0.9, landmark: "rock" }, { at: 1_050, formation: "cross", enemyTypes: ["gunman", "rifleman"], interval: 0.8, landmark: "rock" }, { at: 1_500, formation: "wedge", enemyTypes: ["rifleman", "backstabber"], interval: 0.75, landmark: "rock" }],
-  [{ at: 146, formation: "line", enemyTypes: ["gunman", "sniper"], interval: 1, landmark: "village" }, { at: 420, formation: "cross", enemyTypes: ["spear", "firebreather"], interval: 0.9, landmark: "village" }, { at: 980, formation: "wedge", enemyTypes: ["sniper", "firebreather"], interval: 0.8, landmark: "village" }, { at: 1_480, formation: "line", enemyTypes: ["gunman", "spear", "hatchet"], interval: 0.72, landmark: "village" }],
-  [{ at: 146, formation: "rear", enemyTypes: ["gunman", "ninja"], interval: 1, landmark: "cliff" }, { at: 480, formation: "wedge", enemyTypes: ["ninja", "shotgunner"], interval: 0.86, landmark: "open" }, { at: 1_020, formation: "cross", enemyTypes: ["sniper", "gunman"], interval: 0.78, landmark: "cliff" }, { at: 1_520, formation: "rear", enemyTypes: ["gunman", "shotgunner"], interval: 0.7, landmark: "open" }],
-  [{ at: 146, formation: "line", enemyTypes: ["gunman", "rifleman"], interval: 1, landmark: "forest" }, { at: 420, formation: "wedge", enemyTypes: ["bomber", "backstabber"], interval: 0.9, landmark: "forest" }, { at: 980, formation: "line", enemyTypes: ["rifleman", "bomber"], interval: 0.78, landmark: "forest" }, { at: 1_480, formation: "cross", enemyTypes: ["gunman", "backstabber"], interval: 0.68, landmark: "forest" }],
-  [{ at: 146, formation: "cross", enemyTypes: ["gunman", "sniper"], interval: 1, landmark: "cemetery" }, { at: 420, formation: "rear", enemyTypes: ["bomber", "backstabber"], interval: 0.86, landmark: "open" }, { at: 980, formation: "wedge", enemyTypes: ["sniper", "gunman"], interval: 0.74, landmark: "cemetery" }, { at: 1_500, formation: "cross", enemyTypes: ["bomber", "backstabber"], interval: 0.64, landmark: "open" }],
+  [{ at: 146, landmark: "town" }, { at: 416, landmark: "town" }, { at: 551, landmark: "open" }, { at: 731, landmark: "town" }],
+  [{ at: 146, landmark: "rock" }, { at: 500, landmark: "rock" }, { at: 1_050, landmark: "rock" }, { at: 1_500, landmark: "rock" }],
+  [{ at: 146, landmark: "village" }, { at: 420, landmark: "village" }, { at: 980, landmark: "village" }, { at: 1_480, landmark: "village" }],
+  [{ at: 146, landmark: "cliff" }, { at: 480, landmark: "open" }, { at: 1_020, landmark: "cliff" }, { at: 1_520, landmark: "open" }],
+  [{ at: 146, landmark: "forest" }, { at: 420, landmark: "forest" }, { at: 980, landmark: "forest" }, { at: 1_480, landmark: "forest" }],
+  [{ at: 146, landmark: "cemetery" }, { at: 420, landmark: "open" }, { at: 980, landmark: "cemetery" }, { at: 1_500, landmark: "open" }],
 ];
 
 // Obstacles are gameplay-space blockers, separate from decorative landmarks.
@@ -2035,10 +2022,6 @@ export function distance(a: { x: number; y: number }, b: { x: number; y: number 
 
 export function shouldLoopStage(scroll: number, round: number, hasWanted: boolean): boolean {
   return scroll >= (ROUND_LENGTHS[round - 1] ?? ROUND_LENGTHS[0]!) && !hasWanted;
-}
-
-export function segmentDelay(scroll: number, at: number, speed: number): number {
-  return Math.max(0, (at - scroll) / speed);
 }
 
 export function obstacleBlocks(obstacle: RoundObstacle, x: number, y: number, radius = 18): boolean {

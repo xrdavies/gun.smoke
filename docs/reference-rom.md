@@ -807,9 +807,10 @@ before terrain probes. Runtime uses those fixed screen bounds and leaves
 Round-specific road, building, and cliff restrictions to the decoded collision
 map rather than applying an additional authored road-width clamp.
 The player collision pass checks the candidate center plus horizontal edges at
-`x-7` and `x+6`. Replaying the first 180 Round 1 frames with each cardinal input
-matches the ROM position on every frame; the later right-edge diagonal
-scroll-correction branch remains a documented parity boundary.
+`x-7` and `x+6`; blocked axes retain the updated subpixel byte while keeping
+their coarse coordinate. Replaying the first 180 Round 1 frames matches seven
+of eight held directions on every frame. Right/up matches through frame 124;
+its final upper-right corner resolution remains a documented parity boundary.
 When the map advances while Billy is at the lower bound, `$C733-$C795` aligns
 his X probe and searches outward in 16-pixel columns for the nearest open cell.
 The Round 1 right/down replay therefore recovers `(240,216)` to `(216,215)` on

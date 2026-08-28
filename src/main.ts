@@ -660,13 +660,22 @@ class GunSmokeGame {
       this.player.y = nextY;
     } else {
       if (!this.isPlayerBlocked(nextX, this.player.y)) this.player.x = nextX;
+      else if (movementX !== 0) {
+        const currentX = this.player.x / NES_WORLD_X_SCALE;
+        const candidateX = nextX / NES_WORLD_X_SCALE;
+        this.player.x = (Math.floor(currentX) + candidateX - Math.floor(candidateX)) * NES_WORLD_X_SCALE;
+      }
       if (!this.isPlayerBlocked(this.player.x, nextY)) this.player.y = nextY;
+      else if (movementY !== 0) {
+        const currentY = (this.player.y - this.scroll) / NES_WORLD_Y_SCALE;
+        const candidateY = (nextY - this.scroll) / NES_WORLD_Y_SCALE;
+        this.player.y = this.scroll + (Math.floor(currentY) + candidateY - Math.floor(candidateY)) * NES_WORLD_Y_SCALE;
+      }
     }
     const playerScreenY = (this.player.y - this.scroll) / NES_WORLD_Y_SCALE;
-    const collisionScroll = this.scroll + NES_WORLD_Y_SCALE / 3;
-    const nextRowBlocked = roundCollisionBlocks(this.stage, collisionScroll, this.player.x, collisionScroll + PLAYER_MAX_Y_NES * NES_WORLD_Y_SCALE);
+    const nextRowBlocked = roundCollisionBlocks(this.stage, this.scroll, this.player.x, this.scroll + PLAYER_MAX_Y_NES * NES_WORLD_Y_SCALE);
     if (playerScreenY >= PLAYER_MAX_Y_NES && roundCollisionScrollNes(this.scroll) > roundCollisionScrollNes(previousScroll) && nextRowBlocked) {
-      this.player.x = roundPlayerRecoveryX(this.stage, collisionScroll, this.player.x / NES_WORLD_X_SCALE, PLAYER_MAX_Y_NES - 1) * NES_WORLD_X_SCALE;
+      this.player.x = roundPlayerRecoveryX(this.stage, this.scroll, this.player.x / NES_WORLD_X_SCALE, PLAYER_MAX_Y_NES - 1) * NES_WORLD_X_SCALE;
       this.player.y = this.scroll + (PLAYER_MAX_Y_NES - 1) * NES_WORLD_Y_SCALE;
     }
     this.player.sprite.position = { x: this.player.x, y: this.player.y };

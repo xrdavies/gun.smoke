@@ -279,7 +279,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(roundCollisionBlocks(1, rightWallScroll, 217 * NES_WORLD_X_SCALE, rightWallScroll + 188 * NES_WORLD_Y_SCALE)).toBe(false);
     expect(roundCollisionBlocks(1, rightWallScroll, 218 * NES_WORLD_X_SCALE, rightWallScroll + 188 * NES_WORLD_Y_SCALE)).toBe(true);
     expect([roundCollisionScrollNes(0), roundCollisionScrollNes(2 / 3 * NES_WORLD_Y_SCALE), roundCollisionScrollNes(5 / 3 * NES_WORLD_Y_SCALE)]).toEqual([0, 1, 2]);
-    const recoveryScroll = 123 / 3 * NES_WORLD_Y_SCALE;
+    const recoveryScroll = 122 / 3 * NES_WORLD_Y_SCALE;
     expect(roundPlayerRecoveryX(1, recoveryScroll, 240, 215)).toBe(216);
   });
 

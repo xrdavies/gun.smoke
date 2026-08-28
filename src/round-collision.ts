@@ -33,8 +33,8 @@ export function roundCollisionScrollNes(scroll: number): number {
 }
 
 export function roundCollisionBlocks(round: number, scroll: number, x: number, y: number): boolean {
-  const screenX = Math.round(x * NES_MAP_WIDTH / WORLD_WIDTH);
-  const screenY = Math.round((y - scroll) * NES_VIEW_HEIGHT / WORLD_HEIGHT);
+  const screenX = Math.floor(x * NES_MAP_WIDTH / WORLD_WIDTH);
+  const screenY = Math.floor((y - scroll) * NES_VIEW_HEIGHT / WORLD_HEIGHT);
   return [screenX, screenX - 7, screenX + 6].some((probeX) => roundCollisionAtNes(round, scroll, probeX, screenY));
 }
 
@@ -46,7 +46,7 @@ export function roundCollisionAtNes(round: number, scroll: number, screenX: numb
 
 function roundRowsContain(rows: readonly number[], scroll: number, screenX: number, screenY: number): boolean {
   const mapRows = rows.length / 2;
-  const scrollNes = Math.max(0, Math.floor(scroll * NES_VIEW_HEIGHT / WORLD_HEIGHT));
+  const scrollNes = Math.max(0, roundCollisionScrollNes(scroll));
   const fineScroll = (16 + scrollNes) & 31;
   const mapPage = fineScroll < 16 ? 1 : 0;
   const pointerStorageRow = (INITIAL_STORAGE_ROW + Math.floor(scrollNes / NES_MAP_ROW_PIXELS)) % mapRows;

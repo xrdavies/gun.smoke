@@ -346,6 +346,9 @@ at `Y=252`; the two traces diverge by frame 22 despite identical entry data.
 Round 1's `at=2223,x=248,y=64,code=7,phase=0` event uses a 464-frame route.
 Its seed reaches a successful first opportunity at frame 57; the actor then
 crosses the arena and exits through the top edge.
+Round 1's `at=2511,x=248,y=96,code=7,phase=0` event uses a 426-frame route.
+Its frame-64 first opportunity fires, followed by a leftward traversal and a
+right-boundary release.
 Two complete Round 2 `y=32`
 side traces are now used when their entry coordinate matches in Round 2: code 8
 follows the 569-frame left-edge trace and code 9 follows the 963-frame right-edge

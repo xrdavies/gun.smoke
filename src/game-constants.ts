@@ -920,6 +920,13 @@ export const CUTTER_BOOMERANG_REAIM_Y_NES = 176;
 export const CUTTER_BOOMERANG_FIRST_TURN_DELAY = 1 / NES_FRAME_RATE;
 export const CUTTER_BOOMERANG_TURN_INTERVAL = 2 / NES_FRAME_RATE;
 export const CUTTER_BOOMERANG_LIFETIME = 180 / NES_FRAME_RATE;
+export const CUTTER_BOOMERANG_SCREEN_MIN_X_NES = 24;
+export const CUTTER_BOOMERANG_SCREEN_MAX_X_NES = 248;
+export const CUTTER_BOOMERANG_SCREEN_MAX_Y_NES = 252;
+
+export function cutterBoomerangOnScreen(screenX: number, screenY: number): boolean {
+  return screenX >= CUTTER_BOOMERANG_SCREEN_MIN_X_NES && screenX < CUTTER_BOOMERANG_SCREEN_MAX_X_NES && screenY >= 0 && screenY < CUTTER_BOOMERANG_SCREEN_MAX_Y_NES;
+}
 
 export function cutterBoomerangVelocity(heading: number): readonly [number, number] {
   const angle = ((heading & 31) - 8) * Math.PI / 16;

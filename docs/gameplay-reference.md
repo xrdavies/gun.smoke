@@ -256,7 +256,8 @@ Complete scoped side traces are selected for matching entries: Round 2 uses
 `y=64`, phase-1 left/right traces and a 379-frame code 8 `y=64`, phase-0
 trace. Round 6 also has controlled code 7 traces for left/right `y=32` and left
 `y=64` entries (342/453/918 frames), plus 578/447-frame code 8 left `y=32`
-phase-0/phase-1 traces. Other rounds,
+phase-0/phase-1 traces and a 776-frame code 9 right `y=48`, phase-1 trace.
+Other rounds,
 phases and entry heights use the generic routes until their slot-state traces
 are captured.
 Riflemen advance,

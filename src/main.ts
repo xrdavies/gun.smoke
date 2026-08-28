@@ -1880,7 +1880,10 @@ class GunSmokeGame {
       if (bullet.piercing) {
         const projectile = this.units.find((candidate) => candidate.kind === "enemyBullet" && candidate.projectileType !== "ninjaSmoke" && candidate.projectileType !== "grenade" && candidate.projectileType !== "rock" && candidate.hp > 0 && distance(bullet, candidate) <= bullet.radius + candidate.radius);
         if (projectile) {
-          projectile.hp = 0;
+          const result = piercingDamageAfterHit(bullet.damage, projectile.hp);
+          projectile.hp = Math.max(0, projectile.hp - bullet.damage);
+          bullet.damage = result.damage;
+          if (result.consumed) bullet.hp = 0;
           continue;
         }
       }

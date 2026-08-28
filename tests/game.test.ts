@@ -134,6 +134,10 @@ describe("Gun.Smoke vertical slice", () => {
     ]);
   });
 
+  it("spends one Magnum damage point on a one-point enemy projectile", () => {
+    expect(piercingDamageAfterHit(3, 1)).toEqual({ damage: 2, consumed: false });
+  });
+
   it("caps the traced player projectile pool at six slots", () => {
     expect(PLAYER_BULLET_CAPACITY).toBe(6);
     expect([5, 6].map(canSpawnPlayerBullet)).toEqual([true, false]);

@@ -1549,7 +1549,7 @@ export type WingateMovementState = {
 
 export function createWingateMovementState(x: number, phase = 0): WingateMovementState {
   const [fineX, fineY] = WINGATE_INITIAL_FINE[phase > 0 ? 1 : 0];
-  return { frame: 0, mode: "entry", x: x + fineX / 256, y: fineY / 256, heading: 0x50, segmentFrames: 0, gait: 1, correctionFrames: 0, correctionPass: 0 };
+  return { frame: 0, mode: "entry", x: x + fineX / 256, y: fineY / 256, heading: 0x50, segmentFrames: 0, gait: 0x88, correctionFrames: 0, correctionPass: 0 };
 }
 
 function wingateInsideArena(state: WingateMovementState): boolean {
@@ -1564,7 +1564,8 @@ function wingateCorrectionHeading(state: WingateMovementState): number {
 
 function advanceWingateGait(state: WingateMovementState): void {
   state.gait = (state.gait - 1) & 0xff;
-  if ((state.gait & 0x7f) === 0) state.gait = (state.gait & 0x80) !== 0 ? 4 : 0x88;
+  if (state.gait === 0x80) state.gait = 4;
+  else if (state.gait === 0) state.gait = 0x88;
   if ((state.gait & 0x80) === 0) moveEncodedHeading(state, state.heading);
 }
 

@@ -316,7 +316,10 @@ at `y=64` follows 360 measured frames. Round 3's code 7 `y=64`, phase-1
 entries use separate left/right traces of 581/384 frames; its code 8 left
 `y=64`, phase-0 initializer has a separate 379-frame trace. Other rounds,
 phases and entry heights retain the generic measured routes until their
-slot-state traces are captured.
+slot-state traces are captured. Round 6 controlled traces additionally cover
+code 8 left entries at `y=32` and `y=64` for 342 and 918 frames, and a code 9
+right entry at `y=32` for 453 frames; those route samples remain scoped to
+Round 6 and their matching entry coordinates.
 On defeat, `$CD4E-$CDAA` converts an event's `0x80` flag into dispatch `0x4e`.
 If `$90/$94/$98/$9c` show no special-gun ammunition, it increments that to `0x4f`;
 the `$E192` conversion table then maps them to Bullet (`0x29`) and Money

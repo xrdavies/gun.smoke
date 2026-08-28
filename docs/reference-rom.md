@@ -427,7 +427,11 @@ values instead of its former single slow shot.
 The Boss initializers set each health bar in field `$0460`: Bandit Bill uses
 3, Cutter 2, Devil Hawk 6, Ninja 1, Fatman Joe 12, and the Wingate decoy/real
 encounters use 6/12. The web runtime multiplies those values by the measured
-bar count instead of applying one global Boss health constant. The gate traces
+bar count instead of applying one global Boss health constant. Each Boss
+initializer indexes its four-entry lane table with `AC & 3`. Ninja additionally
+restricts that index to the upper, middle, or lower pair when Billy's screen Y
+is below 176 or 104. Runtime uses the same byte and Y thresholds for entry and
+Ninja re-entry instead of consuming a separate floating random value. The gate traces
 place his initial entity at the top edge (`y=0`) and observe
 four horizontal entry lanes, NES `x=96/128/160/192`; after 96 frames the actor
 reaches approximately `y=64`. The web runtime selects one of those measured

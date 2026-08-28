@@ -1150,6 +1150,16 @@ export function devilHawkCombatX(age: number, entryX = 208 * NES_WORLD_X_SCALE):
 }
 export const NINJA_BOSS_ENTRY_LANES_NES = [[112, 64], [192, 64], [120, 144], [176, 128]] as const;
 export const NINJA_BOSS_ENTRY_LANES = NINJA_BOSS_ENTRY_LANES_NES.map(([x, y]) => [x * NES_WORLD_X_SCALE, y * NES_WORLD_Y_SCALE] as const);
+
+export function ninjaBossEntryLaneIndex(randomByte: number, playerScreenY: number): number {
+  let index = randomByte & 0x03;
+  if (playerScreenY < 176) {
+    index &= 0x01;
+    if (playerScreenY < 104) index |= 0x02;
+  }
+  return index;
+}
+
 export const NINJA_BOSS_FIRST_PREPARE_DELAY = 140 / NES_FRAME_RATE;
 export const NINJA_BOSS_PREPARE_DURATION = 40 / NES_FRAME_RATE;
 export const NINJA_BOSS_PREPARE_CONTROLLER_DURATION = 7 / NES_FRAME_RATE;

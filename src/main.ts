@@ -1792,7 +1792,7 @@ class GunSmokeGame {
           unit.y = this.scroll + (unit.romOriginY ?? unit.y - this.scroll) + dynamiteVerticalOffset(DYNAMITE_AIRBORNE_DURATION);
           unit.vx = 0;
         } else {
-          unit.y += scrollDelta;
+          // The common projectile update already applied the scene scroll.
         }
         if (unit.age >= DYNAMITE_LIFETIME) {
           if (distance(unit, this.player) <= 85 && this.invulnerable <= 0) this.takeHit();

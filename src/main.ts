@@ -1429,7 +1429,9 @@ class GunSmokeGame {
         if (shouldFire) {
           unit.fired = true;
           unit.volleysFired += 1;
-            const projectile = this.spawnEnemyProjectile(unit.x, unit.y + 8);
+            // The ROM creates the Sniper bullet at the actor coordinate; the
+            // generic enemy offset shifts this edge-mounted shot downward.
+            const projectile = this.spawnEnemyProjectile(unit.x, unit.y);
             if (projectile) {
               [projectile.vx, projectile.vy] = sniperProjectileVelocity(unit.x, unit.y, this.player.x, this.player.y);
           }

@@ -252,6 +252,8 @@ the NES screen rather than applying the generic enemy age cap.
 An isolated `$B080` Sniper fires at ages 134, 224, 405, 495 and 585 frames,
 then releases its slot at age 732. The routine's 90-frame base cooldown is
 visible directly; the longer middle gap is a missed discrete aiming window.
+Its ordinary `0x30` bullet is allocated at the Sniper's exact actor coordinate,
+with no projectile spawn offset.
 Its ROM Y coordinate advances with the camera at the measured scroll rate while
 the X lane stays fixed. Runtime world Y therefore advances by the camera delta
 plus one equal screen-space delta, and releases Snipers at the observed NES

@@ -964,6 +964,8 @@ export function banditBillCombatY(age: number, entryX = 192 * NES_WORLD_X_SCALE)
 }
 
 export const BANDIT_BILL_RANDOM_ROUTE_START_FRAME = 7_680;
+export const BANDIT_BILL_RANDOM_HANDOFF_FINE_X = 64;
+export const BANDIT_BILL_RANDOM_HANDOFF_FINE_Y = 200;
 export const BANDIT_BILL_ATTACK_PAUSE_FRAMES = 37;
 export const BANDIT_BILL_ROUTE_HANDOFF_PAUSE_FRAMES = 24;
 

@@ -389,6 +389,10 @@ export function playerMovementVelocity(horizontal: number, vertical: number, has
   return [velocityX * speed * NES_FRAME_RATE * NES_WORLD_X_SCALE, velocityY * speed * NES_FRAME_RATE * NES_WORLD_Y_SCALE];
 }
 
+export function playerCollisionFallbackY(currentY: number, candidateY: number, scrollStep: number): number {
+  return Math.min(PLAYER_MAX_Y_NES, Math.floor(currentY) + scrollStep + candidateY - Math.floor(candidateY));
+}
+
 export function sniperProjectileVelocity(originX: number, originY: number, targetX: number, targetY: number): readonly [number, number] {
   const [x, y] = SNIPER_BULLET_VELOCITIES_NES[nesAimHeading(originX, originY, targetX, targetY)] ?? SNIPER_BULLET_VELOCITIES_NES[0];
   return [x * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE];

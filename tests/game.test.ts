@@ -10,7 +10,7 @@ import { WINGATE_ENDING_INPUT_DELAY, WINGATE_FINAL_DEFEAT_ANIMATION_DURATION, WI
 import { ENEMY_DEFEAT_Y_OFFSETS_NES } from "../src/game-constants";
 import { addScore, MAX_SCORE } from "../src/game-constants";
 import { PLAYER_ENTRY_X, PLAYER_ENTRY_X_NES, PLAYER_ENTRY_Y, PLAYER_ENTRY_Y_NES, PLAYER_MAX_X_NES, PLAYER_MAX_Y_NES, PLAYER_MIN_X_NES, PLAYER_MIN_Y_NES } from "../src/game-constants";
-import { HORSE_SPEED_MULTIPLIER, playerMovementVelocity } from "../src/game-constants";
+import { HORSE_SPEED_MULTIPLIER, playerCollisionFallbackY, playerMovementVelocity } from "../src/game-constants";
 import { NINJA_ACTIVATION_DISTANCE_NES, NINJA_LIFETIME, ninjaCanThrow } from "../src/game-constants";
 import { NINJA_ATTACK_MOVE_DURATION, NINJA_ENTRY_PATH_NES, ninjaAttackPosition, ninjaOpeningY, ninjaTraceLifetime, ninjaTracePosition, ninjaTraceThrowFrame } from "../src/game-constants";
 import { ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y } from "../src/game-constants";
@@ -102,6 +102,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(playerMovementVelocity(-1, 0, false, 1, false, false)).toEqual([-1.65625 * NES_FRAME_RATE * NES_WORLD_X_SCALE, 0]);
     expect(playerMovementVelocity(0, -1, true, 0, false, true)).toEqual([0, -3 * NES_FRAME_RATE * NES_WORLD_Y_SCALE]);
     expect(playerMovementVelocity(0, 0, false, 0, false, false)).toEqual([0, 0]);
+    expect(playerCollisionFallbackY(57.875, 56.46875, 1)).toBe(58.46875);
+    expect(playerCollisionFallbackY(215.875, 216, 1)).toBe(216);
     const replayLeft = (hasHorse: boolean, boots: number, blue: boolean) => {
       let x = 136;
       return Array.from({ length: 10 }, (_, index) => {

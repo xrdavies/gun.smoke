@@ -808,9 +808,10 @@ Round-specific road, building, and cliff restrictions to the decoded collision
 map rather than applying an additional authored road-width clamp.
 The player collision pass checks the candidate center plus horizontal edges at
 `x-7` and `x+6`; blocked axes retain the updated subpixel byte while keeping
-their coarse coordinate. Replaying the first 180 Round 1 frames matches seven
-of eight held directions on every frame. Right/up matches through frame 124;
-its final upper-right corner resolution remains a documented parity boundary.
+their coarse coordinate. If scrolling advances the map by one NES pixel, the
+fallback pass advances the previous coarse Y before its horizontal probe.
+Replaying the first 180 Round 1 frames now matches all eight held directions
+on every frame, including the upper-right terrain slide.
 When the map advances while Billy is at the lower bound, `$C733-$C795` aligns
 his X probe and searches outward in 16-pixel columns for the nearest open cell.
 The Round 1 right/down replay therefore recovers `(240,216)` to `(216,215)` on

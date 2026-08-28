@@ -22,7 +22,7 @@ import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanCanAttack, rifl
 import { advanceBanditBillMovement, BANDIT_BILL_ATTACK_PAUSE_FRAMES, BANDIT_BILL_DAMAGE_RECOVERY_DURATION, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, BANDIT_BILL_PROJECTILE_OFFSET_NES, BANDIT_BILL_RANDOM_HANDOFF_FINE_X, BANDIT_BILL_RANDOM_HANDOFF_FINE_Y, BANDIT_BILL_RANDOM_ROUTE_START_FRAME, banditBillCombatX, banditBillCombatY, banditBillProjectileVelocity, createBanditBillMovementState, type BanditBillMovementState } from "./game-constants";
 import { banditBillCooldown } from "./game-constants";
 import { advanceInvulnerability, BLUE_YASHICHI_DURATION, BOSS_BAR_RECOVERY_DURATION, bossCurrentBarHitPoints, bossHealthProfile, bossTotalHitPoints, lifePickup, scoreBossDefeat, shouldClearProjectilesAfterBossDefeat } from "./game-constants";
-import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, PLAYER_ENTRY_X, PLAYER_ENTRY_Y, PLAYER_MAX_X_NES, PLAYER_MAX_Y_NES, PLAYER_MIN_X_NES, PLAYER_MIN_Y_NES, pistolBulletSpeedFactor, pistolVelocities, playerMovementVelocity, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
+import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, PLAYER_ENTRY_X, PLAYER_ENTRY_Y, PLAYER_MAX_X_NES, PLAYER_MAX_Y_NES, PLAYER_MIN_X_NES, PLAYER_MIN_Y_NES, pistolBulletSpeedFactor, pistolVelocities, playerCollisionFallbackY, playerMovementVelocity, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
 import { addScore } from "./game-constants";
 import { ninjaCanThrow, ninjaTraceLifetime, ninjaTracePosition, ninjaTraceThrowFrame } from "./game-constants";
@@ -643,6 +643,7 @@ class GunSmokeGame {
     this.player.y += scrollDelta;
     if (shouldLoopStage(this.scroll, this.stage, this.hasWanted)) this.loopStage();
     if (this.shopOpen) return;
+    const collisionScrollStep = Number(roundCollisionScrollNes(this.scroll) > roundCollisionScrollNes(previousScroll));
     this.camera.position.y = this.scroll + 270;
     ({ duration: this.invulnerable, destroysEnemies: this.invulnerableDestroysEnemies } = advanceInvulnerability(this.invulnerable, this.invulnerableDestroysEnemies, delta));
     const [movementX, movementY] = playerMovementVelocity(
@@ -659,7 +660,9 @@ class GunSmokeGame {
       this.player.x = nextX;
       this.player.y = nextY;
     } else {
-      if (!this.isPlayerBlocked(nextX, this.player.y)) this.player.x = nextX;
+      const currentY = (this.player.y - this.scroll) / NES_WORLD_Y_SCALE;
+      const fallbackY = this.scroll + playerCollisionFallbackY(currentY, currentY, collisionScrollStep) * NES_WORLD_Y_SCALE;
+      if (!this.isPlayerBlocked(nextX, fallbackY)) this.player.x = nextX;
       else if (movementX !== 0) {
         const currentX = this.player.x / NES_WORLD_X_SCALE;
         const candidateX = nextX / NES_WORLD_X_SCALE;
@@ -667,14 +670,13 @@ class GunSmokeGame {
       }
       if (!this.isPlayerBlocked(this.player.x, nextY)) this.player.y = nextY;
       else if (movementY !== 0) {
-        const currentY = (this.player.y - this.scroll) / NES_WORLD_Y_SCALE;
         const candidateY = (nextY - this.scroll) / NES_WORLD_Y_SCALE;
-        this.player.y = this.scroll + (Math.floor(currentY) + candidateY - Math.floor(candidateY)) * NES_WORLD_Y_SCALE;
+        this.player.y = this.scroll + playerCollisionFallbackY(currentY, candidateY, collisionScrollStep) * NES_WORLD_Y_SCALE;
       }
     }
     const playerScreenY = (this.player.y - this.scroll) / NES_WORLD_Y_SCALE;
     const nextRowBlocked = roundCollisionBlocks(this.stage, this.scroll, this.player.x, this.scroll + PLAYER_MAX_Y_NES * NES_WORLD_Y_SCALE);
-    if (playerScreenY >= PLAYER_MAX_Y_NES && roundCollisionScrollNes(this.scroll) > roundCollisionScrollNes(previousScroll) && nextRowBlocked) {
+    if (playerScreenY >= PLAYER_MAX_Y_NES && collisionScrollStep > 0 && nextRowBlocked) {
       this.player.x = roundPlayerRecoveryX(this.stage, this.scroll, this.player.x / NES_WORLD_X_SCALE, PLAYER_MAX_Y_NES - 1) * NES_WORLD_X_SCALE;
       this.player.y = this.scroll + (PLAYER_MAX_Y_NES - 1) * NES_WORLD_Y_SCALE;
     }

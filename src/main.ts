@@ -11,6 +11,7 @@ import {
   World,
 } from "@xrdavies/2d-engine";
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
+import { advanceRomRandom, ROM_RANDOM_SEED } from "./game-constants";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
 import { AMMO_GAIN, banditBillOpeningY, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, bomberCanThrow, bomberMovementDuration, bomberMovementVelocity, BOMBER_THROW_DURATION, BOSS_DEFEAT_ANIMATION_DURATION, bossReward, BOOTS_SPEED_MULTIPLIER, bossSpriteVisible, canSpawnPlayerBullet, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, contactSourceShouldClear, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_LIFETIME, dynamiteVerticalOffset, EMPTY_BARREL_EXPLOSION_LIFETIME, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X_LANES, FATMAN_JOE_ENTRY_Y, fallingRockOnScreen, fallingRockPosition, fatmanJoeOpeningY, HATCHET_LIFETIME, HORSE_HIT_INVULNERABILITY, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_LANES, NINJA_FIRST_SHOT_DELAY, NINJA_LIFETIME, ninjaAttackPosition, ninjaOpeningY, PLAYER_DEATH_ANIMATION_DURATION, PLAYER_DEATH_RECOVERY_DURATION, playerDeathPhase, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_IMPACT_LIFETIME, ROCK_LIFETIME, ROAD_WIDTHS, ROM_ENEMY_SCREEN_MAX_Y, ROM_OBJECT_DROP_SPEED, ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_SIDE_LIFETIME, SHOTGUNNER_SIDE_SHOT_FRAME, SHOTGUNNER_VOLLEY_INTERVAL, shotgunnerPosition, shotgunnerSidePosition, shouldLoopStage, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_CODE2_SHOT_FRAMES, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_DURATION, WINGATE_ENTRY_X_LANES, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, wingateOpeningY, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type ItemType, type ShopType, type WeaponName } from "./game-constants";
@@ -302,7 +303,9 @@ class GunSmokeGame {
   shopSpawnCursor = 0;
   musicTimer: number | undefined;
   musicStep = 0;
-  randomState = 0x6d2b79f5;
+  randomState: [number, number, number, number] = [...ROM_RANDOM_SEED];
+  randomReadIndex = 0;
+  randomFrameRemainder = 0;
   player = { entity: 0, x: PLAYER_ENTRY_X, y: PLAYER_ENTRY_Y, sprite: undefined as unknown as Sprite };
   horseSprite: Sprite;
   playerAnimation: SpriteAnimationBinding | undefined;
@@ -447,7 +450,7 @@ class GunSmokeGame {
   start(): void {
     if (this.mode === "playing") return;
     this.mode = "intro";
-    this.randomState = 0x6d2b79f5;
+    this.resetRandom();
     titleScreen.hidden = true;
     introScreen.hidden = false;
     briefingScreen.hidden = true;
@@ -487,6 +490,7 @@ class GunSmokeGame {
   continueGame(): void {
     if (this.mode !== "gameover") return;
     this.lives = 3;
+    this.resetRandom();
     this.scroll = 0;
     this.camera.position.y = 270;
     this.bossFireClock = 1;
@@ -598,6 +602,7 @@ class GunSmokeGame {
     }
     if (this.shopOpen) return;
     this.time += delta;
+    this.advanceRandom(delta);
     if (this.wingateRespawnClock > 0) {
       this.wingateRespawnClock -= delta;
       if (this.wingateRespawnClock <= 0) {
@@ -2137,6 +2142,7 @@ class GunSmokeGame {
       return;
     }
     this.stage += 1;
+    this.resetRandom();
     this.scroll = 0;
     this.bossFireClock = 1;
     this.bossSpawned = false;
@@ -2161,6 +2167,7 @@ class GunSmokeGame {
   }
 
   private loopStage(): void {
+    this.resetRandom();
     this.scroll = 0;
     this.camera.position.y = 270;
     this.player.x = PLAYER_ENTRY_X;
@@ -2279,12 +2286,24 @@ class GunSmokeGame {
   }
 
   private nextRandom(): number {
-    let state = this.randomState;
-    state ^= state << 13;
-    state ^= state >>> 17;
-    state ^= state << 5;
-    this.randomState = state >>> 0;
-    return this.randomState / 0x1_0000_0000;
+    const value = this.randomState[this.randomReadIndex] ?? this.randomState[0];
+    this.randomReadIndex = (this.randomReadIndex + 1) % this.randomState.length;
+    return value / 256;
+  }
+
+  private resetRandom(): void {
+    this.randomState = [...ROM_RANDOM_SEED];
+    this.randomReadIndex = 0;
+    this.randomFrameRemainder = 0;
+  }
+
+  private advanceRandom(delta: number): void {
+    this.randomFrameRemainder += delta * NES_FRAME_RATE;
+    while (this.randomFrameRemainder >= 1) {
+      this.randomState = advanceRomRandom(this.randomState);
+      this.randomFrameRemainder -= 1;
+    }
+    this.randomReadIndex = 0;
   }
 
   private dispose(): void {

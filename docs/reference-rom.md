@@ -417,8 +417,8 @@ sequence. The former `656/813` lifetime and side shot table were trace-specific,
 not ROM timers; actors now remain until defeat, contact, offscreen cleanup, or
 scene transition.
 The `$B82F` Round 5 Backstabber variant is an ambush actor rather than a
-projectile shooter: its X remains fixed, it descends roughly 85 NES pixels, and
-its slot is released after about 407 frames. The runtime keeps this state
+projectile shooter: its X remains fixed, it descends roughly 178 NES pixels, and
+its slot is released after 532 frames. The runtime keeps this state
 separate from the `$B46E` movement variant.
 The `$B46E` Backstabber variant is a mirrored side raid. Left/right traces both
 live for 369 frames; during the first 160 frames the actor crosses 174 NES

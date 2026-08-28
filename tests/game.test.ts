@@ -703,7 +703,7 @@ describe("Gun.Smoke vertical slice", () => {
   it("continues Cutter from the sampled route into random movement", () => {
     expect(CUTTER_RANDOM_ROUTE_START_FRAME).toBe(12_000);
     const movement = createCutterMovementState(112, 61);
-    advanceCutterMovement(movement, CUTTER_RANDOM_ROUTE_START_FRAME + 36, () => 0x0a);
+    advanceCutterMovement(movement, CUTTER_RANDOM_ROUTE_START_FRAME + 36, () => 0x0e);
     expect({ frame: movement.frame, x: Math.floor(movement.x), y: Math.floor(movement.y), heading: movement.heading, segment: movement.segmentFrames }).toEqual({ frame: 12_036, x: 92, y: 61, heading: 0x58, segment: 71 });
   });
 

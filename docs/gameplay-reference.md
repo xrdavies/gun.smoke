@@ -325,7 +325,8 @@ After a lethal shot, the enemy remains non-colliding for the ROM's five-frame
 defeat animation while its slot is still occupied; any flagged drop is allocated
 as a separate enemy-pool pickup. This preserves the original short-lived slot
 pressure before the actor is released. Barrel contents use that same seven-slot
-pickup pool rather than becoming capacity-free runtime objects.
+pickup pool rather than becoming capacity-free runtime objects. If all seven
+ordinary enemy slots are occupied, the ROM drops are skipped.
 
 After the second Wingate encounter the web recreation enters a separate ending
 and credits state instead of treating the win as Game Over.

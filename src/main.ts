@@ -1316,6 +1316,14 @@ class GunSmokeGame {
     return projectile;
   }
 
+  private spawnRomDrop(kind: "ammo" | "item" | "moneyBag", x: number, y: number, entityCode: number, itemType?: ItemType): void {
+    const active = this.units.filter((unit) => unit.romPool === "enemy" && unit.romEntityCode !== undefined && unit.hp > 0).length;
+    if (!canSpawnRomPool("enemy", active)) return;
+    const drop = this.spawnUnit(kind, x, y, 1, undefined, itemType);
+    drop.romPool = "enemy";
+    drop.romEntityCode = entityCode;
+  }
+
   private updateUnit(unit: Unit, delta: number): void {
     unit.age += delta;
     unit.animation?.update(delta);
@@ -1934,9 +1942,7 @@ class GunSmokeGame {
         return;
       }
       if (target.itemType) {
-        const drop = this.spawnUnit("item", target.x, target.y, 1, undefined, target.itemType);
-        drop.romPool = "enemy";
-        drop.romEntityCode = target.romEntityCode;
+        this.spawnRomDrop("item", target.x, target.y, target.romEntityCode ?? 0, target.itemType);
       }
     } else if (target.kind === "enemy") {
       target.hp = 1;
@@ -1948,9 +1954,7 @@ class GunSmokeGame {
         const hasSpecialStock = hasSpecialAmmoStock(this.weaponAmmo);
         const dropKind = romEnemyDrop(target.romFlags, hasSpecialStock);
         if (dropKind) {
-          const drop = this.spawnUnit(dropKind, target.x, target.y, 1);
-          drop.romPool = "enemy";
-          drop.romEntityCode = target.romEntityCode;
+          this.spawnRomDrop(dropKind, target.x, target.y, target.romEntityCode ?? 0);
         }
       } else {
         const drop = this.nextRandom();

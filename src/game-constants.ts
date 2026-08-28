@@ -938,7 +938,7 @@ function banditBillCombatPosition(age: number, entryX = 192 * NES_WORLD_X_SCALE)
   const laneOffset = entryX / NES_WORLD_X_SCALE - 192;
   const first = BANDIT_BILL_COMBAT_PATH_EXTENDED_NES[0]!;
   const last = BANDIT_BILL_COMBAT_PATH_EXTENDED_NES.at(-1)!;
-  const sampledFrame = pingPongFrame(frame, last[0]);
+  const sampledFrame = Math.min(frame, last[0]);
   if (sampledFrame <= first[0]) return [(first[1] + laneOffset) * NES_WORLD_X_SCALE, first[2] * NES_WORLD_Y_SCALE];
   const nextIndex = BANDIT_BILL_COMBAT_PATH_EXTENDED_NES.findIndex(([at]) => at >= sampledFrame);
   const previous = BANDIT_BILL_COMBAT_PATH_EXTENDED_NES[nextIndex - 1]!;
@@ -956,6 +956,49 @@ export function banditBillCombatX(age: number, entryX = 192 * NES_WORLD_X_SCALE)
 
 export function banditBillCombatY(age: number, entryX = 192 * NES_WORLD_X_SCALE): number {
   return banditBillCombatPosition(age, entryX)[1];
+}
+
+export const BANDIT_BILL_RANDOM_ROUTE_START_FRAME = 7_680;
+export const BANDIT_BILL_ATTACK_PAUSE_FRAMES = 37;
+export const BANDIT_BILL_ROUTE_HANDOFF_PAUSE_FRAMES = 24;
+
+export type BanditBillMovementState = {
+  frame: number;
+  x: number;
+  y: number;
+  heading: number;
+  segmentFrames: number;
+  gait: number;
+  pauseFrames: number;
+};
+
+export function createBanditBillMovementState(x: number, y: number): BanditBillMovementState {
+  return { frame: BANDIT_BILL_RANDOM_ROUTE_START_FRAME, x, y, heading: 0x58, segmentFrames: 0, gait: 1, pauseFrames: BANDIT_BILL_ROUTE_HANDOFF_PAUSE_FRAMES };
+}
+
+export function advanceBanditBillMovement(state: BanditBillMovementState, targetFrame: number, randomByte: () => number): void {
+  while (state.frame < targetFrame) {
+    state.frame += 1;
+    if (state.pauseFrames > 0) {
+      state.pauseFrames -= 1;
+      continue;
+    }
+    if (state.segmentFrames === 0) {
+      const random = randomByte() & 0xff;
+      state.heading = (random & 0x1c) | 0x40;
+      state.segmentFrames = ((random & 0x03) + 1) * 24;
+    }
+    state.segmentFrames -= 1;
+    state.gait = (state.gait - 1) & 0xff;
+    if ((state.gait & 0x7f) === 0) state.gait = (state.gait & 0x80) !== 0 ? 4 : 0x88;
+    if ((state.gait & 0x80) === 0) moveEncodedHeading(state, state.heading);
+    const x = Math.floor(state.x);
+    const y = Math.floor(state.y);
+    if (x < 64 || x >= 208 || y < 40 || y >= 128) {
+      state.heading = (state.heading + 0x10) & 0xdf;
+      moveEncodedHeading(state, state.heading);
+    }
+  }
 }
 export const CUTTER_ENTRY_X_NES = [88, 112, 144, 168] as const;
 export const CUTTER_ENTRY_X_LANES = CUTTER_ENTRY_X_NES.map((value) => value * NES_WORLD_X_SCALE);

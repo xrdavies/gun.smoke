@@ -450,8 +450,8 @@ fire shows each depleted health bar changing dispatch to hit state `0x8D` for
 returning to `0x88`. The actor continues from its current coordinate throughout
 that 176-frame recovery instead of moving to a fixed off-route position. After
 the recorded 3,472-frame route, sparse unhurt samples extend the runtime route
-to frame 7,680 before a reflected continuation; the ROM's random route remains
-under study.
+to frame 7,680; the runtime then continues the decoded random direction
+segments and four-active/eight-idle gait.
 The same controlled full-round trace identifies Round 2's Cutter as dispatch
 `0x90`, variant `0x5b`, entering from the top edge (`y=0`). Controlled runs
 the four-value initializer table defines NES horizontal entry lanes

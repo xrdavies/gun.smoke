@@ -19,7 +19,7 @@ import { GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, gunmanBottomPositi
 import { BOMBER_ENTRY_DURATION, bomberOpeningY } from "./game-constants";
 import { advanceFirebreather, advanceHatchet, advanceSpear, createFirebreatherState, createHatchetState, createSpearState, FIREBREATHER_LIFETIME, FIREBREATHER_PROJECTILE_OFFSET_NES, nesActorCollisionProbeOffset, SPEAR_LIFETIME, SPEAR_PROJECTILE_OFFSET_NES, type FirebreatherState, type HatchetState, type SpearState } from "./game-constants";
 import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanCanAttack, riflemanPosition, riflemanShotHeading, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition, SNIPER_COVER_DURATION, sniperProjectileVelocity } from "./game-constants";
-import { BANDIT_BILL_DAMAGE_RECOVERY_DURATION, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, banditBillCombatX, banditBillCombatY, banditBillProjectileVelocity } from "./game-constants";
+import { advanceBanditBillMovement, BANDIT_BILL_ATTACK_PAUSE_FRAMES, BANDIT_BILL_DAMAGE_RECOVERY_DURATION, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, BANDIT_BILL_RANDOM_ROUTE_START_FRAME, banditBillCombatX, banditBillCombatY, banditBillProjectileVelocity, createBanditBillMovementState, type BanditBillMovementState } from "./game-constants";
 import { banditBillCooldown } from "./game-constants";
 import { advanceInvulnerability, BLUE_YASHICHI_DURATION, BOSS_BAR_RECOVERY_DURATION, bossCurrentBarHitPoints, bossHealthProfile, bossTotalHitPoints, lifePickup, scoreBossDefeat, shouldClearProjectilesAfterBossDefeat } from "./game-constants";
 import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, PLAYER_ENTRY_X, PLAYER_ENTRY_Y, pistolBulletSpeedFactor, pistolVelocities, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
@@ -116,6 +116,7 @@ interface Unit {
   bossEntryX?: number;
   bossEntryY?: number;
   fatmanFollowup?: boolean;
+  banditState?: BanditBillMovementState;
   cutterState?: CutterMovementState;
   devilHawkState?: DevilHawkMovementState;
   wingateState?: WingateMovementState;
@@ -936,6 +937,7 @@ class GunSmokeGame {
         [projectile.vx, projectile.vy] = banditBillProjectileVelocity(boss.x, boss.y, this.player.x, this.player.y);
       }
       boss.volleysFired += 1;
+      if (boss.banditState) boss.banditState.pauseFrames = BANDIT_BILL_ATTACK_PAUSE_FRAMES;
       this.bossFireClock = banditBillCooldown(boss.volleysFired);
       this.beep(168, 0.045);
       return;
@@ -1248,7 +1250,7 @@ class GunSmokeGame {
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: frameDuration },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, riflemanAimHeading: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, cutterState: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined, rockPhase: undefined,
+      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, riflemanAimHeading: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, banditState: undefined, cutterState: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined, rockPhase: undefined,
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" || sceneObject ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
@@ -1742,8 +1744,18 @@ class GunSmokeGame {
       const wingateFireChecks = this.stage === 6 && unit.wingateState
         ? advanceWingateMovement(unit.wingateState, Math.floor(unit.age * NES_FRAME_RATE), () => this.nextRomRandomSecondSumByte()).fireChecks
         : 0;
+      const banditCombatFrame = Math.floor(unit.age * NES_FRAME_RATE - BANDIT_BILL_ENTRY_DURATION * NES_FRAME_RATE);
       const cutterCombatFrame = Math.floor(unit.age * NES_FRAME_RATE - CUTTER_ENTRY_DURATION * NES_FRAME_RATE);
       const devilHawkCombatFrame = Math.floor(unit.age * NES_FRAME_RATE - DEVIL_HAWK_ENTRY_DURATION * NES_FRAME_RATE);
+      if (this.stage === 1 && banditCombatFrame >= BANDIT_BILL_RANDOM_ROUTE_START_FRAME) {
+        unit.banditState ??= createBanditBillMovementState(
+          banditBillCombatX(unit.age, unit.bossEntryX ?? BANDIT_BILL_ENTRY_X_LANES[3]!) / NES_WORLD_X_SCALE,
+          banditBillCombatY(unit.age, unit.bossEntryX ?? BANDIT_BILL_ENTRY_X_LANES[3]!) / NES_WORLD_Y_SCALE,
+        );
+        advanceBanditBillMovement(unit.banditState, banditCombatFrame, () => this.nextRomRandomSecondSumByte());
+        unit.x = unit.banditState.x * NES_WORLD_X_SCALE;
+        unit.y = this.scroll + unit.banditState.y * NES_WORLD_Y_SCALE;
+      }
       if (this.stage === 2 && cutterCombatFrame >= CUTTER_RANDOM_ROUTE_START_FRAME) {
         unit.cutterState ??= createCutterMovementState(
           cutterCombatX(unit.age, unit.bossEntryX ?? CUTTER_ENTRY_X_LANES[2]!) / NES_WORLD_X_SCALE,
@@ -1763,6 +1775,7 @@ class GunSmokeGame {
         unit.y = this.scroll + unit.devilHawkState.y * NES_WORLD_Y_SCALE;
       }
       if (this.stage === 6 && unit.wingateState) unit.x = unit.wingateState.x * NES_WORLD_X_SCALE;
+      else if (this.stage === 1 && unit.banditState) unit.x = unit.banditState.x * NES_WORLD_X_SCALE;
       else if (this.stage === 2 && unit.cutterState) unit.x = unit.cutterState.x * NES_WORLD_X_SCALE;
       else if (this.stage === 3 && unit.devilHawkState) unit.x = unit.devilHawkState.x * NES_WORLD_X_SCALE;
       else if (this.stage === 1 && unit.age <= BANDIT_BILL_ENTRY_DURATION) unit.x = unit.bossEntryX ?? unit.x;
@@ -1782,6 +1795,7 @@ class GunSmokeGame {
       const [minBossX, maxBossX] = this.stage === 5 ? fatmanJoeArenaXBounds() : edgeEntryBoss ? [0, 960] : [380, 580];
       if (unit.x < minBossX || unit.x > maxBossX) unit.vx *= -1;
       if (this.stage === 6 && unit.wingateState) unit.y = this.scroll + unit.wingateState.y * NES_WORLD_Y_SCALE;
+      else if (this.stage === 1 && unit.banditState) unit.y = this.scroll + unit.banditState.y * NES_WORLD_Y_SCALE;
       else if (this.stage === 2 && unit.cutterState) unit.y = this.scroll + unit.cutterState.y * NES_WORLD_Y_SCALE;
       else if (this.stage === 3 && unit.devilHawkState) unit.y = this.scroll + unit.devilHawkState.y * NES_WORLD_Y_SCALE;
       else if (this.stage === 1) unit.y = this.scroll + (unit.age <= BANDIT_BILL_ENTRY_DURATION ? banditBillOpeningY(unit.age) : banditBillCombatY(unit.age, unit.bossEntryX ?? 192 * (960 / 256)));

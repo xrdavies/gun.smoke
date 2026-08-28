@@ -135,7 +135,10 @@ data. Destroying or replacing the procedural runtime also releases its raw
 GPU textures, so switching into Reference ROM mode does not retain old round
 assets.
 
-Boss encounters include phase gating: after each lost health bar Bandit Bill
+Boss encounters use their measured per-bar durability: Bandit Bill has four
+3-hit bars, Cutter four 2-hit bars, Devil Hawk five 6-hit bars, Ninja four
+1-hit bars, Fatman Joe six 12-hit bars, and the Wingate decoy/real encounters
+use one 6-hit bar followed by six 12-hit bars. After each lost health bar Bandit Bill
 spends 8 NES frames in hit stun and 168 frames in an invulnerable crawl without
 teleporting away from his current route, while Cutter and Devil
 Hawk become vulnerable only after their opening attack. Fatman Joe is

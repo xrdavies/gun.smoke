@@ -19,6 +19,7 @@ import { advanceHatchet, createHatchetState, HATCHET_ENTRY_DEPTH_NES, HATCHET_EN
 import { BANDIT_BILL_CRAWL_DURATION, BANDIT_BILL_DAMAGE_RECOVERY_DURATION, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_ENTRY_END_Y, BANDIT_BILL_ENTRY_SPEED_Y, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_X_NES, BANDIT_BILL_ENTRY_Y, BANDIT_BILL_ENTRY_Y_NES, BANDIT_BILL_FIRST_VOLLEY_DELAY, BANDIT_BILL_HIT_STUN_DURATION, BANDIT_BILL_SHOT_INTERVAL, BANDIT_BILL_SHOTS_PER_VOLLEY, BANDIT_BILL_VOLLEY_GAP, banditBillCombatX, banditBillCombatY, banditBillOpeningY, banditBillProjectileVelocity, CUTTER_ENTRY_DURATION, CUTTER_ENTRY_END_Y, CUTTER_ENTRY_END_Y_NES, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_X_NES, CUTTER_ENTRY_Y, CUTTER_ENTRY_Y_NES, cutterCombatX, cutterCombatY, cutterOpeningX, cutterOpeningY, DEVIL_HAWK_ENTRY_DURATION, DEVIL_HAWK_ENTRY_END_Y, DEVIL_HAWK_ENTRY_END_Y_NES, DEVIL_HAWK_ENTRY_SPEED_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_X_NES, DEVIL_HAWK_ENTRY_Y, DEVIL_HAWK_ENTRY_Y_NES, DEVIL_HAWK_POST_ENTRY_X_HOLD, devilHawkCombatX, devilHawkOpeningY, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_END_Y, FATMAN_JOE_ENTRY_END_Y_NES, FATMAN_JOE_ENTRY_X_LANES, FATMAN_JOE_ENTRY_X_NES, FATMAN_JOE_ENTRY_Y, FATMAN_JOE_ENTRY_Y_NES, fatmanJoeCombatX, fatmanJoeCombatY, fatmanJoeOpeningY, nesAimHeading, NINJA_BOSS_ENTRY_LANES, NINJA_BOSS_ENTRY_LANES_NES, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, WINGATE_ENTRY_DURATION, WINGATE_ENTRY_END_Y, WINGATE_ENTRY_END_Y_NES, WINGATE_ENTRY_X_LANES, WINGATE_ENTRY_X_NES, WINGATE_ENTRY_Y, WINGATE_ENTRY_Y_NES, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_ENTRY_Y_NES, WINGATE_SECOND_SPAWN_DELAY, wingateOpeningY } from "../src/game-constants";
 import { banditBillCooldown } from "../src/game-constants";
 import { advanceInvulnerability, BLUE_YASHICHI_DURATION, MAX_LIVES } from "../src/game-constants";
+import { BOSS_BAR_RECOVERY_DURATION, bossCurrentBarHitPoints, bossHealthProfile, bossTotalHitPoints } from "../src/game-constants";
 import { RIFLE_BULLET_SPEED_MULTIPLIER } from "../src/game-constants";
 import { BOSS_PROJECTILE_CAPACITY, canSpawnBossProjectile, canSpawnEnemyProjectile, canSpawnPlayerBullet, ENEMY_PROJECTILE_CAPACITY, machineGunVelocities, pistolBulletSpeedFactor, pistolShots, pistolVelocities, PLAYER_BULLET_CAPACITY, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "../src/game-constants";
 import { LIFE_OVERFLOW_SCORE, lifePickup, MAX_POWERUP_STOCK, POWERUP_OVERFLOW_SCORE, storedPowerupPickup } from "../src/game-constants";
@@ -56,6 +57,13 @@ describe("Gun.Smoke vertical slice", () => {
     expect(BLUE_YASHICHI_DURATION).toBeCloseTo(360 / NES_FRAME_RATE, 9);
     expect(advanceInvulnerability(1 / NES_FRAME_RATE, true, 1 / NES_FRAME_RATE)).toEqual({ duration: HORSE_HIT_INVULNERABILITY, destroysEnemies: false });
     expect(advanceInvulnerability(HORSE_HIT_INVULNERABILITY, false, 1 / NES_FRAME_RATE)).toEqual({ duration: 59 / NES_FRAME_RATE, destroysEnemies: false });
+    expect([1, 2, 3, 4, 5, 6].map((stage) => bossHealthProfile(stage))).toEqual([
+      { bars: 4, hitPoints: 3 }, { bars: 4, hitPoints: 2 }, { bars: 5, hitPoints: 6 },
+      { bars: 4, hitPoints: 1 }, { bars: 6, hitPoints: 12 }, { bars: 1, hitPoints: 6 },
+    ]);
+    expect([1, 2, 3, 4, 5, 6].map((stage) => bossTotalHitPoints(stage, stage === 6 ? 1 : 0))).toEqual([12, 8, 30, 4, 72, 72]);
+    expect([bossCurrentBarHitPoints(12, 3), bossCurrentBarHitPoints(10, 3), bossCurrentBarHitPoints(1, 3)]).toEqual([3, 1, 1]);
+    expect(BOSS_BAR_RECOVERY_DURATION).toBeCloseTo(8 / NES_FRAME_RATE, 9);
     expect(ROUND_BOSS_GATE_SCROLL_NES).toEqual([2_767, 2_799, 4_863, 3_487, 2_879, 4_879]);
     expect(ROUND_LOOP_SCROLL_NES).toEqual([3_087, 3_055, 5_119, 3_839, 3_055, 5_119]);
     expect(ROUND_BOSS_TRIGGERS[0]).toBe(6_225.75);

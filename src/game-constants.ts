@@ -1,23 +1,40 @@
 export interface StageDefinition {
   name: string;
   boss: string;
-  bossHp: number;
+  bossBars: number;
+  bossBarHitPoints: number;
 }
 
 export type EnemyType = "gunman" | "rifleman" | "bomber" | "sniper" | "backstabber" | "ninja" | "hatchet" | "spear" | "firebreather" | "shotgunner";
 export type ItemType = "boots" | "rifle" | "ammo" | "money" | "pow" | "skull" | "horse" | "blueYashichi" | "redYashichi";
 
 export const STAGES: readonly StageDefinition[] = [
-  { name: "HICKSVILLE", boss: "BANDIT BILL", bossHp: 4 },
-  { name: "ROCKY PASS", boss: "CUTTER", bossHp: 4 },
-  { name: "NATIVE VILLAGE", boss: "DEVIL HAWK", bossHp: 5 },
-  { name: "CLIFF VALLEY", boss: "NINJA", bossHp: 5 },
-  { name: "FOREST", boss: "FATMAN JOE", bossHp: 6 },
-  { name: "WINGATE TOWN", boss: "WINGATE", bossHp: 6 },
+  { name: "HICKSVILLE", boss: "BANDIT BILL", bossBars: 4, bossBarHitPoints: 3 },
+  { name: "ROCKY PASS", boss: "CUTTER", bossBars: 4, bossBarHitPoints: 2 },
+  { name: "NATIVE VILLAGE", boss: "DEVIL HAWK", bossBars: 5, bossBarHitPoints: 6 },
+  { name: "CLIFF VALLEY", boss: "NINJA", bossBars: 4, bossBarHitPoints: 1 },
+  { name: "FOREST", boss: "FATMAN JOE", bossBars: 6, bossBarHitPoints: 12 },
+  { name: "WINGATE TOWN", boss: "WINGATE", bossBars: 6, bossBarHitPoints: 12 },
 ];
 
 export const MAX_STAGE = STAGES.length;
+
+export function bossHealthProfile(stage: number, phase = 0): { bars: number; hitPoints: number } {
+  if (stage === MAX_STAGE && phase === 0) return { bars: 1, hitPoints: 6 };
+  const definition = STAGES[stage - 1] ?? STAGES[0]!;
+  return { bars: definition.bossBars, hitPoints: definition.bossBarHitPoints };
+}
+
+export function bossTotalHitPoints(stage: number, phase = 0): number {
+  const profile = bossHealthProfile(stage, phase);
+  return profile.bars * profile.hitPoints;
+}
+
+export function bossCurrentBarHitPoints(totalHitPoints: number, hitPointsPerBar: number): number {
+  return totalHitPoints <= 0 ? 0 : (totalHitPoints - 1) % hitPointsPerBar + 1;
+}
 export const NES_FRAME_RATE = 60.098;
+export const BOSS_BAR_RECOVERY_DURATION = 8 / NES_FRAME_RATE;
 export const MAX_LIVES = 5;
 export const MAX_SCORE = 999_990;
 export const BLUE_YASHICHI_DURATION = 360 / NES_FRAME_RATE;

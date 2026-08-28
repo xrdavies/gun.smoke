@@ -20,7 +20,7 @@ import { advanceFirebreather, advanceHatchet, advanceSpear, createFirebreatherSt
 import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanCanAttack, riflemanPosition, riflemanShotHeading, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition, SNIPER_COVER_DURATION, sniperProjectileVelocity } from "./game-constants";
 import { BANDIT_BILL_DAMAGE_RECOVERY_DURATION, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, banditBillCombatX, banditBillCombatY, banditBillProjectileVelocity } from "./game-constants";
 import { banditBillCooldown } from "./game-constants";
-import { advanceInvulnerability, BLUE_YASHICHI_DURATION, lifePickup, scoreBossDefeat, shouldClearProjectilesAfterBossDefeat } from "./game-constants";
+import { advanceInvulnerability, BLUE_YASHICHI_DURATION, BOSS_BAR_RECOVERY_DURATION, bossCurrentBarHitPoints, bossHealthProfile, bossTotalHitPoints, lifePickup, scoreBossDefeat, shouldClearProjectilesAfterBossDefeat } from "./game-constants";
 import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, piercingDamageAfterHit, PLAYER_ENTRY_X, PLAYER_ENTRY_Y, pistolBulletSpeedFactor, pistolVelocities, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
 import { addScore } from "./game-constants";
@@ -616,7 +616,7 @@ class GunSmokeGame {
       this.wingateRespawnClock -= delta;
       if (this.wingateRespawnClock <= 0) {
         const entryX = WINGATE_ENTRY_X_LANES[Math.floor(this.nextRandom() * WINGATE_ENTRY_X_LANES.length)] ?? 720;
-        const boss = this.spawnUnit("boss", entryX, this.scroll + WINGATE_SECOND_ENTRY_Y, (STAGES[MAX_STAGE - 1]?.bossHp ?? 6) * 4);
+        const boss = this.spawnUnit("boss", entryX, this.scroll + WINGATE_SECOND_ENTRY_Y, bossTotalHitPoints(MAX_STAGE, 1));
         boss.bossEntryX = boss.x;
         boss.bossEntryY = WINGATE_SECOND_ENTRY_Y;
         boss.vx = (boss.x < 128 * NES_WORLD_X_SCALE ? 1 : -1) * WINGATE_MOVEMENT_SPEED;
@@ -1244,7 +1244,7 @@ class GunSmokeGame {
       "boss",
       isBanditBill ? BANDIT_BILL_ENTRY_X_LANES[Math.floor(this.nextRandom() * BANDIT_BILL_ENTRY_X_LANES.length)] ?? 360 : isCutter ? CUTTER_ENTRY_X_LANES[Math.floor(this.nextRandom() * CUTTER_ENTRY_X_LANES.length)] ?? 540 : isDevilHawk ? DEVIL_HAWK_ENTRY_X_LANES[Math.floor(this.nextRandom() * DEVIL_HAWK_ENTRY_X_LANES.length)] ?? 630 : isNinjaBoss ? ninjaBossLane?.[0] ?? 660 : isFatmanJoe ? FATMAN_JOE_ENTRY_X_LANES[Math.floor(this.nextRandom() * FATMAN_JOE_ENTRY_X_LANES.length)] ?? 570 : isFirstWingate ? WINGATE_ENTRY_X_LANES[Math.floor(this.nextRandom() * WINGATE_ENTRY_X_LANES.length)] ?? 570 : 480,
       this.scroll + (isBanditBill ? BANDIT_BILL_ENTRY_Y : isCutter ? CUTTER_ENTRY_Y : isDevilHawk ? DEVIL_HAWK_ENTRY_Y : isNinjaBoss ? ninjaBossLane?.[1] ?? 288 : isFatmanJoe ? FATMAN_JOE_ENTRY_Y : isFirstWingate ? WINGATE_ENTRY_Y : 90),
-      definition.bossHp * 4,
+      bossTotalHitPoints(this.stage, this.wingatePhase),
     );
     if (isBanditBill || isCutter || isDevilHawk || isNinjaBoss || isFatmanJoe || isFirstWingate) {
       boss.bossEntryX = boss.x;
@@ -1930,9 +1930,12 @@ class GunSmokeGame {
         if (bullet.piercing) bullet.hitTargets?.add(target);
         else bullet.hp = 0;
         const previousHp = target.hp;
-        target.hp -= bullet.damage;
+        const targetHitPoints = target.kind === "boss"
+          ? bossCurrentBarHitPoints(previousHp, bossHealthProfile(this.stage, this.wingatePhase).hitPoints)
+          : previousHp;
+        target.hp -= Math.min(bullet.damage, targetHitPoints);
         if (bullet.piercing) {
-          const result = piercingDamageAfterHit(bullet.damage, previousHp);
+          const result = piercingDamageAfterHit(bullet.damage, targetHitPoints);
           bullet.damage = result.damage;
           if (result.consumed) bullet.hp = 0;
         }
@@ -2051,7 +2054,9 @@ class GunSmokeGame {
 
   private handleBossDamage(unit: Unit, previousHp: number): void {
     if (unit.kind !== "boss") return;
-    if (Math.ceil(previousHp / 4) === Math.ceil(unit.hp / 4)) return;
+    const profile = bossHealthProfile(this.stage, this.wingatePhase);
+    if (Math.ceil(previousHp / profile.hitPoints) === Math.ceil(unit.hp / profile.hitPoints)) return;
+    unit.invulnerableUntil = Math.max(unit.invulnerableUntil, unit.age + BOSS_BAR_RECOVERY_DURATION);
     if (this.stage === 1) {
       unit.invulnerableUntil = unit.age + BANDIT_BILL_DAMAGE_RECOVERY_DURATION;
       this.showMessage("BANDIT BILL CRAWLS");
@@ -2285,7 +2290,7 @@ class GunSmokeGame {
     bossLabel.hidden = !boss;
     if (boss) {
       const name = this.stage === MAX_STAGE && this.wingatePhase > 0 ? "WINGATE II" : definition.boss;
-      const bars = Math.max(1, Math.ceil(boss.hp / 4));
+      const bars = Math.max(1, Math.ceil(boss.hp / bossHealthProfile(this.stage, this.wingatePhase).hitPoints));
       bossLabel.textContent = `${name} ${"|".repeat(bars)}`;
     }
   }

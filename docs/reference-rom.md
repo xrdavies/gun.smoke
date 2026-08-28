@@ -417,7 +417,11 @@ and the next volley starts 72 frames after the fourth shot. Bandit Bill's
 dispatch `0x30` projectiles use the ROM's quantized 32-direction speed table at
 the third tier (about 444 world pixels/s on its diagonal); Round 1 uses these measured
 values instead of its former single slow shot.
-The gate traces place his initial entity at the top edge (`y=0`) and observe
+The Boss initializers set each health bar in field `$0460`: Bandit Bill uses
+3, Cutter 2, Devil Hawk 6, Ninja 1, Fatman Joe 12, and the Wingate decoy/real
+encounters use 6/12. The web runtime multiplies those values by the measured
+bar count instead of applying one global Boss health constant. The gate traces
+place his initial entity at the top edge (`y=0`) and observe
 four horizontal entry lanes, NES `x=96/128/160/192`; after 96 frames the actor
 reaches approximately `y=64`. The web runtime selects one of those measured
 lanes and uses the corresponding downward entry speed. After the opening, the

@@ -152,7 +152,8 @@ Most Boss weapons use a six-slot projectile pool separate from the eight slots
 used by ordinary enemy gunfire, so field bullets cannot suppress those attacks;
 Bandit Bill's traced `0x30` shots are the exception and use the ordinary pool;
 his clean-trace X/Y movement path is replayed through the measured 3,472-frame
-combat window and reflected afterward for continued movement.
+combat window, with sparse unhurt samples extending it to frame 7,680 before
+the reflected continuation.
 Ordinary screen clears do not erase active low-slot Boss shots. ROM-tagged
 Ninja, Hatchet, Spear, and Firebreather shots use the shared discrete second-tier
 direction table; all active formations are driven by decoded ROM event records.
@@ -160,7 +161,8 @@ Cutter enters from the top edge on one of the ROM's NES X lanes
 (`x=88/112/144/168`), descends through a short overshoot, and curves 15 NES pixels
 left to approximately `y=136` after 324 frames, holds that lane until frame 350,
 then follows its recorded X/Y combat route with the first paired boomerangs
-and repeat every 256 frames, then reflects the route after the recorded window.
+and repeat every 256 frames, then follows sparse measured samples through frame
+12,000 before reflecting the route.
 Both turn through measured 32-direction headings,
 hold their launch offsets for one frame, capture Billy's position at NES
 `y=176`, and recalculate their return heading
@@ -188,14 +190,15 @@ hides the Boss for the measured 90-frame teleport delay, then restarts its entry
 smoke window and attack clock from the newly selected lane. Devil Hawk fireballs use the ROM's
 discrete directional velocity table and their measured 45/36-frame lifetimes;
 its recorded X/Y movement route is replayed through the available 3,600-frame
-trace, then continues with a deterministic reflected extension; the post-trace
+trace, then continues with sparse measured samples through frame 12,000 and a
+deterministic reflected extension; the post-trace
 random route remains an approximation.
 Fatman Joe begins attack decisions after his measured entrance. A successful
 downward-sector check launches one aimed shell; after 31 frames it stops and
 splits into five stationary mines at four-frame intervals. The mines use the
 measured symmetric offsets and last about 29 NES frames. His multi-hop X/Y
-profile follows the controlled Boss trace through combat frame 3,600 and uses a
-reflected continuation afterward. The runtime pauses the 76-frame attack counter during the measured 53-frame short or
+profile follows the controlled Boss trace through combat frame 3,600, uses
+sparse measured samples through frame 12,000, then reflects the route. The runtime pauses the 76-frame attack counter during the measured 53-frame short or
 122-frame long movement action; only later random movement direction remains
 an approximation.
 Ninja's measured first shuriken volley appears at frame 179 as a four-way

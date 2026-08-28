@@ -1811,7 +1811,7 @@ class GunSmokeGame {
       else if (this.stage === 2 && unit.age <= CUTTER_FIRST_ATTACK_DELAY) unit.x = cutterOpeningX(unit.age, unit.bossEntryX ?? unit.x);
       else if (this.stage === 3 && unit.age <= DEVIL_HAWK_ENTRY_DURATION + DEVIL_HAWK_POST_ENTRY_X_HOLD) unit.x = unit.bossEntryX ?? unit.x;
       else if (this.stage === 3) unit.x = devilHawkCombatX(unit.age, unit.bossEntryX ?? unit.x);
-      else if (this.stage === 4 && (ninjaTeleporting || ninjaCycleAge <= NINJA_BOSS_ENTRY_INVULNERABILITY)) unit.x = unit.bossEntryX ?? unit.x;
+      else if (this.stage === 4 && (ninjaTeleporting || ninjaCycleAge < NINJA_BOSS_ENTRY_INVULNERABILITY)) unit.x = unit.bossEntryX ?? unit.x;
       else if (this.stage === 4) unit.x = ninjaBossCombatX(ninjaCycleAge, unit.bossEntryX ?? unit.x, unit.bossCycleStart !== undefined);
       else if (this.stage === 5 && unit.age <= FATMAN_JOE_ENTRY_DURATION) unit.x = unit.bossEntryX ?? unit.x;
       else {
@@ -1831,7 +1831,7 @@ class GunSmokeGame {
       else if (this.stage === 3) unit.y = this.scroll + (unit.age <= DEVIL_HAWK_ENTRY_DURATION ? devilHawkOpeningY(unit.age) : devilHawkCombatY(unit.age));
       else if (this.stage === 4) {
         const entryY = unit.bossEntryY ?? NINJA_BOSS_ENTRY_LANES[0]?.[1] ?? 144;
-        unit.y = this.scroll + (ninjaCycleAge <= NINJA_BOSS_ENTRY_INVULNERABILITY ? entryY : ninjaBossCombatY(ninjaCycleAge, entryY, unit.bossCycleStart !== undefined));
+        unit.y = this.scroll + (ninjaCycleAge < NINJA_BOSS_ENTRY_INVULNERABILITY ? entryY : ninjaBossCombatY(ninjaCycleAge, entryY, unit.bossCycleStart !== undefined));
       }
       else if (this.stage === 5) unit.y = this.scroll + (unit.age <= FATMAN_JOE_ENTRY_DURATION ? fatmanJoeOpeningY(unit.age) : fatmanJoeCombatY(unit.age));
       else unit.y = this.scroll + 92 + Math.sin(unit.age * 2) * 18;

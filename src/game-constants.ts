@@ -1514,11 +1514,10 @@ export function ninjaBossNextTeleportAt(reentryStart?: number): number {
   return reentryStart === undefined ? NINJA_BOSS_FIRST_NATURAL_TELEPORT : reentryStart + NINJA_BOSS_REPEAT_NATURAL_TELEPORT;
 }
 
-// Initial route sampled from round4-boss-long-record.json. Function frames are
-// relative to the 44-frame opening invulnerability window.
-const NINJA_BOSS_COMBAT_PATH_NES = [[0, 128], [1, 123], [2, 121], [3, 118], [4, 117], [5, 116], [6, 114], [16, 117], [26, 153], [36, 145], [46, 137], [51, 123], [56, 105], [65, 104], [92, 104], [106, 115], [116, 99], [126, 110], [152, 110], [176, 83], [196, 86], [216, 115], [236, 174], [252, 140], [278, 140], [294, 164], [295, 164]] as const;
+// Initial route sampled from round4-boss-long-record.json.
 
-const NINJA_BOSS_INITIAL_X_PATH_NES = [[0, 176], [43, 176], [50, 170], [60, 161], [70, 152], [80, 152], [90, 163], [95, 163], [100, 158], [109, 147], [136, 147], [150, 131], [160, 117], [170, 102], [196, 102], [200, 109], [220, 117], [240, 105], [260, 112], [280, 117], [338, 117]] as const;
+const NINJA_BOSS_INITIAL_X_RUNS_NES = [[0,176],[44,175],[46,174],[47,173],[48,172],[49,171],[50,170],[51,169],[52,168],[53,167],[54,166],[55,165],[57,164],[58,163],[59,162],[60,161],[61,160],[62,159],[63,158],[64,157],[65,156],[66,155],[67,154],[69,153],[70,152],[71,151],[72,150],[73,149],[74,148],[75,147],[77,148],[78,149],[79,151],[80,152],[81,153],[82,154],[83,155],[84,156],[85,158],[86,159],[87,160],[88,161],[89,162],[90,163],[91,164],[92,166],[94,164],[95,163],[96,162],[97,161],[98,160],[99,159],[100,158],[101,156],[102,155],[103,154],[104,153],[105,152],[106,151],[107,149],[108,148],[109,147],[137,146],[138,145],[139,144],[140,143],[141,141],[142,140],[143,139],[144,138],[145,137],[146,136],[147,134],[148,133],[149,132],[150,131],[151,130],[152,129],[154,127],[155,125],[156,124],[157,122],[158,120],[159,119],[160,117],[161,115],[162,114],[163,112],[164,110],[165,109],[166,107],[167,105],[168,104],[169,102],[197,104],[198,105],[199,107],[200,109],[201,110],[202,112],[203,114],[204,115],[205,117],[206,119],[207,120],[208,122],[209,124],[210,125],[211,127],[212,129],[214,127],[215,125],[216,124],[217,122],[218,120],[219,119],[220,117],[221,115],[222,114],[223,112],[224,110],[225,109],[226,107],[227,105],[228,104],[229,102],[232,103],[235,104],[238,105],[241,106],[244,107],[248,108],[251,109],[254,110],[257,111],[260,112],[264,113],[267,114],[270,115],[273,116],[276,117]] as const;
+const NINJA_BOSS_INITIAL_Y_RUNS_NES = [[0,125],[1,123],[2,121],[3,118],[4,117],[5,116],[6,114],[7,113],[9,112],[13,113],[14,114],[16,117],[17,120],[18,122],[19,125],[20,129],[21,132],[22,136],[23,139],[24,144],[25,149],[26,153],[27,158],[28,160],[29,161],[30,163],[31,165],[33,159],[34,154],[35,150],[36,145],[37,142],[38,138],[39,136],[40,133],[44,134],[45,135],[46,137],[47,136],[48,134],[50,129],[51,123],[52,119],[53,115],[54,111],[55,108],[56,105],[57,103],[59,102],[60,103],[62,105],[63,107],[64,105],[65,104],[93,101],[94,99],[95,97],[96,95],[98,94],[99,95],[101,97],[102,100],[103,103],[104,107],[105,111],[106,115],[107,117],[108,118],[110,114],[111,110],[112,107],[113,104],[114,102],[115,100],[116,99],[117,98],[118,99],[119,100],[120,102],[121,104],[122,107],[123,110],[153,106],[154,102],[155,99],[156,96],[157,94],[158,92],[159,91],[160,90],[161,91],[162,92],[163,94],[164,96],[165,99],[166,102],[170,98],[171,94],[172,91],[173,88],[174,86],[175,84],[176,83],[177,82],[178,83],[179,84],[180,86],[181,88],[182,91],[183,94],[187,92],[188,90],[189,89],[190,88],[191,87],[192,86],[199,87],[201,88],[202,89],[203,90],[204,91],[205,92],[206,93],[207,95],[208,97],[209,99],[210,101],[211,103],[212,105],[213,107],[214,109],[215,112],[216,115],[217,118],[218,120],[219,123],[220,126],[221,129],[222,132],[223,136],[224,140],[225,144],[226,148],[227,152],[228,156],[229,161],[230,166],[231,171],[232,176],[233,178],[234,180],[236,174],[237,168],[238,163],[239,158],[240,154],[241,150],[242,147],[243,144],[244,143],[245,142],[248,143],[249,144],[250,142],[251,140],[279,138],[280,136],[281,135],[282,134],[285,135],[286,136],[287,139],[288,142],[289,146],[290,150],[291,155],[292,160],[293,162],[294,164]] as const;
 // Dense samples from round4-boss-long-record.json preserve the ROM's stepped
 // re-entry motion instead of smoothing long plateaus across a jump.
 const NINJA_BOSS_REENTRY_X_RUNS_NES = [[0,112],[133,111],[134,110],[135,109],[136,108],[137,106],[138,105],[139,104],[140,103],[141,102],[142,101],[143,99],[144,98],[145,97],[146,96],[147,95],[148,94],[209,95],[210,97],[211,99],[212,100],[213,102],[214,104],[215,105],[216,107],[217,109],[218,110],[219,112],[220,114],[221,115],[222,117],[223,118],[224,120],[243,121],[244,122],[245,124],[246,125],[247,126],[248,127],[249,128],[250,129],[251,131],[252,132],[253,133],[254,134],[255,135],[256,136],[257,137],[258,139],[287,140],[288,142],[289,144],[290,145],[291,147],[292,149],[293,150],[294,152],[295,154],[296,155],[297,157],[298,159],[299,160],[300,162],[301,163],[302,165],[304,163],[305,162],[306,160],[307,159],[308,157],[309,155],[310,154],[311,152],[312,150],[313,149],[314,147],[315,145],[316,144],[317,142],[318,140],[319,139],[391,140],[392,141],[393,142],[394,143],[395,144],[396,146],[397,147],[398,148],[399,149],[400,150],[401,151],[402,153],[403,154],[404,155],[405,156],[406,157]] as const;
@@ -1531,42 +1530,20 @@ function sampleNinjaAxis(path: readonly (readonly [number, number])[], age: numb
   return (sample[1] + offset) * scale;
 }
 
-function interpolateNinjaX(path: readonly (readonly [number, number])[], age: number, entryX: number, baseX: number): number {
-  const frame = Math.max(0, age * NES_FRAME_RATE);
-  const laneOffset = entryX / NES_WORLD_X_SCALE - baseX;
-  const first = path[0]!;
-  const point = (sample: readonly [number, number]): number => (sample[1] + laneOffset) * NES_WORLD_X_SCALE;
-  if (frame <= first[0]) return point(first);
-  const last = path.at(-1)!;
-  if (frame >= last[0]) return point(last);
-  const nextIndex = path.findIndex(([at]) => at >= frame);
-  const previous = path[nextIndex - 1]!;
-  const next = path[nextIndex]!;
-  return point([frame, previous[1] + (next[1] - previous[1]) * ((frame - previous[0]) / (next[0] - previous[0]))]);
-}
 
 export function ninjaBossCombatX(age: number, entryX = 176 * NES_WORLD_X_SCALE, reentry = false): number {
   if (reentry) {
     return sampleNinjaAxis(NINJA_BOSS_REENTRY_X_RUNS_NES, age, entryX / NES_WORLD_X_SCALE - 112, NES_WORLD_X_SCALE);
   }
-  return interpolateNinjaX(NINJA_BOSS_INITIAL_X_PATH_NES, age, entryX, 176);
+  return sampleNinjaAxis(NINJA_BOSS_INITIAL_X_RUNS_NES, age, entryX / NES_WORLD_X_SCALE - 176, NES_WORLD_X_SCALE);
 }
 
 export function ninjaBossCombatY(age: number, entryY = 128 * NES_WORLD_Y_SCALE, reentry = false): number {
   if (reentry) {
     return sampleNinjaAxis(NINJA_BOSS_REENTRY_Y_RUNS_NES, age, entryY / NES_WORLD_Y_SCALE - 64, NES_WORLD_Y_SCALE);
   }
-  const frame = Math.max(0, age * NES_FRAME_RATE - NINJA_BOSS_ENTRY_INVULNERABILITY * NES_FRAME_RATE);
-  const laneOffset = entryY / NES_WORLD_Y_SCALE - 128;
-  const first = NINJA_BOSS_COMBAT_PATH_NES[0]!;
-  if (frame <= first[0]) return (first[1] + laneOffset) * NES_WORLD_Y_SCALE;
-  const last = NINJA_BOSS_COMBAT_PATH_NES.at(-1)!;
-  if (frame >= last[0]) return (last[1] + laneOffset) * NES_WORLD_Y_SCALE;
-  const nextIndex = NINJA_BOSS_COMBAT_PATH_NES.findIndex(([at]) => at >= frame);
-  const previous = NINJA_BOSS_COMBAT_PATH_NES[nextIndex - 1]!;
-  const next = NINJA_BOSS_COMBAT_PATH_NES[nextIndex]!;
-  const amount = (frame - previous[0]) / (next[0] - previous[0]);
-  return (previous[1] + (next[1] - previous[1]) * amount + laneOffset) * NES_WORLD_Y_SCALE;
+  if (age < NINJA_BOSS_ENTRY_INVULNERABILITY) return entryY;
+  return sampleNinjaAxis(NINJA_BOSS_INITIAL_Y_RUNS_NES, age - NINJA_BOSS_ENTRY_INVULNERABILITY, entryY / NES_WORLD_Y_SCALE - 128, NES_WORLD_Y_SCALE);
 }
 export const FATMAN_JOE_ENTRY_X_NES = [64, 104, 152, 192] as const;
 export const FATMAN_JOE_ENTRY_X_LANES = FATMAN_JOE_ENTRY_X_NES.map((value) => value * NES_WORLD_X_SCALE);

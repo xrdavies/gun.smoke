@@ -443,6 +443,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ninjaBossPreparePosition(0, 147, 104, 134, 182)).toEqual([147, 104]);
     expect(ninjaBossPreparePosition(NINJA_BOSS_PREPARE_DURATION, 147, 104, 134, 182)).toEqual([134, 182]);
     expect(ninjaBossCombatX(43 / NES_FRAME_RATE)).toBe(176 * NES_WORLD_X_SCALE);
+    expect(ninjaBossCombatX(44 / NES_FRAME_RATE)).toBe(175 * NES_WORLD_X_SCALE);
     expect(ninjaBossCombatX(95 / NES_FRAME_RATE)).toBe(163 * NES_WORLD_X_SCALE);
     expect(ninjaBossCombatX(170 / NES_FRAME_RATE)).toBe(102 * NES_WORLD_X_SCALE);
     expect(ninjaBossCombatX(0, 112 * NES_WORLD_X_SCALE, true)).toBe(420);
@@ -854,7 +855,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES).toEqual([6, -34]);
     expect(NINJA_BOSS_SHURIKEN_VELOCITIES_NES).toEqual([[1.25, -1.5], [1.25, 1.5], [-1.25, 1.5], [-1.25, -1.5]]);
     expect(NINJA_BOSS_SHURIKEN_LIFETIME).toBeCloseTo(40 / NES_FRAME_RATE, 9);
-    expect(ninjaBossCombatY(NINJA_BOSS_ENTRY_INVULNERABILITY)).toBe(288);
+    expect(ninjaBossCombatY(NINJA_BOSS_ENTRY_INVULNERABILITY)).toBe(125 * NES_WORLD_Y_SCALE);
     expect(ninjaBossCombatY(NINJA_BOSS_ENTRY_INVULNERABILITY + 1 / NES_FRAME_RATE)).toBeCloseTo(123 * NES_WORLD_Y_SCALE, 9);
     expect(ninjaBossCombatY(NINJA_BOSS_ENTRY_INVULNERABILITY + 26 / NES_FRAME_RATE)).toBe(344.25);
     expect(ninjaBossCombatY(NINJA_BOSS_ENTRY_INVULNERABILITY + 51 / NES_FRAME_RATE)).toBeCloseTo(123 * NES_WORLD_Y_SCALE, 9);

@@ -853,6 +853,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ninjaBossCombatY(NINJA_BOSS_ENTRY_INVULNERABILITY + 1 / NES_FRAME_RATE)).toBeCloseTo(123 * NES_WORLD_Y_SCALE, 9);
     expect(ninjaBossCombatY(NINJA_BOSS_ENTRY_INVULNERABILITY + 26 / NES_FRAME_RATE)).toBe(344.25);
     expect(ninjaBossCombatY(NINJA_BOSS_ENTRY_INVULNERABILITY + 51 / NES_FRAME_RATE)).toBeCloseTo(123 * NES_WORLD_Y_SCALE, 9);
+    expect(ninjaBossCombatY(80 / NES_FRAME_RATE, 64 * NES_WORLD_Y_SCALE, true)).toBe(60 * NES_WORLD_Y_SCALE);
+    expect(ninjaBossCombatY(216 / NES_FRAME_RATE, 64 * NES_WORLD_Y_SCALE, true)).toBe(90 * NES_WORLD_Y_SCALE);
     expect(ninjaBossCombatY(304 / NES_FRAME_RATE, 64 * NES_WORLD_Y_SCALE, true)).toBe(189);
     expect(ninjaBossCombatY(416 / NES_FRAME_RATE, 64 * NES_WORLD_Y_SCALE, true)).toBe(81);
   });

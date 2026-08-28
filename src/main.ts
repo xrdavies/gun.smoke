@@ -29,6 +29,7 @@ import { addScore } from "./game-constants";
 import { ninjaCanThrow, ninjaTraceLifetime, ninjaTracePosition } from "./game-constants";
 import { FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeAimAllowsLaunch, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, FATMAN_JOE_MOVEMENT_SPEED, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, fatmanJoeCombatX, fatmanJoeCombatY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "./game-constants";
 import { advanceDevilHawkMovement, advanceWingateMovement, createDevilHawkMovementState, createWingateMovementState, DEVIL_HAWK_RANDOM_HANDOFF_ACTION_COUNTER, DEVIL_HAWK_RANDOM_HANDOFF_FINE_X, DEVIL_HAWK_RANDOM_HANDOFF_FINE_Y, DEVIL_HAWK_RANDOM_HANDOFF_GAIT, DEVIL_HAWK_RANDOM_HANDOFF_HEADING, DEVIL_HAWK_RANDOM_HANDOFF_SEGMENT_FRAMES, WINGATE_BULLET_LIFETIME, wingateCanFire, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, type DevilHawkMovementState, type WingateMovementState } from "./game-constants";
+import { WINGATE_FINAL_DEFEAT_ANIMATION_DURATION, WINGATE_FINAL_ENDING_DELAY } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_LIFETIME, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { advanceCutterMovement, createCutterMovementState, CUTTER_ENTRY_DURATION, CUTTER_RANDOM_HANDOFF_FINE_X, CUTTER_RANDOM_HANDOFF_FINE_Y, CUTTER_RANDOM_HANDOFF_GAIT, CUTTER_RANDOM_HANDOFF_SEGMENT_FRAMES, CUTTER_RANDOM_ROUTE_START_FRAME, cutterBoomerangOnScreen, cutterCombatX, cutterCombatY, cutterOpeningX, cutterOpeningY, type CutterMovementState } from "./game-constants";
 import { DEVIL_HAWK_ENTRY_DURATION, devilHawkAttackDelay, devilHawkFanHeadings, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_FULL_FAN_LIFETIME, DEVIL_HAWK_FULL_FAN_MAX_Y_NES, DEVIL_HAWK_POST_ENTRY_X_HOLD, devilHawkProjectileVelocity, DEVIL_HAWK_SIDE_FAN_LIFETIME, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY, nesAimHeading } from "./game-constants";
@@ -2077,11 +2078,12 @@ class GunSmokeGame {
         else if (this.ownedWeapons.size > 1 && drop < 0.38) this.spawnUnit("ammo", target.x, target.y, 1);
       }
     } else if (target.kind === "boss") {
+      const finalWingate = this.stage === MAX_STAGE && this.wingatePhase > 0;
       target.hp = 1;
       target.exploding = true;
       target.sprite.color = [1, 0.78, 0.3, 1];
       target.sprite.size = { x: 138, y: 92 };
-      target.maxAge = target.age + BOSS_DEFEAT_ANIMATION_DURATION;
+      target.maxAge = target.age + (finalWingate ? WINGATE_FINAL_DEFEAT_ANIMATION_DURATION : BOSS_DEFEAT_ANIMATION_DURATION);
       this.score = scoreBossDefeat(this.score, this.stage, this.wingatePhase);
       if (this.stage === MAX_STAGE && this.wingatePhase === 0) {
         this.wingatePhase = 1;
@@ -2096,7 +2098,7 @@ class GunSmokeGame {
         this.clearBossProjectiles();
       }
       this.bossSpawned = false;
-      this.stageClearClock = 1.5;
+      this.stageClearClock = finalWingate ? WINGATE_FINAL_ENDING_DELAY : 1.5;
       this.showMessage(this.stage === MAX_STAGE ? "TRAIL COMPLETE" : "BOSS DOWN");
       this.beep(110, 0.3);
     }

@@ -620,9 +620,11 @@ offset `(-8,+6)` NES pixels, uses the routine's quantized 32-direction aim, and
 releases after about 64 frames. Runtime applies this shared state rule instead
 of the former fixed six-shot/three-shot sequences.
 
-Boss defeats keep a brief 30-frame explosion state for visual feedback before
-the existing Round transition/ending flow; the state is non-colliding and does
-not add another reward.
+Regular Boss defeats keep a brief 30-frame explosion state for visual feedback.
+The real Wingate instead enters dispatch `0xa6` for nine frames and then the
+non-colliding `0xa7` controller for 752 frames; it releases and advances the
+Round index 761 frames after the lethal transition. Runtime holds the ending
+screen for that measured sequence, and neither state adds another reward.
 
 Current behavior map:
 

@@ -378,8 +378,9 @@ pressure before the actor is released. Barrel contents use that same seven-slot
 pickup pool rather than becoming capacity-free runtime objects. If all seven
 ordinary enemy slots are occupied, the ROM drops are skipped.
 
-After the second Wingate encounter the web recreation enters a separate ending
-and credits state instead of treating the win as Game Over.
+After the second Wingate encounter, a nine-frame defeat state and 752-frame
+non-colliding controller delay lead into the separate ending and credits state
+instead of treating the win as Game Over.
 The first Wingate defeat clears both projectile pools and leaves a measured
 264-frame pause before the real Wingate enters from its lower NES lane; the second encounter alone grants the
 Round 6 bounty.

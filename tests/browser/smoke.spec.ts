@@ -127,7 +127,9 @@ test("completes the six-round Boss transition chain", async ({ page }) => {
   await page.clock.runFor(5_000);
   await expect(page.locator("#boss-label")).toContainText("WINGATE II");
   await page.evaluate(() => (window as unknown as { __defeatGunSmokeBoss: () => void }).__defeatGunSmokeBoss());
-  await page.clock.runFor(1_700);
+  await page.clock.runFor(5_000);
+  await expect(page.locator("#ending-screen")).toBeHidden();
+  await page.clock.runFor(8_000);
   await expect(page.locator("#ending-screen")).toBeVisible();
   expect(pageErrors).toEqual([]);
 });

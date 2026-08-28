@@ -834,9 +834,18 @@ const GUNMAN_FLANK_SCOPED_PATHS_NES = {
   9: [[0,0,0],[16,-14,5],[32,-27,10],[46,-39,15],[48,-40,16],[55,-46,18],[64,-53,21],[80,-67,26],[96,-80,32],[110,-92,36],[112,-93,37],[119,-93,39],[128,-93,42],[144,-93,48],[160,-93,53],[174,-93,58],[176,-93,58],[183,-93,61],[192,-93,64],[208,-93,69],[224,-93,74],[238,-93,79],[240,-93,80],[247,-93,82],[248,-93,82],[249,-93,83],[250,-93,83],[251,-94,81],[252,-96,80],[253,-97,78],[254,-98,77],[255,-99,76],[256,-101,75],[257,-102,74],[258,-103,72],[259,-105,72],[260,-106,71],[270,-116,69],[272,-118,69],[280,-125,73],[288,-134,84],[290,-136,88],[300,-140,113],[301,-140,116],[302,-140,119],[303,-140,121],[304,-140,122],[305,-140,123],[306,-140,125],[307,-139,125],[308,-139,126],[309,-139,128],[310,-139,128],[311,-138,128],[312,-137,129],[320,-131,127],[328,-132,124],[336,-131,120],[344,-128,115],[352,-127,116],[360,-127,121],[368,-127,123],[376,-127,126],[384,-127,129],[392,-127,123],[400,-125,118],[408,-122,115],[416,-117,111],[424,-111,112],[432,-108,114],[440,-108,117],[448,-108,120],[456,-108,123],[464,-108,125],[472,-108,128],[480,-115,131],[488,-121,133],[496,-128,136],[504,-135,139],[512,-141,141],[520,-148,144],[528,-155,147],[536,-161,149],[544,-168,152],[552,-174,155],[560,-181,157],[568,-188,160],[576,-194,163],[584,-201,165],[592,-208,168],[600,-214,171],[608,-221,173],[616,-227,176],[624,-234,179],[632,-236,181],[640,-235,177],[648,-228,179],[656,-222,181],[664,-215,184],[672,-208,187],[680,-202,189],[688,-195,191],[696,-189,193],[704,-183,194],[712,-184,189],[720,-183,184],[728,-181,178],[736,-180,173],[744,-179,169],[752,-178,163],[760,-176,158],[768,-175,153],[776,-174,147],[784,-173,143],[792,-171,138],[800,-170,132],[808,-169,127],[816,-167,123],[824,-164,118],[832,-159,116],[840,-152,116],[848,-146,117],[856,-139,123],[864,-134,130],[872,-128,136],[880,-123,144],[888,-118,151],[896,-112,158],[904,-107,165],[912,-101,173],[920,-96,179],[928,-90,187],[936,-85,194],[944,-80,201],[952,-74,208],[960,-69,216],[962,-68,217]],
 } as const;
 const GUNMAN_FLANK_SCOPED_LIFETIMES_FRAMES = { 8: 569, 9: 963 } as const;
+const decodeGunmanCoordinateSamples = (encoded: string): readonly (readonly [number, number])[] => {
+  const bytes = Uint8Array.from(atob(encoded), (character) => character.charCodeAt(0));
+  const samples: [number, number][] = [];
+  for (let index = 0; index + 1 < bytes.length; index += 2) samples.push([bytes[index]! > 127 ? bytes[index]! - 256 : bytes[index]!, bytes[index + 1]! > 127 ? bytes[index + 1]! - 256 : bytes[index + 1]!]);
+  return samples;
+};
+const GUNMAN_FLANK_Y64_TRACE_SAMPLES_NES = {
+  8: decodeGunmanCoordinateSamples("AAAAAAEAAgEDAQQBBQIFAgYCBwMIAwkDCgQKBAsEDAUNBQ4FDwYPBhAGEQcSBxMHFAgUCBUIFgkXCRgJGQoZChoKGwscCx0LHQweDB8MIA0hDSINIg4jDiQOJQ8mDycPJxAoECkQKhErESwRLBItEi4SLxMwEzETMRQyFDMUNBU1FTUVNhY3FjgWORc6FzoXOxg8GD0YPhk/GT8ZQBpBGkIaQxtEG0QbRRxGHEccSB1JHUkdSh5LHkweTR9OH04fTyBPIFAfUR1THFQaVRlXGFgXWRZbFVwUXhRfE2ATYRJiEmMSYxJkEmUSZhJnEmgSaBNpE2oTaxRrFGwUbhZvF3AYchlzGnQcdR12H3cgeCJ5I3oleyd7KXwrfC19L30yfjV+OH47fj5+QX5EfkZ+Rn1GfUd8R3tHekh5SHhIeEl3SXdJd0p3SXdId0h3R3dGd0Z3RXdEd0R3Q3dCd0J3QXdAd0B3P3c+dz53PXc8dzx3O3c6dzp3OXc4dzh3N3c2dzZ3NXc0dzR3M3cydzJ3MXcwdzB3L3cudy53LXcsdyx3K3cqdyp3KXcodyh3J3cmdyZ3JXckdyR3I3cidyJ3IXcgdyB3H3cedx53HXccdxx3G3cadxp3GXcYdxh3F3cWdxZ3FXcUdxR3E3cSdxJ3EXcQdxB3D3cOdw53DXcMdwx3C3cKdwp3CXcIdwh3B3cGdwZ3BXcEdwR3A3cCdwJ3AXcAdwB3/3f+d/53/Xf8d/x3+3f6d/p3+Xf4d/h393f2d/Z39Xf0d/R383fyd/J38Xfwd/B373fud+537Xfsd+x363fqd+p36Xfod+h353fmd+Z35Xfkd+R343fid+J34Xfgd+B333fed9533Xfcd9x323fad9p32XfYd9h313fWd9Z31XfUd9R303fSd9J30XfQd9B3z3fOd853zXfMd8x3y3fKd8p3yXfId8h3x3fGd8Z3xXfEd8R3w3fCd8J3wXfAd8B3vw=="),
+} as const;
 
 export function gunmanFlankLifetime(entityCode: 7 | 8 | 9, originY = 0): number {
-  const scoped = Math.round(originY) === 32 && entityCode !== 7 ? GUNMAN_FLANK_SCOPED_LIFETIMES_FRAMES[entityCode] : undefined;
+  const scoped = Math.round(originY) === 64 && entityCode === 8 ? GUNMAN_FLANK_Y64_TRACE_SAMPLES_NES[entityCode].length : Math.round(originY) === 32 && entityCode !== 7 ? GUNMAN_FLANK_SCOPED_LIFETIMES_FRAMES[entityCode] : undefined;
   return (scoped ?? Math.round(GUNMAN_FLANK_LIFETIMES[entityCode] * NES_FRAME_RATE)) / NES_FRAME_RATE;
 }
 
@@ -917,6 +926,8 @@ export function gunmanTopHeading(age: number, targetX: number, originX = 88, ori
 export function gunmanFlankPosition(entityCode: 7 | 8 | 9, age: number, originY = 0): readonly [number, number] {
   const path = Math.round(originY) === 32 && entityCode !== 7 ? GUNMAN_FLANK_SCOPED_PATHS_NES[entityCode] : GUNMAN_FLANK_PATHS_NES[entityCode];
   const frame = Math.max(0, Math.round(age * NES_FRAME_RATE));
+  const y64Trace = Math.round(originY) === 64 && entityCode === 8 ? GUNMAN_FLANK_Y64_TRACE_SAMPLES_NES[entityCode] : undefined;
+  if (y64Trace && frame < y64Trace.length) return y64Trace[frame]!;
   if (entityCode === 7 && frame < GUNMAN_FLANK_TRACE_SAMPLES_NES.length) return GUNMAN_FLANK_TRACE_SAMPLES_NES[frame]!;
   const nextIndex = path.findIndex(([at]) => at >= frame);
   if (nextIndex < 0) {

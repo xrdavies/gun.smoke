@@ -771,9 +771,11 @@ describe("Gun.Smoke vertical slice", () => {
     expect(devilHawkCombatX(DEVIL_HAWK_ENTRY_DURATION + 640 / NES_FRAME_RATE)).toBe(660);
     expect(devilHawkCombatY(DEVIL_HAWK_ENTRY_DURATION + 3425 / NES_FRAME_RATE)).toBe(85 * NES_WORLD_Y_SCALE);
     expect(devilHawkCombatX(DEVIL_HAWK_ENTRY_DURATION + 3425 / NES_FRAME_RATE)).toBe(122 * NES_WORLD_X_SCALE);
-    expect(devilHawkCombatY(DEVIL_HAWK_ENTRY_DURATION + 3600 / NES_FRAME_RATE)).toBeCloseTo(65 * NES_WORLD_Y_SCALE, 9);
-    expect(devilHawkCombatX(DEVIL_HAWK_ENTRY_DURATION + 3600 / NES_FRAME_RATE)).toBeCloseTo(122 * NES_WORLD_X_SCALE, 9);
-    expect(devilHawkCombatX(DEVIL_HAWK_ENTRY_DURATION + 4096 / NES_FRAME_RATE)).toBeCloseTo(128 * NES_WORLD_X_SCALE, 9);
+    expect(devilHawkCombatY(DEVIL_HAWK_ENTRY_DURATION + 3600 / NES_FRAME_RATE)).toBeCloseTo(109 * NES_WORLD_Y_SCALE, 9);
+    expect(devilHawkCombatX(DEVIL_HAWK_ENTRY_DURATION + 3600 / NES_FRAME_RATE)).toBeCloseTo(119 * NES_WORLD_X_SCALE, 9);
+    expect(devilHawkCombatX(DEVIL_HAWK_ENTRY_DURATION + 4096 / NES_FRAME_RATE)).toBeCloseTo(118 * NES_WORLD_X_SCALE, 9);
+    expect(devilHawkCombatY(DEVIL_HAWK_ENTRY_DURATION + 4096 / NES_FRAME_RATE)).toBeCloseTo(89 * NES_WORLD_Y_SCALE, 9);
+    expect(devilHawkCombatX(DEVIL_HAWK_ENTRY_DURATION + 12000 / NES_FRAME_RATE)).toBeCloseTo(142 * NES_WORLD_X_SCALE, 9);
     expect(devilHawkCombatY(DEVIL_HAWK_ENTRY_DURATION + 12000 / NES_FRAME_RATE)).toBeCloseTo(69 * NES_WORLD_Y_SCALE, 9);
     expect(devilHawkCombatY(DEVIL_HAWK_ENTRY_DURATION + 4000 / NES_FRAME_RATE)).not.toBe(65 * NES_WORLD_Y_SCALE);
     const movement = createDevilHawkMovementState(122 + 142 / 256, 65 + 180 / 256);

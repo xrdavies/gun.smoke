@@ -1214,8 +1214,9 @@ const DEVIL_HAWK_COMBAT_X_NES = [
   [2401, 111], [2465, 101], [2529, 119], [2593, 123], [2657, 136], [2721, 145], [2785, 134], [2849, 136],
   [2913, 136], [2977, 136], [3041, 129], [3105, 109], [3169, 123], [3233, 129], [3297, 129], [3361, 122], [3425, 122],
 ] as const;
-const DEVIL_HAWK_COMBAT_PATH_EXTENDED_NES = [[3488, 133], [3520, 128], [3552, 85], [3584, 77], [3600, 65], [4096, 77], [4608, 121], [5120, 46], [5632, 47], [6144, 144], [6656, 76], [7168, 77], [7680, 115], [8192, 86], [8704, 88], [9216, 76], [9728, 120], [10240, 132], [10752, 106], [11264, 84], [11776, 113], [12000, 69]] as const;
-const DEVIL_HAWK_COMBAT_X_EXTENDED_NES = [[3488, 122], [3520, 122], [3552, 122], [3584, 122], [3600, 122], [4096, 128], [4608, 124], [5120, 76], [5632, 104], [6144, 113], [6656, 69], [7168, 86], [7680, 125], [8192, 111], [8704, 103], [9216, 122], [9728, 128], [10240, 111], [10752, 131], [11264, 223], [11776, 125], [12000, 142]] as const;
+// Sparse samples use combat-relative frames; the source trace includes the entry.
+const DEVIL_HAWK_COMBAT_PATH_EXTENDED_NES = [[3488, 53], [3520, 47], [3552, 57], [3584, 107], [3600, 109], [4096, 89], [4608, 67], [5120, 45], [5632, 123], [6144, 53], [6656, 48], [7168, 88], [7680, 55], [8192, 57], [8704, 61], [9216, 42], [9728, 82], [10240, 68], [10752, 88], [11264, 84], [11776, 77], [11857, 69]] as const;
+const DEVIL_HAWK_COMBAT_X_EXTENDED_NES = [[3488, 122], [3520, 122], [3552, 119], [3584, 119], [3600, 119], [4096, 118], [4608, 111], [5120, 115], [5632, 134], [6144, 124], [6656, 50], [7168, 119], [7680, 122], [8192, 154], [8704, 99], [9216, 135], [9728, 126], [10240, 122], [10752, 139], [11264, 223], [11776, 122], [11857, 142]] as const;
 const DEVIL_HAWK_COMBAT_PATH_FULL_NES = [...DEVIL_HAWK_COMBAT_PATH_NES, ...DEVIL_HAWK_COMBAT_PATH_EXTENDED_NES] as const;
 const DEVIL_HAWK_COMBAT_X_FULL_NES = [...DEVIL_HAWK_COMBAT_X_NES, ...DEVIL_HAWK_COMBAT_X_EXTENDED_NES] as const;
 export const DEVIL_HAWK_JUMP_PERIOD = 121;
@@ -1327,7 +1328,7 @@ export function devilHawkCombatY(age: number): number {
   const frame = Math.max(0, age * NES_FRAME_RATE - DEVIL_HAWK_ENTRY_DURATION * NES_FRAME_RATE);
   const path = DEVIL_HAWK_COMBAT_PATH_FULL_NES;
   const last = path.at(-1)!;
-  const sampledFrame = pingPongFrame(frame, last[0]);
+  const sampledFrame = Math.min(frame, last[0]);
   if (sampledFrame <= path[0]![0]) return path[0]![1] * NES_WORLD_Y_SCALE;
   const nextIndex = path.findIndex(([at]) => at >= sampledFrame);
   const previous = path[nextIndex - 1]!;
@@ -1342,7 +1343,7 @@ export function devilHawkCombatX(age: number, entryX = 208 * NES_WORLD_X_SCALE):
   const path = DEVIL_HAWK_COMBAT_X_FULL_NES;
   const first = path[0]!;
   const last = path.at(-1)!;
-  const sampledFrame = pingPongFrame(frame, last[0]);
+  const sampledFrame = Math.min(frame, last[0]);
   if (sampledFrame <= first[0]) return (first[1] + laneOffset) * NES_WORLD_X_SCALE;
   const nextIndex = path.findIndex(([at]) => at >= sampledFrame);
   const previous = path[nextIndex - 1]!;

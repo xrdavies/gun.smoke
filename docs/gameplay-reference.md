@@ -200,7 +200,8 @@ sparse measured samples through frame 12,000, then reflects the route. The runti
 pauses the 76-frame attack counter during the measured 53-frame short or
 122-frame long movement action, fires the follow-up shell at action end, and
 then resumes the counter; its attack random gate and follow-up timing use the
-decoded ROM state.
+decoded ROM state. The captured long-tail route is held at its final sampled
+position rather than reflected, matching the ROM's post-route wait state.
 Ninja's measured first shuriken volley appears at frame 179 as a four-way
 diagonal cross spawned just above Billy; each shot lasts about 40 frames and the
 attack uses a common 60-frame repeat interval. A non-damaging low-slot smoke

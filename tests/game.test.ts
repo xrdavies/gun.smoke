@@ -814,6 +814,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(fatmanJoeCombatY(FATMAN_JOE_ENTRY_DURATION + 3600 / NES_FRAME_RATE)).toBe(46 * NES_WORLD_Y_SCALE);
     expect(fatmanJoeCombatX(FATMAN_JOE_ENTRY_DURATION + 4096 / NES_FRAME_RATE)).toBeCloseTo(166 * NES_WORLD_X_SCALE, 9);
     expect(fatmanJoeCombatY(FATMAN_JOE_ENTRY_DURATION + 12000 / NES_FRAME_RATE)).toBe(43 * NES_WORLD_Y_SCALE);
+    expect(fatmanJoeCombatX(FATMAN_JOE_ENTRY_DURATION + 13000 / NES_FRAME_RATE)).toBe(191 * NES_WORLD_X_SCALE);
+    expect(fatmanJoeCombatY(FATMAN_JOE_ENTRY_DURATION + 13000 / NES_FRAME_RATE)).toBe(43 * NES_WORLD_Y_SCALE);
     expect(fatmanJoeCombatY(FATMAN_JOE_ENTRY_DURATION + 4000 / NES_FRAME_RATE)).not.toBe(46 * NES_WORLD_Y_SCALE);
     expect(fatmanJoeArenaXBounds()).toEqual([155, 805]);
     expect(FATMAN_JOE_FIRST_ATTACK_DELAY).toBeCloseTo(170 / NES_FRAME_RATE, 9);

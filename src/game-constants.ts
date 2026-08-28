@@ -1406,7 +1406,9 @@ function fatmanJoeCombatPosition(age: number, entryX = 152 * NES_WORLD_X_SCALE):
   const toWorldX = (x: number): number => clamp((x + laneOffset) * NES_WORLD_X_SCALE, ...fatmanJoeArenaXBounds());
   const first = FATMAN_JOE_COMBAT_PATH_EXTENDED_NES[0]!;
   const last = FATMAN_JOE_COMBAT_PATH_EXTENDED_NES.at(-1)!;
-  const sampledFrame = pingPongFrame(frame, last[0]);
+  // The captured ROM actor enters its wait state at the final sample; it does
+  // not replay the route in reverse like the explicitly looping Boss paths.
+  const sampledFrame = Math.min(frame, last[0]);
   if (sampledFrame <= first[0]) return [toWorldX(first[1]), first[2] * NES_WORLD_Y_SCALE];
   const nextIndex = FATMAN_JOE_COMBAT_PATH_EXTENDED_NES.findIndex(([at]) => at >= sampledFrame);
   const previous = FATMAN_JOE_COMBAT_PATH_EXTENDED_NES[nextIndex - 1]!;

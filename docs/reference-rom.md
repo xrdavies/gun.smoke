@@ -624,7 +624,10 @@ Regular Boss defeats keep a brief 30-frame explosion state for visual feedback.
 The real Wingate instead enters dispatch `0xa6` for nine frames and then the
 non-colliding `0xa7` controller for 752 frames; it releases and advances the
 Round index 761 frames after the lethal transition. Runtime holds the ending
-screen for that measured sequence, and neither state adds another reward.
+screen for that measured sequence, and neither state adds another reward. The
+ending script ignores Start through frame 4,124 after Boss release; frame 4,125
+is the first accepted Start and resets the Round to the title path, so the web
+ending action uses the same lockout.
 
 Current behavior map:
 

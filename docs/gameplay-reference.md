@@ -380,7 +380,8 @@ ordinary enemy slots are occupied, the ROM drops are skipped.
 
 After the second Wingate encounter, a nine-frame defeat state and 752-frame
 non-colliding controller delay lead into the separate ending and credits state
-instead of treating the win as Game Over.
+instead of treating the win as Game Over. Start/Ride again remains locked for
+the measured 4,125-frame ending sequence and then returns to the title.
 The first Wingate defeat clears both projectile pools and leaves a measured
 264-frame pause before the real Wingate enters from its lower NES lane; the second encounter alone grants the
 Round 6 bounty.

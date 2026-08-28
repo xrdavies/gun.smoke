@@ -29,7 +29,7 @@ import { addScore } from "./game-constants";
 import { ninjaCanThrow, ninjaTraceLifetime, ninjaTracePosition } from "./game-constants";
 import { FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeAimAllowsLaunch, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, FATMAN_JOE_MOVEMENT_SPEED, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, fatmanJoeCombatX, fatmanJoeCombatY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "./game-constants";
 import { advanceDevilHawkMovement, advanceWingateMovement, createDevilHawkMovementState, createWingateMovementState, DEVIL_HAWK_RANDOM_HANDOFF_ACTION_COUNTER, DEVIL_HAWK_RANDOM_HANDOFF_FINE_X, DEVIL_HAWK_RANDOM_HANDOFF_FINE_Y, DEVIL_HAWK_RANDOM_HANDOFF_GAIT, DEVIL_HAWK_RANDOM_HANDOFF_HEADING, DEVIL_HAWK_RANDOM_HANDOFF_SEGMENT_FRAMES, WINGATE_BULLET_LIFETIME, wingateCanFire, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, type DevilHawkMovementState, type WingateMovementState } from "./game-constants";
-import { WINGATE_FINAL_DEFEAT_ANIMATION_DURATION, WINGATE_FINAL_ENDING_DELAY } from "./game-constants";
+import { WINGATE_ENDING_INPUT_DELAY, WINGATE_FINAL_DEFEAT_ANIMATION_DURATION, WINGATE_FINAL_ENDING_DELAY } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_LIFETIME, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { advanceCutterMovement, createCutterMovementState, CUTTER_ENTRY_DURATION, CUTTER_RANDOM_HANDOFF_FINE_X, CUTTER_RANDOM_HANDOFF_FINE_Y, CUTTER_RANDOM_HANDOFF_GAIT, CUTTER_RANDOM_HANDOFF_SEGMENT_FRAMES, CUTTER_RANDOM_ROUTE_START_FRAME, cutterBoomerangOnScreen, cutterCombatX, cutterCombatY, cutterOpeningX, cutterOpeningY, type CutterMovementState } from "./game-constants";
 import { DEVIL_HAWK_ENTRY_DURATION, devilHawkAttackDelay, devilHawkFanHeadings, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_FULL_FAN_LIFETIME, DEVIL_HAWK_FULL_FAN_MAX_Y_NES, DEVIL_HAWK_POST_ENTRY_X_HOLD, devilHawkProjectileVelocity, DEVIL_HAWK_SIDE_FAN_LIFETIME, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY, nesAimHeading } from "./game-constants";
@@ -312,6 +312,8 @@ class GunSmokeGame {
   shopSpawnCursor = 0;
   musicTimer: number | undefined;
   musicStep = 0;
+  endingReady = false;
+  endingReadyTimer: number | undefined;
   randomState: [number, number, number, number] = [...ROM_RANDOM_SEED];
   randomReadIndex = 0;
   randomFrameRemainder = 0;
@@ -2320,6 +2322,15 @@ class GunSmokeGame {
     briefingScreen.hidden = true;
     if (won) {
       this.mode = "ending";
+      this.endingReady = false;
+      endingButton.disabled = true;
+      if (this.endingReadyTimer !== undefined) window.clearTimeout(this.endingReadyTimer);
+      this.endingReadyTimer = window.setTimeout(() => {
+        this.endingReady = true;
+        endingButton.disabled = false;
+        endingButton.focus();
+        this.pollPausedGamepad();
+      }, WINGATE_ENDING_INPUT_DELAY * 1_000);
       endingScreen.hidden = false;
       gameOver.hidden = true;
     } else {
@@ -2332,6 +2343,10 @@ class GunSmokeGame {
       gameOverContinueButton.focus();
       this.pollPausedGamepad();
     }
+  }
+
+  exitEnding(): void {
+    if (this.mode === "ending" && this.endingReady) window.location.reload();
   }
 
   private updateHud(): void {
@@ -2461,6 +2476,7 @@ class GunSmokeGame {
 
   private dispose(): void {
     this.stopMusic();
+    if (this.endingReadyTimer !== undefined) window.clearTimeout(this.endingReadyTimer);
     if (this.pausePollHandle !== undefined) window.cancelAnimationFrame(this.pausePollHandle);
     this.audio?.dispose();
     const textures = new Set<GPUTexture>([
@@ -2479,7 +2495,7 @@ class GunSmokeGame {
     if (this.pausePollHandle !== undefined) return;
     const poll = (): void => {
       this.pausePollHandle = undefined;
-      if (this.mode !== "paused" && this.mode !== "briefing" && this.mode !== "gameover") return;
+      if (this.mode !== "paused" && this.mode !== "briefing" && this.mode !== "gameover" && this.mode !== "ending") return;
       this.engine.input?.pollGamepads();
       if (this.mode === "gameover") {
         const selectActive = this.actions.active("inventory");
@@ -2506,6 +2522,7 @@ class GunSmokeGame {
     else if (this.mode === "intro") this.continueFromIntro();
     else if (this.mode === "briefing") this.continueFromBriefing();
     else if (this.mode === "gameover") this.confirmGameOver();
+    else if (this.mode === "ending") this.exitEnding();
     else if (this.mode === "playing" || this.mode === "paused") this.togglePause();
   }
 
@@ -2769,7 +2786,7 @@ continueButton.addEventListener("click", () => game?.continueFromIntro());
 briefingButton.addEventListener("click", () => game?.continueFromBriefing());
 gameOverContinueButton.addEventListener("click", () => game?.continueGame());
 restartButton.addEventListener("click", () => window.location.reload());
-endingButton.addEventListener("click", () => window.location.reload());
+endingButton.addEventListener("click", () => game?.exitEnding());
 resumeButton.addEventListener("click", () => game?.togglePause());
 inventoryClose.addEventListener("click", () => game?.toggleInventory());
 for (const button of inventoryWeaponButtons) {
@@ -2795,7 +2812,7 @@ window.addEventListener("keydown", (event) => {
   else if (game?.mode === "briefing") game.continueFromBriefing();
   else if (game?.mode === "playing" || game?.mode === "paused") game.togglePause();
   else if (game?.mode === "gameover") game.confirmGameOver();
-  else if (game?.mode === "ending") window.location.reload();
+  else if (game?.mode === "ending") game.exitEnding();
 });
 try {
   game = await GunSmokeGame.create();

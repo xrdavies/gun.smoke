@@ -131,6 +131,13 @@ test("completes the six-round Boss transition chain", async ({ page }) => {
   await expect(page.locator("#ending-screen")).toBeHidden();
   await page.clock.runFor(8_000);
   await expect(page.locator("#ending-screen")).toBeVisible();
+  await expect(page.locator("#ending-button")).toBeDisabled();
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#ending-screen")).toBeVisible();
+  await page.clock.runFor(69_000);
+  await expect(page.locator("#ending-button")).toBeEnabled();
+  await page.locator("#ending-button").click();
+  await expect(page.locator("#title-screen")).toBeVisible();
   expect(pageErrors).toEqual([]);
 });
 

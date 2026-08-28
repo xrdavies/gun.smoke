@@ -7,7 +7,7 @@ import { bossSpriteVisible, ninjaBossEntryLaneIndex, NINJA_BOSS_TELEPORT_DELAY }
 import { hasWeaponStock } from "../src/game-constants";
 import { ENEMY_DEFEAT_ANIMATION_DURATION } from "../src/game-constants";
 import { ENEMY_REWARDS } from "../src/game-constants";
-import { WINGATE_FINAL_DEFEAT_ANIMATION_DURATION, WINGATE_FINAL_ENDING_DELAY } from "../src/game-constants";
+import { WINGATE_ENDING_INPUT_DELAY, WINGATE_FINAL_DEFEAT_ANIMATION_DURATION, WINGATE_FINAL_ENDING_DELAY } from "../src/game-constants";
 import { ENEMY_DEFEAT_Y_OFFSETS_NES } from "../src/game-constants";
 import { addScore, MAX_SCORE } from "../src/game-constants";
 import { PLAYER_ENTRY_X, PLAYER_ENTRY_X_NES, PLAYER_ENTRY_Y, PLAYER_ENTRY_Y_NES } from "../src/game-constants";
@@ -1047,6 +1047,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(WINGATE_SECOND_SPAWN_DELAY).toBeCloseTo(264 / NES_FRAME_RATE, 9);
     expect(WINGATE_FINAL_DEFEAT_ANIMATION_DURATION).toBeCloseTo(9 / NES_FRAME_RATE, 9);
     expect(WINGATE_FINAL_ENDING_DELAY).toBeCloseTo(761 / NES_FRAME_RATE, 9);
+    expect(WINGATE_ENDING_INPUT_DELAY).toBeCloseTo(4_125 / NES_FRAME_RATE, 9);
     expect(WINGATE_BULLET_LIFETIME).toBeCloseTo(64 / NES_FRAME_RATE, 9);
     expect(WINGATE_BULLET_VELOCITIES_NES).toEqual([[1.15625, 1.40625], [0.9140625, 1.65625], [0.625, 1.8515625], [0.3125, 1.9453125], [0, 2], [-0.3125, 1.9453125], [-0.625, 1.8515625], [-0.9140625, 1.65625], [-1.15625, 1.40625]]);
     expect(WINGATE_PROJECTILE_X_OFFSET_NES).toBe(-8);

@@ -1777,7 +1777,7 @@ class GunSmokeGame {
         const timedGunman = topGunman || flankGunman !== undefined;
         if (timedGunman && unit.nextFireAt === 0) unit.nextFireAt = (flankGunman === undefined
           ? gunmanFirstOpportunityFrame(unit.romRandomSeed ?? 0, (unit.romOriginY ?? 0) / NES_WORLD_Y_SCALE)
-          : gunmanFlankFirstOpportunityFrame(unit.romRandomSeed ?? 0)) / NES_FRAME_RATE;
+          : gunmanFlankFirstOpportunityFrame(unit.romRandomSeed ?? 0, (unit.romOriginY ?? 0) / NES_WORLD_Y_SCALE)) / NES_FRAME_RATE;
         const shotFrames = bottomGunmanRoute !== undefined ? GUNMAN_BOTTOM_SHOT_FRAMES[bottomGunmanRoute] : undefined;
         const nextShotFrame = shotFrames?.[unit.volleysFired];
         const timedOpportunity = timedGunman && unit.age >= unit.nextFireAt;

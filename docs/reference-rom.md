@@ -311,8 +311,11 @@ the runtime checks every 64 frames, uses the fixed heading `16` during the
 initial side state, and then switches to the stored movement heading. Because
 the scheduler computes `$0540` from `$AC + $AD - $AE` for every successfully
 allocated entity code below `0x20`, the runtime advances the same global RNG
-and derives the initial opportunity directly from that byte. `$04E0` remains
-a reused slot field. Two complete Round 2 `y=32`
+allocated entity code below `0x20`, the runtime advances the same global RNG
+and derives the initial opportunity directly from that byte. Top-edge flank
+entries wait for the actor to reach the same `Y=16` threshold before counting;
+side entries begin counting immediately. `$04E0` remains a reused slot field.
+Two complete Round 2 `y=32`
 side traces are now used when their entry coordinate matches in Round 2: code 8
 follows the 569-frame left-edge trace and code 9 follows the 963-frame right-edge
 trace; a code 8 trace at `y=64` follows 371 measured frames, and a code 9 trace

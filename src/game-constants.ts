@@ -957,8 +957,8 @@ export function gunmanFlankLifetime(entityCode: 7 | 8 | 9, originY = 0, stage = 
   return (scoped ?? Math.round(GUNMAN_FLANK_LIFETIMES[entityCode] * NES_FRAME_RATE)) / NES_FRAME_RATE;
 }
 
-export function gunmanFlankFirstOpportunityFrame(seed: number): number {
-  return gunmanFirstOpportunityFrame(seed, 16);
+export function gunmanFlankFirstOpportunityFrame(seed: number, originY = 16): number {
+  return gunmanFirstOpportunityFrame(seed, originY);
 }
 
 const GUNMAN_TOP_PATHS_NES = {

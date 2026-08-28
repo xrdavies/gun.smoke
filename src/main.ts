@@ -1773,6 +1773,7 @@ class GunSmokeGame {
           unit.cutterState.y += CUTTER_RANDOM_HANDOFF_FINE_Y / 256;
           unit.cutterState.segmentFrames = CUTTER_RANDOM_HANDOFF_SEGMENT_FRAMES;
           unit.cutterState.gait = CUTTER_RANDOM_HANDOFF_GAIT;
+          unit.cutterState.attackEnabled = true;
         }
         advanceCutterMovement(unit.cutterState, cutterCombatFrame, () => this.nextRomRandomSecondSumByte());
         unit.x = unit.cutterState.x * NES_WORLD_X_SCALE;

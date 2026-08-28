@@ -1123,6 +1123,9 @@ export type CutterMovementState = {
   heading: number;
   segmentFrames: number;
   gait: number;
+  attackEnabled?: boolean;
+  attackPhase?: "prep" | "dash" | "hold";
+  attackResumeFrame?: number;
 };
 
 export function createCutterMovementState(x: number, y: number): CutterMovementState {
@@ -1132,6 +1135,39 @@ export function createCutterMovementState(x: number, y: number): CutterMovementS
 export function advanceCutterMovement(state: CutterMovementState, targetFrame: number, randomByte: () => number): void {
   while (state.frame < targetFrame) {
     state.frame += 1;
+    let attackStarted = false;
+    if (state.attackEnabled) {
+      const cycleFrame = state.frame & 0xff;
+      if (cycleFrame === 0) {
+        state.attackPhase = "prep";
+        state.attackResumeFrame = undefined;
+        attackStarted = true;
+      }
+      if (state.attackPhase === "prep" && !attackStarted) {
+        if (cycleFrame === 26) {
+          state.attackPhase = "dash";
+          state.heading = state.x < 128 ? 0x84 : 0x9c;
+        }
+        continue;
+      }
+      if (state.attackPhase === "dash") {
+        const previousX = state.x;
+        const previousY = state.y;
+        moveEncodedHeading(state, state.heading);
+        if (Math.floor(state.y) < 40) {
+          state.x = previousX;
+          state.y = previousY;
+          state.heading = 0xc0;
+          state.attackPhase = "hold";
+          state.attackResumeFrame = state.frame + 26;
+        }
+        continue;
+      }
+      if (state.attackPhase === "hold") {
+        if (state.attackResumeFrame !== undefined && state.frame >= state.attackResumeFrame) state.attackPhase = undefined;
+        else continue;
+      }
+    }
     if (state.segmentFrames === 0) {
       const random = randomByte() & 0xff;
       state.heading = CUTTER_MOVEMENT_HEADINGS[random & 0x0f] ?? CUTTER_MOVEMENT_HEADINGS[0];
@@ -1147,6 +1183,7 @@ export function advanceCutterMovement(state: CutterMovementState, targetFrame: n
       state.heading = (state.heading + 0x10) & 0xdf;
       moveEncodedHeading(state, state.heading);
     }
+    if (attackStarted) state.heading = 0xc0;
   }
 }
 export const DEVIL_HAWK_ENTRY_X_NES = [88, 128, 168, 208] as const;

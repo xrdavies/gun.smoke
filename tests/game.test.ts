@@ -725,6 +725,13 @@ describe("Gun.Smoke vertical slice", () => {
     const boundary = createCutterMovementState(31.5, 61);
     advanceCutterMovement(boundary, CUTTER_RANDOM_ROUTE_START_FRAME + 1, () => 0);
     expect(boundary.heading).toBe(0x48);
+
+    const attack = createCutterMovementState(41 + CUTTER_RANDOM_HANDOFF_FINE_X / 256, 72 + CUTTER_RANDOM_HANDOFF_FINE_Y / 256);
+    attack.segmentFrames = CUTTER_RANDOM_HANDOFF_SEGMENT_FRAMES;
+    attack.gait = CUTTER_RANDOM_HANDOFF_GAIT;
+    attack.attackEnabled = true;
+    advanceCutterMovement(attack, CUTTER_RANDOM_ROUTE_START_FRAME + 74, () => 0);
+    expect({ frame: attack.frame, x: Math.floor(attack.x), y: Math.floor(attack.y), heading: attack.heading, segment: attack.segmentFrames, gait: attack.gait, phase: attack.attackPhase, resume: attack.attackResumeFrame }).toEqual({ frame: 12_074, x: 63, y: 41, heading: 0xc0, segment: 6, gait: 3, phase: "hold", resume: 12_100 });
   });
 
   it("matches the traced Devil Hawk entrance", () => {

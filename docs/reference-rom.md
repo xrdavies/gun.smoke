@@ -318,7 +318,8 @@ entries use separate left/right traces of 581/384 frames; its code 8 left
 phases and entry heights retain the generic measured routes until their
 slot-state traces are captured. Round 6 controlled traces additionally cover
 code 7 left/right entries at `y=32` and a left entry at `y=64` for 342/453/918
-frames respectively, plus a true code 8 left `y=32`, phase-1 entry for 447 frames.
+frames respectively, plus true code 8 left `y=32` phase-0/phase-1 entries for
+578/447 frames.
 Those route samples remain scoped to Round 6 and their matching entry
 coordinates. A code 9 right `y=48` trace remains active after 1,200 frames, so
 it retains the generic state path rather than receiving an unverified lifetime.

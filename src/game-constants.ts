@@ -8,13 +8,6 @@ export interface StageDefinition {
 export type EnemyType = "gunman" | "rifleman" | "bomber" | "sniper" | "backstabber" | "ninja" | "hatchet" | "spear" | "firebreather" | "shotgunner";
 export type ItemType = "boots" | "rifle" | "ammo" | "money" | "pow" | "skull" | "horse" | "blueYashichi" | "redYashichi";
 
-export const ENEMY_REWARDS: Readonly<Record<EnemyType, number>> = {
-  gunman: 100, sniper: 100, bomber: 100, firebreather: 100,
-  ninja: 200, rifleman: 200, hatchet: 200,
-  shotgunner: 300,
-  backstabber: 400, spear: 400,
-};
-
 export const STAGES: readonly StageDefinition[] = [
   { name: "HICKSVILLE", boss: "BANDIT BILL", bossBars: 4, bossBarHitPoints: 3 },
   { name: "ROCKY PASS", boss: "CUTTER", bossBars: 4, bossBarHitPoints: 2 },

@@ -6,7 +6,6 @@ import { RIFLEMAN_LIFETIME, RIFLEMAN_PATH_NES, riflemanCanAttack, riflemanPositi
 import { bossSpriteVisible, ninjaBossEntryLaneIndex, NINJA_BOSS_TELEPORT_DELAY } from "../src/game-constants";
 import { hasWeaponStock } from "../src/game-constants";
 import { ENEMY_DEFEAT_ANIMATION_DURATION } from "../src/game-constants";
-import { ENEMY_REWARDS } from "../src/game-constants";
 import { WINGATE_ENDING_INPUT_DELAY, WINGATE_FINAL_DEFEAT_ANIMATION_DURATION, WINGATE_FINAL_ENDING_DELAY } from "../src/game-constants";
 import { ENEMY_DEFEAT_Y_OFFSETS_NES } from "../src/game-constants";
 import { addScore, MAX_SCORE } from "../src/game-constants";
@@ -229,7 +228,6 @@ describe("Gun.Smoke vertical slice", () => {
     expect(SHOP_COSTS).toEqual({ shotgun: 6_000, machinegun: 10_000, magnum: 20_000, horse: 20_000, ammo: 1_500, smartBomb: 8_000 });
     expect(SMART_BOMB_CAPACITY).toBe(1);
     expect(AMMO_GAIN).toEqual({ pistol: 0, shotgun: 20, machinegun: 40, magnum: 10 });
-    expect(ENEMY_REWARDS).toEqual({ gunman: 100, sniper: 100, bomber: 100, firebreather: 100, ninja: 200, rifleman: 200, hatchet: 200, shotgunner: 300, backstabber: 400, spear: 400 });
     expect([hasWeaponStock(0), hasWeaponStock(1), hasWeaponStock(WEAPONS.shotgun.maxAmmo)]).toEqual([false, true, true]);
     expect(WANTED_COSTS).toEqual([20_000, 24_000, 50_000, 40_000, 40_000, 60_000]);
     expect(BOSS_REWARDS).toEqual(WANTED_COSTS.map((cost) => cost / 2));

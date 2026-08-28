@@ -1757,7 +1757,7 @@ class GunSmokeGame {
         unit.sprite.color = [1, 0.55 + progress * 0.45, 0.2 + progress * 0.8, 1];
       }
     } else if (unit.kind === "moneyBag" || unit.kind === "item" || unit.kind === "ammo") {
-      unit.y += 40 * delta;
+      unit.y += WORLD_SCROLL_SPEED * delta;
       unit.x += Math.sin(unit.age * 4 + unit.phase) * 14 * delta;
     } else {
       if (unit.kind === "enemyBullet") {

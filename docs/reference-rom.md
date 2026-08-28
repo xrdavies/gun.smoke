@@ -278,7 +278,8 @@ slot during that death animation. The web runtime keeps the defeated enemy
 non-colliding for the same five-frame window so pool pressure and slot reuse
 match the ROM. Barrel contents use the same `$CD70-$CD91` allocator, so both
 barrel pickups and enemy drops continue to count against the seven-slot enemy
-pool until collected or released.
+pool until collected or released. Their screen Y advances at the calibrated map
+scroll rate of one NES pixel every three frames.
 The same defeat path calls `$E297`, which maps the initial dispatch through
 `$E335` and the BCD increment table at `$E2E9`; the resulting ordinary enemy
 score values are 100 (Gunman/Sniper/Bomber/Firebreather), 200

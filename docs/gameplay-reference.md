@@ -267,8 +267,8 @@ and the geometry for each Round's self-generated map texture.
 The player lookup follows the verified `$5A-$5D` map pointer/page/fine-scroll
 formula and keeps axis sliding, so diagonal input can follow a blocked edge.
 Rocky Pass, Cliff Valley, Forest, and Wingate Town retain their authored
-boulder, tree, and grave overlays, while both the visible base geometry and
-movement collision come from the decoded ROM mask.
+boulder, tree, and grave overlays as visual scenery, while both the visible
+base geometry and movement collision come from the decoded ROM mask.
 Forest segments additionally overlay blue water and brown bridge crossings to
 match the Round 5 traversal cue; traversal remains governed by the decoded ROM
 mask. Cemetery segments also draw grouped center gravestones between the side

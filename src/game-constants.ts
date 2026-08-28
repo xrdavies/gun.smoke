@@ -1134,7 +1134,6 @@ export const DEVIL_HAWK_JUMP_PERIOD = 121;
 
 const DEVIL_HAWK_MOVEMENT_HEADINGS = [0x40, 0x40, 0x44, 0x44, 0x48, 0x48, 0x4c, 0x4c, 0x50, 0x50, 0x54, 0x54, 0x58, 0x58, 0x5c, 0x5c] as const;
 const DEVIL_HAWK_ACTION_HEADINGS = [0x90, 0x90, 0x50, 0x50, 0x10, 0x10, 0x00, 0x00, 0x40, 0x40, 0x80, 0x80, 0xa2, 0x90, 0x9a, 0x20] as const;
-const DEVIL_HAWK_CORRECTION_HEADINGS = [0xc2, 0x90, 0x90, 0x50, 0x50, 0x10, 0x10, 0xc0, 0xc0, 0x00, 0x00, 0x40, 0x40, 0x80, 0x80, 0xc1] as const;
 export const DEVIL_HAWK_RANDOM_ROUTE_START_FRAME = 3_600;
 
 export type DevilHawkMovementState = {
@@ -1149,10 +1148,12 @@ export type DevilHawkMovementState = {
   actionFrames: number;
   actionHeading: number;
   actionKind: "hold" | "jump";
+  correctionHoldFrames: number;
+  correctionReleaseFrames: number;
 };
 
 export function createDevilHawkMovementState(x: number, y: number): DevilHawkMovementState {
-  return { frame: DEVIL_HAWK_RANDOM_ROUTE_START_FRAME, mode: "move", x, y, heading: 0x40, segmentFrames: 30, gait: 3, actionCounter: 30, actionFrames: 0, actionHeading: 0x40, actionKind: "hold" };
+  return { frame: DEVIL_HAWK_RANDOM_ROUTE_START_FRAME, mode: "move", x, y, heading: 0x40, segmentFrames: 30, gait: 3, actionCounter: 30, actionFrames: 0, actionHeading: 0x40, actionKind: "hold", correctionHoldFrames: 0, correctionReleaseFrames: 0 };
 }
 
 function advanceDevilHawkGait(state: DevilHawkMovementState, heading = state.heading): void {
@@ -1171,9 +1172,20 @@ export function advanceDevilHawkMovement(state: DevilHawkMovementState, targetFr
       continue;
     }
     if (state.mode === "correction") {
+      if (state.correctionHoldFrames > 0) {
+        state.correctionHoldFrames -= 1;
+        continue;
+      }
       state.actionFrames -= 1;
-      advanceDevilHawkGait(state, DEVIL_HAWK_CORRECTION_HEADINGS[Math.max(0, state.actionFrames) >> 1] ?? state.heading);
-      if (state.actionFrames <= 0) state.mode = "move";
+      if (state.actionFrames >= 0) {
+        advanceDevilHawkGait(state, DEVIL_HAWK_ACTION_HEADINGS[Math.max(0, state.actionFrames) >> 1] ?? state.heading);
+        continue;
+      }
+      if (state.correctionReleaseFrames > 0) {
+        state.correctionReleaseFrames -= 1;
+        continue;
+      }
+      state.mode = "move";
       continue;
     }
     state.actionCounter = (state.actionCounter + 1) % 48;
@@ -1205,7 +1217,9 @@ export function advanceDevilHawkMovement(state: DevilHawkMovementState, targetFr
     if (x < 32 || x >= 224 || y < 48 || y >= 144) {
       state.mode = "correction";
       state.actionFrames = 32;
-      state.heading = 0x40 | nesAimHeading(x * NES_WORLD_X_SCALE, y * NES_WORLD_Y_SCALE, 96 * NES_WORLD_X_SCALE, 128 * NES_WORLD_Y_SCALE);
+      state.correctionHoldFrames = 26;
+      state.correctionReleaseFrames = 27;
+      state.heading = 0x40 | nesAimHeading(x * NES_WORLD_X_SCALE, y * NES_WORLD_Y_SCALE, 128 * NES_WORLD_X_SCALE, 96 * NES_WORLD_Y_SCALE);
     }
   }
 }

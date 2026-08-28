@@ -705,6 +705,9 @@ describe("Gun.Smoke vertical slice", () => {
     const movement = createCutterMovementState(112, 61);
     advanceCutterMovement(movement, CUTTER_RANDOM_ROUTE_START_FRAME + 36, () => 0x0e);
     expect({ frame: movement.frame, x: Math.floor(movement.x), y: Math.floor(movement.y), heading: movement.heading, segment: movement.segmentFrames }).toEqual({ frame: 12_036, x: 92, y: 61, heading: 0x58, segment: 71 });
+    const boundary = createCutterMovementState(31.5, 61);
+    advanceCutterMovement(boundary, CUTTER_RANDOM_ROUTE_START_FRAME + 1, () => 0);
+    expect(boundary.heading).toBe(0x48);
   });
 
   it("matches the traced Devil Hawk entrance", () => {

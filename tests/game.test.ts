@@ -531,7 +531,7 @@ describe("Gun.Smoke vertical slice", () => {
 
   it("matches the traced Round 5 ambush backstabber", () => {
     expect(BACKSTABBER_AMBUSH_DROP_SPEED).toBe(45);
-    expect(BACKSTABBER_AMBUSH_DEPTH).toBe(191);
+    expect(BACKSTABBER_AMBUSH_DEPTH).toBe(178);
     expect(BACKSTABBER_AMBUSH_LIFETIME).toBeCloseTo(532 / NES_FRAME_RATE, 9);
   });
 

@@ -127,7 +127,12 @@ for (let frame = 0; frame < frames; frame += 1) {
         field580: memory[0x580 + 14],
         field5a0: memory[0x5a0 + 14],
       },
-      zeroPage: { b0: memory[0xb0], b4: memory[0xb4], b5: memory[0xb5], ba: memory[0xba], bc: memory[0xbc] },
+      zeroPage: {
+        b0: memory[0xb0], b1: memory[0xb1], b4: memory[0xb4], b5: memory[0xb5],
+        b6: memory[0xb6], b7: memory[0xb7], b8: memory[0xb8], b9: memory[0xb9],
+        ba: memory[0xba], bc: memory[0xbc], bd: memory[0xbd], be: memory[0xbe], bf: memory[0xbf],
+      },
+      random: { ac: memory[0xac], ad: memory[0xad], ae: memory[0xae], af: memory[0xaf] },
     });
   }
   const bossSignature = `${boss.state}:${boss.dispatch}:${boss.variant}`;

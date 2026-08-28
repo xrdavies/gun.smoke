@@ -673,8 +673,10 @@ nonzero, `$C1A2-$C1BE` plays input/duration pairs into `$F7`; during a normal
 Round 1, `$C1D3-$C208` records the same run-length format. Add `--hold-ab` when a
 deterministic continuous-fire comparison is needed. The trace contains
 observations only; it does not include ROM bytes or extracted graphics.
-Entity traces also include the sampled `$AC-$AF` random bytes on every frame,
-which lets random branch decisions be replayed without exposing ROM code.
+Entity and recorded Boss traces also include the sampled `$AC-$AF` random bytes
+on every frame. Boss frames additionally retain `$B1` and `$B4-$B9`, so random
+movement, attack and correction branches can be replayed without exposing ROM
+code.
 Detailed scene samples also list active entity slots from the parallel arrays
 at `$0400/$0420/$0480/$0560/$05C0/$05E0`. The trace labels only the verified
 slot state, dispatch type, variant, script flags and coordinates; `$05C0` is

@@ -69,6 +69,24 @@ test("renders all six procedural rounds", async ({ page }) => {
   expect(pageErrors).toEqual([]);
 });
 
+test("runs ROM event streams in every round", async ({ page }) => {
+  const pageErrors: Error[] = [];
+  page.on("pageerror", (error) => pageErrors.push(error));
+  await page.clock.install();
+  await page.goto("/");
+  await page.locator("#start-button").click();
+  await page.locator("#continue-button").click();
+  await page.locator("#briefing-button").click();
+  await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
+  for (let stage = 1; stage <= 6; stage += 1) {
+    await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), stage);
+    await page.clock.runFor(8_000);
+    await expect(page.locator("#stage-label")).toContainText(`ROUND ${stage}`);
+    await expect(page.locator("#hud")).toBeVisible();
+  }
+  expect(pageErrors).toEqual([]);
+});
+
 test("accepts gamepad Start from the title flow", async ({ page }) => {
   await page.addInitScript(() => {
     let startPressed = false;

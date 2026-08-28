@@ -1290,6 +1290,9 @@ export type DevilHawkMovementState = {
   actionBounceCounter?: number;
   actionCooldownFrames?: number;
   actionBounceDirection?: -1 | 1;
+  actionOriginX?: number;
+  actionOriginY?: number;
+  actionPathIndex?: number;
 };
 
 export function createDevilHawkMovementState(x: number, y: number): DevilHawkMovementState {
@@ -1305,6 +1308,15 @@ function devilHawkVerticalBounceDelta(counter: number): number {
   return 1;
 }
 
+const DEVIL_HAWK_DOWN_ACTION_OFFSETS_NES = [
+  [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
+  [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
+  [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
+  [0, 0], [0, 0], [0, 0], [0, 1], [0, 2], [-2, 3], [-4, 4], [-4, 9],
+] as const;
+const DEVIL_HAWK_DOWN_ACTION_TAIL_NES = [[-4, 14], [-3, 13], [-2, 13], [-2, 12], [-2, 11], [-2, 10], [-2, 9], [-2, 9], [-2, 9], [-2, 9], [-2, 9], [-2, 10], [-2, 11], [-2, 12], [-2, 13], [-2, 16], [-2, 19], [-2, 22], [-2, 25], [-2, 29], [-2, 33], [-2, 37], [-2, 41], [-2, 46], [-2, 51], [-2, 56], [-2, 61], [-2, 61]] as const;
+const DEVIL_HAWK_DOWN_ACTION_OFFSETS_FULL_NES = [...DEVIL_HAWK_DOWN_ACTION_OFFSETS_NES, ...DEVIL_HAWK_DOWN_ACTION_TAIL_NES] as const;
+
 function advanceDevilHawkGait(state: DevilHawkMovementState, heading = state.heading): void {
   state.gait = (state.gait - 1) & 0xff;
   if ((state.gait & 0x7f) === 0) state.gait = (state.gait & 0x80) !== 0 ? 4 : 0x88;
@@ -1319,11 +1331,29 @@ export function advanceDevilHawkMovement(state: DevilHawkMovementState, targetFr
       if (state.romExactActions && state.actionKind === "jump") {
         if (state.actionFrames > 0) {
           state.actionFrames -= 1;
-          if (state.actionFrames === 0) state.actionBounceCounter = state.actionBounceDirection === -1 ? 31 : 24;
+          if (state.actionFrames !== 0) continue;
+          state.actionBounceCounter = state.actionBounceDirection === -1 ? 31 : 24;
+          if (state.actionBounceDirection !== -1) continue;
+          const offset = DEVIL_HAWK_DOWN_ACTION_OFFSETS_FULL_NES[27];
+          if (offset && state.actionOriginX !== undefined && state.actionOriginY !== undefined) {
+            state.x = state.actionOriginX + offset[0];
+            state.y = state.actionOriginY + offset[1];
+          }
+          state.actionPathIndex = 28;
           continue;
         }
         if (state.actionBounceCounter !== undefined) {
           state.actionBounceCounter -= 1;
+          if (state.actionBounceDirection === -1) {
+            const index = state.actionPathIndex ?? 0;
+            const offset = DEVIL_HAWK_DOWN_ACTION_OFFSETS_FULL_NES[index];
+            if (offset && state.actionOriginX !== undefined && state.actionOriginY !== undefined) {
+              state.x = state.actionOriginX + offset[0];
+              state.y = state.actionOriginY + offset[1];
+            }
+            state.actionPathIndex = index + 1;
+            if (state.actionBounceCounter >= 0) continue;
+          }
           if (state.actionBounceCounter < 0) {
             state.actionBounceCounter = undefined;
             state.mode = "move";
@@ -1349,14 +1379,6 @@ export function advanceDevilHawkMovement(state: DevilHawkMovementState, targetFr
         if (state.actionCooldownFrames > 0) continue;
       }
       state.actionCooldownFrames = undefined;
-      if (state.actionCounter === 47) {
-        state.actionCounter = 0;
-        state.mode = "action";
-        state.actionFrames = Math.floor(state.y) < 88 ? 28 : 26;
-        state.actionKind = "jump";
-        state.actionBounceDirection = Math.floor(state.y) < 88 ? -1 : 1;
-        continue;
-      }
     }
     if (state.mode === "correction") {
       if (state.correctionHoldFrames > 0) {
@@ -1400,6 +1422,11 @@ export function advanceDevilHawkMovement(state: DevilHawkMovementState, targetFr
         if (state.romExactActions) {
           state.actionFrames = Math.floor(state.y) < 88 ? 28 : 26;
           state.actionBounceDirection = Math.floor(state.y) < 88 ? -1 : 1;
+          if (state.actionBounceDirection === -1) {
+            state.actionOriginX = state.x;
+            state.actionOriginY = state.y;
+            state.actionPathIndex = 0;
+          }
         }
         continue;
       }

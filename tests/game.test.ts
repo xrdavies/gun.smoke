@@ -825,9 +825,14 @@ describe("Gun.Smoke vertical slice", () => {
     expect({ x: Math.floor(exact.x), y: Math.floor(exact.y), mode: exact.mode, actionFrames: exact.actionFrames, fan: exactFan }).toEqual({ x: 133, y: 64, mode: "action", actionFrames: 0, fan: [true] });
     advanceDevilHawkMovement(exact, 3685, () => 0, () => 0);
     expect({ x: Math.floor(exact.x), y: Math.floor(exact.y), mode: exact.mode, cooldown: exact.actionCooldownFrames, counter: exact.actionCounter }).toEqual({ x: 133, y: 44, mode: "move", cooldown: 28, counter: 47 });
-    advanceDevilHawkMovement(exact, 3713, () => 0, () => 0);
+    advanceDevilHawkMovement(exact, 3713, () => 0, () => 9);
     expect({ x: Math.floor(exact.x), y: Math.floor(exact.y), mode: exact.mode, actionFrames: exact.actionFrames, direction: exact.actionBounceDirection }).toEqual({ x: 133, y: 44, mode: "action", actionFrames: 28, direction: -1 });
     expect(advanceDevilHawkMovement(exact, 3741, () => 0, () => 0).fullFans).toEqual([]);
+    expect({ x: Math.floor(exact.x), y: Math.floor(exact.y) }).toEqual({ x: 133, y: 45 });
+    advanceDevilHawkMovement(exact, 3742, () => 0, () => 0);
+    expect({ x: Math.floor(exact.x), y: Math.floor(exact.y) }).toEqual({ x: 133, y: 46 });
+    advanceDevilHawkMovement(exact, 3745, () => 0, () => 0);
+    expect({ x: Math.floor(exact.x), y: Math.floor(exact.y) }).toEqual({ x: 129, y: 53 });
   });
 
   it("matches the traced Ninja Boss entrance", () => {

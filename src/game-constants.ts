@@ -1110,6 +1110,8 @@ export function cutterCombatX(age: number, entryX = 144 * NES_WORLD_X_SCALE): nu
 }
 
 export const CUTTER_RANDOM_ROUTE_START_FRAME = 12_000;
+export const CUTTER_RANDOM_HANDOFF_FINE_X = 244;
+export const CUTTER_RANDOM_HANDOFF_FINE_Y = 188;
 export const CUTTER_RANDOM_HANDOFF_SEGMENT_FRAMES = 38;
 export const CUTTER_RANDOM_HANDOFF_GAIT = 0x87;
 const CUTTER_MOVEMENT_HEADINGS = [0x40, 0x44, 0x48, 0x48, 0x48, 0x4c, 0x4c, 0x50, 0x50, 0x50, 0x54, 0x54, 0x58, 0x58, 0x58, 0x5c] as const;

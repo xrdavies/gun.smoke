@@ -649,6 +649,11 @@ describe("Gun.Smoke vertical slice", () => {
     expect({ frame: movement.frame, x: Math.floor(movement.x), y: Math.floor(movement.y), pause: movement.pauseFrames }).toEqual({ frame: 7_705, x: 187, y: 95, pause: 0 });
     advanceBanditBillMovement(movement, BANDIT_BILL_RANDOM_ROUTE_START_FRAME + 36, () => 0xd5);
     expect({ x: Math.round(movement.x), y: Math.round(movement.y), heading: movement.heading }).toEqual({ x: 182, y: 101, heading: 0x54 });
+    const handoff = createBanditBillMovementState(187 + BANDIT_BILL_RANDOM_HANDOFF_FINE_X / 256, 95 + BANDIT_BILL_RANDOM_HANDOFF_FINE_Y / 256);
+    advanceBanditBillMovement(handoff, BANDIT_BILL_RANDOM_ROUTE_START_FRAME + 24, () => 0xd5);
+    expect({ x: handoff.x, y: handoff.y, pause: handoff.pauseFrames, heading: handoff.heading, segment: handoff.segmentFrames }).toEqual({ x: 187.25, y: 95.78125, pause: 0, heading: 0x58, segment: 0 });
+    advanceBanditBillMovement(handoff, BANDIT_BILL_RANDOM_ROUTE_START_FRAME + 25, () => 0xd5);
+    expect({ x: handoff.x, y: handoff.y, heading: handoff.heading, segment: handoff.segmentFrames }).toEqual({ x: 187.25, y: 95.78125, heading: 0x54, segment: 47 });
   });
 
   it("matches the traced Cutter entrance", () => {

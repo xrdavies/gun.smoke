@@ -238,8 +238,9 @@ events `at=47,x=152,phase=0` and `at=63,x=184,phase=1` use their measured
 244-frame second movement and release traces. The later
 `at=383,x=184,phase=1` and `at=751/1583/3535,x=184,phase=0` events follow
 separate 205/202/202/241-frame no-throw routes. Events
-`at=815/1071/1199/3727,x=184,phase=0` delay their Shuriken until frame 116
-and follow separate 258/279/257/228-frame routes;
+`at=815/1071/1199/3727,x=184,phase=0` and `at=1727,x=184,phase=1`
+delay their Shuriken until frame 116 and follow separate
+258/279/257/228/257-frame routes;
 other entries retain the parameterized route.
 Gunmen use the same quantized table at the faster second tier, check their
 movement-facing gate on an observed `40/52/58/62` first phase and every 64

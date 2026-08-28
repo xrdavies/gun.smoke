@@ -23,7 +23,7 @@
     "test:browser": "playwright test"
   },
   "dependencies": {
-    "@xrdavies/2d-engine": "github:xrdavies/2d-engine#v0.1.1",
+    "@xrdavies/2d-engine": "github:xrdavies/2d-engine#v0.1.2",
     "jsnes": "^2.1.0"
   },
   "devDependencies": {

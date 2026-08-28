@@ -60,7 +60,7 @@ flagged supply shop sells Horse, Bullet refills, and Wanted posters, and Rounds
 Entering either shop clears ordinary enemy projectiles before the menu freezes;
 falling-rock actors and the separate Boss weapon pool are not part of that clear.
 
-The Horse is a three-hit shield rather than a speed bonus. A blocked hit removes
+The Horse is a three-hit shield and selects the ROM's `5/3` movement tier. A blocked hit removes
 the colliding low-dispatch projectile but leaves enemy actors and high-dispatch
 hazards active, then grants 60 NES frames of protection. Horse health resets
 when advancing to the next Round. The ROM stores five mutable score digits plus a fixed zero
@@ -95,7 +95,8 @@ Barrels can reveal the NES item set: stored Boots and Rifle power-ups, special
 weapon ammo, money, POW, Cattle Skull, Horse, and Blue/Red Yashichi. Stored
 Boots/Rifle are capped at four and award 1,000 points at cap; Life awards
 10,000 points at the five-life cap. Each stored power-up loses one stock on death; Blue Yashichi
-grants contact damage against ordinary enemies and falling rocks plus temporary invulnerability, while Magnum bullets can
+grants contact damage against ordinary enemies and falling rocks, temporary invulnerability,
+and the same `5/3` movement tier as Horse, while Magnum bullets can
 destroy enemy projectiles. POW clears regular enemies, falling rocks and
 ordinary projectiles but does not damage the low-slot Boss actor or clear its
 separate projectile pool.

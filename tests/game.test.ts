@@ -10,6 +10,7 @@ import { WINGATE_ENDING_INPUT_DELAY, WINGATE_FINAL_DEFEAT_ANIMATION_DURATION, WI
 import { ENEMY_DEFEAT_Y_OFFSETS_NES } from "../src/game-constants";
 import { addScore, MAX_SCORE } from "../src/game-constants";
 import { PLAYER_ENTRY_X, PLAYER_ENTRY_X_NES, PLAYER_ENTRY_Y, PLAYER_ENTRY_Y_NES, PLAYER_MAX_X_NES, PLAYER_MAX_Y_NES, PLAYER_MIN_X_NES, PLAYER_MIN_Y_NES } from "../src/game-constants";
+import { HORSE_SPEED_MULTIPLIER, playerSpeedMultiplier } from "../src/game-constants";
 import { NINJA_ACTIVATION_DISTANCE_NES, NINJA_LIFETIME, ninjaCanThrow } from "../src/game-constants";
 import { NINJA_ATTACK_MOVE_DURATION, NINJA_ENTRY_PATH_NES, ninjaAttackPosition, ninjaOpeningY, ninjaTraceLifetime, ninjaTracePosition, ninjaTraceThrowFrame } from "../src/game-constants";
 import { ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y } from "../src/game-constants";
@@ -95,6 +96,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(NES_PLAYER_SPEED).toBeCloseTo(75.1225, 6);
     expect(WORLD_PLAYER_SPEED).toBeCloseTo(169.025625, 6);
     expect(BOOTS_SPEED_MULTIPLIER).toBeCloseTo(4 / 3, 9);
+    expect(HORSE_SPEED_MULTIPLIER).toBeCloseTo(5 / 3, 9);
+    expect([playerSpeedMultiplier(false, 0, false), playerSpeedMultiplier(false, 1, false), playerSpeedMultiplier(true, 0, false), playerSpeedMultiplier(false, 1, true)]).toEqual([1, 4 / 3, 5 / 3, 5 / 3]);
     expect(NES_BULLET_SPEED).toBeCloseTo(360.588, 6);
     expect(WORLD_BULLET_SPEED).toBeCloseTo(811.323, 6);
     expect(NES_DIAGONAL_BULLET_X).toBeCloseTo(150.245, 6);

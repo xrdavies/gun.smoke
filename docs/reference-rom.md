@@ -796,10 +796,10 @@ The additional boulder, tree, and grave rectangles used by the web renderer
 are decorative overlays only; their coordinates are not used for movement
 collision because they are not decoded ROM collision data.
 
-Holding Left for 60 real frames moves Billy about 75 NES pixels. The procedural
-world therefore uses 169.025625 world pixels per second;
-with `$78` set to any nonzero Boots stock and `$45=2`, the same trace moves 100
-pixels. The runtime therefore uses a non-stacking `4 / 3` Boots multiplier.
+The movement tables alternate `0.828125/1.65625` NES pixels per frame in the
+normal tier, use constant `1.65625` with nonzero Boots stock, and alternate
+`1.65625/2.484375` while Horse or Blue Yashichi is active. These average to the
+runtime's `1x`, non-stacking `4/3`, and `5/3` movement multipliers respectively.
 The movement routine clamps Billy's center to NES `x=16..240` and `y=48..216`
 before terrain probes. Runtime uses those fixed screen bounds and leaves
 Round-specific road, building, and cliff restrictions to the decoded collision

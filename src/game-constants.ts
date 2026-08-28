@@ -182,6 +182,11 @@ export function romProjectileOnScreen(screenX: number, screenY: number): boolean
 export const NES_PLAYER_SPEED = 75 * (NES_FRAME_RATE / 60);
 export const WORLD_PLAYER_SPEED = NES_PLAYER_SPEED * NES_WORLD_Y_SCALE;
 export const BOOTS_SPEED_MULTIPLIER = 4 / 3;
+export const HORSE_SPEED_MULTIPLIER = 5 / 3;
+
+export function playerSpeedMultiplier(hasHorse: boolean, bootsStock: number, blueInvulnerable: boolean): number {
+  return hasHorse || blueInvulnerable ? HORSE_SPEED_MULTIPLIER : bootsStock > 0 ? BOOTS_SPEED_MULTIPLIER : 1;
+}
 export const NES_BULLET_SPEED = 6 * NES_FRAME_RATE;
 export const WORLD_BULLET_SPEED = NES_BULLET_SPEED * NES_WORLD_Y_SCALE;
 export const PLAYER_BULLET_CAPACITY = 6;

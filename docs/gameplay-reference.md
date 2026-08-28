@@ -219,8 +219,9 @@ point for 40 frames, then remains as a hidden seven-frame controller while the
 four shuriken slots are active.
 The initial visible route is sampled through the natural teleport at frame
 339. Its first re-entry begins after the 90-frame hidden delay and uses the
-separate measured route, including the corrected relative-frame `y=60` and
-`y=90` samples at frames 80 and 216.
+separate measured step route. The initial route starts moving on frame 44,
+and the re-entry path retains the corrected relative-frame `y=60` and `y=90`
+samples at frames 80 and 216 instead of smoothing across those jumps.
 
 The ROM event stream is data-driven per Round. Its behavior routines map to the
 recognizable roster of gunmen, bombers, snipers, back-stabbers, riflemen,

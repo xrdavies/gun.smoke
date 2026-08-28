@@ -328,6 +328,10 @@ right-edge route. Its seed schedules checks at frames 28 and 92; the first
 misses the facing gate and the second fires. It later changes to dispatch
 `0x59` and releases at `Y=252`. Runtime scopes the full coordinate trace by
 event index because other right-edge code-7 entries reuse different slot state.
+Round 1's `at=1423,x=4,y=48,code=7,phase=0` event likewise has a distinct
+307-frame left-edge route. Its seed reaches the first opportunity at frame 64,
+which passes the facing gate; dispatch changes to `0x59` at frame 221 and the
+actor releases at `Y=252`.
 Two complete Round 2 `y=32`
 side traces are now used when their entry coordinate matches in Round 2: code 8
 follows the 569-frame left-edge trace and code 9 follows the 963-frame right-edge

@@ -430,7 +430,8 @@ An early Boss-gate trace identifies Bandit Bill as dispatch `0x88`, variant
 `0x56`. His first four-shot volley starts at age 107, repeats every 12 frames,
 and the next volley starts 72 frames after the fourth shot. Bandit Bill's
 dispatch `0x30` projectiles use the ROM's quantized 32-direction speed table at
-the third tier (about 444 world pixels/s on its diagonal); Round 1 uses these measured
+the third tier (about 444 world pixels/s on its diagonal) and launch at Boss
+offset `(-4,+8)` NES pixels; Round 1 uses these measured
 values instead of its former single slow shot.
 The Boss initializers set each health bar in field `$0460`: Bandit Bill uses
 3, Cutter 2, Devil Hawk 6, Ninja 1, Fatman Joe 12, and the Wingate decoy/real

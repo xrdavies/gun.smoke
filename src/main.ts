@@ -19,7 +19,7 @@ import { GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, gunmanBottomPositi
 import { BOMBER_ENTRY_DURATION, bomberOpeningY } from "./game-constants";
 import { advanceFirebreather, advanceHatchet, advanceSpear, createFirebreatherState, createHatchetState, createSpearState, FIREBREATHER_LIFETIME, FIREBREATHER_PROJECTILE_OFFSET_NES, nesActorCollisionProbeOffset, SPEAR_LIFETIME, SPEAR_PROJECTILE_OFFSET_NES, type FirebreatherState, type HatchetState, type SpearState } from "./game-constants";
 import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanCanAttack, riflemanPosition, riflemanShotHeading, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition, SNIPER_COVER_DURATION, sniperProjectileVelocity } from "./game-constants";
-import { advanceBanditBillMovement, BANDIT_BILL_ATTACK_PAUSE_FRAMES, BANDIT_BILL_DAMAGE_RECOVERY_DURATION, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, BANDIT_BILL_RANDOM_ROUTE_START_FRAME, banditBillCombatX, banditBillCombatY, banditBillProjectileVelocity, createBanditBillMovementState, type BanditBillMovementState } from "./game-constants";
+import { advanceBanditBillMovement, BANDIT_BILL_ATTACK_PAUSE_FRAMES, BANDIT_BILL_DAMAGE_RECOVERY_DURATION, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, BANDIT_BILL_PROJECTILE_OFFSET_NES, BANDIT_BILL_RANDOM_ROUTE_START_FRAME, banditBillCombatX, banditBillCombatY, banditBillProjectileVelocity, createBanditBillMovementState, type BanditBillMovementState } from "./game-constants";
 import { banditBillCooldown } from "./game-constants";
 import { advanceInvulnerability, BLUE_YASHICHI_DURATION, BOSS_BAR_RECOVERY_DURATION, bossCurrentBarHitPoints, bossHealthProfile, bossTotalHitPoints, lifePickup, scoreBossDefeat, shouldClearProjectilesAfterBossDefeat } from "./game-constants";
 import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, PLAYER_ENTRY_X, PLAYER_ENTRY_Y, pistolBulletSpeedFactor, pistolVelocities, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
@@ -933,7 +933,10 @@ class GunSmokeGame {
 
   private fireBoss(boss: Unit, effectiveAge = boss.age, devilFullFan?: boolean): void {
     if (this.stage === 1) {
-      const projectile = this.spawnEnemyProjectile(boss.x, boss.y + 24);
+      const projectile = this.spawnEnemyProjectile(
+        boss.x + BANDIT_BILL_PROJECTILE_OFFSET_NES[0] * NES_WORLD_X_SCALE,
+        boss.y + BANDIT_BILL_PROJECTILE_OFFSET_NES[1] * NES_WORLD_Y_SCALE,
+      );
       if (projectile) {
         [projectile.vx, projectile.vy] = banditBillProjectileVelocity(boss.x, boss.y, this.player.x, this.player.y);
       }

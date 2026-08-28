@@ -415,7 +415,9 @@ canvas so keyboard control continues after DOM interaction.
 Automatic map scroll now carries Billy's world-space Y coordinate by the same
 delta, keeping his screen position stable while idle. Eight-direction movement
 uses the measured NES center bounds `x=16..240,y=48..216`; buildings and cliff
-edges retain their gameplay role through the decoded Round collision map.
+edges retain their gameplay role through the decoded Round collision map. Eight
+directions use the ROM's fixed-point vector table rather than equal X/Y diagonal
+components, with normal speed alternating its first and second tiers each frame.
 
 ## Known Approximation Boundary
 

@@ -22,14 +22,13 @@ import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanCanAttack, rifl
 import { advanceBanditBillMovement, BANDIT_BILL_ATTACK_PAUSE_FRAMES, BANDIT_BILL_DAMAGE_RECOVERY_DURATION, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, BANDIT_BILL_PROJECTILE_OFFSET_NES, BANDIT_BILL_RANDOM_HANDOFF_FINE_X, BANDIT_BILL_RANDOM_HANDOFF_FINE_Y, BANDIT_BILL_RANDOM_ROUTE_START_FRAME, banditBillCombatX, banditBillCombatY, banditBillProjectileVelocity, createBanditBillMovementState, type BanditBillMovementState } from "./game-constants";
 import { banditBillCooldown } from "./game-constants";
 import { advanceInvulnerability, BLUE_YASHICHI_DURATION, BOSS_BAR_RECOVERY_DURATION, bossCurrentBarHitPoints, bossHealthProfile, bossTotalHitPoints, lifePickup, scoreBossDefeat, shouldClearProjectilesAfterBossDefeat } from "./game-constants";
-import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, PLAYER_ENTRY_X, PLAYER_ENTRY_Y, PLAYER_MAX_X_NES, PLAYER_MAX_Y_NES, PLAYER_MIN_X_NES, PLAYER_MIN_Y_NES, pistolBulletSpeedFactor, pistolVelocities, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
+import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, PLAYER_ENTRY_X, PLAYER_ENTRY_Y, PLAYER_MAX_X_NES, PLAYER_MAX_Y_NES, PLAYER_MIN_X_NES, PLAYER_MIN_Y_NES, pistolBulletSpeedFactor, pistolVelocities, playerMovementVelocity, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
 import { addScore } from "./game-constants";
 import { ninjaCanThrow, ninjaTraceLifetime, ninjaTracePosition, ninjaTraceThrowFrame } from "./game-constants";
 import { FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeAimAllowsLaunch, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, FATMAN_JOE_MOVEMENT_SPEED, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, fatmanJoeCombatX, fatmanJoeCombatY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "./game-constants";
 import { advanceDevilHawkMovement, advanceWingateMovement, createDevilHawkMovementState, createWingateMovementState, DEVIL_HAWK_RANDOM_HANDOFF_ACTION_COUNTER, DEVIL_HAWK_RANDOM_HANDOFF_FINE_X, DEVIL_HAWK_RANDOM_HANDOFF_FINE_Y, DEVIL_HAWK_RANDOM_HANDOFF_GAIT, DEVIL_HAWK_RANDOM_HANDOFF_HEADING, DEVIL_HAWK_RANDOM_HANDOFF_SEGMENT_FRAMES, WINGATE_BULLET_LIFETIME, wingateCanFire, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, type DevilHawkMovementState, type WingateMovementState } from "./game-constants";
 import { WINGATE_ENDING_INPUT_DELAY, WINGATE_FINAL_DEFEAT_ANIMATION_DURATION, WINGATE_FINAL_ENDING_DELAY } from "./game-constants";
-import { playerSpeedMultiplier } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_LIFETIME, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { advanceCutterMovement, createCutterMovementState, CUTTER_ENTRY_DURATION, CUTTER_RANDOM_HANDOFF_FINE_X, CUTTER_RANDOM_HANDOFF_FINE_Y, CUTTER_RANDOM_HANDOFF_GAIT, CUTTER_RANDOM_HANDOFF_SEGMENT_FRAMES, CUTTER_RANDOM_ROUTE_START_FRAME, cutterBoomerangOnScreen, cutterCombatX, cutterCombatY, cutterOpeningX, cutterOpeningY, type CutterMovementState } from "./game-constants";
 import { DEVIL_HAWK_ENTRY_DURATION, devilHawkAttackDelay, devilHawkFanHeadings, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_FULL_FAN_LIFETIME, DEVIL_HAWK_FULL_FAN_MAX_Y_NES, DEVIL_HAWK_POST_ENTRY_X_HOLD, devilHawkProjectileVelocity, DEVIL_HAWK_SIDE_FAN_LIFETIME, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY, nesAimHeading } from "./game-constants";
@@ -645,9 +644,16 @@ class GunSmokeGame {
     if (this.shopOpen) return;
     this.camera.position.y = this.scroll + 270;
     ({ duration: this.invulnerable, destroysEnemies: this.invulnerableDestroysEnemies } = advanceInvulnerability(this.invulnerable, this.invulnerableDestroysEnemies, delta));
-    const movement = WORLD_PLAYER_SPEED * playerSpeedMultiplier(this.hasHorse, this.powerups.boots, this.invulnerableDestroysEnemies);
-    const nextX = clamp(this.player.x + (this.actions.value("right") - this.actions.value("left")) * movement * delta, PLAYER_MIN_X_NES * NES_WORLD_X_SCALE, PLAYER_MAX_X_NES * NES_WORLD_X_SCALE);
-    const nextY = clamp(this.player.y + (this.actions.value("down") - this.actions.value("up")) * movement * delta, this.scroll + PLAYER_MIN_Y_NES * NES_WORLD_Y_SCALE, this.scroll + PLAYER_MAX_Y_NES * NES_WORLD_Y_SCALE);
+    const [movementX, movementY] = playerMovementVelocity(
+      this.actions.value("right") - this.actions.value("left"),
+      this.actions.value("down") - this.actions.value("up"),
+      this.hasHorse,
+      this.powerups.boots,
+      this.invulnerableDestroysEnemies,
+      (Math.floor(this.time * NES_FRAME_RATE) & 1) !== 0,
+    );
+    const nextX = clamp(this.player.x + movementX * delta, PLAYER_MIN_X_NES * NES_WORLD_X_SCALE, PLAYER_MAX_X_NES * NES_WORLD_X_SCALE);
+    const nextY = clamp(this.player.y + movementY * delta, this.scroll + PLAYER_MIN_Y_NES * NES_WORLD_Y_SCALE, this.scroll + PLAYER_MAX_Y_NES * NES_WORLD_Y_SCALE);
     if (!this.isPlayerBlocked(nextX, nextY)) {
       this.player.x = nextX;
       this.player.y = nextY;

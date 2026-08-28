@@ -179,14 +179,10 @@ export function romActorScreenYReleased(screenY: number): boolean {
 export function romProjectileOnScreen(screenX: number, screenY: number): boolean {
   return screenX >= 0 && screenX < ROM_PROJECTILE_SCREEN_SIZE_NES && screenY >= 0 && screenY < ROM_PROJECTILE_SCREEN_SIZE_NES;
 }
-export const NES_PLAYER_SPEED = 75 * (NES_FRAME_RATE / 60);
+export const NES_PLAYER_SPEED = (0.828125 + 1.65625) / 2 * NES_FRAME_RATE;
 export const WORLD_PLAYER_SPEED = NES_PLAYER_SPEED * NES_WORLD_Y_SCALE;
 export const BOOTS_SPEED_MULTIPLIER = 4 / 3;
 export const HORSE_SPEED_MULTIPLIER = 5 / 3;
-
-export function playerSpeedMultiplier(hasHorse: boolean, bootsStock: number, blueInvulnerable: boolean): number {
-  return hasHorse || blueInvulnerable ? HORSE_SPEED_MULTIPLIER : bootsStock > 0 ? BOOTS_SPEED_MULTIPLIER : 1;
-}
 export const NES_BULLET_SPEED = 6 * NES_FRAME_RATE;
 export const WORLD_BULLET_SPEED = NES_BULLET_SPEED * NES_WORLD_Y_SCALE;
 export const PLAYER_BULLET_CAPACITY = 6;
@@ -379,6 +375,19 @@ export const SNIPER_CODE2_SHOT_FRAMES = [134, 224, 314, 404, 495, 585] as const;
 export const SNIPER_COVER_DURATION = 90 / NES_FRAME_RATE;
 export const SNIPER_LIFETIME = 732 / NES_FRAME_RATE;
 const SNIPER_BULLET_VELOCITIES_NES = [[0, -1], [0.15625, -0.97265625], [0.3125, -0.92578125], [0.45703125, -0.828125], [0.578125, -0.703125], [0.6796875, -0.5625], [0.76171875, -0.390625], [0.8125, -0.1875], [0.828125, 0], [0.8125, 0.1875], [0.76171875, 0.390625], [0.6796875, 0.5625], [0.578125, 0.703125], [0.45703125, 0.828125], [0.3125, 0.92578125], [0.15625, 0.97265625], [0, 1], [-0.15625, 0.97265625], [-0.3125, 0.92578125], [-0.45703125, 0.828125], [-0.578125, 0.703125], [-0.6796875, 0.5625], [-0.76171875, 0.390625], [-0.8125, 0.1875], [-0.828125, 0], [-0.8125, -0.1875], [-0.76171875, -0.390625], [-0.6796875, -0.5625], [-0.578125, -0.703125], [-0.45703125, -0.828125], [-0.3125, -0.92578125], [-0.15625, -0.97265625]] as const;
+const PLAYER_INPUT_HEADINGS = [[28, 0, 4], [24, undefined, 8], [20, 16, 12]] as const;
+
+export function playerMovementVelocity(horizontal: number, vertical: number, hasHorse: boolean, bootsStock: number, blueInvulnerable: boolean, fastFrame: boolean): readonly [number, number] {
+  const x = Math.sign(horizontal);
+  const y = Math.sign(vertical);
+  if (x === 0 && y === 0) return [0, 0];
+  const heading = PLAYER_INPUT_HEADINGS[y + 1]?.[x + 1];
+  const velocity = heading === undefined ? undefined : SNIPER_BULLET_VELOCITIES_NES[heading];
+  if (!velocity) return [0, 0];
+  const [velocityX, velocityY] = velocity;
+  const speed = hasHorse || blueInvulnerable ? fastFrame ? 3 : 2 : bootsStock > 0 ? 2 : fastFrame ? 2 : 1;
+  return [velocityX * speed * NES_FRAME_RATE * NES_WORLD_X_SCALE, velocityY * speed * NES_FRAME_RATE * NES_WORLD_Y_SCALE];
+}
 
 export function sniperProjectileVelocity(originX: number, originY: number, targetX: number, targetY: number): readonly [number, number] {
   const [x, y] = SNIPER_BULLET_VELOCITIES_NES[nesAimHeading(originX, originY, targetX, targetY)] ?? SNIPER_BULLET_VELOCITIES_NES[0];

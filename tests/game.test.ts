@@ -10,7 +10,7 @@ import { WINGATE_ENDING_INPUT_DELAY, WINGATE_FINAL_DEFEAT_ANIMATION_DURATION, WI
 import { ENEMY_DEFEAT_Y_OFFSETS_NES } from "../src/game-constants";
 import { addScore, MAX_SCORE } from "../src/game-constants";
 import { PLAYER_ENTRY_X, PLAYER_ENTRY_X_NES, PLAYER_ENTRY_Y, PLAYER_ENTRY_Y_NES, PLAYER_MAX_X_NES, PLAYER_MAX_Y_NES, PLAYER_MIN_X_NES, PLAYER_MIN_Y_NES } from "../src/game-constants";
-import { HORSE_SPEED_MULTIPLIER, playerSpeedMultiplier } from "../src/game-constants";
+import { HORSE_SPEED_MULTIPLIER, playerMovementVelocity } from "../src/game-constants";
 import { NINJA_ACTIVATION_DISTANCE_NES, NINJA_LIFETIME, ninjaCanThrow } from "../src/game-constants";
 import { NINJA_ATTACK_MOVE_DURATION, NINJA_ENTRY_PATH_NES, ninjaAttackPosition, ninjaOpeningY, ninjaTraceLifetime, ninjaTracePosition, ninjaTraceThrowFrame } from "../src/game-constants";
 import { ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y } from "../src/game-constants";
@@ -93,11 +93,25 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROM_OBJECT_DROP_SPEED).toBeCloseTo(WORLD_SCROLL_SPEED * 2, 9);
     expect(ROM_SCREEN_RELEASE_Y_NES).toBe(252);
     expect([romActorScreenYReleased(251.49), romActorScreenYReleased(251.5), romActorScreenYReleased(252)]).toEqual([false, true, true]);
-    expect(NES_PLAYER_SPEED).toBeCloseTo(75.1225, 6);
-    expect(WORLD_PLAYER_SPEED).toBeCloseTo(169.025625, 6);
+    expect(NES_PLAYER_SPEED).toBeCloseTo(1.2421875 * NES_FRAME_RATE, 9);
+    expect(WORLD_PLAYER_SPEED).toBeCloseTo(1.2421875 * NES_FRAME_RATE * NES_WORLD_Y_SCALE, 9);
     expect(BOOTS_SPEED_MULTIPLIER).toBeCloseTo(4 / 3, 9);
     expect(HORSE_SPEED_MULTIPLIER).toBeCloseTo(5 / 3, 9);
-    expect([playerSpeedMultiplier(false, 0, false), playerSpeedMultiplier(false, 1, false), playerSpeedMultiplier(true, 0, false), playerSpeedMultiplier(false, 1, true)]).toEqual([1, 4 / 3, 5 / 3, 5 / 3]);
+    expect(playerMovementVelocity(1, 0, false, 0, false, false)).toEqual([0.828125 * NES_FRAME_RATE * NES_WORLD_X_SCALE, 0]);
+    expect(playerMovementVelocity(1, 1, false, 0, false, true)).toEqual([1.15625 * NES_FRAME_RATE * NES_WORLD_X_SCALE, 1.40625 * NES_FRAME_RATE * NES_WORLD_Y_SCALE]);
+    expect(playerMovementVelocity(-1, 0, false, 1, false, false)).toEqual([-1.65625 * NES_FRAME_RATE * NES_WORLD_X_SCALE, 0]);
+    expect(playerMovementVelocity(0, -1, true, 0, false, true)).toEqual([0, -3 * NES_FRAME_RATE * NES_WORLD_Y_SCALE]);
+    expect(playerMovementVelocity(0, 0, false, 0, false, false)).toEqual([0, 0]);
+    const replayLeft = (hasHorse: boolean, boots: number, blue: boolean) => {
+      let x = 136;
+      return Array.from({ length: 10 }, (_, index) => {
+        x += playerMovementVelocity(-1, 0, hasHorse, boots, blue, (index & 1) === 0)[0] / NES_FRAME_RATE / NES_WORLD_X_SCALE;
+        return Math.floor(x);
+      });
+    };
+    expect(replayLeft(false, 0, false)).toEqual([134, 133, 131, 131, 129, 128, 126, 126, 124, 123]);
+    expect(replayLeft(false, 1, false)).toEqual([134, 132, 131, 129, 127, 126, 124, 122, 121, 119]);
+    expect(replayLeft(true, 0, false)).toEqual([133, 131, 129, 127, 125, 123, 121, 119, 116, 115]);
     expect(NES_BULLET_SPEED).toBeCloseTo(360.588, 6);
     expect(WORLD_BULLET_SPEED).toBeCloseTo(811.323, 6);
     expect(NES_DIAGONAL_BULLET_X).toBeCloseTo(150.245, 6);

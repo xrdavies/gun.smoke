@@ -800,6 +800,8 @@ The movement tables alternate `0.828125/1.65625` NES pixels per frame in the
 normal tier, use constant `1.65625` with nonzero Boots stock, and alternate
 `1.65625/2.484375` while Horse or Blue Yashichi is active. These average to the
 runtime's `1x`, non-stacking `4/3`, and `5/3` movement multipliers respectively.
+Diagonal input uses the same 32-direction table: for example right/down moves
+`(0.578125,0.703125)` in the first tier and `(1.15625,1.40625)` in the second.
 The movement routine clamps Billy's center to NES `x=16..240` and `y=48..216`
 before terrain probes. Runtime uses those fixed screen bounds and leaves
 Round-specific road, building, and cliff restrictions to the decoded collision

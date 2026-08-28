@@ -442,8 +442,9 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ninjaBossNextTeleportAt((339 + 90) / NES_FRAME_RATE)).toBeCloseTo(853 / NES_FRAME_RATE, 9);
     expect(ninjaBossPreparePosition(0, 147, 104, 134, 182)).toEqual([147, 104]);
     expect(ninjaBossPreparePosition(NINJA_BOSS_PREPARE_DURATION, 147, 104, 134, 182)).toEqual([134, 182]);
-    expect(ninjaBossCombatX(43 / NES_FRAME_RATE)).toBe(660);
-    expect(ninjaBossCombatX(75 / NES_FRAME_RATE)).toBe(551.25);
+    expect(ninjaBossCombatX(43 / NES_FRAME_RATE)).toBe(176 * NES_WORLD_X_SCALE);
+    expect(ninjaBossCombatX(95 / NES_FRAME_RATE)).toBe(163 * NES_WORLD_X_SCALE);
+    expect(ninjaBossCombatX(170 / NES_FRAME_RATE)).toBe(102 * NES_WORLD_X_SCALE);
     expect(ninjaBossCombatX(0, 112 * NES_WORLD_X_SCALE, true)).toBe(420);
     expect(ninjaBossCombatX(304 / NES_FRAME_RATE, 112 * NES_WORLD_X_SCALE, true)).toBe(611.25);
     expect([bossSpriteVisible(1, 1, 2, false), bossSpriteVisible(5, 1, 2, false), bossSpriteVisible(4, 1, 2, false), bossSpriteVisible(4, 3, 2, true), bossSpriteVisible(4, 3, 2, false)]).toEqual([true, true, false, false, true]);
@@ -849,8 +850,9 @@ describe("Gun.Smoke vertical slice", () => {
     expect(NINJA_BOSS_SHURIKEN_VELOCITIES_NES).toEqual([[1.25, -1.5], [1.25, 1.5], [-1.25, 1.5], [-1.25, -1.5]]);
     expect(NINJA_BOSS_SHURIKEN_LIFETIME).toBeCloseTo(40 / NES_FRAME_RATE, 9);
     expect(ninjaBossCombatY(NINJA_BOSS_ENTRY_INVULNERABILITY)).toBe(288);
-    expect(ninjaBossCombatY(NINJA_BOSS_ENTRY_INVULNERABILITY + 26 / NES_FRAME_RATE)).toBe(371.25);
-    expect(ninjaBossCombatY(NINJA_BOSS_ENTRY_INVULNERABILITY + 551 / NES_FRAME_RATE)).toBe(92.25);
+    expect(ninjaBossCombatY(NINJA_BOSS_ENTRY_INVULNERABILITY + 1 / NES_FRAME_RATE)).toBeCloseTo(123 * NES_WORLD_Y_SCALE, 9);
+    expect(ninjaBossCombatY(NINJA_BOSS_ENTRY_INVULNERABILITY + 26 / NES_FRAME_RATE)).toBe(344.25);
+    expect(ninjaBossCombatY(NINJA_BOSS_ENTRY_INVULNERABILITY + 51 / NES_FRAME_RATE)).toBeCloseTo(123 * NES_WORLD_Y_SCALE, 9);
     expect(ninjaBossCombatY(304 / NES_FRAME_RATE, 64 * NES_WORLD_Y_SCALE, true)).toBe(189);
     expect(ninjaBossCombatY(416 / NES_FRAME_RATE, 64 * NES_WORLD_Y_SCALE, true)).toBe(81);
   });

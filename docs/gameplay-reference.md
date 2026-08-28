@@ -153,7 +153,8 @@ used by ordinary enemy gunfire, so field bullets cannot suppress those attacks;
 Bandit Bill's traced `0x30` shots are the exception and use the ordinary pool;
 his clean-trace X/Y movement path is replayed through the measured 3,472-frame
 combat window, with sparse unhurt samples extending it to frame 7,680 before
-continuing the ROM's random movement state.
+continuing the ROM's random movement state. The handoff retains the recorded
+NES subpixels (`fineX=64`, `fineY=200`) before the 24-frame route pause.
 Ordinary screen clears do not erase active low-slot Boss shots. ROM-tagged
 Ninja, Hatchet, Spear, and Firebreather shots use the shared discrete second-tier
 direction table; all active formations are driven by decoded ROM event records.

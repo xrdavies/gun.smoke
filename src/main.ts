@@ -1867,7 +1867,7 @@ class GunSmokeGame {
     const targets = this.units.filter((unit) => (unit.kind === "barrel" || (unit.kind === "enemy" || unit.kind === "boss") && unit.sprite.visible) && !unit.exploding && unit.hp > 0);
     for (const bullet of bullets) {
       if (bullet.piercing) {
-        const projectile = this.units.find((candidate) => candidate.kind === "enemyBullet" && candidate.projectileType !== "ninjaSmoke" && candidate.hp > 0 && distance(bullet, candidate) <= bullet.radius + candidate.radius);
+        const projectile = this.units.find((candidate) => candidate.kind === "enemyBullet" && candidate.projectileType !== "ninjaSmoke" && candidate.projectileType !== "grenade" && candidate.hp > 0 && distance(bullet, candidate) <= bullet.radius + candidate.radius);
         if (projectile) {
           projectile.hp = 0;
           continue;

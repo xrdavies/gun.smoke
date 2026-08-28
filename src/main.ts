@@ -1471,7 +1471,7 @@ class GunSmokeGame {
           unit.x += unit.vx * delta;
           unit.y += unit.vy * delta;
           if (unit.age >= unit.nextFireAt) {
-            const decision = bomberMovementDecision(unit.y - this.scroll, this.nextBomberDecisionByte());
+            const decision = bomberMovementDecision(unit.y - this.scroll, this.nextRomRandomSumByte());
             if (decision.throwDynamite) {
               throwDynamite();
             } else {
@@ -1552,7 +1552,7 @@ class GunSmokeGame {
             Math.floor(unit.age * NES_FRAME_RATE),
             this.player.x / NES_WORLD_X_SCALE,
             (this.player.y - this.scroll) / NES_WORLD_Y_SCALE,
-            () => Math.floor(this.nextRandom() * 256),
+            () => this.nextRomRandomSumByte(),
           );
           unit.x = state.x * NES_WORLD_X_SCALE;
           unit.y = this.scroll + state.y * NES_WORLD_Y_SCALE;
@@ -1634,7 +1634,7 @@ class GunSmokeGame {
             this.player.x / NES_WORLD_X_SCALE,
             (this.player.y - this.scroll) / NES_WORLD_Y_SCALE,
             (probeX, probeY) => roundCollisionAtNes(this.stage, this.scroll, probeX, probeY),
-            () => Math.floor(this.nextRandom() * 256),
+            () => this.nextRomRandomSumByte(),
           );
           unit.x = state.x * NES_WORLD_X_SCALE;
           unit.y = this.scroll + state.y * NES_WORLD_Y_SCALE;
@@ -2314,7 +2314,7 @@ class GunSmokeGame {
     return value / 256;
   }
 
-  private nextBomberDecisionByte(): number {
+  private nextRomRandomSumByte(): number {
     return (this.randomState[0]! + this.randomState[1]!) & 0xff;
   }
 

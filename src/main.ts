@@ -20,7 +20,7 @@ import { advanceFirebreather, advanceHatchet, advanceSpear, createFirebreatherSt
 import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanCanAttack, riflemanPosition, riflemanShotHeading, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition, SNIPER_COVER_DURATION, sniperProjectileVelocity } from "./game-constants";
 import { BANDIT_BILL_DAMAGE_RECOVERY_DURATION, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, banditBillCombatX, banditBillCombatY, banditBillProjectileVelocity } from "./game-constants";
 import { banditBillCooldown } from "./game-constants";
-import { BLUE_YASHICHI_DURATION, lifePickup, scoreBossDefeat, shouldClearProjectilesAfterBossDefeat } from "./game-constants";
+import { advanceInvulnerability, BLUE_YASHICHI_DURATION, lifePickup, scoreBossDefeat, shouldClearProjectilesAfterBossDefeat } from "./game-constants";
 import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, PLAYER_ENTRY_X, PLAYER_ENTRY_Y, pistolBulletSpeedFactor, pistolVelocities, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
 import { addScore } from "./game-constants";
@@ -641,8 +641,7 @@ class GunSmokeGame {
     if (shouldLoopStage(this.scroll, this.stage, this.hasWanted)) this.loopStage();
     if (this.shopOpen) return;
     this.camera.position.y = this.scroll + 270;
-    this.invulnerable = Math.max(0, this.invulnerable - delta);
-    if (this.invulnerable === 0) this.invulnerableDestroysEnemies = false;
+    ({ duration: this.invulnerable, destroysEnemies: this.invulnerableDestroysEnemies } = advanceInvulnerability(this.invulnerable, this.invulnerableDestroysEnemies, delta));
     const movement = WORLD_PLAYER_SPEED * (this.powerups.boots > 0 ? BOOTS_SPEED_MULTIPLIER : 1);
     const halfRoad = (ROAD_WIDTHS[this.stage - 1] ?? 520) / 2;
     const nextX = clamp(this.player.x + (this.actions.value("right") - this.actions.value("left")) * movement * delta, 480 - halfRoad + 22, 480 + halfRoad - 22);

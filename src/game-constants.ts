@@ -30,6 +30,13 @@ export const PLAYER_RESPAWN_HIDDEN_DURATION = 100 / NES_FRAME_RATE;
 export const PLAYER_RESPAWN_READY_DURATION = 40 / NES_FRAME_RATE;
 export const PLAYER_DEATH_RECOVERY_DURATION = PLAYER_DEATH_ANIMATION_DURATION + PLAYER_RESPAWN_HIDDEN_DURATION + PLAYER_RESPAWN_READY_DURATION;
 
+export function advanceInvulnerability(duration: number, destroysEnemies: boolean, delta: number): { duration: number; destroysEnemies: boolean } {
+  const remaining = Math.max(0, duration - delta);
+  return remaining === 0 && destroysEnemies
+    ? { duration: HORSE_HIT_INVULNERABILITY, destroysEnemies: false }
+    : { duration: remaining, destroysEnemies: remaining > 0 && destroysEnemies };
+}
+
 export function playerDeathPhase(age: number): "dying" | "hidden" | "ready" | "active" {
   if (age < PLAYER_DEATH_ANIMATION_DURATION) return "dying";
   if (age < PLAYER_DEATH_ANIMATION_DURATION + PLAYER_RESPAWN_HIDDEN_DURATION) return "hidden";

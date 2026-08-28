@@ -99,6 +99,7 @@ interface Unit {
   animation?: SpriteAnimationBinding;
   romBehavior?: number;
   romEntityCode?: number;
+  romPhase?: number;
   romFlags?: number;
   romPool?: "enemy" | "object";
   romOriginX?: number;
@@ -893,6 +894,7 @@ class GunSmokeGame {
     enemy.value = romEnemyScore(event.entityCode);
     enemy.romBehavior = event.behavior;
     enemy.romEntityCode = event.entityCode;
+    enemy.romPhase = event.phase;
     enemy.romFlags = event.flags;
     enemy.romPool = event.pool;
     enemy.romOriginX = enemy.x;
@@ -903,7 +905,7 @@ class GunSmokeGame {
     if (event.behavior === 2) enemy.maxAge = GUNMAN_LIFETIME;
     if (event.behavior === 6) enemy.maxAge = NINJA_LIFETIME;
     if (event.behavior === 2 && event.entityCode === 5) enemy.maxAge = GUNMAN_BOTTOM_LIFETIMES.far;
-    if (flankCode !== undefined) enemy.maxAge = gunmanFlankLifetime(flankCode, event.y, this.stage);
+    if (flankCode !== undefined) enemy.maxAge = gunmanFlankLifetime(flankCode, event.y, this.stage, event.phase);
     if (event.behavior === 3) enemy.maxAge = BACKSTABBER_RAID_LIFETIME;
     if (event.behavior === 8) enemy.maxAge = BACKSTABBER_AMBUSH_LIFETIME;
     if (event.behavior === 9) enemy.maxAge = HATCHET_LIFETIME;
@@ -1254,7 +1256,7 @@ class GunSmokeGame {
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: frameDuration },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, riflemanAimHeading: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, banditState: undefined, cutterState: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined, rockPhase: undefined,
+      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romPhase: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, riflemanAimHeading: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, banditState: undefined, cutterState: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined, rockPhase: undefined,
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" || sceneObject ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
@@ -1704,7 +1706,7 @@ class GunSmokeGame {
           unit.x = (unit.romOriginX ?? unit.x) + offsetX * NES_WORLD_X_SCALE;
           unit.y = this.scroll + (unit.romOriginY ?? 0) + offsetY * NES_WORLD_Y_SCALE;
         } else if (flankGunman !== undefined) {
-          const [offsetX, offsetY] = gunmanFlankPosition(flankGunman, unit.age, (unit.romOriginY ?? 0) / NES_WORLD_Y_SCALE, this.stage);
+          const [offsetX, offsetY] = gunmanFlankPosition(flankGunman, unit.age, (unit.romOriginY ?? 0) / NES_WORLD_Y_SCALE, this.stage, unit.romPhase ?? 0);
           const mirror = flankGunman === 7 && (unit.romOriginX ?? unit.x) > 480 ? -1 : 1;
           unit.x = (unit.romOriginX ?? unit.x) + offsetX * NES_WORLD_X_SCALE * mirror;
           unit.y = this.scroll + (unit.romOriginY ?? 0) + offsetY * NES_WORLD_Y_SCALE;

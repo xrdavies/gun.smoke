@@ -1307,6 +1307,7 @@ class GunSmokeGame {
       unit.sprite.size = { x: 110 + progress * 48, y: 68 + progress * 48 };
       unit.sprite.color = [1, 0.78 + progress * 0.22, 0.3 + progress * 0.7, 1];
       unit.sprite.position = { x: unit.x, y: unit.y };
+      if (unit.age >= unit.maxAge) unit.hp = 0;
       return;
     }
     if (unit.kind === "enemy" && unit.exploding) {

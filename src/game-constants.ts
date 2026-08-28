@@ -250,6 +250,14 @@ export function bomberCanThrow(actorY: number, playerY: number, random: number):
   return actorY >= 32 * NES_WORLD_Y_SCALE && Math.abs(playerY - actorY) < BOMBER_ACTIVATION_DISTANCE_NES * NES_WORLD_Y_SCALE && random < BOMBER_THROW_CHANCE;
 }
 
+export function bomberMovementDecision(actorY: number, random: number): { throwDynamite: boolean; direction: number } {
+  const screenY = actorY / NES_WORLD_Y_SCALE;
+  if (screenY < 48) return { throwDynamite: false, direction: 0 };
+  if (screenY >= 192) return { throwDynamite: false, direction: 4 };
+  const byte = Math.floor(Math.max(0, Math.min(1 - Number.EPSILON, random)) * 256);
+  return { throwDynamite: Boolean(byte & 0x80), direction: (byte & 0x1c) >> 2 };
+}
+
 export function dynamiteVerticalOffset(age: number): number {
   const frame = Math.max(0, age * NES_FRAME_RATE);
   const nextIndex = DYNAMITE_VERTICAL_PATH_NES.findIndex(([at]) => at >= frame);

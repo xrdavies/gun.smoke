@@ -257,7 +257,8 @@ shot schedule or actor lifetime.
 
 Round 1 Bombers descend into range and make their first throw on the measured
 entry transition, then choose among eight measured movement directions and
-durations with a half-probability throw decision between segments, releasing
+durations with one shared random byte selecting both the half-probability throw
+decision and the next direction between segments, releasing
 when the measured retreat leaves the NES screen. Their dynamite has explicit flight, landed, defusable, and delayed
 explosion phases. Boss and enemy projectiles are typed separately as bullets,
 boomerangs, fireballs, shuriken, spears, hatchets, dynamite, or grenades. Spear and

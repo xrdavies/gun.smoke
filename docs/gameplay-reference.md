@@ -241,7 +241,8 @@ frames after a miss, fire at most once, and replay the measured top-entry
 movement through the center/left/right release paths (549/828/1196 frames).
 Those three paths use the complete isolated ROM frame samples, preserving their
 discrete jumps and screen-release boundaries rather than interpolating between
-sparse waypoints.
+sparse waypoints. The samples are bound to the captured `x=88,y=0` entry;
+other entry lanes retain the same branch selection with parameterized offsets.
 Riflemen advance,
 enter their attack state at 122 NES frames once they are at least 48 NES pixels
 downscreen and within 96 NES Y pixels of Billy, then fire five shots at

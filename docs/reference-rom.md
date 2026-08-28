@@ -283,7 +283,10 @@ shows the actor rising from `y=0` to approximately `y=53` at frame 40 and
 `y=128/132` at frames 100/104 before its horizontal combat state; the runtime
 uses these entry checkpoints and keeps the later movement procedural. The
 complete center, left, and right isolation traces are replayed at integer NES
-frames for their 549-, 828-, and 1196-frame routes, respectively.
+frames for their 549-, 828-, and 1196-frame routes, respectively. Those exact
+samples are used for the captured `x=88,y=0` entry; runtime keeps the original
+branch-relative path for other entry coordinates instead of extrapolating a
+single trace beyond its evidence.
 Entity code `5` initializes the same routine with the opposite heading and
 enters from the bottom edge. Its 56-NES-pixel proximity branch is visible in
 two isolated routes: the near route fires at frame 219 and releases at frame

@@ -26,7 +26,7 @@ import { advanceInvulnerability, BLUE_YASHICHI_DURATION, BOSS_BAR_RECOVERY_DURAT
 import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, PLAYER_ENTRY_X, PLAYER_ENTRY_Y, pistolBulletSpeedFactor, pistolVelocities, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
 import { addScore } from "./game-constants";
-import { ninjaCanThrow, ninjaTraceLifetime, ninjaTracePosition } from "./game-constants";
+import { ninjaCanThrow, ninjaTraceLifetime, ninjaTracePosition, ninjaTraceThrows } from "./game-constants";
 import { FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeAimAllowsLaunch, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, FATMAN_JOE_MOVEMENT_SPEED, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, fatmanJoeCombatX, fatmanJoeCombatY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "./game-constants";
 import { advanceDevilHawkMovement, advanceWingateMovement, createDevilHawkMovementState, createWingateMovementState, DEVIL_HAWK_RANDOM_HANDOFF_ACTION_COUNTER, DEVIL_HAWK_RANDOM_HANDOFF_FINE_X, DEVIL_HAWK_RANDOM_HANDOFF_FINE_Y, DEVIL_HAWK_RANDOM_HANDOFF_GAIT, DEVIL_HAWK_RANDOM_HANDOFF_HEADING, DEVIL_HAWK_RANDOM_HANDOFF_SEGMENT_FRAMES, WINGATE_BULLET_LIFETIME, wingateCanFire, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, type DevilHawkMovementState, type WingateMovementState } from "./game-constants";
 import { WINGATE_ENDING_INPUT_DELAY, WINGATE_FINAL_DEFEAT_ANIMATION_DURATION, WINGATE_FINAL_ENDING_DELAY } from "./game-constants";
@@ -101,6 +101,7 @@ interface Unit {
   animation?: SpriteAnimationBinding;
   romBehavior?: number;
   romEntityCode?: number;
+  romEventAt?: number;
   romPhase?: number;
   romFlags?: number;
   romPool?: "enemy" | "object";
@@ -898,6 +899,7 @@ class GunSmokeGame {
     enemy.value = romEnemyScore(event.entityCode);
     enemy.romBehavior = event.behavior;
     enemy.romEntityCode = event.entityCode;
+    enemy.romEventAt = event.at;
     enemy.romPhase = event.phase;
     enemy.romFlags = event.flags;
     enemy.romPool = event.pool;
@@ -907,7 +909,7 @@ class GunSmokeGame {
     if (event.behavior === 1) enemy.maxAge = SHOTGUNNER_LIFETIME;
     if (sideShotgunner) enemy.maxAge = SHOTGUNNER_SIDE_LIFETIME;
     if (event.behavior === 2) enemy.maxAge = GUNMAN_LIFETIME;
-    if (event.behavior === 6) enemy.maxAge = ninjaTraceLifetime(event.x, event.y, this.stage, event.phase) ?? NINJA_LIFETIME;
+    if (event.behavior === 6) enemy.maxAge = ninjaTraceLifetime(event.x, event.y, this.stage, event.phase, event.at) ?? NINJA_LIFETIME;
     if (event.behavior === 2 && event.entityCode === 5) enemy.maxAge = GUNMAN_BOTTOM_LIFETIMES.far;
     if (flankCode !== undefined) enemy.maxAge = gunmanFlankLifetime(flankCode, event.y, this.stage, event.phase, event.x > 128);
     if (event.behavior === 3) enemy.maxAge = BACKSTABBER_RAID_LIFETIME;
@@ -1260,7 +1262,7 @@ class GunSmokeGame {
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: frameDuration },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romPhase: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, riflemanAimHeading: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, banditState: undefined, cutterState: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined, rockPhase: undefined,
+      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romEventAt: undefined, romPhase: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, riflemanAimHeading: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, banditState: undefined, cutterState: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined, rockPhase: undefined,
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" || sceneObject ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
@@ -1381,7 +1383,7 @@ class GunSmokeGame {
         if (tracedNinja) {
           const originX = unit.romOriginX ?? unit.x;
           const originY = unit.romOriginY ?? unit.y - this.scroll;
-          const tracedPosition = ninjaTracePosition(unit.age, originX / NES_WORLD_X_SCALE, originY / NES_WORLD_Y_SCALE, this.stage, unit.romPhase ?? 0);
+          const tracedPosition = ninjaTracePosition(unit.age, originX / NES_WORLD_X_SCALE, originY / NES_WORLD_Y_SCALE, this.stage, unit.romPhase ?? 0, unit.romEventAt);
           if (tracedPosition) {
             unit.x = tracedPosition[0];
             unit.y = this.scroll + tracedPosition[1];
@@ -1398,15 +1400,19 @@ class GunSmokeGame {
           unit.x += (unit.vx + Math.sin(unit.age * 6 + unit.phase) * 90) * delta;
           unit.y += unit.vy * 1.8 * delta;
         }
-        if (!unit.fired && unit.age >= NINJA_FIRST_SHOT_DELAY && ninjaCanThrow(unit.y, this.player.y)) {
+        const tracedThrow = unit.romBehavior === 6 ? ninjaTraceThrows(this.stage, unit.romEventAt) : undefined;
+        const canThrow = tracedThrow ?? ninjaCanThrow(unit.y, this.player.y);
+        if (!unit.fired && unit.age >= NINJA_FIRST_SHOT_DELAY && (tracedThrow === false || canThrow)) {
           unit.fired = true;
-          const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
-          const projectile = this.spawnEnemyProjectile(unit.x, unit.y);
-          if (projectile) {
-            projectile.projectileType = "shuriken";
-            [projectile.vx, projectile.vy] = unit.romBehavior === 6 ? mediumProjectileVelocity(unit.x, unit.y, this.player.x, this.player.y) : [Math.cos(angle) * 300, Math.sin(angle) * 300];
-            projectile.radius = 8;
-            projectile.sprite.size = { x: 16, y: 16 };
+          if (canThrow) {
+            const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
+            const projectile = this.spawnEnemyProjectile(unit.x, unit.y);
+            if (projectile) {
+              projectile.projectileType = "shuriken";
+              [projectile.vx, projectile.vy] = unit.romBehavior === 6 ? mediumProjectileVelocity(unit.x, unit.y, this.player.x, this.player.y) : [Math.cos(angle) * 300, Math.sin(angle) * 300];
+              projectile.radius = 8;
+              projectile.sprite.size = { x: 16, y: 16 };
+            }
           }
         }
       } else if (unit.enemyType === "rifleman") {

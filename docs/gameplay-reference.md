@@ -233,9 +233,11 @@ frames after each shot, and do not walk with field enemies. The code `2`
 opposite-side variant also fires at the otherwise missed age-314 aiming window.
 Ordinary Ninjas hold their entry lane through a short pause, descend to the
 combat line, then make a brief player-relative diagonal retreat after their
-frame-103 Shuriken and release within the measured 303-frame route cap. The
-Round 4 `x=152,y=0,phase=0` entry uses its measured 244-frame second movement
-and release trace; other entries retain the parameterized route.
+frame-103 Shuriken and release within the measured 303-frame route cap. Round 4
+events `at=47,x=152,phase=0` and `at=63,x=184,phase=1` use their measured
+244-frame second movement and release traces. The later
+`at=383,x=184,phase=1` event follows its separate 205-frame no-throw route;
+other entries retain the parameterized route.
 Gunmen use the same quantized table at the faster second tier, check their
 movement-facing gate on an observed `40/52/58/62` first phase and every 64
 frames thereafter, and replay the measured top-entry

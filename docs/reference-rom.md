@@ -385,10 +385,12 @@ frames. Its entrance holds the authored lane for 16 frames while descending
 to 32 NES pixels, pauses through frame 36, then descends to 126 NES pixels by
 frame 83. After the throw it moves diagonally for about 15 frames toward a
 player-relative offset before holding position; clean routes release between
-281 and 302 frames. The Round 4 `x=152,y=0,phase=0` entry has a complete
-244-frame coordinate trace, including the second post-throw movement and
-release transition; the runtime replays that scoped route and retains the
-303-frame cap for other Ninja entries. ROM-tagged Ninja, Hatchet, Spear, and Firebreather
+281 and 302 frames. Round 4 events `at=47,x=152,phase=0` and
+`at=63,x=184,phase=1` have complete 244-frame coordinate traces, including
+their second post-throw movement and release transitions. Event
+`at=383,x=184,phase=1` takes the random no-throw branch and releases after 205
+frames. Runtime binds those routes and throw decisions to their event indexes
+and retains the 303-frame cap for other Ninja entries. ROM-tagged Ninja, Hatchet, Spear, and Firebreather
 shots use the same second-tier 32-direction table as Gunmen; side Firebreathers
 mask the selected heading to an even sector before allocation.
 An isolated `$B8F4` Hatchet Thrower descends to NES `y=40` in 20 frames, pauses

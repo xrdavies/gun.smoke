@@ -237,11 +237,13 @@ make a brief player-relative diagonal retreat after their frame-103 Shuriken
 and release within the measured 303-frame route cap.
 Gunmen use the same quantized table at the faster second tier, check their
 movement-facing gate on an observed `40/52/58/62` first phase and every 64
-frames after a miss, fire at most once, and replay the measured top-entry
+frames thereafter, and replay the measured top-entry
 movement through the center/left/right release paths (549/828/1196 frames).
 Those three paths use the complete isolated ROM frame samples, preserving their
 discrete jumps and screen-release boundaries rather than interpolating between
-sparse waypoints. The samples are bound to the captured `x=88,y=0` entry;
+sparse waypoints. Their complete per-frame heading samples also preserve the
+later successful left-route shot at frame 314 and right-route shots at frames
+570/1146. The samples are bound to the captured `x=88,y=0` entry;
 other entry lanes retain the same branch selection with parameterized offsets.
 The left-edge code-7 side route is likewise replayed from a complete 642-frame
 integer trace and mirrored for its right-edge counterpart; code 8 and code 9

@@ -266,12 +266,14 @@ The opposite-side entity code `2` keeps the same lifetime but hits every middle
 window, firing at ages 134, 224, 314, 404, 495 and 585. Runtime selects the
 schedule by entity code rather than dropping code `2`'s third shot.
 Three isolated `$B284` top-entry Gunmen first create a dispatch `0x30` bullet
-at ages 52, 58, and 62. Later opportunities are 192 frames apart and only fire
-when the actor's movement heading is within two sectors of its integer aim at
-Billy. `$0540` advances by three until wrapping at 192, so failed checks recur
-64 frames later; isolated first phases appear at frames `40/52/58/62`. The
-runtime preserves those observed phases, the 64-frame retry, and the one-shot
-limit. The center trace releases at age 549 after its retreat, and the left
+at ages 52, 58, and 62. `$0540` advances by three until wrapping at 192, so an
+attack opportunity repeats every 64 frames and only fires when the actor's
+stored movement heading is within two sectors of its integer aim at Billy.
+Isolated first phases appear at frames `40/52/58/62`; the complete left route
+fires again at frame 314, while the complete right route fires again at frames
+570 and 1146. The runtime preserves those observed phases, the 64-frame retry,
+and the captured per-frame headings instead of imposing a one-shot limit. The
+center trace releases at age 549 after its retreat, and the left
 trace releases at age 828 from the screen bottom, while the right trace remains
 active through frame 1195 before its slot is reused. The runtime replays those
 measured center/left/right paths and uses release caps of 549/828/1196 frames.

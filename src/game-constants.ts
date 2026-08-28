@@ -1289,6 +1289,7 @@ export type DevilHawkMovementState = {
   romExactActions?: boolean;
   actionBounceCounter?: number;
   actionCooldownFrames?: number;
+  actionBounceDirection?: -1 | 1;
 };
 
 export function createDevilHawkMovementState(x: number, y: number): DevilHawkMovementState {
@@ -1318,7 +1319,7 @@ export function advanceDevilHawkMovement(state: DevilHawkMovementState, targetFr
       if (state.romExactActions && state.actionKind === "jump") {
         if (state.actionFrames > 0) {
           state.actionFrames -= 1;
-          if (state.actionFrames === 0) state.actionBounceCounter = 24;
+          if (state.actionFrames === 0) state.actionBounceCounter = state.actionBounceDirection === -1 ? 31 : 24;
           continue;
         }
         if (state.actionBounceCounter !== undefined) {
@@ -1330,8 +1331,8 @@ export function advanceDevilHawkMovement(state: DevilHawkMovementState, targetFr
             state.actionCooldownFrames = 28;
             continue;
           }
-          state.y += devilHawkVerticalBounceDelta(state.actionBounceCounter);
-          if (state.actionBounceCounter === 18) fullFans.push(true);
+          state.y += devilHawkVerticalBounceDelta(state.actionBounceCounter) * (state.actionBounceDirection ?? -1);
+          if (state.actionBounceDirection === 1 && state.actionBounceCounter === 18) fullFans.push(true);
           continue;
         }
       }
@@ -1351,8 +1352,9 @@ export function advanceDevilHawkMovement(state: DevilHawkMovementState, targetFr
       if (state.actionCounter === 47) {
         state.actionCounter = 0;
         state.mode = "action";
-        state.actionFrames = 26;
+        state.actionFrames = Math.floor(state.y) < 88 ? 28 : 26;
         state.actionKind = "jump";
+        state.actionBounceDirection = Math.floor(state.y) < 88 ? -1 : 1;
         continue;
       }
     }
@@ -1395,7 +1397,10 @@ export function advanceDevilHawkMovement(state: DevilHawkMovementState, targetFr
         state.actionFrames = 32;
         state.actionKind = "jump";
         state.actionHeading = Math.floor(state.y) >= 88 ? 0x40 : 0xc0;
-        if (state.romExactActions) state.actionFrames = 26;
+        if (state.romExactActions) {
+          state.actionFrames = Math.floor(state.y) < 88 ? 28 : 26;
+          state.actionBounceDirection = Math.floor(state.y) < 88 ? -1 : 1;
+        }
         continue;
       }
     }

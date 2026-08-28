@@ -238,6 +238,12 @@ Player-contact dispatch at `$CB3D-$CB4E` clears airborne `0x2F` dynamite and
 returns without applying damage. Landed `0x3E` instead enters the normal hazard
 branch without the pre-hit clear, so the runtime permits contact defusal only
 during flight and treats the landed fuse as damaging.
+The first in-range opportunity waits one frame before applying that same sum.
+When a 90-frame throw ends, the ROM sums `AD+AC` again but uses the resulting
+direction regardless of its sign, preventing consecutive throws. Screen Y
+outside `48..191` forces straight up/down without mutating the random register.
+Runtime now shares one decision path for initial, post-throw, and segment-end
+transitions and preserves these three distinctions.
 The same Round 1 traces show the Bomber actor reaching `y=126` at age 125 while
 its X coordinate remains fixed. Runtime then uses the measured movement-state
 durations and velocities for every later segment instead of interpolating one

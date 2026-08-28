@@ -275,6 +275,11 @@ export function bomberCanThrow(actorY: number, playerY: number, random: number):
   return actorY >= 32 * NES_WORLD_Y_SCALE && Math.abs(playerY - actorY) < BOMBER_ACTIVATION_DISTANCE_NES * NES_WORLD_Y_SCALE && random < BOMBER_THROW_CHANCE;
 }
 
+export function bomberMovementUsesRandom(actorY: number): boolean {
+  const screenY = actorY / NES_WORLD_Y_SCALE;
+  return screenY >= 48 && screenY < 192;
+}
+
 export function bomberMovementDecision(actorY: number, randomByte: number): { throwDynamite: boolean; direction: number } {
   const screenY = actorY / NES_WORLD_Y_SCALE;
   if (screenY < 48) return { throwDynamite: false, direction: 0 };

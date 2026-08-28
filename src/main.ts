@@ -490,7 +490,6 @@ class GunSmokeGame {
   continueGame(): void {
     if (this.mode !== "gameover") return;
     this.lives = 3;
-    this.resetRandom();
     this.scroll = 0;
     this.camera.position.y = 270;
     this.bossFireClock = 1;
@@ -2154,7 +2153,6 @@ class GunSmokeGame {
       return;
     }
     this.stage += 1;
-    this.resetRandom();
     this.scroll = 0;
     this.bossFireClock = 1;
     this.bossSpawned = false;
@@ -2179,7 +2177,6 @@ class GunSmokeGame {
   }
 
   private loopStage(): void {
-    this.resetRandom();
     this.scroll = 0;
     this.camera.position.y = 270;
     this.player.x = PLAYER_ENTRY_X;

@@ -36,7 +36,7 @@ import { canSpawnBossProjectile } from "./game-constants";
 import { ENEMY_DEFEAT_ANIMATION_DURATION } from "./game-constants";
 import { ENEMY_DEFEAT_Y_OFFSETS_NES } from "./game-constants";
 import { hasSpecialAmmoStock, hasWeaponStock, romEnemyDrop, romEnemyScore } from "./game-constants";
-import { roundCollisionAtNes, roundCollisionBlocks, roundTerrainPresentAtNes, ROUND_COLLISION_ROWS } from "./round-collision";
+import { roundCollisionAtNes, roundCollisionBlocks, ROUND_COLLISION_ROWS } from "./round-collision";
 import { canSpawnRomPool, compareRomEventOrder, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_FALLING_ROCK_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEntityHitPoints, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
 import type { RomEnemyEvent, RomObjectEvent } from "./rom-event-data";
 
@@ -1370,7 +1370,7 @@ class GunSmokeGame {
           const [previousOffsetX, previousOffsetY] = fallingRockPosition((boundary - 1) / NES_FRAME_RATE, fromLeft);
           const screenX = (unit.romOriginX ?? unit.x) / NES_WORLD_X_SCALE + previousOffsetX + probeX;
           const screenY = (unit.romOriginY ?? unit.y - this.scroll) / NES_WORLD_Y_SCALE + previousOffsetY + probeY;
-          if (boundary >= ROCK_IMPACT_DELAY * NES_FRAME_RATE || !roundTerrainPresentAtNes(this.stage, this.scroll, screenX, screenY)) {
+          if (boundary >= ROCK_IMPACT_DELAY * NES_FRAME_RATE || !roundCollisionAtNes(this.stage, this.scroll, screenX, screenY)) {
             unit.exploding = true;
             unit.targetY = unit.y;
             unit.maxAge = unit.age + ROCK_IMPACT_LIFETIME;

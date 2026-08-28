@@ -187,14 +187,14 @@ hides the Boss for the measured 90-frame teleport delay, then restarts its entry
 smoke window and attack clock from the newly selected lane. Devil Hawk fireballs use the ROM's
 discrete directional velocity table and their measured 45/36-frame lifetimes;
 its recorded X/Y movement route is replayed through the available 3,600-frame
-trace, while
-only the post-trace random route remains an approximation.
+trace, then continues with a deterministic reflected extension; the post-trace
+random route remains an approximation.
 Fatman Joe begins attack decisions after his measured entrance. A successful
 downward-sector check launches one aimed shell; after 31 frames it stops and
 splits into five stationary mines at four-frame intervals. The mines use the
 measured symmetric offsets and last about 29 NES frames. His multi-hop X/Y
-profile follows the controlled Boss trace through combat frame 3,600. The runtime
-pauses the 76-frame attack counter during the measured 53-frame short or
+profile follows the controlled Boss trace through combat frame 3,600 and uses a
+reflected continuation afterward. The runtime pauses the 76-frame attack counter during the measured 53-frame short or
 122-frame long movement action; only later random movement direction remains
 an approximation.
 Ninja's measured first shuriken volley appears at frame 179 as a four-way

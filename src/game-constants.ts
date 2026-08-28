@@ -1071,16 +1071,22 @@ const DEVIL_HAWK_COMBAT_PATH_FULL_NES = [...DEVIL_HAWK_COMBAT_PATH_NES, ...DEVIL
 const DEVIL_HAWK_COMBAT_X_FULL_NES = [...DEVIL_HAWK_COMBAT_X_NES, ...DEVIL_HAWK_COMBAT_X_EXTENDED_NES] as const;
 export const DEVIL_HAWK_JUMP_PERIOD = 121;
 
+function pingPongFrame(frame: number, endpoint: number): number {
+  if (frame <= endpoint || endpoint <= 0) return frame;
+  const wrapped = frame % (endpoint * 2);
+  return wrapped <= endpoint ? wrapped : endpoint * 2 - wrapped;
+}
+
 export function devilHawkCombatY(age: number): number {
   const frame = Math.max(0, age * NES_FRAME_RATE - DEVIL_HAWK_ENTRY_DURATION * NES_FRAME_RATE);
   const path = DEVIL_HAWK_COMBAT_PATH_FULL_NES;
-  if (frame <= path[0]![0]) return path[0]![1] * NES_WORLD_Y_SCALE;
   const last = path.at(-1)!;
-  if (frame >= last[0]) return last[1] * NES_WORLD_Y_SCALE;
-  const nextIndex = path.findIndex(([at]) => at >= frame);
+  const sampledFrame = pingPongFrame(frame, last[0]);
+  if (sampledFrame <= path[0]![0]) return path[0]![1] * NES_WORLD_Y_SCALE;
+  const nextIndex = path.findIndex(([at]) => at >= sampledFrame);
   const previous = path[nextIndex - 1]!;
   const next = path[nextIndex]!;
-  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  const amount = (sampledFrame - previous[0]) / (next[0] - previous[0]);
   return (previous[1] + (next[1] - previous[1]) * amount) * NES_WORLD_Y_SCALE;
 }
 
@@ -1089,13 +1095,13 @@ export function devilHawkCombatX(age: number, entryX = 208 * NES_WORLD_X_SCALE):
   const laneOffset = entryX / NES_WORLD_X_SCALE - 208;
   const path = DEVIL_HAWK_COMBAT_X_FULL_NES;
   const first = path[0]!;
-  if (frame <= first[0]) return (first[1] + laneOffset) * NES_WORLD_X_SCALE;
   const last = path.at(-1)!;
-  if (frame >= last[0]) return (last[1] + laneOffset) * NES_WORLD_X_SCALE;
-  const nextIndex = path.findIndex(([at]) => at >= frame);
+  const sampledFrame = pingPongFrame(frame, last[0]);
+  if (sampledFrame <= first[0]) return (first[1] + laneOffset) * NES_WORLD_X_SCALE;
+  const nextIndex = path.findIndex(([at]) => at >= sampledFrame);
   const previous = path[nextIndex - 1]!;
   const next = path[nextIndex]!;
-  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  const amount = (sampledFrame - previous[0]) / (next[0] - previous[0]);
   return (previous[1] + (next[1] - previous[1]) * amount + laneOffset) * NES_WORLD_X_SCALE;
 }
 export const NINJA_BOSS_ENTRY_LANES_NES = [[112, 64], [192, 64], [120, 144], [176, 128]] as const;
@@ -1233,13 +1239,13 @@ function fatmanJoeCombatPosition(age: number, entryX = 152 * NES_WORLD_X_SCALE):
   const laneOffset = entryX / NES_WORLD_X_SCALE - 152;
   const toWorldX = (x: number): number => clamp((x + laneOffset) * NES_WORLD_X_SCALE, ...fatmanJoeArenaXBounds());
   const first = FATMAN_JOE_COMBAT_PATH_EXTENDED_NES[0]!;
-  if (frame <= first[0]) return [toWorldX(first[1]), first[2] * NES_WORLD_Y_SCALE];
   const last = FATMAN_JOE_COMBAT_PATH_EXTENDED_NES.at(-1)!;
-  if (frame >= last[0]) return [toWorldX(last[1]), last[2] * NES_WORLD_Y_SCALE];
-  const nextIndex = FATMAN_JOE_COMBAT_PATH_EXTENDED_NES.findIndex(([at]) => at >= frame);
+  const sampledFrame = pingPongFrame(frame, last[0]);
+  if (sampledFrame <= first[0]) return [toWorldX(first[1]), first[2] * NES_WORLD_Y_SCALE];
+  const nextIndex = FATMAN_JOE_COMBAT_PATH_EXTENDED_NES.findIndex(([at]) => at >= sampledFrame);
   const previous = FATMAN_JOE_COMBAT_PATH_EXTENDED_NES[nextIndex - 1]!;
   const next = FATMAN_JOE_COMBAT_PATH_EXTENDED_NES[nextIndex]!;
-  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  const amount = (sampledFrame - previous[0]) / (next[0] - previous[0]);
   return [
     toWorldX(previous[1] + (next[1] - previous[1]) * amount),
     (previous[2] + (next[2] - previous[2]) * amount) * NES_WORLD_Y_SCALE,
@@ -1304,13 +1310,13 @@ export function wingateCombatY(age: number, phase = 0): number {
   const frame = Math.max(0, age * NES_FRAME_RATE - WINGATE_ENTRY_DURATION * NES_FRAME_RATE);
   const path = WINGATE_TRACE_PATHS_EXTENDED_NES[phase > 0 ? 1 : 0];
   const first = path[0]!;
-  if (frame <= first[0]) return first[2] * NES_WORLD_Y_SCALE;
   const last = path.at(-1)!;
-  if (frame >= last[0]) return last[2] * NES_WORLD_Y_SCALE;
-  const nextIndex = path.findIndex(([at]) => at >= frame);
+  const sampledFrame = pingPongFrame(frame, last[0]);
+  if (sampledFrame <= first[0]) return first[2] * NES_WORLD_Y_SCALE;
+  const nextIndex = path.findIndex(([at]) => at >= sampledFrame);
   const previous = path[nextIndex - 1]!;
   const next = path[nextIndex]!;
-  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  const amount = (sampledFrame - previous[0]) / (next[0] - previous[0]);
   return (previous[2] + (next[2] - previous[2]) * amount) * NES_WORLD_Y_SCALE;
 }
 
@@ -1320,13 +1326,13 @@ export function wingateCombatX(age: number, phase = 0, entryX = 152): number {
   const base = path[0]![1];
   const mirror = entryX < 128 ? -1 : 1;
   const position = (at: number): number => entryX + (at - base) * mirror;
-  if (frame <= path[0]![0]) return position(path[0]![1]);
   const last = path.at(-1)!;
-  if (frame >= last[0]) return position(last[1]);
-  const nextIndex = path.findIndex(([at]) => at >= frame);
+  const sampledFrame = pingPongFrame(frame, last[0]);
+  if (sampledFrame <= path[0]![0]) return position(path[0]![1]);
+  const nextIndex = path.findIndex(([at]) => at >= sampledFrame);
   const previous = path[nextIndex - 1]!;
   const next = path[nextIndex]!;
-  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  const amount = (sampledFrame - previous[0]) / (next[0] - previous[0]);
   return position(previous[1] + (next[1] - previous[1]) * amount);
 }
 

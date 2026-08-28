@@ -117,7 +117,7 @@ for (let frame = 0; frame < frames; frame += 1) {
     for (let slot = 16; slot < 23; slot += 1) memory[0x400 + slot] = 0;
     matchingSlots.clear();
   }
-  if (listCandidates && isolateCandidates) for (let slot = 16; slot < 23; slot += 1) memory[0x400 + slot] = 0;
+  if (isolateCandidates && targetSlot === undefined) for (let slot = 16; slot < 23; slot += 1) memory[0x400 + slot] = 0;
   nes.frame();
 
   if (targetSlot === undefined) {

@@ -393,6 +393,7 @@ export const ROCK_IMPACT_DELAY = 96 / NES_FRAME_RATE;
 export const ROCK_IMPACT_LIFETIME = 25 / NES_FRAME_RATE;
 export const ROCK_LIFETIME = 121 / NES_FRAME_RATE;
 export const ROCK_FLIGHT_PATH_NES = [[0, 0, 0], [8, 19, 4], [16, 34, 19], [24, 41, 41], [32, 61, 43], [40, 78, 55], [48, 90, 73], [56, 96, 96], [64, 116, 98], [72, 134, 106], [80, 149, 122], [88, 160, 142], [96, 165, 166]] as const;
+export const ROCK_SCREEN_MAX_Y_NES = 240;
 
 export function fallingRockPosition(age: number, fromLeft: boolean): readonly [number, number] {
   const frame = Math.min(96, Math.max(0, age * NES_FRAME_RATE));
@@ -403,6 +404,10 @@ export function fallingRockPosition(age: number, fromLeft: boolean): readonly [n
   const next = ROCK_FLIGHT_PATH_NES[nextIndex]!;
   const amount = (frame - previous[0]) / (next[0] - previous[0]);
   return [(previous[1] + (next[1] - previous[1]) * amount) * direction, previous[2] + (next[2] - previous[2]) * amount];
+}
+
+export function fallingRockOnScreen(screenY: number): boolean {
+  return screenY >= 0 && screenY < ROCK_SCREEN_MAX_Y_NES;
 }
 export const HATCHET_LIFETIME = 1042 / NES_FRAME_RATE;
 export const HATCHET_ENTRY_DEPTH_NES = 40;

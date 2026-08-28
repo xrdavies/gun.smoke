@@ -121,9 +121,9 @@ A+B emits a symmetric five-way forward fan. Pistol, Machine Gun and Magnum fire
 two gun barrels for every single-side or A+B trigger; Machine Gun rounds use a
 faster measured diagonal/straight velocity set. Magnum bullets use their own
 projectile state, travel at the measured base Pistol speed for 34 NES frames
-with a larger
-collision body, and can pierce multiple enemies without depending on which
-weapon is selected after the shot was fired. Pistol, Shotgun, and Magnum require
+with a larger collision body, and can pierce multiple enemies with their
+remaining damage budget without depending on which weapon is selected after
+the shot was fired. Pistol, Shotgun, and Magnum require
 fresh button presses; only Machine Gun repeats while fire is held. Their traced
 minimum trigger intervals are 4, 12, 5, and 4 NES frames respectively.
 

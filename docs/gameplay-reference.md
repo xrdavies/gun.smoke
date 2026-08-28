@@ -11,7 +11,7 @@ names are cross-checked against the public NES walkthrough on
 | 3 | Native village | Devil Hawk | gate, poster, shop, measured entrance and opening fan |
 | 4 | Cliff valley | Ninja | gate, poster, shop, measured entrance and shuriken volley |
 | 5 | Forest / bridges | Fatman Joe | gate, poster, shop, measured entrance and shell split |
-| 6 | Wingate town / cemetery | Wingate (two encounters) | gate, poster, shop, measured entrances/X/Y movement and attack gates; later random routes remain approximate |
+| 6 | Wingate town / cemetery | Wingate (two encounters) | gate, poster, shop, decoded random movement, boundary correction and attack gates |
 
 The NES version's stage rule is important: the wanted poster for the round's
 outlaw must be collected before the boss gate can resolve. The web build keeps
@@ -182,9 +182,8 @@ pairs (`112,64`, `192,64`, `120,144`, or `176,128`) with an initial
 smoke/invulnerability window,
 Fatman Joe enters from NES `x=64/104/152/192` at the top edge before using short hops and
 stationary grenade traps across the Round 5 road, while Wingate's two encounters use top-edge NES
-lanes `x=64/104/152/192` before a 17-frame measured horizontal rush toward the
-centerline after a
-short hold, then replay their recorded X/Y routes; the Ninja enters a smoke/invulnerability phase and
+lanes `x=64/104/152/192`, four-active/eight-idle movement, random `24..96`-frame
+direction segments and two-part boundary-correction arcs; the Ninja enters a smoke/invulnerability phase and
 teleports naturally during its route and after each lost health bar. The runtime
 hides the Boss for the measured 90-frame teleport delay, then restarts its entry
 smoke window and attack clock from the newly selected lane. Devil Hawk fireballs use the ROM's
@@ -347,8 +346,8 @@ and credits state instead of treating the win as Game Over.
 The first Wingate defeat clears both projectile pools and leaves a measured
 264-frame pause before the real Wingate enters from its lower NES lane; the second encounter alone grants the
 Round 6 bounty.
-The decoy begins its first attack checks immediately; real Wingate waits until
-frame 277. Both then check every 12 NES frames and fire only when Billy is in
+Both encounters begin attack checks on their movement gait; correction arcs
+pause that cadence. They fire only when Billy is in
 the downward aiming sector and the ROM's mutating low-two-bit gate passes.
 Their bullets use quantized directional aim in the ROM's `12..20` downward
 sector and a 64-frame lifetime rather than fixed-size simultaneous volleys.

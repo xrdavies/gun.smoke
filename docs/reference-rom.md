@@ -537,36 +537,34 @@ samples through frame 12,000, then reflects that route for continued movement;
 later direction selection remains an approximation.
 Round 6's first Wingate encounter is dispatch `0xa3`, variant `0x65`. Both
 encounters select NES `x=64/104/152/192` at `y=0`, hold that lane and reach
-approximately `y=98` after 151 frames. The runtime preserves this first-
-encounter opening without reusing it for the second, real Wingate. After the
-opening, both encounters hold X for about 17 frames before completing a
-measured 17-frame horizontal rush. The runtime now uses decoded unhurt-record X
-keyframes, mirrored from the selected entry lane, through the later combat
-sequence instead of constant-speed horizontal drift. The runtime now replays
-compressed X/Y keyframes from both unhurt traces through combat frame 3,600,
-follows sparse samples through frame 12,000, then reflects those traces for
-continued movement; the random attack scheduler
-uses the decoded ROM gate, while later random movement directions remain an
-explicit approximation beyond the recorded route.
+approximately `y=98` after 151 frames. Movement uses a repeating four-active,
+eight-idle gait. Crossing the NES arena bounds (`x=32..223`, `y=40..97`) starts
+a 16-frame reversed-heading arc followed by a second 16-frame arc aimed toward
+`(128,64)`; the opening correction completes at frame 185. Normal movement
+updates `AE=(AE+AF)&0xff`: its low nibble selects one of 16 encoded headings and
+its low two bits select a `24/48/72/96`-frame segment. The runtime executes this
+state directly, including stationary headings and repeated boundary correction,
+rather than replaying or reflecting a finite coordinate trace.
+The initializer leaves slot 14's coordinate low bytes intact; the controlled
+decoy/real snapshots retain X/Y fractions `252/157` and `66/189`, respectively.
+Runtime seeds those measured fractions because they can change a correction
+aim sector at an integer boundary.
 The first encounter clears both ordinary and low-slot projectile actors before
 entering a 264-frame empty interval. The real Wingate
 then reuses dispatch `0xa3`, variant `0x65` and the same 151-frame vertical
-opening; its first rush holds the entry X for about 17 frames, then follows a
-measured 17-frame path by 26 NES pixels toward the `x=128` centerline before the normal
-movement state. `$BA=1` distinguishes this second encounter rather than selecting a
-fixed X lane. The runtime preserves the delay, a fresh lane selection, and the
-phase-specific vertical combat profile.
-Both encounters begin attack checks at their measured phase time: frame 4 for
-the decoy and frame 277 for real Wingate. A check repeats every 12 frames, then
+opening and the same movement state. `$BA=1` distinguishes this second encounter
+rather than selecting a fixed X lane. The runtime preserves the delay and a
+fresh lane selection.
+Both encounters begin attack checks with the same gait; the first decoy check
+is frame 4, and boundary correction pauses the cadence. Each active check
 updates `AC=(AC+AD)&0xff` and requires its low two bits to be nonzero, plus
 Billy inside the downward heading
 sector `12..20` before allocating a projectile. This explains skipped checks and the
-non-fixed volley lengths in longer traces. Each `0x30` bullet begins at Boss
+non-fixed volley lengths and why the first successful real-Wingate trace shot
+can occur much later than its first check. Each `0x30` bullet begins at Boss
 offset `(-8,+6)` NES pixels, uses the routine's quantized 32-direction aim, and
 releases after about 64 frames. Runtime applies this shared state rule instead
-of the former fixed six-shot/three-shot sequences. The remaining Round 6
-approximation is the later random direction sequence between these measured
-attack checks and the route after the recorded frame window.
+of the former fixed six-shot/three-shot sequences.
 
 Boss defeats keep a brief 30-frame explosion state for visual feedback before
 the existing Round transition/ending flow; the state is non-colliding and does

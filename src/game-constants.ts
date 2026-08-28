@@ -62,6 +62,12 @@ export function mixRomRandomFirstSum(state: RomRandomState): RomRandomState {
   return next;
 }
 
+export function mixRomRandomSecondSum(state: RomRandomState): RomRandomState {
+  const next: RomRandomState = [...state];
+  next[2] = (next[2]! + next[3]!) & 0xff;
+  return next;
+}
+
 export function mixRomRandomDifference(state: RomRandomState): RomRandomState {
   const next: RomRandomState = [...state];
   next[0] = (next[0]! - next[1]! - 1) & 0xff;
@@ -730,7 +736,7 @@ export function createSpearState(x: number, y: number, sideEntry: boolean): Spea
   };
 }
 
-function moveEncodedHeading(state: SpearState, encodedHeading: number): void {
+function moveEncodedHeading(state: { x: number; y: number }, encodedHeading: number): void {
   const [velocityX, velocityY] = SNIPER_BULLET_VELOCITIES_NES[encodedHeading & 31] ?? SNIPER_BULLET_VELOCITIES_NES[0];
   const tier = encodedHeading & 0xc0;
   const speed = tier === 0xc0 ? 0 : (tier >> 6) + 1;
@@ -1300,76 +1306,96 @@ export const WINGATE_ENTRY_X_NES = [64, 104, 152, 192] as const;
 export const WINGATE_ENTRY_X_LANES = WINGATE_ENTRY_X_NES.map((value) => value * NES_WORLD_X_SCALE);
 export const WINGATE_ENTRY_Y_NES = 0;
 export const WINGATE_ENTRY_Y = WINGATE_ENTRY_Y_NES * NES_WORLD_Y_SCALE;
-export const WINGATE_ENTRY_END_Y_NES = 98;
-export const WINGATE_ENTRY_END_Y = WINGATE_ENTRY_END_Y_NES * NES_WORLD_Y_SCALE;
-export const WINGATE_ENTRY_DURATION = 151 / NES_FRAME_RATE;
 export const WINGATE_SECOND_ENTRY_Y_NES = 0;
 export const WINGATE_SECOND_ENTRY_Y = WINGATE_SECOND_ENTRY_Y_NES * NES_WORLD_Y_SCALE;
-export const WINGATE_ENTRY_RUSH_DURATION = 34 / NES_FRAME_RATE;
-export const WINGATE_MOVEMENT_SPEED = (131 / 240) * NES_FRAME_RATE * NES_WORLD_X_SCALE;
 export const WINGATE_SECOND_SPAWN_DELAY = 264 / NES_FRAME_RATE;
-export const WINGATE_FIRST_SHOT_DELAY = 4 / NES_FRAME_RATE;
-export const WINGATE_SECOND_FIRST_SHOT_DELAY = 277 / NES_FRAME_RATE;
-export const WINGATE_ATTACK_INTERVAL = 12 / NES_FRAME_RATE;
 export const WINGATE_BULLET_LIFETIME = 64 / NES_FRAME_RATE;
 export const WINGATE_BULLET_VELOCITIES_NES = [[1.15625, 1.40625], [0.9140625, 1.65625], [0.625, 1.8515625], [0.3125, 1.9453125], [0, 2], [-0.3125, 1.9453125], [-0.625, 1.8515625], [-0.9140625, 1.65625], [-1.15625, 1.40625]] as const;
 export const WINGATE_PROJECTILE_X_OFFSET_NES = -8;
 export const WINGATE_PROJECTILE_Y_OFFSET_NES = 6;
 
-export function wingateOpeningY(age: number): number {
-  return Math.max(0, Math.min(1, age / WINGATE_ENTRY_DURATION)) * WINGATE_ENTRY_END_Y;
-}
-// [combat frame, NES x, NES y] keyframes from the unhurt decoy/real traces.
-const WINGATE_RUSH_PATH_NES = [[0, 0], [17, 0], [18, -1], [19, -3], [20, -4], [21, -6], [22, -8], [23, -9], [24, -11], [25, -13], [26, -13], [27, -15], [28, -17], [29, -18], [30, -19], [31, -21], [32, -22], [33, -23], [34, -26]] as const;
+const WINGATE_MOVEMENT_HEADINGS = [0x44, 0x48, 0x48, 0x48, 0x48, 0x4c, 0x50, 0x50, 0x54, 0x58, 0x58, 0x58, 0x58, 0x5c, 0xc0, 0xc0] as const;
+const WINGATE_CORRECTION_Y = [0, 0, 3, 3, 2, 2, 1, 1, -1, -1, -2, -2, -3, -3, -4, -4] as const;
+const WINGATE_INITIAL_FINE = [[252, 157], [66, 189]] as const;
 
-const WINGATE_TRACE_PATHS_NES = [
-  [[0, 152, 98], [16, 152, 58], [32, 128, 56], [34, 126, 56], [48, 117, 58], [64, 109, 60], [80, 102, 62], [96, 91, 64], [112, 83, 66], [128, 76, 68], [144, 65, 69], [160, 56, 69], [176, 50, 69], [192, 38, 69], [208, 35, 58], [224, 60, 53], [240, 83, 53], [256, 76, 53], [272, 68, 53], [288, 56, 53], [304, 63, 53], [320, 71, 53], [336, 83, 53], [368, 83, 53], [416, 83, 53], [448, 76, 53], [464, 71, 52], [480, 79, 42], [496, 79, 50], [512, 79, 60], [528, 79, 74], [544, 79, 82], [560, 80, 91], [576, 82, 83], [592, 71, 60], [608, 95, 60], [624, 104, 60], [640, 110, 60], [656, 110, 74], [672, 110, 84], [688, 110, 92], [704, 110, 60], [720, 128, 46], [736, 140, 57], [752, 151, 59], [768, 157, 61], [784, 149, 61], [800, 138, 61], [816, 131, 61], [832, 123, 61], [848, 118, 69], [864, 118, 77], [880, 118, 87], [896, 118, 87], [912, 119, 56], [928, 142, 63], [944, 150, 67], [960, 150, 75], [976, 150, 89], [992, 150, 82], [1008, 146, 52], [1024, 124, 57], [1040, 117, 59], [1049, 111, 60], [1113, 164, 86], [1177, 164, 86], [1241, 184, 86], [1305, 217, 86], [1369, 164, 62], [1433, 142, 57], [1497, 135, 57], [1561, 99, 57], [1625, 62, 57], [1689, 69, 57], [1753, 99, 57], [1817, 62, 57], [1881, 69, 57], [1945, 75, 93], [2009, 114, 51], [2073, 94, 51], [2137, 80, 83], [2201, 107, 51], [2265, 97, 51], [2329, 72, 45], [2393, 90, 52], [2457, 96, 54], [2521, 70, 54], [2585, 103, 54], [2649, 127, 48], [2713, 142, 66], [2777, 98, 74], [2841, 104, 74], [2905, 104, 57], [2969, 110, 80], [3033, 76, 80], [3097, 80, 40], [3161, 128, 50], [3225, 161, 50], [3289, 174, 50], [3353, 167, 50], [3417, 134, 50]] as const,
-  [[0, 192, 98], [16, 192, 58], [32, 167, 50], [34, 165, 50], [48, 155, 50], [64, 147, 50], [80, 140, 50], [96, 129, 50], [112, 121, 50], [128, 114, 50], [144, 107, 50], [224, 107, 50], [240, 102, 50], [256, 94, 50], [272, 87, 50], [279, 82, 50], [288, 77, 54], [304, 72, 61], [320, 72, 69], [336, 72, 83], [352, 72, 93], [368, 72, 63], [384, 83, 40], [400, 100, 51], [416, 108, 51], [432, 120, 51], [448, 126, 51], [464, 133, 53], [480, 133, 67], [496, 133, 75], [512, 133, 85], [528, 133, 93], [544, 133, 59], [560, 114, 74], [576, 110, 80], [592, 105, 85], [672, 98, 85], [688, 92, 85], [704, 80, 85], [720, 72, 85], [736, 65, 85], [752, 65, 99], [768, 65, 59], [784, 90, 51], [800, 100, 51], [816, 107, 51], [832, 115, 51], [848, 127, 51], [864, 133, 51], [880, 125, 51], [896, 113, 51], [912, 107, 51], [928, 98, 51], [944, 87, 51], [960, 80, 51], [976, 72, 51], [992, 67, 51], [1024, 67, 51], [1049, 67, 51], [1113, 141, 57], [1177, 134, 57], [1241, 134, 93], [1305, 103, 66], [1369, 94, 79], [1433, 123, 58], [1497, 136, 85], [1561, 104, 67], [1625, 105, 82], [1689, 134, 56], [1753, 171, 60], [1817, 204, 60], [1881, 167, 60], [1945, 164, 60], [2009, 190, 60], [2073, 201, 63], [2137, 182, 36], [2201, 145, 56], [2265, 125, 58], [2329, 139, 58], [2393, 158, 58], [2457, 158, 58], [2521, 165, 58], [2585, 139, 66], [2649, 129, 46], [2713, 94, 81], [2777, 64, 81], [2841, 97, 70], [2905, 101, 48], [2969, 152, 63], [3033, 125, 71], [3097, 131, 50], [3161, 153, 93], [3225, 120, 93], [3289, 120, 60], [3353, 126, 60], [3417, 148, 66]] as const,
-] as const;
-const WINGATE_TRACE_PATHS_EXTENDED_NES = [
-  [...WINGATE_TRACE_PATHS_NES[0], [3488, 174, 50], [3520, 161, 50], [3552, 141, 50], [3584, 141, 41], [3600, 127, 50], [4096, 134, 66], [4608, 163, 49], [5120, 132, 49], [5632, 132, 56], [6144, 83, 86], [6656, 100, 85], [7168, 119, 75], [7680, 40, 83], [8192, 198, 73], [8704, 152, 50], [9216, 107, 53], [9728, 122, 43], [10240, 186, 70], [10752, 133, 74], [11264, 163, 71], [11776, 105, 95], [12000, 175, 73]],
-  [...WINGATE_TRACE_PATHS_NES[1], [3488, 133, 60], [3520, 133, 60], [3552, 153, 60], [3584, 150, 71], [3600, 157, 71], [4096, 137, 67], [4608, 94, 59], [5120, 92, 43], [5632, 61, 62], [6144, 141, 54], [6656, 189, 91], [7168, 112, 53], [7680, 185, 76], [8192, 177, 49], [8704, 134, 50], [9216, 141, 76], [9728, 126, 50], [10240, 126, 85], [10752, 99, 62], [11264, 84, 72], [11776, 131, 74], [12000, 128, 97]],
-] as const;
+export type WingateMovementState = {
+  frame: number;
+  mode: "entry" | "move" | "correction";
+  x: number;
+  y: number;
+  heading: number;
+  segmentFrames: number;
+  gait: number;
+  correctionFrames: number;
+  correctionPass: number;
+};
 
-export function wingateRushOffset(frame: number, entryX = 152): number {
-  const clamped = Math.max(0, Math.min(WINGATE_ENTRY_RUSH_DURATION * NES_FRAME_RATE, frame));
-  const nextIndex = WINGATE_RUSH_PATH_NES.findIndex(([at]) => at >= clamped);
-  const direction = entryX < 128 ? -1 : 1;
-  if (nextIndex < 0) return WINGATE_RUSH_PATH_NES.at(-1)![1] * direction;
-  if (nextIndex === 0) return 0;
-  const previous = WINGATE_RUSH_PATH_NES[nextIndex - 1]!;
-  const next = WINGATE_RUSH_PATH_NES[nextIndex]!;
-  return (previous[1] + (next[1] - previous[1]) * ((clamped - previous[0]) / (next[0] - previous[0]))) * direction;
+export function createWingateMovementState(x: number, phase = 0): WingateMovementState {
+  const [fineX, fineY] = WINGATE_INITIAL_FINE[phase > 0 ? 1 : 0];
+  return { frame: 0, mode: "entry", x: x + fineX / 256, y: fineY / 256, heading: 0x50, segmentFrames: 0, gait: 1, correctionFrames: 0, correctionPass: 0 };
 }
 
-export function wingateCombatY(age: number, phase = 0): number {
-  const frame = Math.max(0, age * NES_FRAME_RATE - WINGATE_ENTRY_DURATION * NES_FRAME_RATE);
-  const path = WINGATE_TRACE_PATHS_EXTENDED_NES[phase > 0 ? 1 : 0];
-  const first = path[0]!;
-  const last = path.at(-1)!;
-  const sampledFrame = pingPongFrame(frame, last[0]);
-  if (sampledFrame <= first[0]) return first[2] * NES_WORLD_Y_SCALE;
-  const nextIndex = path.findIndex(([at]) => at >= sampledFrame);
-  const previous = path[nextIndex - 1]!;
-  const next = path[nextIndex]!;
-  const amount = (sampledFrame - previous[0]) / (next[0] - previous[0]);
-  return (previous[2] + (next[2] - previous[2]) * amount) * NES_WORLD_Y_SCALE;
+function wingateInsideArena(state: WingateMovementState): boolean {
+  return state.y >= 40 && state.y < 98 && state.x >= 32 && state.x < 224;
 }
 
-export function wingateCombatX(age: number, phase = 0, entryX = 152): number {
-  const frame = Math.max(0, age * NES_FRAME_RATE - WINGATE_ENTRY_DURATION * NES_FRAME_RATE);
-  const path = WINGATE_TRACE_PATHS_EXTENDED_NES[phase > 0 ? 1 : 0];
-  const base = path[0]![1];
-  const mirror = entryX < 128 ? -1 : 1;
-  const position = (at: number): number => entryX + (at - base) * mirror;
-  const last = path.at(-1)!;
-  const sampledFrame = pingPongFrame(frame, last[0]);
-  if (sampledFrame <= path[0]![0]) return position(path[0]![1]);
-  const nextIndex = path.findIndex(([at]) => at >= sampledFrame);
-  const previous = path[nextIndex - 1]!;
-  const next = path[nextIndex]!;
-  const amount = (sampledFrame - previous[0]) / (next[0] - previous[0]);
-  return position(previous[1] + (next[1] - previous[1]) * amount);
+function wingateCorrectionHeading(state: WingateMovementState): number {
+  return 0x40 | nesAimHeading(Math.floor(state.x) * NES_WORLD_X_SCALE, Math.floor(state.y) * NES_WORLD_Y_SCALE, 128 * NES_WORLD_X_SCALE, 64 * NES_WORLD_Y_SCALE);
+}
+
+function advanceWingateGait(state: WingateMovementState): void {
+  state.gait = (state.gait - 1) & 0xff;
+  if ((state.gait & 0x7f) === 0) state.gait = (state.gait & 0x80) !== 0 ? 4 : 0x88;
+  if ((state.gait & 0x80) === 0) moveEncodedHeading(state, state.heading);
+}
+
+export function advanceWingateMovement(state: WingateMovementState, targetFrame: number, randomByte: () => number): { readonly fireChecks: number } {
+  let fireChecks = 0;
+  while (state.frame < targetFrame) {
+    state.frame += 1;
+    if (state.mode === "correction") {
+      state.correctionFrames -= 1;
+      if (state.correctionFrames >= 0) {
+        state.y += WINGATE_CORRECTION_Y[state.correctionFrames] ?? 0;
+        moveEncodedHeading(state, state.heading);
+      } else if (state.correctionPass === 0) {
+        state.heading = wingateCorrectionHeading(state);
+        state.correctionFrames = 16;
+        state.correctionPass = 1;
+      } else if (wingateInsideArena(state)) {
+        state.mode = "move";
+        state.correctionPass = 0;
+      } else {
+        state.heading = wingateCorrectionHeading(state);
+        state.correctionFrames = 16;
+      }
+      continue;
+    }
+    if (state.mode === "move" && state.segmentFrames === 0) {
+      const random = randomByte();
+      state.heading = WINGATE_MOVEMENT_HEADINGS[random & 0x0f] ?? 0xc0;
+      state.segmentFrames = ((random & 0x03) + 1) * 24;
+    }
+    state.segmentFrames = (state.segmentFrames - 1) & 0xff;
+    advanceWingateGait(state);
+    if (state.gait === 0x84) fireChecks += 1;
+    if (state.mode === "entry") {
+      if (state.y >= 64) {
+        state.mode = "move";
+        state.segmentFrames = (state.segmentFrames - 1) & 0xff;
+        advanceWingateGait(state);
+        if (state.gait === 0x84) fireChecks += 1;
+      }
+      continue;
+    }
+    if (!wingateInsideArena(state)) {
+      state.heading = (state.heading + 0x10) & 0xdf;
+      state.mode = "correction";
+      state.correctionFrames = 16;
+      state.correctionPass = 0;
+    }
+  }
+  return { fireChecks };
 }
 
 export function wingateAimHeading(originX: number, originY: number, targetX: number, targetY: number): number {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { advanceRomRandom, mixRomRandomDifference, mixRomRandomFirstSum, mixRomRandomSecondSum, mixRomRandomSecondThirdSum, mixRomRandomSum, mixRomRandomThirdFirstSum, ROM_RANDOM_SEED } from "../src/game-constants";
 import { AMMO_GAIN, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, bomberCanThrow, bomberMovementDecision, bomberMovementDuration, BOMBER_MOVEMENT_DURATIONS, bomberMovementUsesRandom, bomberMovementVelocity, BOMBER_THROW_CHANCE, BOMBER_THROW_DURATION, bossReward, BOSS_DEFEAT_ANIMATION_DURATION, BOSS_REWARDS, BOOTS_SPEED_MULTIPLIER, clamp, distance, DYNAMITE_AIRBORNE_DURATION, DYNAMITE_LANDED_DURATION, DYNAMITE_LIFETIME, DYNAMITE_WORLD_SPEED, EMPTY_BARREL_EXPLOSION_LIFETIME, fallingRockOnScreen, fallingRockPosition, FIREBREATHER_FIRST_DECISION_DELAY, formationEntryY, HORSE_HIT_INVULNERABILITY, MACHINE_GUN_BULLET_LIFETIME, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_BULLET_SPEED, NES_DIAGONAL_BULLET_X, NES_DIAGONAL_BULLET_Y, NES_FRAME_RATE, NES_PLAYER_SPEED, NES_SCROLL_SPEED, NINJA_FIRST_SHOT_DELAY, NINJA_PROJECTILE_SPEED, obstacleBlocks, PISTOL_BULLET_LIFETIME, PLAYER_DEATH_ANIMATION_DURATION, PLAYER_DEATH_RECOVERY_DURATION, PLAYER_RESPAWN_HIDDEN_DURATION, PLAYER_RESPAWN_READY_DURATION, playerDeathPhase, RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_FLIGHT_PATH_NES, ROCK_FLIGHT_PATH_PHASE0_NES, ROCK_IMPACT_DELAY, ROCK_IMPACT_LIFETIME, ROCK_LIFETIME, ROM_OBJECT_DROP_SPEED, ROM_SCREEN_RELEASE_Y_NES, romActorScreenYReleased, ROAD_WIDTHS, ROUND_BOSS_GATE_SCROLL_NES, ROUND_BOSS_TRIGGERS, ROUND_ENEMY_TYPES, ROUND_LENGTHS, ROUND_LOOP_SCROLL_NES, ROUND_OBSTACLES, ROUND_SEGMENTS, scoreBossDefeat, SHOTGUN_BULLET_LIFETIME, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_VOLLEY_INTERVAL, SHOP_COSTS, SHOP_TYPES, shouldClearProjectilesAfterBossDefeat, SMART_BOMB_CAPACITY, SNIPER_CODE2_SHOT_FRAMES, SNIPER_COVER_DURATION, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, sniperProjectileVelocity, segmentDelay, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, shouldLoopStage } from "../src/game-constants";
-import { GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, GUNMAN_BOTTOM_NEAR_DISTANCE_NES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, gunmanCanFire, GUNMAN_ENTRY_PATH_NES, GUNMAN_FIRST_OPPORTUNITY_FRAMES, GUNMAN_FLANK_INITIAL_STATE_FRAMES, gunmanFlankFirstOpportunityFrame, GUNMAN_FLANK_LIFETIMES, GUNMAN_FLANK_SHOT_FRAMES, GUNMAN_LIFETIME, GUNMAN_TOP_LIFETIMES_FRAMES, gunmanFirstOpportunityFrame, gunmanFlankPosition, gunmanOpeningY, gunmanTopBranch, gunmanTopHeading, gunmanTopPosition, gunmanProjectileVelocity, GUNMAN_SHOT_OPPORTUNITY_INTERVAL } from "../src/game-constants";
+import { GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, GUNMAN_BOTTOM_NEAR_DISTANCE_NES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, gunmanCanFire, GUNMAN_ENTRY_PATH_NES, GUNMAN_FIRST_OPPORTUNITY_FRAMES, GUNMAN_FLANK_INITIAL_STATE_FRAMES, gunmanFlankFirstOpportunityFrame, gunmanFlankLifetime, GUNMAN_FLANK_LIFETIMES, GUNMAN_FLANK_SHOT_FRAMES, GUNMAN_LIFETIME, GUNMAN_TOP_LIFETIMES_FRAMES, gunmanFirstOpportunityFrame, gunmanFlankPosition, gunmanOpeningY, gunmanTopBranch, gunmanTopHeading, gunmanTopPosition, gunmanProjectileVelocity, GUNMAN_SHOT_OPPORTUNITY_INTERVAL } from "../src/game-constants";
 import { RIFLEMAN_LIFETIME, RIFLEMAN_PATH_NES, riflemanCanAttack, riflemanPosition, riflemanShotHeading, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_PATH_NES, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition, mediumProjectileHeadingVelocity, mediumProjectileVelocity } from "../src/game-constants";
 import { bossSpriteVisible, ninjaBossEntryLaneIndex, NINJA_BOSS_TELEPORT_DELAY } from "../src/game-constants";
 import { hasWeaponStock } from "../src/game-constants";
@@ -591,6 +591,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(GUNMAN_FLANK_LIFETIMES).toEqual({ 7: 642 / NES_FRAME_RATE, 8: 508 / NES_FRAME_RATE, 9: 826 / NES_FRAME_RATE });
     expect(GUNMAN_FLANK_INITIAL_STATE_FRAMES).toBe(250);
     expect([0, Math.PI / 2, Math.PI, Math.PI * 1.5].map(gunmanFlankFirstOpportunityFrame)).toEqual([64, 48, 32, 16]);
+    expect([gunmanFlankLifetime(8), gunmanFlankLifetime(9), gunmanFlankLifetime(8, 32), gunmanFlankLifetime(9, 32)]).toEqual([508, 826, 569, 963].map((frames) => frames / NES_FRAME_RATE));
     expect(gunmanFlankPosition(7, 64 / NES_FRAME_RATE)).toEqual([47, 32]);
     expect(gunmanFlankPosition(7, 338 / NES_FRAME_RATE)).toEqual([192, 213]);
     expect(gunmanFlankPosition(7, 641 / NES_FRAME_RATE)).toEqual([158, 218]);
@@ -599,6 +600,11 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankPosition(9, 50 / NES_FRAME_RATE)).toEqual([-48, 30]);
     expect(gunmanFlankPosition(9, 358 / NES_FRAME_RATE)).toEqual([-188, -89]);
     expect(gunmanFlankPosition(9, 825 / NES_FRAME_RATE)).toEqual([7, 69]);
+    expect(gunmanFlankPosition(8, 96 / NES_FRAME_RATE, 32)).toEqual([80, 32]);
+    expect(gunmanFlankPosition(8, 250 / NES_FRAME_RATE, 32)).toEqual([80, 83]);
+    expect(gunmanFlankPosition(9, 96 / NES_FRAME_RATE, 32)).toEqual([-80, 32]);
+    expect(gunmanFlankPosition(9, 250 / NES_FRAME_RATE, 32)).toEqual([-93, 83]);
+    expect(gunmanFlankPosition(9, 962 / NES_FRAME_RATE, 32)).toEqual([-68, 217]);
   });
 
   it("matches the traced bottom-entry Gunman routes", () => {

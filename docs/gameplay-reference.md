@@ -249,6 +249,9 @@ The left-edge code-7 side route is likewise replayed from a complete 642-frame
 integer trace and mirrored for its right-edge counterpart. Code 8 and code 9
 retain their separate measured keyframe routes, while their attack windows use
 the retained phase-driven 64-frame checks rather than fixed shot timestamps.
+Complete Round 2 `y=32` traces are selected for matching side entries (569
+frames for code 8 and 963 for code 9); other entry heights use the generic
+routes until their slot-state traces are captured.
 Riflemen advance,
 enter their attack state at 122 NES frames once they are at least 48 NES pixels
 downscreen and within 96 NES Y pixels of Billy, then fire five shots at

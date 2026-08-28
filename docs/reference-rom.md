@@ -518,8 +518,10 @@ replays the measured X/Y routes for the initial and post-teleport cycles. Runtim
 contact checks exclude hidden actors, including Snipers while they are in cover.
 The initial route is sampled against the Round 4 record at absolute frames
 43/95/170 (`x=176/163/102`, in NES pixels). The first re-entry route is kept
-as a separate age-zero path; its corrected vertical samples are `y=60` at
-relative frame 80 and `y=90` at relative frame 216.
+as a separate age-zero step path. Its integer-frame samples match the trace
+through relative frame 423, including corrected vertical samples `y=60` at
+relative frame 80 and `y=90` at relative frame 216; long plateaus remain flat
+until the recorded jump frame.
 The Ninja remains in its initial smoke state for about 44 frames. Its isolated
 attack routine creates a low-slot smoke/prepare entity at frame 140, then emits
 four `0x30` shuriken bullets at frame 179; subsequent volleys commonly recur

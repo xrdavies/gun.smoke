@@ -433,6 +433,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ninjaTraceLifetime(152, 0, 4, 0, 47)).toBeCloseTo(244 / NES_FRAME_RATE, 9);
     expect(ninjaTraceLifetime(184, 0, 4, 1, 63)).toBeCloseTo(244 / NES_FRAME_RATE, 9);
     expect(ninjaTraceLifetime(184, 0, 4, 1, 383)).toBeCloseTo(205 / NES_FRAME_RATE, 9);
+    expect(ninjaTraceLifetime(184, 0, 4, 0, 751)).toBeCloseTo(202 / NES_FRAME_RATE, 9);
     expect(ninjaTraceLifetime(184, 0, 4, 0)).toBeUndefined();
     expect(ninjaTracePosition(103 / NES_FRAME_RATE, 152, 0, 4, 0, 47)).toEqual([151 * NES_WORLD_X_SCALE, 123 * NES_WORLD_Y_SCALE]);
     expect(ninjaTracePosition(139 / NES_FRAME_RATE, 152, 0, 4, 0, 47)).toEqual([123 * NES_WORLD_X_SCALE, 90 * NES_WORLD_Y_SCALE]);
@@ -441,8 +442,10 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ninjaTracePosition(243 / NES_FRAME_RATE, 184, 0, 4, 1, 63)).toEqual([140 * NES_WORLD_X_SCALE, 180 * NES_WORLD_Y_SCALE]);
     expect(ninjaTracePosition(140 / NES_FRAME_RATE, 184, 0, 4, 1, 383)).toEqual([149 * NES_WORLD_X_SCALE, 188 * NES_WORLD_Y_SCALE]);
     expect(ninjaTracePosition(204 / NES_FRAME_RATE, 184, 0, 4, 1, 383)).toEqual([144 * NES_WORLD_X_SCALE, 200 * NES_WORLD_Y_SCALE]);
+    expect(ninjaTracePosition(140 / NES_FRAME_RATE, 184, 0, 4, 0, 751)).toEqual([176 * NES_WORLD_X_SCALE, 201 * NES_WORLD_Y_SCALE]);
+    expect(ninjaTracePosition(201 / NES_FRAME_RATE, 184, 0, 4, 0, 751)).toEqual([175 * NES_WORLD_X_SCALE, 208 * NES_WORLD_Y_SCALE]);
     expect(ninjaTracePosition(103 / NES_FRAME_RATE, 184, 0, 4, 0)).toBeUndefined();
-    expect([ninjaTraceThrows(4, 47), ninjaTraceThrows(4, 63), ninjaTraceThrows(4, 383), ninjaTraceThrows(4, 751), ninjaTraceThrows(3, 47)]).toEqual([true, true, false, undefined, undefined]);
+    expect([ninjaTraceThrows(4, 47), ninjaTraceThrows(4, 63), ninjaTraceThrows(4, 383), ninjaTraceThrows(4, 751), ninjaTraceThrows(4, 815), ninjaTraceThrows(3, 47)]).toEqual([true, true, false, false, undefined, undefined]);
     expect(NINJA_LIFETIME).toBeCloseTo(303 / NES_FRAME_RATE, 9);
   });
 

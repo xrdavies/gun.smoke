@@ -1471,7 +1471,7 @@ class GunSmokeGame {
           unit.x += unit.vx * delta;
           unit.y += unit.vy * delta;
           if (unit.age >= unit.nextFireAt) {
-            const decision = bomberMovementDecision(unit.y - this.scroll, this.nextRandom());
+            const decision = bomberMovementDecision(unit.y - this.scroll, this.nextBomberDecisionByte());
             if (decision.throwDynamite) {
               throwDynamite();
             } else {
@@ -2312,6 +2312,10 @@ class GunSmokeGame {
     const value = this.randomState[this.randomReadIndex] ?? this.randomState[0];
     this.randomReadIndex = (this.randomReadIndex + 1) % this.randomState.length;
     return value / 256;
+  }
+
+  private nextBomberDecisionByte(): number {
+    return (this.randomState[0]! + this.randomState[1]!) & 0xff;
   }
 
   private resetRandom(): void {

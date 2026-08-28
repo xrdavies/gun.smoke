@@ -224,9 +224,9 @@ starts its first 90-frame throw, then chooses among eight movement headings.
 Their durations are `64/38/32/14/16/14/32/38` frames and use the ROM's
 discrete velocity table. At the end of a movement segment, a half-probability
 decision either starts another segment or creates its `0x72`/dispatch `0x2F`
-dynamite and holds the actor in a 90-frame throw state. The sign bit and the
-three direction bits come from the same updated random byte, so runtime no
-longer samples throw and direction independently. This makes throw times
+dynamite and holds the actor in a 90-frame throw state. The ROM sums its `$AD`
+and `$AC` random bytes; the sum's sign bit selects throwing and bits `0x1c`
+select the next direction, so runtime keeps the two decisions correlated. This makes throw times
 deliberately variable; one clean natural trace throws at ages
 `159/289/397/527/633`. The projectile remains airborne for 212 frames, changes
 to landed dispatch `0x3E` for 53 frames, then clears; the runtime uses these

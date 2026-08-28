@@ -327,8 +327,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(bomberMovementVelocity(2)).toEqual([0.828125 * NES_FRAME_RATE * NES_WORLD_X_SCALE, 0]);
     expect(bomberMovementVelocity(4)).toEqual([0, NES_FRAME_RATE * (540 / 240)]);
     expect([bomberCanThrow(126 * (540 / 240), 188 * (540 / 240), 0.49), bomberCanThrow(126 * (540 / 240), 190 * (540 / 240), 0)]).toEqual([true, false]);
-    expect([bomberMovementDecision(47 * NES_WORLD_Y_SCALE, 0.99), bomberMovementDecision(100 * NES_WORLD_Y_SCALE, 0.0625), bomberMovementDecision(100 * NES_WORLD_Y_SCALE, 0.5), bomberMovementDecision(192 * NES_WORLD_Y_SCALE, 0)]).toEqual([
-      { throwDynamite: false, direction: 0 }, { throwDynamite: false, direction: 4 }, { throwDynamite: true, direction: 0 }, { throwDynamite: false, direction: 4 },
+    expect([bomberMovementDecision(47 * NES_WORLD_Y_SCALE, 255), bomberMovementDecision(100 * NES_WORLD_Y_SCALE, 31), bomberMovementDecision(100 * NES_WORLD_Y_SCALE, 128), bomberMovementDecision(192 * NES_WORLD_Y_SCALE, 0)]).toEqual([
+      { throwDynamite: false, direction: 0 }, { throwDynamite: false, direction: 7 }, { throwDynamite: true, direction: 0 }, { throwDynamite: false, direction: 4 },
     ]);
     expect(DYNAMITE_AIRBORNE_DURATION).toBeCloseTo(212 / 60.098, 9);
     expect(DYNAMITE_LANDED_DURATION).toBeCloseTo(53 / 60.098, 9);

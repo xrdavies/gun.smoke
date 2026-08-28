@@ -25,7 +25,7 @@ import { advanceInvulnerability, BLUE_YASHICHI_DURATION, BOSS_BAR_RECOVERY_DURAT
 import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, PLAYER_ENTRY_X, PLAYER_ENTRY_Y, pistolBulletSpeedFactor, pistolVelocities, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
 import { addScore } from "./game-constants";
-import { ninjaCanThrow } from "./game-constants";
+import { ninjaCanThrow, ninjaTraceLifetime, ninjaTracePosition } from "./game-constants";
 import { FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeAimAllowsLaunch, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, FATMAN_JOE_MOVEMENT_SPEED, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, fatmanJoeCombatX, fatmanJoeCombatY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "./game-constants";
 import { advanceDevilHawkMovement, advanceWingateMovement, createDevilHawkMovementState, createWingateMovementState, DEVIL_HAWK_RANDOM_HANDOFF_ACTION_COUNTER, DEVIL_HAWK_RANDOM_HANDOFF_FINE_X, DEVIL_HAWK_RANDOM_HANDOFF_FINE_Y, DEVIL_HAWK_RANDOM_HANDOFF_GAIT, DEVIL_HAWK_RANDOM_HANDOFF_HEADING, DEVIL_HAWK_RANDOM_HANDOFF_SEGMENT_FRAMES, WINGATE_BULLET_LIFETIME, wingateCanFire, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, type DevilHawkMovementState, type WingateMovementState } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_LIFETIME, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
@@ -903,7 +903,7 @@ class GunSmokeGame {
     if (event.behavior === 1) enemy.maxAge = SHOTGUNNER_LIFETIME;
     if (sideShotgunner) enemy.maxAge = SHOTGUNNER_SIDE_LIFETIME;
     if (event.behavior === 2) enemy.maxAge = GUNMAN_LIFETIME;
-    if (event.behavior === 6) enemy.maxAge = NINJA_LIFETIME;
+    if (event.behavior === 6) enemy.maxAge = ninjaTraceLifetime(event.x, event.y, this.stage, event.phase) ?? NINJA_LIFETIME;
     if (event.behavior === 2 && event.entityCode === 5) enemy.maxAge = GUNMAN_BOTTOM_LIFETIMES.far;
     if (flankCode !== undefined) enemy.maxAge = gunmanFlankLifetime(flankCode, event.y, this.stage, event.phase, event.x > 128);
     if (event.behavior === 3) enemy.maxAge = BACKSTABBER_RAID_LIFETIME;
@@ -1377,7 +1377,11 @@ class GunSmokeGame {
         if (tracedNinja) {
           const originX = unit.romOriginX ?? unit.x;
           const originY = unit.romOriginY ?? unit.y - this.scroll;
-          if (unit.age < NINJA_FIRST_SHOT_DELAY) {
+          const tracedPosition = ninjaTracePosition(unit.age, originX / NES_WORLD_X_SCALE, originY / NES_WORLD_Y_SCALE, this.stage, unit.romPhase ?? 0);
+          if (tracedPosition) {
+            unit.x = tracedPosition[0];
+            unit.y = this.scroll + tracedPosition[1];
+          } else if (unit.age < NINJA_FIRST_SHOT_DELAY) {
             unit.x = originX;
             unit.y = this.scroll + originY + ninjaOpeningY(unit.age);
           } else {

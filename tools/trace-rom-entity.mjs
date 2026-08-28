@@ -134,6 +134,7 @@ for (let frame = 0; frame < frames; frame += 1) {
     ...entity(targetSlot),
     player: { x: memory[0x74], y: memory[0x71] },
     random: { ac: memory[0xac], ad: memory[0xad], ae: memory[0xae], af: memory[0xaf] },
+    zeroPage: { b0: memory[0xb0], b4: memory[0xb4], b5: memory[0xb5], ba: memory[0xba], bc: memory[0xbc] },
     roundState: {
       mapPointer: (memory[0x5a] ?? 0) | ((memory[0x5b] ?? 0) << 8),
       mapPage: memory[0x5c],

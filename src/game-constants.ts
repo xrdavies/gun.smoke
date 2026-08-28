@@ -867,6 +867,8 @@ const NINJA_STAGE4_X184_AT751_TRACE_SAMPLES_NES = decodeGunmanAbsoluteCoordinate
 
 const NINJA_STAGE4_X184_AT815_TRACE_SAMPLES_NES = decodeGunmanAbsoluteCoordinateSamples("uAK4BLgGuAi4CrgMuA64ELgSuBS4FrgYuBq4HLgeuCC4ILgguCC4ILgguCC4ILgguCC4ILgguCC4ILgguCC4ILgguCC4ILgguCK4JLgmuCi4KrgsuC64MLgyuDS4Nrg4uDq4PLg+uEC4QrhEuEa4SLhKuEy4TrhQuFK4VLhWuFi4WrhcuF64YLhiuGS4ZrhouGq4bLhuuHC4crh0uHa4eLh6uHy4friAuIK4hLiGuIi4iriMuI64kLiSuJS4lriYuJi4mLiYuJi4mLiYuJi4mLiYuJi4mLiYuJi4mLiYuJi4mLiYuJi4mLeWtZGzjLKIsIWugqx/q32pe6d5pXikdqJ2oHaedp12nXaddp12nXaddp12nXaddp12nXaddp12nXaddp12nXaddp12nXaddpt0m3aceJx6nHydfp2AnYKdhJ6FnoeeiZ+Ln42fj6CRoJOglaGXoZmhm6Kdop+ioaKjo6Wjp6OopKqkrKSupbClsqW0pramuKa6p7ynvqfAp8KoxKjGqMipyqnLqc2pyanGqcOpwam/qb6pvam9qb6pv6m/qcCpwKnAqcGpwanBqcKpwqnCqcOpw6nDqcSpxKnEqcWpxanFqcapxqnGqcepx6nHqcipyKnIqcmpyanJqcqpyqnKqcupy6nLqcypzKnMqc2pzanNqc6pzqnOqc+pz6nP");
 
+const NINJA_STAGE4_X184_AT1071_TRACE_SAMPLES_NES = decodeGunmanAbsoluteCoordinateSamples("uAK4BLgGuAi4CrgMuA64ELgSuBS4FrgYuBq4HLgeuCC4ILgguCC4ILgguCC4ILgguCC4ILgguCC4ILgguCC4ILgguCC4ILgguCK4JLgmuCi4KrgsuC64MLgyuDS4Nrg4uDq4PLg+uEC4QrhEuEa4SLhKuEy4TrhQuFK4VLhWuFi4WrhcuF64YLhiuGS4ZrhouGq4bLhuuHC4crh0uHa4eLh6uHy4friAuIK4hLiGuIi4iriMuI64kLiSuJS4lriYuJi4mLiYuJi4mLiYuJi4mLiYuJi4mLiYuJi4mLiYuJi4mLiYuJi4mLaWtZGzjbGJr4aug6yAqn6oe6d5pXijd6F3oHeed5x3nHecd5x3nHecd5x3nHecd5x3nHecd5x3nHecd5x3nHecd5x3nHecd5t1mXKXbZVplGWSYpBfjlyNWotYiVWHVIZThFOCU4FTf1N/U39Tf1N/U39Tf1N/U39Tf1N/U39Tf1N/U39Tf1N/U39Tf1N/U39TfVF9U35Vfld+WH9af1x/XoBggGKAZIBmgWiBaoFsgm6CcIJyg3SDdoN4hHqEfIR9hX+FgYWDhYWGh4aJhouHjYePh5GIk4iViJeJmYmbiZ2Kn4qgiqKKpIumi6iLqoysjK6MsI2yjbSNto64jrqOvI++j8CPwo/DkMWQx5DJkcuRzZHPktGS05LVk9eT2ZPblN2U35ThlOOV5ZXmleiW6pbslu6X8Jfyl/SY9pj4mPqZ/Jn+");
+
 function ninjaTraceSamples(originX: number, originY: number, stage: number, phase: number, eventAt?: number): readonly (readonly [number, number])[] | undefined {
   if (stage !== 4 || Math.round(originY) !== 0) return undefined;
   if (phase === 0 && Math.round(originX) === 152 && eventAt === 47) return NINJA_STAGE4_TRACE_SAMPLES_NES;
@@ -874,6 +876,7 @@ function ninjaTraceSamples(originX: number, originY: number, stage: number, phas
   if (phase === 1 && Math.round(originX) === 184 && eventAt === 383) return NINJA_STAGE4_X184_AT383_TRACE_SAMPLES_NES;
   if (phase === 0 && Math.round(originX) === 184 && eventAt === 751) return NINJA_STAGE4_X184_AT751_TRACE_SAMPLES_NES;
   if (phase === 0 && Math.round(originX) === 184 && eventAt === 815) return NINJA_STAGE4_X184_AT815_TRACE_SAMPLES_NES;
+  if (phase === 0 && Math.round(originX) === 184 && eventAt === 1071) return NINJA_STAGE4_X184_AT1071_TRACE_SAMPLES_NES;
   return undefined;
 }
 
@@ -890,7 +893,7 @@ export function ninjaTraceThrowFrame(stage: number, eventAt?: number): number | 
   if (stage !== 4) return undefined;
   if (eventAt === 47 || eventAt === 63) return 103;
   if (eventAt === 383 || eventAt === 751) return false;
-  if (eventAt === 815) return 116;
+  if (eventAt === 815 || eventAt === 1071) return 116;
   return undefined;
 }
 const GUNMAN_FLANK_Y64_CODE9_OFFSETS_NES = GUNMAN_FLANK_Y64_CODE9_TRACE_SAMPLES_NES.map(([x, y]) => [x - 248, y - 65] as const);

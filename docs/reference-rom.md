@@ -311,7 +311,6 @@ the runtime checks every 64 frames, uses the fixed heading `16` during the
 initial side state, and then switches to the stored movement heading. Because
 the scheduler computes `$0540` from `$AC + $AD - $AE` for every successfully
 allocated entity code below `0x20`, the runtime advances the same global RNG
-allocated entity code below `0x20`, the runtime advances the same global RNG
 and derives the initial opportunity directly from that byte. Top-edge flank
 entries wait for the actor to reach the same `Y=16` threshold before counting;
 side entries begin counting immediately. `$04E0` remains a reused slot field.

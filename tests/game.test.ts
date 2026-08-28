@@ -566,6 +566,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanTopPosition(139 / NES_FRAME_RATE, 40)).toEqual([44 * NES_WORLD_X_SCALE, 132 * NES_WORLD_Y_SCALE]);
     expect(gunmanTopPosition(640 / NES_FRAME_RATE, 220)).toEqual([146 * NES_WORLD_X_SCALE, 219 * NES_WORLD_Y_SCALE]);
     expect(gunmanTopPosition(664 / NES_FRAME_RATE, 220)).toEqual([165 * NES_WORLD_X_SCALE, 218 * NES_WORLD_Y_SCALE]);
+    expect(gunmanTopPosition(105 / NES_FRAME_RATE, 136, 152)).toEqual([132.5 * NES_WORLD_X_SCALE, 129.625 * NES_WORLD_Y_SCALE]);
     expect(gunmanTopPosition(828 / NES_FRAME_RATE, 40)).toEqual([12 * NES_WORLD_X_SCALE, 252 * NES_WORLD_Y_SCALE]);
     expect(gunmanTopPosition(1195 / NES_FRAME_RATE, 220)).toEqual([229 * NES_WORLD_X_SCALE, 183 * NES_WORLD_Y_SCALE]);
     expect(gunmanProjectileVelocity(90 * NES_WORLD_X_SCALE, 75 * NES_WORLD_Y_SCALE, 136 * NES_WORLD_X_SCALE, 188 * NES_WORLD_Y_SCALE)).toEqual([0.625 * NES_FRAME_RATE * NES_WORLD_X_SCALE, 1.8515625 * NES_FRAME_RATE * NES_WORLD_Y_SCALE]);

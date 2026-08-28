@@ -855,7 +855,7 @@ export function gunmanTopPosition(age: number, targetX: number, originX = 88, or
   const branch = gunmanTopBranch(targetX, originX);
   const frame = Math.max(0, Math.round(age * NES_FRAME_RATE));
   const trace = GUNMAN_TOP_TRACE_SAMPLES_NES[branch];
-  if (frame < trace.length) {
+  if (originX === 88 && originY === 0 && frame < trace.length) {
     const [sampleX, sampleY] = trace[frame]!;
     return [(originX + sampleX - 88) * NES_WORLD_X_SCALE, (originY + sampleY) * NES_WORLD_Y_SCALE];
   }

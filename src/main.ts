@@ -27,9 +27,9 @@ import { storedPowerupPickup } from "./game-constants";
 import { addScore } from "./game-constants";
 import { ninjaCanThrow } from "./game-constants";
 import { FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeAimAllowsLaunch, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, FATMAN_JOE_MOVEMENT_SPEED, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, fatmanJoeCombatX, fatmanJoeCombatY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "./game-constants";
-import { advanceDevilHawkMovement, advanceWingateMovement, createDevilHawkMovementState, createWingateMovementState, WINGATE_BULLET_LIFETIME, wingateCanFire, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, type DevilHawkMovementState, type WingateMovementState } from "./game-constants";
+import { advanceDevilHawkMovement, advanceWingateMovement, createDevilHawkMovementState, createWingateMovementState, DEVIL_HAWK_RANDOM_HANDOFF_ACTION_COUNTER, DEVIL_HAWK_RANDOM_HANDOFF_GAIT, DEVIL_HAWK_RANDOM_HANDOFF_HEADING, DEVIL_HAWK_RANDOM_HANDOFF_SEGMENT_FRAMES, WINGATE_BULLET_LIFETIME, wingateCanFire, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, type DevilHawkMovementState, type WingateMovementState } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_LIFETIME, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
-import { advanceCutterMovement, createCutterMovementState, CUTTER_ENTRY_DURATION, CUTTER_RANDOM_ROUTE_START_FRAME, cutterBoomerangOnScreen, cutterCombatX, cutterCombatY, cutterOpeningX, cutterOpeningY, type CutterMovementState } from "./game-constants";
+import { advanceCutterMovement, createCutterMovementState, CUTTER_ENTRY_DURATION, CUTTER_RANDOM_HANDOFF_GAIT, CUTTER_RANDOM_HANDOFF_SEGMENT_FRAMES, CUTTER_RANDOM_ROUTE_START_FRAME, cutterBoomerangOnScreen, cutterCombatX, cutterCombatY, cutterOpeningX, cutterOpeningY, type CutterMovementState } from "./game-constants";
 import { DEVIL_HAWK_ENTRY_DURATION, devilHawkAttackDelay, devilHawkFanHeadings, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_FULL_FAN_LIFETIME, DEVIL_HAWK_FULL_FAN_MAX_Y_NES, DEVIL_HAWK_POST_ENTRY_X_HOLD, devilHawkProjectileVelocity, DEVIL_HAWK_SIDE_FAN_LIFETIME, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY, nesAimHeading } from "./game-constants";
 import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_PREPARE_DELAY, NINJA_BOSS_PREPARE_CONTROLLER_DURATION, NINJA_BOSS_PREPARE_DURATION, NINJA_BOSS_SHURIKEN_LIFETIME, NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES, NINJA_BOSS_SHURIKEN_VELOCITIES_NES, NINJA_BOSS_TELEPORT_DELAY, ninjaBossCombatX, ninjaBossCombatY, ninjaBossNextTeleportAt, ninjaBossPreparePosition } from "./game-constants";
 import { canSpawnEnemyProjectile } from "./game-constants";
@@ -1768,6 +1768,10 @@ class GunSmokeGame {
           cutterCombatX(unit.age, unit.bossEntryX ?? CUTTER_ENTRY_X_LANES[2]!) / NES_WORLD_X_SCALE,
           cutterCombatY(unit.age) / NES_WORLD_Y_SCALE,
         );
+        if (unit.cutterState.frame === CUTTER_RANDOM_ROUTE_START_FRAME) {
+          unit.cutterState.segmentFrames = CUTTER_RANDOM_HANDOFF_SEGMENT_FRAMES;
+          unit.cutterState.gait = CUTTER_RANDOM_HANDOFF_GAIT;
+        }
         advanceCutterMovement(unit.cutterState, cutterCombatFrame, () => this.nextRomRandomSecondSumByte());
         unit.x = unit.cutterState.x * NES_WORLD_X_SCALE;
         unit.y = this.scroll + unit.cutterState.y * NES_WORLD_Y_SCALE;
@@ -1778,6 +1782,12 @@ class GunSmokeGame {
           devilHawkCombatX(unit.age, unit.bossEntryX ?? DEVIL_HAWK_ENTRY_X_LANES[3]!) / NES_WORLD_X_SCALE,
           devilHawkCombatY(unit.age) / NES_WORLD_Y_SCALE,
         );
+        if (unit.devilHawkState.frame === DEVIL_HAWK_RANDOM_ROUTE_START_FRAME) {
+          unit.devilHawkState.heading = DEVIL_HAWK_RANDOM_HANDOFF_HEADING;
+          unit.devilHawkState.segmentFrames = DEVIL_HAWK_RANDOM_HANDOFF_SEGMENT_FRAMES;
+          unit.devilHawkState.gait = DEVIL_HAWK_RANDOM_HANDOFF_GAIT;
+          unit.devilHawkState.actionCounter = DEVIL_HAWK_RANDOM_HANDOFF_ACTION_COUNTER;
+        }
         devilFireFans = advanceDevilHawkMovement(unit.devilHawkState, devilHawkCombatFrame, () => this.nextRomRandomThirdFirstSumByte(), () => this.nextRomRandomSecondThirdSumByte()).fullFans;
         unit.x = unit.devilHawkState.x * NES_WORLD_X_SCALE;
         unit.y = this.scroll + unit.devilHawkState.y * NES_WORLD_Y_SCALE;

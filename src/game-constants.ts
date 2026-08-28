@@ -1110,6 +1110,8 @@ export function cutterCombatX(age: number, entryX = 144 * NES_WORLD_X_SCALE): nu
 }
 
 export const CUTTER_RANDOM_ROUTE_START_FRAME = 12_000;
+export const CUTTER_RANDOM_HANDOFF_SEGMENT_FRAMES = 38;
+export const CUTTER_RANDOM_HANDOFF_GAIT = 0x87;
 const CUTTER_MOVEMENT_HEADINGS = [0x40, 0x44, 0x48, 0x48, 0x48, 0x4c, 0x4c, 0x50, 0x50, 0x50, 0x54, 0x54, 0x58, 0x58, 0x58, 0x5c] as const;
 
 export type CutterMovementState = {
@@ -1224,6 +1226,10 @@ export const DEVIL_HAWK_JUMP_PERIOD = 121;
 const DEVIL_HAWK_MOVEMENT_HEADINGS = [0x40, 0x40, 0x44, 0x44, 0x48, 0x48, 0x4c, 0x4c, 0x50, 0x50, 0x54, 0x54, 0x58, 0x58, 0x5c, 0x5c] as const;
 const DEVIL_HAWK_ACTION_HEADINGS = [0x90, 0x90, 0x50, 0x50, 0x10, 0x10, 0x00, 0x00, 0x40, 0x40, 0x80, 0x80, 0xa2, 0x90, 0x9a, 0x20] as const;
 export const DEVIL_HAWK_RANDOM_ROUTE_START_FRAME = 3_600;
+export const DEVIL_HAWK_RANDOM_HANDOFF_HEADING = 0x44;
+export const DEVIL_HAWK_RANDOM_HANDOFF_SEGMENT_FRAMES = 71;
+export const DEVIL_HAWK_RANDOM_HANDOFF_GAIT = 0x84;
+export const DEVIL_HAWK_RANDOM_HANDOFF_ACTION_COUNTER = 14;
 
 export type DevilHawkMovementState = {
   frame: number;

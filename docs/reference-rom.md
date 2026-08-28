@@ -281,7 +281,9 @@ diagonal), and ROM-tagged Gunmen use this per-actor timing
 instead of the procedural global firing clock. A clean Round 1 isolation also
 shows the actor rising from `y=0` to approximately `y=53` at frame 40 and
 `y=128/132` at frames 100/104 before its horizontal combat state; the runtime
-uses these entry checkpoints and keeps the later movement procedural.
+uses these entry checkpoints and keeps the later movement procedural. The
+complete center, left, and right isolation traces are replayed at integer NES
+frames for their 549-, 828-, and 1196-frame routes, respectively.
 Entity code `5` initializes the same routine with the opposite heading and
 enters from the bottom edge. Its 56-NES-pixel proximity branch is visible in
 two isolated routes: the near route fires at frame 219 and releases at frame

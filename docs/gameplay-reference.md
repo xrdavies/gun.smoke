@@ -239,6 +239,9 @@ Gunmen use the same quantized table at the faster second tier, check their
 movement-facing gate on an observed `40/52/58/62` first phase and every 64
 frames after a miss, fire at most once, and replay the measured top-entry
 movement through the center/left/right release paths (549/828/1196 frames).
+Those three paths use the complete isolated ROM frame samples, preserving their
+discrete jumps and screen-release boundaries rather than interpolating between
+sparse waypoints.
 Riflemen advance,
 enter their attack state at 122 NES frames once they are at least 48 NES pixels
 downscreen and within 96 NES Y pixels of Billy, then fire five shots at

@@ -163,7 +163,9 @@ left to approximately `y=136` after 324 frames, holds that lane until frame 350,
 then follows its recorded X/Y combat route with the first paired boomerangs
 and repeat every 256 frames. After the 12,000-frame measured route, the runtime
 continues Cutter with the ROM's random direction segments and four-active/eight-idle
-movement gait rather than reflecting the sampled path.
+movement gait rather than reflecting the sampled path. The same post-route
+state keeps the 256-frame attack cycle: 26 frames still, a directed climb to
+the upper arena boundary, and a short hold before random movement resumes.
 Both turn through measured 32-direction headings,
 hold their launch offsets for one frame, capture Billy's position at NES
 `y=176`, and recalculate their return heading
@@ -192,7 +194,10 @@ discrete directional velocity table and their measured 45/36-frame lifetimes;
 its recorded X/Y movement route is replayed through combat frame 3,600, then
 uses the ROM's random movement/action state and boundary correction for the
 continued encounter. Long-tail fire is emitted from those action states:
-the hold branch produces a three-shot fan and the jump branch a five-shot fan;
+the hold branch produces a three-shot fan, while the high-position vertical
+bounce emits a five-shot fan six movement frames into its measured arc. The
+low-position down action uses its separate 28-frame hold and 32-frame route
+without emitting that five-shot fan;
 the old fixed fire cadence is not used after the random-state handoff.
 Fatman Joe begins attack decisions after his measured entrance. A successful
 low-nibble attack gate and downward-sector check launches one aimed shell; after 31 frames it stops and
@@ -211,6 +216,10 @@ attack uses a common 60-frame repeat interval. A non-damaging low-slot smoke
 proxy starts at frame 140, travels toward the captured player-relative launch
 point for 40 frames, then remains as a hidden seven-frame controller while the
 four shuriken slots are active.
+The initial visible route is sampled through the natural teleport at frame
+339. Its first re-entry begins after the 90-frame hidden delay and uses the
+separate measured route, including the corrected relative-frame `y=60` and
+`y=90` samples at frames 80 and 216.
 
 The ROM event stream is data-driven per Round. Its behavior routines map to the
 recognizable roster of gunmen, bombers, snipers, back-stabbers, riflemen,

@@ -312,10 +312,11 @@ seeding remains a documented parity boundary. Two complete Round 2 `y=32`
 side traces are now used when their entry coordinate matches in Round 2: code 8
 follows the 569-frame left-edge trace and code 9 follows the 963-frame right-edge
 trace; a code 8 trace at `y=64` follows 371 measured frames, and a code 9 trace
-at `y=64` follows 360 measured frames. Round 3's code 8 left `y=64`, phase-0
-initializer has a separate 379-frame trace. Other rounds, phases and entry
-heights retain the generic measured routes until their slot-state traces are
-captured.
+at `y=64` follows 360 measured frames. Round 3's code 7 `y=64`, phase-1
+entries use separate left/right traces of 581/384 frames; its code 8 left
+`y=64`, phase-0 initializer has a separate 379-frame trace. Other rounds,
+phases and entry heights retain the generic measured routes until their
+slot-state traces are captured.
 On defeat, `$CD4E-$CDAA` converts an event's `0x80` flag into dispatch `0x4e`.
 If `$90/$94/$98/$9c` show no special-gun ammunition, it increments that to `0x4f`;
 the `$E192` conversion table then maps them to Bullet (`0x29`) and Money

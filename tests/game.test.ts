@@ -617,6 +617,11 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankPosition(9, 96 / NES_FRAME_RATE, 64, 3)).toEqual([-69.1025641025641, 38.66666666666667]);
     expect(gunmanFlankPosition(8, 96 / NES_FRAME_RATE, 64, 3, 0)).toEqual([31, 32]);
     expect(gunmanFlankPosition(8, 378 / NES_FRAME_RATE, 64, 3, 0)).toEqual([203, 186]);
+    expect([gunmanFlankLifetime(7, 64, 3, 1), gunmanFlankLifetime(7, 64, 3, 1, true)]).toEqual([581, 384].map((frames) => frames / NES_FRAME_RATE));
+    expect(gunmanFlankPosition(7, 64 / NES_FRAME_RATE, 64, 3, 1)).toEqual([48, 31]);
+    expect(gunmanFlankPosition(7, 64 / NES_FRAME_RATE, 64, 3, 1, true)).toEqual([-45, 34]);
+    expect(gunmanFlankPosition(7, 580 / NES_FRAME_RATE, 64, 3, 1)).toEqual([187, -65]);
+    expect(gunmanFlankPosition(7, 383 / NES_FRAME_RATE, 64, 3, 1, true)).toEqual([-248, 34]);
   });
 
   it("matches the traced bottom-entry Gunman routes", () => {

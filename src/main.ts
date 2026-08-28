@@ -27,7 +27,7 @@ import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, PLAYER_ENTR
 import { storedPowerupPickup } from "./game-constants";
 import { addScore } from "./game-constants";
 import { ninjaCanThrow } from "./game-constants";
-import { FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, FATMAN_JOE_MOVEMENT_SPEED, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, fatmanJoeCombatX, fatmanJoeCombatY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "./game-constants";
+import { FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeAimAllowsLaunch, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, FATMAN_JOE_MOVEMENT_SPEED, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, fatmanJoeCombatX, fatmanJoeCombatY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "./game-constants";
 import { advanceWingateMovement, createWingateMovementState, WINGATE_BULLET_LIFETIME, wingateCanFire, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, type WingateMovementState } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_LIFETIME, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { CUTTER_ENTRY_DURATION, cutterBoomerangOnScreen, cutterCombatX, cutterCombatY, cutterOpeningX, cutterOpeningY } from "./game-constants";
@@ -116,6 +116,7 @@ interface Unit {
   bomberDirection?: number;
   bossEntryX?: number;
   bossEntryY?: number;
+  fatmanFollowup?: boolean;
   wingateState?: WingateMovementState;
   bossProjectile?: boolean;
   boomerangHeading?: number;
@@ -993,25 +994,32 @@ class GunSmokeGame {
       return;
     }
     if (this.stage === 5) {
-      const randomByte = this.nextRomRandomFirstSumByte();
-      if (fatmanJoeCanLaunch(boss.x, boss.y, this.player.x, this.player.y, randomByte)) {
+      const launchShell = (): void => {
         const projectile = this.spawnEnemyProjectile(boss.x - 8 * NES_WORLD_X_SCALE, boss.y + 6 * NES_WORLD_Y_SCALE, true);
-        if (projectile) {
-          projectile.projectileType = "grenadeShell";
-          [projectile.vx, projectile.vy] = fatmanJoeShellVelocity(boss.x, boss.y, this.player.x, this.player.y);
-          projectile.phase = 0;
-          projectile.volleysFired = 0;
-          projectile.maxAge = FATMAN_JOE_SHELL_LIFETIME;
-          boss.volleysFired += 1;
-          boss.invulnerableUntil = boss.age + FATMAN_JOE_LAUNCH_INVULNERABILITY;
-          boss.fired = true;
-          this.beep(240, 0.045);
-        }
+        if (!projectile) return;
+        projectile.projectileType = "grenadeShell";
+        [projectile.vx, projectile.vy] = fatmanJoeShellVelocity(boss.x, boss.y, this.player.x, this.player.y);
+        projectile.phase = 0;
+        projectile.volleysFired = 0;
+        projectile.maxAge = FATMAN_JOE_SHELL_LIFETIME;
+        boss.volleysFired += 1;
+        boss.invulnerableUntil = boss.age + FATMAN_JOE_LAUNCH_INVULNERABILITY;
+        boss.fired = true;
+        this.beep(240, 0.045);
+      };
+      if (boss.fatmanFollowup) {
+        boss.fatmanFollowup = false;
+        if (fatmanJoeAimAllowsLaunch(boss.x, boss.y, this.player.x, this.player.y)) launchShell();
+        this.bossFireClock = FATMAN_JOE_ATTACK_DECISION_INTERVAL;
+        return;
       }
+      const randomByte = this.nextRomRandomFirstSumByte();
+      if (fatmanJoeCanLaunch(boss.x, boss.y, this.player.x, this.player.y, randomByte)) launchShell();
       const actionDuration = (randomByte & 0x0f) < 8
         ? fatmanJoeMovementActionDuration(boss.y - this.scroll, randomByte)
         : 0;
-      this.bossFireClock = FATMAN_JOE_ATTACK_DECISION_INTERVAL + actionDuration;
+      boss.fatmanFollowup = actionDuration > 0;
+      this.bossFireClock = actionDuration || FATMAN_JOE_ATTACK_DECISION_INTERVAL;
       return;
     }
     if (this.stage === 4) {

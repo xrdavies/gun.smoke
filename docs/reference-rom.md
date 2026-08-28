@@ -541,8 +541,8 @@ shell-to-mine chain. During the random action branch, the ROM's `$B6` decision
 counter stops while the short route lasts 53 frames (`b8=16`) or the long route
 lasts 122 frames (`b8=40` followed by `b8=32`). Low nibbles `0..1`, or a Boss
 screen Y above 72, select the long route; `2..7` select the short route. The
-runtime extends its existing
-76-frame clock by those measured windows. The runtime replays the controlled
+runtime fires the route's follow-up shell at the end of that measured window,
+then restarts the 76-frame decision clock. The runtime replays the controlled
 attack trace's multi-hop X/Y profile through combat frame 3,600, follows sparse
 samples through frame 12,000, then reflects that route for continued movement;
 later direction selection remains an approximation.

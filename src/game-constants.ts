@@ -1264,9 +1264,13 @@ export function fatmanJoeAimHeading(originX: number, originY: number, targetX: n
   return nesAimHeading(originX, originY, targetX, targetY);
 }
 
-export function fatmanJoeCanLaunch(originX: number, originY: number, targetX: number, targetY: number, randomByte: number): boolean {
+export function fatmanJoeAimAllowsLaunch(originX: number, originY: number, targetX: number, targetY: number): boolean {
   const heading = fatmanJoeAimHeading(originX, originY, targetX, targetY);
-  return (randomByte & 0x0f) >= 8 && heading >= 14 && heading <= 18;
+  return heading >= 14 && heading <= 18;
+}
+
+export function fatmanJoeCanLaunch(originX: number, originY: number, targetX: number, targetY: number, randomByte: number): boolean {
+  return (randomByte & 0x0f) >= 8 && fatmanJoeAimAllowsLaunch(originX, originY, targetX, targetY);
 }
 
 export function fatmanJoeMovementActionDuration(originY: number, randomByte: number): number {

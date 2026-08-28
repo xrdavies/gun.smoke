@@ -306,7 +306,7 @@ check is applied.
 ROM behavior actors are anchored in world space at their event trigger, then
 carry the camera scroll while their routine updates screen-relative movement.
 Hatchet and Spear state machines own their full screen-relative Y path, including
-the final offscreen retreat, and are exempt from the generic 160-NES-pixel clamp.
+the final offscreen retreat, and use their own explicit cleanup boundaries.
 The runtime has no non-ROM fallback formation path; all authored actors remain
 bounded by their decoded state machine, screen cleanup, or route lifetime.
 Dispatch `0x07` records with verified pickup conversions render as breakable

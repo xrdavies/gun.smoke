@@ -590,6 +590,7 @@ class GunSmokeGame {
       this.activateStart();
     }
     if (this.mode !== "playing") return;
+    this.advanceRandom(delta);
     if (this.deathClock > 0) {
       this.time += delta;
       this.updateDeath(delta);
@@ -602,7 +603,6 @@ class GunSmokeGame {
     }
     if (this.shopOpen) return;
     this.time += delta;
-    this.advanceRandom(delta);
     if (this.wingateRespawnClock > 0) {
       this.wingateRespawnClock -= delta;
       if (this.wingateRespawnClock <= 0) {

@@ -37,7 +37,7 @@ import { ENEMY_DEFEAT_ANIMATION_DURATION } from "./game-constants";
 import { ENEMY_DEFEAT_Y_OFFSETS_NES } from "./game-constants";
 import { hasSpecialAmmoStock, hasWeaponStock, romEnemyDrop, romEnemyScore } from "./game-constants";
 import { roundCollisionAtNes, roundCollisionBlocks, ROUND_COLLISION_ROWS } from "./round-collision";
-import { canSpawnRomPool, compareRomEventOrder, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_FALLING_ROCK_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
+import { canSpawnRomPool, compareRomEventOrder, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_FALLING_ROCK_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEntityHitPoints, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
 import type { RomEnemyEvent, RomObjectEvent } from "./rom-event-data";
 
 type GameAction =
@@ -860,7 +860,7 @@ class GunSmokeGame {
     }
     if (event.semantic !== "sceneObject" || !ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES.includes(event.dispatchType as 7)) return;
     const pickup = ROM_OBJECT_PICKUPS[event.entityCode as keyof typeof ROM_OBJECT_PICKUPS];
-    const container = this.spawnUnit(pickup || ROM_EMPTY_BARREL_ENTITY_CODES.includes(event.entityCode as 32 | 41) ? "barrel" : "sceneObject", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), 1, undefined, pickup);
+    const container = this.spawnUnit(pickup || ROM_EMPTY_BARREL_ENTITY_CODES.includes(event.entityCode as 32 | 41) ? "barrel" : "sceneObject", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), romEntityHitPoints(event.entityCode), undefined, pickup);
     container.vy = ROM_OBJECT_DROP_SPEED;
     container.romEntityCode = event.entityCode;
     container.romFlags = event.flags;
@@ -895,7 +895,7 @@ class GunSmokeGame {
       "enemy",
       event.behavior === 3 || flankCode !== undefined || sideShotgunner || sideRifleman ? eventX : clamp(eventX, 40, 920),
       this.scroll + romEventWorldY(event),
-      1 + Number(this.stage >= 4),
+      romEntityHitPoints(event.entityCode),
       enemyType,
     );
     enemy.value = romEnemyScore(event.entityCode);
@@ -2182,7 +2182,7 @@ class GunSmokeGame {
     this.enemyFireClock = 1.2;
     this.units.length = 0;
     if (this.stage === 2) {
-      const horseBarrel = this.spawnUnit("barrel", ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, 1, undefined, "horse");
+      const horseBarrel = this.spawnUnit("barrel", ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, romEntityHitPoints(37), undefined, "horse");
       horseBarrel.romEntityCode = 37;
       horseBarrel.romFlags = 0;
       horseBarrel.romPool = "object";

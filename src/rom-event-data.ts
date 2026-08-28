@@ -81,6 +81,9 @@ export const romEventWorldAt = (event: RomEnemyEvent): number => event.at * WORL
 export const romEventWorldX = (event: RomEnemyEvent): number => event.x * (960 / 256);
 export const romEventWorldY = (event: RomEnemyEvent): number => event.y * WORLD_PER_NES_PIXEL;
 
+export const ROM_ENTITY_HIT_POINTS: Readonly<Record<number, number>> = {"1":1,"2":1,"3":3,"4":3,"5":1,"6":1,"7":1,"8":1,"9":1,"10":4,"11":1,"12":5,"13":2,"14":3,"15":3,"16":2,"17":3,"19":3,"20":3,"21":3,"22":3,"32":6,"33":6,"34":6,"35":6,"36":6,"37":6,"38":6,"39":6,"41":6,"42":6,"44":8,"45":8,"46":8};
+export const romEntityHitPoints = (entityCode: number): number => ROM_ENTITY_HIT_POINTS[entityCode] ?? 1;
+
 // Behavior routines are mechanically identified; only long-tail random branches remain approximate.
 export const ROM_BEHAVIOR_ENEMY_TYPES = [
   "sniper", "shotgunner", "gunman", "backstabber", "bomber", undefined,

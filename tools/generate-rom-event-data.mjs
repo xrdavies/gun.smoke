@@ -8,6 +8,9 @@ if (!fs.existsSync(manifestFilename)) {
 }
 
 const manifest = JSON.parse(fs.readFileSync(manifestFilename, "utf8"));
+const entityHitPoints = Object.fromEntries(Object.entries(manifest.entityInitializers)
+  .filter(([, initializer]) => Number.isInteger(initializer.values[3]))
+  .map(([entityCode, initializer]) => [entityCode, initializer.values[3]]));
 const routines = [...new Set(manifest.rounds.flatMap((round) => round.records
   .filter((record) => record.command === "spawn" && record.behaviorRoutine)
   .map((record) => record.behaviorRoutine)))].sort();
@@ -101,6 +104,9 @@ const source = [
   "export const romEventWorldAt = (event: RomEnemyEvent): number => event.at * WORLD_PER_NES_PIXEL;",
   "export const romEventWorldX = (event: RomEnemyEvent): number => event.x * (960 / 256);",
   "export const romEventWorldY = (event: RomEnemyEvent): number => event.y * WORLD_PER_NES_PIXEL;",
+  "",
+  `export const ROM_ENTITY_HIT_POINTS: Readonly<Record<number, number>> = ${JSON.stringify(entityHitPoints)};`,
+  "export const romEntityHitPoints = (entityCode: number): number => ROM_ENTITY_HIT_POINTS[entityCode] ?? 1;",
   "",
   "// Behavior routines are mechanically identified; only long-tail random branches remain approximate.",
   "export const ROM_BEHAVIOR_ENEMY_TYPES = [",

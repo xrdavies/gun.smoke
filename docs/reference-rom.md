@@ -289,6 +289,14 @@ The same defeat path calls `$E297`, which maps the initial dispatch through
 `$E335` and the BCD increment table at `$E2E9`; the resulting ordinary enemy
 score values are 100 (Gunman/Sniper/Bomber/Firebreather), 200
 (Ninja/Rifleman/Hatchet), 300 (Shotgunner), and 400 (Backstabber/Spear).
+The initializer at `$C796` writes its fourth value into enemy field `$0460`.
+Player-projectile collision at `$CCCB-$CCCE` subtracts projectile damage from
+that field, so it is the entity's hit-point value rather than a Round-wide
+difficulty multiplier. The decoded values are 1 for Snipers, Gunmen and
+Bombers; 2 for Ninjas and the lower Backstabber form; 3 for Shotgunners,
+Riflemen, Hatchet Throwers, Spear Throwers and Firebreathers; 4 for the raid
+Backstabber; and 6 for breakable barrels. The runtime now uses these generated
+initializer values directly.
 The routine updates five score tiles at `$06F2/$06F4/$06F6/$06F8/$06FA`;
 `$06FC` remains the fixed zero ones digit, and overflow clamps those five
 tiles to `9`, yielding a maximum displayed score of `999990`.

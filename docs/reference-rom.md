@@ -509,14 +509,17 @@ slot is now isolated for its shuriken attack. The isolated damage trace shows a
 record also shows natural teleports beginning at frame 339 and again 424 frames
 after the subsequent re-entry start; the runtime schedules those transitions at
 the same frame boundary in its fixed-step loop, including the re-entry age used
-for the hidden window.
-addition to health-loss teleports. It selects another valid pair and restarts
+for the hidden window, in addition to health-loss teleports. It selects another valid pair and restarts
 the movement path and attack clock on that measured cycle while retaining
 procedural smoke visuals. Other Bosses stay
 visible through their invulnerability/recovery timers; only Ninja's smoke and
 teleport windows hide its sprite and disable actor collision. The runtime also
 replays the measured X/Y routes for the initial and post-teleport cycles. Runtime target and
 contact checks exclude hidden actors, including Snipers while they are in cover.
+The initial route is sampled against the Round 4 record at absolute frames
+43/95/170 (`x=176/163/102`, in NES pixels). The first re-entry route is kept
+as a separate age-zero path; its corrected vertical samples are `y=60` at
+relative frame 80 and `y=90` at relative frame 216.
 The Ninja remains in its initial smoke state for about 44 frames. Its isolated
 attack routine creates a low-slot smoke/prepare entity at frame 140, then emits
 four `0x30` shuriken bullets at frame 179; subsequent volleys commonly recur

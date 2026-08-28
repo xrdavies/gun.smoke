@@ -942,7 +942,7 @@ class GunSmokeGame {
     if (event.behavior === 2) enemy.maxAge = GUNMAN_LIFETIME;
     if (event.behavior === 6) enemy.maxAge = ninjaTraceLifetime(event.x, event.y, this.stage, event.phase, event.at) ?? NINJA_LIFETIME;
     if (event.behavior === 2 && event.entityCode === 5) enemy.maxAge = GUNMAN_BOTTOM_LIFETIMES.far;
-    if (flankCode !== undefined) enemy.maxAge = gunmanFlankLifetime(flankCode, event.y, this.stage, event.phase, event.x > 128);
+    if (flankCode !== undefined) enemy.maxAge = gunmanFlankLifetime(flankCode, event.y, this.stage, event.phase, event.x > 128, event.at);
     if (event.behavior === 3) enemy.maxAge = BACKSTABBER_RAID_LIFETIME;
     if (event.behavior === 8) enemy.maxAge = BACKSTABBER_AMBUSH_LIFETIME;
     if (event.behavior === 9) enemy.maxAge = HATCHET_LIFETIME;
@@ -1754,7 +1754,7 @@ class GunSmokeGame {
         } else if (flankGunman !== undefined) {
           const originY = (unit.romOriginY ?? 0) / NES_WORLD_Y_SCALE;
           const fromRight = (unit.romOriginX ?? unit.x) > 480;
-          const [offsetX, offsetY] = gunmanFlankPosition(flankGunman, unit.age, originY, this.stage, unit.romPhase ?? 0, fromRight);
+          const [offsetX, offsetY] = gunmanFlankPosition(flankGunman, unit.age, originY, this.stage, unit.romPhase ?? 0, fromRight, unit.romEventAt);
           const hasRightTrace = this.stage === 3 && Math.round(originY) === 64 && (unit.romPhase ?? 0) === 1 || this.stage === 6 && Math.round(originY) === 32;
           const mirror = flankGunman === 7 && fromRight && !hasRightTrace ? -1 : 1;
           unit.x = (unit.romOriginX ?? unit.x) + offsetX * NES_WORLD_X_SCALE * mirror;

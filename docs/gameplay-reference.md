@@ -262,6 +262,8 @@ fires at its second scheduler opportunity, frame 115. Round 3's lone
 enters its attack state at frame 160. Code 8 and code 9
 retain their separate measured keyframe routes, while their attack windows use
 the retained phase-driven 64-frame checks rather than fixed shot timestamps.
+Round 1 event `at=847,x=248,y=32,code=7,phase=0` additionally uses its measured
+590-frame right-edge route and first successful attack opportunity at frame 92.
 Complete scoped side traces are selected for matching entries: Round 2 uses
 569 frames for code 8 at `y=32`, 371 for code 8 at `y=64`, 963 for code 9 at
 `y=32`, and 360 for code 9 at `y=64`; Round 3 uses 581/384-frame code 7

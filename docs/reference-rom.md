@@ -323,6 +323,11 @@ initializer. It enters movement state at frame 48, reaches its attack state at
 frame 160, changes to dispatch `0x5A` at frame 221, and releases at frame 324.
 Runtime binds both complete coordinate traces to their Round/entry/phase
 instead of applying the 642-frame left-edge route.
+Round 1's `at=847,x=248,y=32,code=7,phase=0` event has a separate 590-frame
+right-edge route. Its seed schedules checks at frames 28 and 92; the first
+misses the facing gate and the second fires. It later changes to dispatch
+`0x59` and releases at `Y=252`. Runtime scopes the full coordinate trace by
+event index because other right-edge code-7 entries reuse different slot state.
 Two complete Round 2 `y=32`
 side traces are now used when their entry coordinate matches in Round 2: code 8
 follows the 569-frame left-edge trace and code 9 follows the 963-frame right-edge

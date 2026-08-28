@@ -2717,6 +2717,13 @@ if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeRound", { v
   game.camera.position.y = 270;
   game.units.length = 0;
   game.bossSpawned = false;
+  game.romEventCursor = 0;
+  game.romObjectCursor = 0;
+  game.shopIndex = 0;
+  game.shopSpawnCursor = 0;
+  game.hasWanted = false;
+  game.wingatePhase = 0;
+  game.wingateRespawnClock = 0;
   game.player.x = PLAYER_ENTRY_X;
   game.player.y = PLAYER_ENTRY_Y;
   game.player.sprite.position = { x: game.player.x, y: game.player.y };

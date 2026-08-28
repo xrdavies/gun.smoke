@@ -296,15 +296,16 @@ two isolated routes: the near route fires at frame 219 and releases at frame
 samples both player axes when the branch runs at frame 50, mirrors the matching
 measured route, and does not apply the top-entry Gunman timing.
 The same routine has distinct side-entry initializers. Entity code `7` enters
-from either edge on a mirrored route, fires at frames 64/410 and releases at
-frame 642. The left-edge `x=4,y=32` event has a complete 642-frame integer
+from either edge on a mirrored route, with successful attack windows observed
+at frames 64/410, and releases at frame 642. The left-edge `x=4,y=32` event has a complete 642-frame integer
 coordinate trace; the runtime replays that normalized trace and mirrors it for
 the right-edge initializer. Entity code `8` holds the left edge while scrolling,
-lunges inward at about frame 247, fires at frame 309 and releases at frame 508.
-Entity code `9` enters from the right, follows a
-long mirrored loop, fires at frames 399/463 and releases at frame 826. Runtime
-uses separate measured keyframes and lifetimes for these ROM-tagged variants
-instead of applying the top-entry Gunman timing.
+lunges inward at about frame 247, with a successful frame-309 window in one
+trace, and releases at frame 508. Entity code `9` enters from the right, follows
+a long mirrored loop, with successful windows at frames 399/463 in one trace,
+and releases at frame 826. The retained `$0540` phase can move these windows:
+the runtime checks every 64 frames, uses the fixed heading `16` during the
+initial side state, and then switches to the stored movement heading.
 On defeat, `$CD4E-$CDAA` converts an event's `0x80` flag into dispatch `0x4e`.
 If `$90/$94/$98/$9c` show no special-gun ammunition, it increments that to `0x4f`;
 the `$E192` conversion table then maps them to Bullet (`0x29`) and Money

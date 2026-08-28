@@ -246,8 +246,9 @@ later successful left-route shot at frame 314 and right-route shots at frames
 570/1146. The samples are bound to the captured `x=88,y=0` entry;
 other entry lanes retain the same branch selection with parameterized offsets.
 The left-edge code-7 side route is likewise replayed from a complete 642-frame
-integer trace and mirrored for its right-edge counterpart; code 8 and code 9
-retain their separate measured keyframe routes.
+integer trace and mirrored for its right-edge counterpart. Code 8 and code 9
+retain their separate measured keyframe routes, while their attack windows use
+the retained phase-driven 64-frame checks rather than fixed shot timestamps.
 Riflemen advance,
 enter their attack state at 122 NES frames once they are at least 48 NES pixels
 downscreen and within 96 NES Y pixels of Billy, then fire five shots at

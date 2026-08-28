@@ -100,7 +100,7 @@ before release; right-edge records use the opposite heading and can reach the
 terrain at an earlier frame. The runtime replays those measured keyframes,
 tests each position against a decoded non-zero terrain quadrant, and keeps a
 self-generated rock proxy in the same seven slots as ordinary enemies.
-Routes that leave the 240-pixel NES screen are released immediately without
+Routes that reach NES Y `252` (`$FC`) are released immediately without
 entering the impact effect; runtime applies that bound before terrain checks.
 Because rocks occupy the ordinary enemy slot range, the Blue Yashichi contact
 branch at `$8ACC-$8AD8` also scores and converts them; runtime sends contacted

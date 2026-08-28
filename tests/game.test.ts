@@ -430,7 +430,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROCK_IMPACT_DELAY).toBeCloseTo(96 / NES_FRAME_RATE, 9);
     expect(ROCK_IMPACT_LIFETIME).toBeCloseTo(25 / NES_FRAME_RATE, 9);
     expect(ROCK_LIFETIME).toBeCloseTo(121 / NES_FRAME_RATE, 9);
-    expect([fallingRockOnScreen(-1), fallingRockOnScreen(0), fallingRockOnScreen(239), fallingRockOnScreen(240)]).toEqual([false, true, true, false]);
+    expect([fallingRockOnScreen(-1), fallingRockOnScreen(0), fallingRockOnScreen(251), fallingRockOnScreen(252)]).toEqual([false, true, true, false]);
   });
 
   it("matches the traced Hatchet timing", () => {

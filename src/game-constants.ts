@@ -405,7 +405,7 @@ export const ROCK_IMPACT_DELAY = 96 / NES_FRAME_RATE;
 export const ROCK_IMPACT_LIFETIME = 25 / NES_FRAME_RATE;
 export const ROCK_LIFETIME = 121 / NES_FRAME_RATE;
 export const ROCK_FLIGHT_PATH_NES = [[0, 0, 0], [8, 19, 4], [16, 34, 19], [24, 41, 41], [32, 61, 43], [40, 78, 55], [48, 90, 73], [56, 96, 96], [64, 116, 98], [72, 134, 106], [80, 149, 122], [88, 160, 142], [96, 165, 166]] as const;
-export const ROCK_SCREEN_MAX_Y_NES = 240;
+export const ROCK_SCREEN_MAX_Y_NES = 252;
 
 export function fallingRockPosition(age: number, fromLeft: boolean): readonly [number, number] {
   const frame = Math.min(96, Math.max(0, age * NES_FRAME_RATE));

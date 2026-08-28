@@ -255,7 +255,9 @@ later successful left-route shot at frame 314 and right-route shots at frames
 570/1146. The samples are bound to the captured `x=88,y=0` entry;
 other entry lanes retain the same branch selection with parameterized offsets.
 The left-edge code-7 side route is likewise replayed from a complete 642-frame
-integer trace and mirrored for its right-edge counterpart. Code 8 and code 9
+integer trace and mirrored for its right-edge counterpart. Round 2's lone
+`code=7,x=56,y=0,phase=1` event uses its separate 369-frame top-entry trace and
+fires at its second scheduler opportunity, frame 115. Code 8 and code 9
 retain their separate measured keyframe routes, while their attack windows use
 the retained phase-driven 64-frame checks rather than fixed shot timestamps.
 Complete scoped side traces are selected for matching entries: Round 2 uses

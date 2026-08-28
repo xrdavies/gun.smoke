@@ -314,6 +314,11 @@ allocated entity code below `0x20`, the runtime advances the same global RNG
 and derives the initial opportunity directly from that byte. Top-edge flank
 entries wait for the actor to reach the same `Y=16` threshold before counting;
 side entries begin counting immediately. `$04E0` remains a reused slot field.
+Round 2's single `code=7,x=56,y=0,phase=1` event is a distinct top-edge
+initializer. Its first scheduler wrap at frame 51 misses the facing gate, the
+second succeeds at frame 115, dispatch changes to `0x59` at frame 260, and the
+actor releases at frame 369. Runtime binds its complete coordinate trace to
+that Round/entry/phase instead of applying the 642-frame left-edge route.
 Two complete Round 2 `y=32`
 side traces are now used when their entry coordinate matches in Round 2: code 8
 follows the 569-frame left-edge trace and code 9 follows the 963-frame right-edge

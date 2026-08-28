@@ -237,7 +237,8 @@ frame-103 Shuriken and release within the measured 303-frame route cap. Round 4
 events `at=47,x=152,phase=0` and `at=63,x=184,phase=1` use their measured
 244-frame second movement and release traces. The later
 `at=383,x=184,phase=1` and `at=751,x=184,phase=0` events follow separate
-205/202-frame no-throw routes;
+205/202-frame no-throw routes. Event `at=815,x=184,phase=0` delays its Shuriken
+until frame 116 and follows a 258-frame route;
 other entries retain the parameterized route.
 Gunmen use the same quantized table at the faster second tier, check their
 movement-facing gate on an observed `40/52/58/62` first phase and every 64

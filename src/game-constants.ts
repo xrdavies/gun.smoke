@@ -865,12 +865,15 @@ const NINJA_STAGE4_X184_AT63_TRACE_SAMPLES_NES = decodeGunmanAbsoluteCoordinateS
 const NINJA_STAGE4_X184_AT383_TRACE_SAMPLES_NES = decodeGunmanAbsoluteCoordinateSamples("uAK4BLgGuAi4CrgMuA64ELgSuBS4FrgYuBq4HLgeuCC4ILgguCC4ILgguCC4ILgguCC4ILgguCC4ILgguCC4ILgguCC4ILgguCK4JLgmuCi4KrgsuC64MLgyuDS4Nrg4uDq4PLg+uEC4QrhEuEa4SLhKuEy4TrhQuFK4VLhWuFi4WrhcuF64YLhiuGS4ZrhouGq4bLhuuHC4crh0uHa4eLh6uHy4frh+uH64frh+uH64frh+uH64frh+uH64frh+uH64frh+uH64frh+uH63f7aBtYK0hLOGsoexibCLr4yvjq6QrZGsk6uVqpapmKiap5umnaWfpaCkoqOkoqWhp6Cpn6qerJ2unK+bsZqzmrSZtpi3l7mWu5W8lL6TwJLBkcOQxZDBkL6Qu5C5kLeQtpC1kLWQtpC3kLiQuJC4kLmQuZC5kLqQupC6kLuQu5C7kLyQvJC8kL2QvZC9kL6QvpC+kL+Qv5C/kMCQwJDAkMGQwZDBkMKQwpDCkMOQw5DDkMSQxJDEkMWQxZDFkMaQxpDGkMeQx5DHkMg=");
 const NINJA_STAGE4_X184_AT751_TRACE_SAMPLES_NES = decodeGunmanAbsoluteCoordinateSamples("uAK4BLgGuAi4CrgMuA64ELgSuBS4FrgYuBq4HLgeuCC4ILgguCC4ILgguCC4ILgguCC4ILgguCC4ILgguCC4ILgguCC4ILgguCK4JLgmuCi4KrgsuC64MLgyuDS4Nrg4uDq4PLg+uEC4QrhEuEa4SLhKuEy4TrhQuFK4VLhWuFi4WrhcuF64YLhiuGS4ZrhouGq4bLhuuHC4crh0uHa4eLh6uHy4friAuIK4hLiGuIi4iriMuI64kLiSuJS4lriYuJi4mLiYuJi4mLiYuJi4mLiYuJi4mLiYuJi4mLiYuJi4mLiYuJi4mLeat5y3nragtqK2pLamtai1qrWrtK20r7Sxs7OztbO3srmyu7K9sb+xwbHDscWwx7DJsMuvza/Jr8avw6/Br7+vvq+9r72vvq+/r8CvwK/Ar8Gvwa/Br8Kvwq/Cr8Ovw6/Dr8SvxK/Er8Wvxa/Fr8avxq/Gr8evx6/Hr8ivyK/Ir8mvya/Jr8qvyq/Kr8uvy6/Lr8yvzK/Mr82vza/Nr86vzq/Or8+vz6/Pr9A=");
 
+const NINJA_STAGE4_X184_AT815_TRACE_SAMPLES_NES = decodeGunmanAbsoluteCoordinateSamples("uAK4BLgGuAi4CrgMuA64ELgSuBS4FrgYuBq4HLgeuCC4ILgguCC4ILgguCC4ILgguCC4ILgguCC4ILgguCC4ILgguCC4ILgguCK4JLgmuCi4KrgsuC64MLgyuDS4Nrg4uDq4PLg+uEC4QrhEuEa4SLhKuEy4TrhQuFK4VLhWuFi4WrhcuF64YLhiuGS4ZrhouGq4bLhuuHC4crh0uHa4eLh6uHy4friAuIK4hLiGuIi4iriMuI64kLiSuJS4lriYuJi4mLiYuJi4mLiYuJi4mLiYuJi4mLiYuJi4mLiYuJi4mLiYuJi4mLeWtZGzjLKIsIWugqx/q32pe6d5pXikdqJ2oHaedp12nXaddp12nXaddp12nXaddp12nXaddp12nXaddp12nXaddp12nXaddpt0m3aceJx6nHydfp2AnYKdhJ6FnoeeiZ+Ln42fj6CRoJOglaGXoZmhm6Kdop+ioaKjo6Wjp6OopKqkrKSupbClsqW0pramuKa6p7ynvqfAp8KoxKjGqMipyqnLqc2pyanGqcOpwam/qb6pvam9qb6pv6m/qcCpwKnAqcGpwanBqcKpwqnCqcOpw6nDqcSpxKnEqcWpxanFqcapxqnGqcepx6nHqcipyKnIqcmpyanJqcqpyqnKqcupy6nLqcypzKnMqc2pzanNqc6pzqnOqc+pz6nP");
+
 function ninjaTraceSamples(originX: number, originY: number, stage: number, phase: number, eventAt?: number): readonly (readonly [number, number])[] | undefined {
   if (stage !== 4 || Math.round(originY) !== 0) return undefined;
   if (phase === 0 && Math.round(originX) === 152 && eventAt === 47) return NINJA_STAGE4_TRACE_SAMPLES_NES;
   if (phase === 1 && Math.round(originX) === 184 && eventAt === 63) return NINJA_STAGE4_X184_AT63_TRACE_SAMPLES_NES;
   if (phase === 1 && Math.round(originX) === 184 && eventAt === 383) return NINJA_STAGE4_X184_AT383_TRACE_SAMPLES_NES;
   if (phase === 0 && Math.round(originX) === 184 && eventAt === 751) return NINJA_STAGE4_X184_AT751_TRACE_SAMPLES_NES;
+  if (phase === 0 && Math.round(originX) === 184 && eventAt === 815) return NINJA_STAGE4_X184_AT815_TRACE_SAMPLES_NES;
   return undefined;
 }
 
@@ -883,10 +886,11 @@ export function ninjaTraceLifetime(originX: number, originY: number, stage: numb
   return trace ? trace.length / NES_FRAME_RATE : undefined;
 }
 
-export function ninjaTraceThrows(stage: number, eventAt?: number): boolean | undefined {
+export function ninjaTraceThrowFrame(stage: number, eventAt?: number): number | false | undefined {
   if (stage !== 4) return undefined;
-  if (eventAt === 47 || eventAt === 63) return true;
+  if (eventAt === 47 || eventAt === 63) return 103;
   if (eventAt === 383 || eventAt === 751) return false;
+  if (eventAt === 815) return 116;
   return undefined;
 }
 const GUNMAN_FLANK_Y64_CODE9_OFFSETS_NES = GUNMAN_FLANK_Y64_CODE9_TRACE_SAMPLES_NES.map(([x, y]) => [x - 248, y - 65] as const);

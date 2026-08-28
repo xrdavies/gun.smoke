@@ -389,7 +389,9 @@ player-relative offset before holding position; clean routes release between
 `at=63,x=184,phase=1` have complete 244-frame coordinate traces, including
 their second post-throw movement and release transitions. Event
 `at=383,x=184,phase=1` and `at=751,x=184,phase=0` take random no-throw
-branches and release after 205/202 frames. Runtime binds those routes and throw decisions to their event indexes
+branches and release after 205/202 frames. Event `at=815,x=184,phase=0`
+reaches the activation range later, throws at frame 116, and releases after 258
+frames. Runtime binds those routes and throw frames to their event indexes
 and retains the 303-frame cap for other Ninja entries. ROM-tagged Ninja, Hatchet, Spear, and Firebreather
 shots use the same second-tier 32-direction table as Gunmen; side Firebreathers
 mask the selected heading to an even sector before allocation.

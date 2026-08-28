@@ -305,7 +305,10 @@ trace, and releases at frame 508. Entity code `9` enters from the right, follows
 a long mirrored loop, with successful windows at frames 399/463 in one trace,
 and releases at frame 826. The retained `$0540` phase can move these windows:
 the runtime checks every 64 frames, uses the fixed heading `16` during the
-initial side state, and then switches to the stored movement heading.
+initial side state, and then switches to the stored movement heading. Because
+`$0540/$04E0` are reused slot fields rather than event data, the web runtime
+uses a deterministic per-actor seed for this initial phase; exact slot-reuse
+seeding remains a documented parity boundary.
 On defeat, `$CD4E-$CDAA` converts an event's `0x80` flag into dispatch `0x4e`.
 If `$90/$94/$98/$9c` show no special-gun ammunition, it increments that to `0x4f`;
 the `$E192` conversion table then maps them to Bullet (`0x29`) and Money

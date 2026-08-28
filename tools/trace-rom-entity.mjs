@@ -112,19 +112,16 @@ for (let frame = 0; frame < frames; frame += 1) {
 
   if (targetSlot === undefined) {
     for (let slot = 16; slot < 23; slot += 1) {
-      if (!active(slot)) {
-        matchingSlots.delete(slot);
-        continue;
-      }
+      if (!active(slot)) continue;
       const candidate = entity(slot);
-      const matches = !advancing && candidate.dispatch === dispatch && (variant === undefined || candidate.variant === variant)
-        && (matchState === undefined || candidate.state === matchState)
+      const baseMatch = !advancing && candidate.dispatch === dispatch && (variant === undefined || candidate.variant === variant);
+      if (!baseMatch || matchingSlots.has(slot)) continue;
+      matchingSlots.add(slot);
+      const matches = (matchState === undefined || candidate.state === matchState)
         && (matchHeading === undefined || candidate.heading === matchHeading)
         && (matchX === undefined || candidate.x === matchX)
         && (matchY === undefined || candidate.y === matchY);
       if (!matches) continue;
-      if (matchingSlots.has(slot)) continue;
-      matchingSlots.add(slot);
       matchesSeen += 1;
       if (matchesSeen <= skip) continue;
       targetSlot = slot;

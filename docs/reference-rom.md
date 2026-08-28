@@ -718,6 +718,10 @@ Entity and recorded Boss traces also include the sampled `$AC-$AF` random bytes
 on every frame. Entity frames retain the shared `$B0/$B4/$B5/$BA/$BC` state;
 Boss frames additionally retain `$B1` and `$B6-$B9`, so random movement, attack
 and correction branches can be replayed without exposing ROM code.
+`trace:rom:entity` accepts optional `--match-state`, `--match-heading`,
+`--match-x`, and `--match-y` filters. They are applied to the first candidate
+slot after the dispatch/variant match, allowing a side-entry signature to be
+selected without relying on a global `--skip` count.
 Detailed scene samples also list active entity slots from the parallel arrays
 at `$0400/$0420/$0480/$0560/$05C0/$05E0`. The trace labels only the verified
 slot state, dispatch type, variant, script flags and coordinates; `$05C0` is

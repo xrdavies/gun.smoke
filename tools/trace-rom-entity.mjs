@@ -17,6 +17,10 @@ const frames = numberOption("frames", round === undefined ? 12_000 : round * 24_
 const traceFrames = numberOption("trace-frames", 1_200);
 const playerX = option("player-x") === undefined ? undefined : numberOption("player-x", 0);
 const playerY = option("player-y") === undefined ? undefined : numberOption("player-y", 0);
+const matchState = option("match-state") === undefined ? undefined : numberOption("match-state", 0);
+const matchHeading = option("match-heading") === undefined ? undefined : numberOption("match-heading", 0);
+const matchX = option("match-x") === undefined ? undefined : numberOption("match-x", 0);
+const matchY = option("match-y") === undefined ? undefined : numberOption("match-y", 0);
 const output = option("out") ?? ".rom-traces/entity.json";
 
 if (!fs.existsSync(filename)) {
@@ -29,6 +33,9 @@ if (followDispatches.some((value) => !Number.isInteger(value))) throw new Error(
 if (!Number.isInteger(skip) || skip < 0) throw new Error("--skip must be a non-negative integer");
 if (round !== undefined && (!Number.isInteger(round) || round < 1 || round > 6)) throw new Error("--round must be an integer from 1 through 6");
 if (!Number.isInteger(frames) || frames <= 0 || !Number.isInteger(traceFrames) || traceFrames <= 0) throw new Error("--frames and --trace-frames must be positive integers");
+for (const [name, value] of [["--match-state", matchState], ["--match-heading", matchHeading], ["--match-x", matchX], ["--match-y", matchY]]) {
+  if (value !== undefined && (!Number.isInteger(value) || value < 0 || value > 0xff)) throw new Error(`${name} must be an integer from 0 through 255`);
+}
 
 const romBytes = fs.readFileSync(filename);
 const nes = new NES({ onFrame: () => {}, onAudioSample: () => {} });
@@ -109,7 +116,12 @@ for (let frame = 0; frame < frames; frame += 1) {
         matchingSlots.delete(slot);
         continue;
       }
-      const matches = !advancing && memory[0x420 + slot] === dispatch && (variant === undefined || memory[0x480 + slot] === variant);
+      const candidate = entity(slot);
+      const matches = !advancing && candidate.dispatch === dispatch && (variant === undefined || candidate.variant === variant)
+        && (matchState === undefined || candidate.state === matchState)
+        && (matchHeading === undefined || candidate.heading === matchHeading)
+        && (matchX === undefined || candidate.x === matchX)
+        && (matchY === undefined || candidate.y === matchY);
       if (!matches) continue;
       if (matchingSlots.has(slot)) continue;
       matchingSlots.add(slot);
@@ -159,6 +171,10 @@ const trace = {
   skip,
   ...(round === undefined ? {} : { round }),
   ...(variant === undefined ? {} : { variant }),
+  ...(matchState === undefined ? {} : { matchState }),
+  ...(matchHeading === undefined ? {} : { matchHeading }),
+  ...(matchX === undefined ? {} : { matchX }),
+  ...(matchY === undefined ? {} : { matchY }),
   targetSlot,
   targetStart,
   player: { x: playerX, y: playerY },

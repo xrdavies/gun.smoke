@@ -303,6 +303,12 @@ tiles to `9`, yielding a maximum displayed score of `999990`.
 The player-projectile collision path at `$CCBE-$CCC3` skips dispatch `0x3F`, so
 Magnum piercing shots cannot destroy Fatman Joe's stationary mines; other
 eligible enemy projectiles remain destructible.
+Falling-rock records use the ordinary enemy slot range despite rendering as a
+moving hazard. Their initializer sets field `$0460` to `5`, and the same
+player-projectile collision routine applies bullet damage before the normal
+defeat/score path. The runtime therefore keeps rocks in the enemy pool, gives
+them five hit points, and excludes them from the Magnum projectile-clearing
+shortcut.
 An isolated `$B775` Rifleman descends one NES pixel per frame through age 121,
 enters its attack state at age 122 only when its screen Y is at least 48 NES
 pixels and Billy is within 96 NES Y pixels, then emits five dispatch `0x30` shots at ages

@@ -244,7 +244,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROM_OBJECT_SLOT_CAPACITY).toBe(6);
     expect(ROM_EMPTY_BARREL_ENTITY_CODES).toEqual([32, 41]);
     expect(ROM_ENTITY_HIT_POINTS).toMatchObject({ 1: 1, 3: 3, 6: 1, 10: 4, 11: 1, 13: 2, 14: 3, 16: 2, 17: 3, 19: 3, 21: 3, 32: 6, 42: 6 });
-    expect([1, 3, 6, 10, 11, 13, 14, 16, 17, 19, 21, 32, 42, 255].map(romEntityHitPoints)).toEqual([1, 3, 1, 4, 1, 2, 3, 2, 3, 3, 3, 6, 6, 1]);
+    expect([1, 3, 6, 10, 11, 12, 13, 14, 16, 17, 19, 21, 32, 42, 255].map(romEntityHitPoints)).toEqual([1, 3, 1, 4, 1, 5, 2, 3, 2, 3, 3, 3, 6, 6, 1]);
     expect(EMPTY_BARREL_EXPLOSION_LIFETIME).toBeCloseTo(10 / NES_FRAME_RATE, 9);
     expect(ENEMY_DEFEAT_ANIMATION_DURATION).toBeCloseTo(5 / NES_FRAME_RATE, 9);
     expect(ENEMY_DEFEAT_Y_OFFSETS_NES).toEqual([0, -4, -7, -10, -12]);

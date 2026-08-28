@@ -877,6 +877,8 @@ class GunSmokeGame {
       rock.romEntityCode = event.entityCode;
       rock.romFlags = event.flags;
       rock.romPool = event.pool;
+      rock.hp = romEntityHitPoints(event.entityCode);
+      rock.value = romEnemyScore(event.entityCode);
       rock.vx = (event.x < 128 ? 1 : -1) * ROCK_WORLD_SPEED_X;
       rock.vy = ROCK_WORLD_SPEED_Y;
       rock.maxAge = ROCK_LIFETIME;
@@ -1865,16 +1867,16 @@ class GunSmokeGame {
 
   private resolveCollisions(): void {
     const bullets = this.units.filter((unit) => unit.kind === "bullet" && unit.hp > 0);
-    const targets = this.units.filter((unit) => (unit.kind === "barrel" || (unit.kind === "enemy" || unit.kind === "boss") && unit.sprite.visible) && !unit.exploding && unit.hp > 0);
+    const targets = this.units.filter((unit) => (unit.kind === "barrel" || (unit.kind === "enemy" || unit.kind === "boss") && unit.sprite.visible || unit.kind === "enemyBullet" && unit.projectileType === "rock") && !unit.exploding && unit.hp > 0);
     for (const bullet of bullets) {
       if (bullet.piercing) {
-        const projectile = this.units.find((candidate) => candidate.kind === "enemyBullet" && candidate.projectileType !== "ninjaSmoke" && candidate.projectileType !== "grenade" && candidate.hp > 0 && distance(bullet, candidate) <= bullet.radius + candidate.radius);
+        const projectile = this.units.find((candidate) => candidate.kind === "enemyBullet" && candidate.projectileType !== "ninjaSmoke" && candidate.projectileType !== "grenade" && candidate.projectileType !== "rock" && candidate.hp > 0 && distance(bullet, candidate) <= bullet.radius + candidate.radius);
         if (projectile) {
           projectile.hp = 0;
           continue;
         }
       }
-      const target = targets.find((candidate) => (candidate.kind === "barrel" || candidate.kind === "enemy" || candidate.kind === "boss") && candidate.hp > 0 && !candidate.exploding && !bullet.hitTargets?.has(candidate) && distance(bullet, candidate) <= bullet.radius + candidate.radius);
+      const target = targets.find((candidate) => (candidate.kind === "barrel" || candidate.kind === "enemy" || candidate.kind === "boss" || candidate.kind === "enemyBullet" && candidate.projectileType === "rock") && candidate.hp > 0 && !candidate.exploding && !bullet.hitTargets?.has(candidate) && distance(bullet, candidate) <= bullet.radius + candidate.radius);
       if (!target) continue;
       if (!this.isBossVulnerable(target)) continue;
       if (bullet.piercing) bullet.hitTargets?.add(target);

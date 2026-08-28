@@ -318,7 +318,8 @@ Ninjas, Riflemen and Hatchet Throwers are 200; Shotgunners are 300; and
 Backstabbers and Spear Throwers are 400.
 Enemy durability also comes from each ROM entity initializer rather than the
 Round number: ordinary shooters range from one to four hit points, while
-breakable barrels take six points of projectile damage.
+breakable barrels take six points of projectile damage. Falling rocks use the
+same enemy pool with five hit points and can be damaged by every player weapon.
 
 After a lethal shot, the enemy remains non-colliding for the ROM's five-frame
 defeat animation while its slot is still occupied; any flagged drop is allocated

@@ -818,6 +818,7 @@ const GUNMAN_BOTTOM_PATHS_NES = {
   near: [[0, 0, 0], [1, 0, 248], [49, 0, 201], [80, -25, 201], [105, -44, 196], [110, -45, 191], [120, -38, 188], [130, -31, 192], [157, -23, 167], [190, -3, 147], [219, 16, 159], [240, 23, 180], [274, 34, 211], [300, 42, 235], [317, 47, 251]],
   far: [[0, 0, 0], [1, 0, 248], [49, 0, 201], [63, -9, 198], [105, -15, 157], [177, -26, 88], [200, -35, 100], [241, -41, 139], [264, -45, 161], [274, -52, 160], [283, -53, 161], [300, -45, 147], [350, -22, 106], [400, 1, 64], [450, 23, 23], [478, 36, 0]],
 } as const;
+
 export const GUNMAN_FLANK_SHOT_FRAMES = { 7: [64, 410], 8: [309], 9: [399, 463] } as const;
 export const GUNMAN_FLANK_LIFETIMES = { 7: 642 / NES_FRAME_RATE, 8: 508 / NES_FRAME_RATE, 9: 826 / NES_FRAME_RATE } as const;
 export const GUNMAN_FLANK_INITIAL_STATE_FRAMES = 250;
@@ -844,8 +845,18 @@ const GUNMAN_FLANK_Y64_TRACE_SAMPLES_NES = {
   8: decodeGunmanCoordinateSamples("AAAAAAEAAgEDAQQBBQIFAgYCBwMIAwkDCgQKBAsEDAUNBQ4FDwYPBhAGEQcSBxMHFAgUCBUIFgkXCRgJGQoZChoKGwscCx0LHQweDB8MIA0hDSINIg4jDiQOJQ8mDycPJxAoECkQKhErESwRLBItEi4SLxMwEzETMRQyFDMUNBU1FTUVNhY3FjgWORc6FzoXOxg8GD0YPhk/GT8ZQBpBGkIaQxtEG0QbRRxGHEccSB1JHUkdSh5LHkweTR9OH04fTyBPIFAfUR1THFQaVRlXGFgXWRZbFVwUXhRfE2ATYRJiEmMSYxJkEmUSZhJnEmgSaBNpE2oTaxRrFGwUbhZvF3AYchlzGnQcdR12H3cgeCJ5I3oleyd7KXwrfC19L30yfjV+OH47fj5+QX5EfkZ+Rn1GfUd8R3tHekh5SHhIeEl3SXdJd0p3SXdId0h3R3dGd0Z3RXdEd0R3Q3dCd0J3QXdAd0B3P3c+dz53PXc8dzx3O3c6dzp3OXc4dzh3N3c2dzZ3NXc0dzR3M3cydzJ3MXcwdzB3L3cudy53LXcsdyx3K3cqdyp3KXcodyh3J3cmdyZ3JXckdyR3I3cidyJ3IXcgdyB3H3cedx53HXccdxx3G3cadxp3GXcYdxh3F3cWdxZ3FXcUdxR3E3cSdxJ3EXcQdxB3D3cOdw53DXcMdwx3C3cKdwp3CXcIdwh3B3cGdwZ3BXcEdwR3A3cCdwJ3AXcAdwB3/3f+d/53/Xf8d/x3+3f6d/p3+Xf4d/h393f2d/Z39Xf0d/R383fyd/J38Xfwd/B373fud+537Xfsd+x363fqd+p36Xfod+h353fmd+Z35Xfkd+R343fid+J34Xfgd+B333fed9533Xfcd9x323fad9p32XfYd9h313fWd9Z31XfUd9R303fSd9J30XfQd9B3z3fOd853zXfMd8x3y3fKd8p3yXfId8h3x3fGd8Z3xXfEd8R3w3fCd8J3wXfAd8B3vw=="),
 } as const;
 
+
+const decodeGunmanAbsoluteCoordinateSamples = (encoded: string): readonly (readonly [number, number])[] => {
+  const bytes = Uint8Array.from(atob(encoded), (character) => character.charCodeAt(0));
+  const samples: [number, number][] = [];
+  for (let index = 0; index + 1 < bytes.length; index += 2) samples.push([bytes[index]!, bytes[index + 1]!]);
+  return samples;
+};
+const GUNMAN_FLANK_Y64_CODE9_TRACE_SAMPLES_NES = decodeGunmanAbsoluteCoordinateSamples("+EH3QfZB9UL0QvNC80PyQ/FD8ETvRO9E7kXtRexF60bqRupG6UfoR+dH5kjlSOVI5EnjSeJJ4UrgSuBK30veS91L3EzbTNtM2k3ZTdhN107WTtZO1U/UT9NP0lDSUNFQ0VHQUc9SzlPOVM1VzVfNWMxZzFrMW8xcy17LX8tgymLKY8pkyWbJZ8loyGrIashrx23Hbsdvx3HGcsZzxnXFdsV3xXnEesR7xHzDfcN+w4DCgcKCwoTChcGGwYjBicCKwIzAjL+Nv4+/kL6RvpO+lL2VvZe9mLyZvJq7m7ucu567n7qguqG5obmguKG3oLagtqG1oLSgs6CzoLKgsaCwoLCgr6CuoK2fraCsoKufqqCpn6mfqKCnn6afpp+ln6Sfo5+jn6KeoZ+gn6Cen5+en52enZ+cnpuemp+ZnpmemJ6Xnpaelp6VnpSdk56TnpKdkZ6QnZCdj56OnY2djZ6MnYudip2JnYmdiJ2HnYachp2FnYScg52DnIKcgZ2AnICcf51+nH2cfZx8nHucepx5nHmbeJx3nHabdpx1m3Sbc5xzm3KbcZtwm3Cbb5tum22bbZtsm2uaaptpm2maaJtnmmaaZptlmmSaY5pjmmKaYZpgmmCZX5peml2ZXZpcmluZWppZmVmZWJpXmVaZVplVmVSZU5lTmVKYUZlQmVCYT5lOmU2YTZlMmEuYSplJmEmYSJhHmEaYRphFmESXQ5hDmEKXQZhAl0CXP5g+lz2XPZg8lzuXOpc5lzmXOJc3lzaWNpc1lzSWM5czljKWMZcwljCWL5Yuli2WLZYsliuWKpYplimVKJYnliaVJpYllSSVI5YjlSKVIZUglSCVH5UelR2VHZUclRuUGpUalRmUGJUXlBaUFpUVlBSUE5QTlBKUEZQQlBCTD5QOlA2TDZQMlAuTCpQKkwmTCJQHkwaTBpMFkwSTA5MDkwKSAZMAkwCS");
+const GUNMAN_FLANK_Y64_CODE9_OFFSETS_NES = GUNMAN_FLANK_Y64_CODE9_TRACE_SAMPLES_NES.map(([x, y]) => [x - 248, y - 65] as const);
+
 export function gunmanFlankLifetime(entityCode: 7 | 8 | 9, originY = 0): number {
-  const scoped = Math.round(originY) === 64 && entityCode === 8 ? GUNMAN_FLANK_Y64_TRACE_SAMPLES_NES[entityCode].length : Math.round(originY) === 32 && entityCode !== 7 ? GUNMAN_FLANK_SCOPED_LIFETIMES_FRAMES[entityCode] : undefined;
+  const scoped = Math.round(originY) === 64 && entityCode === 8 ? GUNMAN_FLANK_Y64_TRACE_SAMPLES_NES[entityCode].length : Math.round(originY) === 64 && entityCode === 9 ? GUNMAN_FLANK_Y64_CODE9_TRACE_SAMPLES_NES.length : Math.round(originY) === 32 && entityCode !== 7 ? GUNMAN_FLANK_SCOPED_LIFETIMES_FRAMES[entityCode] : undefined;
   return (scoped ?? Math.round(GUNMAN_FLANK_LIFETIMES[entityCode] * NES_FRAME_RATE)) / NES_FRAME_RATE;
 }
 
@@ -926,7 +937,7 @@ export function gunmanTopHeading(age: number, targetX: number, originX = 88, ori
 export function gunmanFlankPosition(entityCode: 7 | 8 | 9, age: number, originY = 0): readonly [number, number] {
   const path = Math.round(originY) === 32 && entityCode !== 7 ? GUNMAN_FLANK_SCOPED_PATHS_NES[entityCode] : GUNMAN_FLANK_PATHS_NES[entityCode];
   const frame = Math.max(0, Math.round(age * NES_FRAME_RATE));
-  const y64Trace = Math.round(originY) === 64 && entityCode === 8 ? GUNMAN_FLANK_Y64_TRACE_SAMPLES_NES[entityCode] : undefined;
+  const y64Trace = Math.round(originY) === 64 ? entityCode === 8 ? GUNMAN_FLANK_Y64_TRACE_SAMPLES_NES[entityCode] : entityCode === 9 ? GUNMAN_FLANK_Y64_CODE9_OFFSETS_NES : undefined : undefined;
   if (y64Trace && frame < y64Trace.length) return y64Trace[frame]!;
   if (entityCode === 7 && frame < GUNMAN_FLANK_TRACE_SAMPLES_NES.length) return GUNMAN_FLANK_TRACE_SAMPLES_NES[frame]!;
   const nextIndex = path.findIndex(([at]) => at >= frame);

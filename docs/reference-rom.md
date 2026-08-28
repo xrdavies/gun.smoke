@@ -311,8 +311,9 @@ uses a deterministic per-actor seed for this initial phase; exact slot-reuse
 seeding remains a documented parity boundary. Two complete Round 2 `y=32`
 side traces are now used when their entry coordinate matches: code 8 follows
 the 569-frame left-edge trace and code 9 follows the 963-frame right-edge
-trace; a second code 8 trace at `y=64` follows 371 measured frames. Other
-entry heights retain the generic measured routes.
+trace; a code 8 trace at `y=64` follows 371 measured frames, and a code 9 trace
+at `y=64` follows 360 measured frames. Other entry heights retain the generic
+measured routes.
 On defeat, `$CD4E-$CDAA` converts an event's `0x80` flag into dispatch `0x4e`.
 If `$90/$94/$98/$9c` show no special-gun ammunition, it increments that to `0x4f`;
 the `$E192` conversion table then maps them to Bullet (`0x29`) and Money

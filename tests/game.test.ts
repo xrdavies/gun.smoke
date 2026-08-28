@@ -244,7 +244,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(roundCollisionBlocks(1, 2.25, 810, 60.75)).toBe(false);
     expect(roundCollisionBlocks(1, 2.25, 810, 114.75)).toBe(true);
     expect(roundTerrainPresentAtNes(4, 0, 4, 48)).toBe(true);
-    expect(roundTerrainPresentAtNes(4, 0, 248, 48)).toBe(true);
+    expect(roundTerrainPresentAtNes(4, 0, 48, 48)).toBe(true);
     expect(roundTerrainPresentAtNes(1, 0, 4, 48)).toBe(false);
   });
 

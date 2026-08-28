@@ -9,7 +9,7 @@ const encodedRounds = [
 ] as const;
 
 // Round 4 terrain presence for routines that test a quadrant byte for zero.
-const encodedRound4Terrain = "f3fqq7//+rr//Nrqv/9u+9/86vrv/9v+//+q//v/tv6//3r/8//i////7//8/+7/e/+2/8f96v6/9W/6f9/66/z96ar//3rr//u6/t/3rvnL/+7+v//+/rP/Wv49/6r/Pv95//P/qv/f//r6zf9q6//17q7/+6rvL/+e+//y2vWz//r+b/6W////rv7//+r/z/+u////7v/7/+f/f/+u/+/93v7/9/r6/9Oq5sN/prvf/+mqz/+fqv//r6v//7ur/fx+rv/36r//77q+/z/qu///qa//76eb/3/vt//1r67/z7+b//f/qv/bf2f/+/++/+f/u/8//7////+//77/bb/Hf2vv/d+6+/23q//+ua3v98ev/49/Xd/bL7f/vb///8v/p//7f5f//f+r////rv/3P6v/9L++tz5rr1/+uav/8+er//+/qv//77f//b+vvzP/a//+f73/e//////////P/+v/v/9f//r/tb//f6/v/9+u6973r/736av/7+q2O/em25/+6u3c/+b/v3/6s/f5/v9v/9r////67v/Pep/f/O7mv//68u//fvvf/a7/9fzu/f/1nvrv3/7u/0/6rv/+662x/2vq3/P6+4//bvr//7v///7q/b/32vvP3+rq";
+const encodedRound4Terrain = "AAAAAAAAAAAA8ADAAPAA8ADgAPAA/AD4AMwA3AA/AHwA/wD/AP4A/8D/gP/A/8D/AP4A/wD4APwA4ADwAIAAwAAAAAAA8ADAAPAA8ADgAPAA/AD4AMwA3AA/AHwA/wD/APwA/gD4APwA4ADwAIAAwAAAAAAA8ADAAPAA8ADgAOAA/AD4APgA/AD/APgA/wD/AP4A/sD/gP+A/8D/AP4A/wD4APwA4ADwAIAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAMADwAPAA8ABwA/AB8APwA/AP8APwD/AP8APwB/AA8AHwADAAcAAAABAAAAAAAPAAMADwAPAA8ABwA/AB8APwA/AP8AHwD/AP8AfwB/AP8D/wH/A/8DfwD/AB8APwAHAA8AAQADAAAAAAAPAAMADwAPAA8ABwA/AB8APwA/AP8AHwD/AP8AfwB/AP8D/wH/A/8DfwD/AB8APwAHAA8AAQADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8ADAAPAA8ADgAOAA/AD4APgA/ADgAPAAgADAAAAAAAAAAAAA8ADAAPAA8ADgAPAA/AD4APwA/ADgAPAAgADA";
 
 const decodeRows = (encoded: string): readonly number[] => {
   const bytes = atob(encoded);

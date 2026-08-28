@@ -51,7 +51,7 @@ describe("Gun.Smoke vertical slice", () => {
   it("keeps the NES-inspired stage constants stable", () => {
     expect({ frameRate: NES_FRAME_RATE, rounds: MAX_STAGE }).toEqual({ frameRate: 60.098, rounds: 6 });
     expect(MAX_LIVES).toBe(5);
-    expect(BLUE_YASHICHI_DURATION).toBeCloseTo(180 / NES_FRAME_RATE, 9);
+    expect(BLUE_YASHICHI_DURATION).toBeCloseTo(360 / NES_FRAME_RATE, 9);
     expect(ROUND_BOSS_GATE_SCROLL_NES).toEqual([2_767, 2_799, 4_863, 3_487, 2_879, 4_879]);
     expect(ROUND_LOOP_SCROLL_NES).toEqual([3_087, 3_055, 5_119, 3_839, 3_055, 5_119]);
     expect(ROUND_BOSS_TRIGGERS[0]).toBe(6_225.75);

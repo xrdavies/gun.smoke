@@ -118,8 +118,9 @@ dispatch `0x09`'s short explosion state and is released without a pickup
 conversion; it is not the Wanted poster.
 These object conversions do not add score when the barrel is broken; the Money
 pickup's later collection is the 200-point reward.
-The Blue Yashichi branch writes `180` to `$7C`, so the runtime uses a
-`180 / 60.098`-second invulnerability window. The Life branch stops incrementing
+The Blue Yashichi branch writes `180` to `$7C`; `$EFDC-$EFE7` decrements that
+counter only on every other gameplay frame, so the runtime uses a
+`360 / 60.098`-second invulnerability window. The Life branch stops incrementing
 at `$7A == 5`; no ROM path increments `$7A` in response to score changes.
 Round-entry snapshots store `3` in `$7A`, so the runtime starts a new game with
 three lives and treats five only as the cap.

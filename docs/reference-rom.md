@@ -93,7 +93,9 @@ The generated `ROUND_ROM_OBJECT_EVENTS` stream retains no-behavior object
 records. The runtime consumes dispatch `30/31` weapon and supply-shop triggers,
 renders dispatch `0x08` scene props, and preserves dispatch `0x07`
 breakable-container variants. Decoded shop and `0x07` objects descend at the
-measured one NES pixel every three frames.
+measured one NES pixel every three frames. The shared scrolling-actor update
+releases shops, containers, props, and converted pickups when screen Y reaches
+`252` (`$FC`); runtime uses that same boundary for slot cleanup.
 Round 4's 44 `$B5BF` records all select the enemy pool. Isolated contact
 verification identifies them as falling rock hazards. A locked lifecycle trace
 follows dispatch `0x6C/0x6D` for 96 frames from NES `(4,48)` through a curved

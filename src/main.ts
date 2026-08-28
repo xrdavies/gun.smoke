@@ -39,7 +39,7 @@ import { ENEMY_DEFEAT_ANIMATION_DURATION } from "./game-constants";
 import { ENEMY_DEFEAT_Y_OFFSETS_NES } from "./game-constants";
 import { hasSpecialAmmoStock, hasWeaponStock, romEnemyDrop, romEnemyScore } from "./game-constants";
 import { romProjectileOnScreen } from "./game-constants";
-import { roundCollisionAtNes, roundCollisionBlocks, ROUND_COLLISION_ROWS } from "./round-collision";
+import { roundCollisionAtNes, roundCollisionBlocks, roundCollisionScrollNes, roundPlayerRecoveryX, ROUND_COLLISION_ROWS } from "./round-collision";
 import { canSpawnRomPool, compareRomEventOrder, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_FALLING_ROCK_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEntityHitPoints, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
 import type { RomEnemyEvent, RomObjectEvent } from "./rom-event-data";
 
@@ -637,6 +637,7 @@ class GunSmokeGame {
       this.updateHud();
       return;
     }
+    const previousScroll = this.scroll;
     const scrollDelta = this.bossSpawned ? 0 : WORLD_SCROLL_SPEED * delta;
     this.scroll += scrollDelta;
     this.player.y += scrollDelta;
@@ -660,6 +661,13 @@ class GunSmokeGame {
     } else {
       if (!this.isPlayerBlocked(nextX, this.player.y)) this.player.x = nextX;
       if (!this.isPlayerBlocked(this.player.x, nextY)) this.player.y = nextY;
+    }
+    const playerScreenY = (this.player.y - this.scroll) / NES_WORLD_Y_SCALE;
+    const collisionScroll = this.scroll + NES_WORLD_Y_SCALE / 3;
+    const nextRowBlocked = roundCollisionBlocks(this.stage, collisionScroll, this.player.x, collisionScroll + PLAYER_MAX_Y_NES * NES_WORLD_Y_SCALE);
+    if (playerScreenY >= PLAYER_MAX_Y_NES && roundCollisionScrollNes(this.scroll) > roundCollisionScrollNes(previousScroll) && nextRowBlocked) {
+      this.player.x = roundPlayerRecoveryX(this.stage, collisionScroll, this.player.x / NES_WORLD_X_SCALE, PLAYER_MAX_Y_NES - 1) * NES_WORLD_X_SCALE;
+      this.player.y = this.scroll + (PLAYER_MAX_Y_NES - 1) * NES_WORLD_Y_SCALE;
     }
     this.player.sprite.position = { x: this.player.x, y: this.player.y };
     this.horseSprite.position = { x: this.player.x, y: this.player.y + 16 };

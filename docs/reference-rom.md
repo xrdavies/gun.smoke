@@ -810,6 +810,10 @@ The player collision pass checks the candidate center plus horizontal edges at
 `x-7` and `x+6`. Replaying the first 180 Round 1 frames with each cardinal input
 matches the ROM position on every frame; the later right-edge diagonal
 scroll-correction branch remains a documented parity boundary.
+When the map advances while Billy is at the lower bound, `$C733-$C795` aligns
+his X probe and searches outward in 16-pixel columns for the nearest open cell.
+The Round 1 right/down replay therefore recovers `(240,216)` to `(216,215)` on
+frame 122 before regular input resumes.
 
 OAM projectile traces show straight A+B pistol shots moving 6 pixels per frame,
 and single-button two-gun diagonal pairs moving about `(2,-5)` and `(3,-5)`

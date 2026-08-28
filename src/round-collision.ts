@@ -26,6 +26,11 @@ const NES_VIEW_HEIGHT = 240;
 const WORLD_WIDTH = 960;
 const WORLD_HEIGHT = 540;
 const INITIAL_STORAGE_ROW = 8;
+const COLLISION_SCROLL_PHASE_NES = 1 / 3;
+
+export function roundCollisionScrollNes(scroll: number): number {
+  return Math.floor(scroll * NES_VIEW_HEIGHT / WORLD_HEIGHT + COLLISION_SCROLL_PHASE_NES);
+}
 
 export function roundCollisionBlocks(round: number, scroll: number, x: number, y: number): boolean {
   const screenX = Math.round(x * NES_MAP_WIDTH / WORLD_WIDTH);
@@ -53,4 +58,26 @@ function roundRowsContain(rows: readonly number[], scroll: number, screenX: numb
   const row = traversalRow * 2 + Number(Boolean(relativeY & 0x10));
   const bit = 15 - ((clampedX >> 5) * 2 + Number(Boolean(clampedX & 0x10)));
   return Boolean((rows[row] ?? 0) & (1 << bit));
+}
+
+export function roundPlayerRecoveryX(round: number, scroll: number, screenX: number, screenY: number): number {
+  const alignedX = (Math.floor(screenX) & 0xf8) | 8;
+  if (alignedX !== 248 && !roundCollisionAtNes(round, scroll, alignedX, screenY)) return alignedX;
+  let leftX = alignedX;
+  let leftSteps = 0;
+  while (leftX >= 16) {
+    leftX -= 16;
+    leftSteps += 1;
+    if (!roundCollisionAtNes(round, scroll, leftX, screenY)) break;
+  }
+  if (leftX < 16) leftSteps = Number.POSITIVE_INFINITY;
+  let rightX = alignedX;
+  let rightSteps = 0;
+  while (rightX < 224) {
+    rightX += 16;
+    rightSteps += 1;
+    if (!roundCollisionAtNes(round, scroll, rightX, screenY)) break;
+  }
+  if (rightX >= 224) rightSteps = Number.POSITIVE_INFINITY;
+  return leftSteps < rightSteps ? leftX : rightX;
 }

@@ -419,7 +419,9 @@ edges retain their gameplay role through the decoded Round collision map. Eight
 directions use the ROM's fixed-point vector table rather than equal X/Y diagonal
 components, with normal speed alternating its first and second tiers each frame.
 Terrain movement probes Billy's center and NES horizontal edges `-7/+6`, matching
-the cardinal wall-stop routes instead of using one offset point.
+the cardinal wall-stop routes instead of using one offset point. At the lower
+screen edge, a newly scrolled collision row searches the nearest open 16-pixel
+column before movement resumes.
 
 ## Known Approximation Boundary
 

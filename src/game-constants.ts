@@ -761,7 +761,7 @@ function moveEncodedHeading(state: { x: number; y: number }, encodedHeading: num
   state.y += velocityY * speed;
 }
 
-export function advanceSpear(state: SpearState, targetFrame: number, playerX: number, playerY: number, randomByte: () => number): { readonly shots: readonly number[] } {
+export function advanceSpear(state: SpearState, targetFrame: number, playerX: number, playerY: number, randomByte: () => number): { readonly shots: readonly number[]; readonly dead: boolean } {
   const shots: number[] = [];
   while (state.frame < targetFrame) {
     state.frame += 1;
@@ -791,7 +791,7 @@ export function advanceSpear(state: SpearState, targetFrame: number, playerX: nu
       if (aim >= 10 && aim <= 23) shots.push(aim & 0x1e);
     }
   }
-  return { shots };
+  return { shots, dead: Math.round(state.y) >= ROM_SCREEN_RELEASE_Y_NES };
 }
 
 export const BACKSTABBER_AMBUSH_DROP_SPEED = 45;

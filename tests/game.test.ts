@@ -527,6 +527,9 @@ describe("Gun.Smoke vertical slice", () => {
     expect(top.shots).toEqual([{ frame: 144, heading: 14 }, { frame: 288, heading: 12 }]);
     expect(side.checkpoints).toEqual([{ frame: 40, x: 183, y: 83 }, { frame: 112, x: 148, y: 148 }]);
     expect(side.shots).toEqual([{ frame: 160, heading: 18 }, { frame: 304, heading: 20 }]);
+    const release = createSpearState(248, 32, true);
+    expect(advanceSpear(release, 537, 136, 188, () => 0x10).dead).toBe(false);
+    expect(advanceSpear(release, 538, 136, 188, () => 0x10).dead).toBe(true);
   });
 
   it("matches the traced Round 5 ambush backstabber", () => {

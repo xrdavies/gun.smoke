@@ -1580,6 +1580,7 @@ class GunSmokeGame {
           );
           unit.x = state.x * NES_WORLD_X_SCALE;
           unit.y = this.scroll + state.y * NES_WORLD_Y_SCALE;
+          if (result.dead) unit.hp = 0;
           if (result.shots.length > 0) {
             unit.fired = true;
             unit.volleysFired += result.shots.length;
@@ -1662,6 +1663,7 @@ class GunSmokeGame {
           );
           unit.x = state.x * NES_WORLD_X_SCALE;
           unit.y = this.scroll + state.y * NES_WORLD_Y_SCALE;
+          if (Math.round(state.y) >= ROM_SCREEN_RELEASE_Y_NES) unit.hp = 0;
           if (result.shots.length > 0) {
             unit.fired = true;
             unit.volleysFired += result.shots.length;

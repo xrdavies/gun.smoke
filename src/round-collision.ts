@@ -28,9 +28,9 @@ const WORLD_HEIGHT = 540;
 const INITIAL_STORAGE_ROW = 8;
 
 export function roundCollisionBlocks(round: number, scroll: number, x: number, y: number): boolean {
-  const screenX = Math.round(x * NES_MAP_WIDTH / WORLD_WIDTH + 8);
-  const screenY = Math.round((y - scroll) * NES_VIEW_HEIGHT / WORLD_HEIGHT + 6);
-  return roundCollisionAtNes(round, scroll, screenX, screenY);
+  const screenX = Math.round(x * NES_MAP_WIDTH / WORLD_WIDTH);
+  const screenY = Math.round((y - scroll) * NES_VIEW_HEIGHT / WORLD_HEIGHT);
+  return [screenX, screenX - 7, screenX + 6].some((probeX) => roundCollisionAtNes(round, scroll, probeX, screenY));
 }
 
 export function roundCollisionAtNes(round: number, scroll: number, screenX: number, screenY: number): boolean {

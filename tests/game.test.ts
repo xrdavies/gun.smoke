@@ -269,10 +269,15 @@ describe("Gun.Smoke vertical slice", () => {
     expect(roundCollisionBlocks(1, 45, 480, 455)).toBe(false);
     expect(roundCollisionBlocks(1, 45, 0, 455)).toBe(true);
     expect(roundCollisionBlocks(1, 2.25, 810, 60.75)).toBe(false);
-    expect(roundCollisionBlocks(1, 2.25, 810, 114.75)).toBe(true);
     expect(roundCollisionAtNes(4, 0, 4, 48)).toBe(true);
     expect(roundCollisionAtNes(4, 0, 48, 48)).toBe(true);
     expect(roundCollisionAtNes(1, 0, 0, 0)).toBe(false);
+    const leftWallScroll = 79 / 3 * NES_WORLD_Y_SCALE;
+    const rightWallScroll = 64 / 3 * NES_WORLD_Y_SCALE;
+    expect(roundCollisionBlocks(1, leftWallScroll, 37 * NES_WORLD_X_SCALE, leftWallScroll + 188 * NES_WORLD_Y_SCALE)).toBe(true);
+    expect(roundCollisionBlocks(1, leftWallScroll, 39 * NES_WORLD_X_SCALE, leftWallScroll + 188 * NES_WORLD_Y_SCALE)).toBe(false);
+    expect(roundCollisionBlocks(1, rightWallScroll, 217 * NES_WORLD_X_SCALE, rightWallScroll + 188 * NES_WORLD_Y_SCALE)).toBe(false);
+    expect(roundCollisionBlocks(1, rightWallScroll, 218 * NES_WORLD_X_SCALE, rightWallScroll + 188 * NES_WORLD_Y_SCALE)).toBe(true);
   });
 
   it("keeps the ROM enemy event streams ordered and bounded", () => {

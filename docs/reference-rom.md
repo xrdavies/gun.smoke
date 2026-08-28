@@ -806,6 +806,10 @@ The movement routine clamps Billy's center to NES `x=16..240` and `y=48..216`
 before terrain probes. Runtime uses those fixed screen bounds and leaves
 Round-specific road, building, and cliff restrictions to the decoded collision
 map rather than applying an additional authored road-width clamp.
+The player collision pass checks the candidate center plus horizontal edges at
+`x-7` and `x+6`. Replaying the first 180 Round 1 frames with each cardinal input
+matches the ROM position on every frame; the later right-edge diagonal
+scroll-correction branch remains a documented parity boundary.
 
 OAM projectile traces show straight A+B pistol shots moving 6 pixels per frame,
 and single-button two-gun diagonal pairs moving about `(2,-5)` and `(3,-5)`

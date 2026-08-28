@@ -112,6 +112,7 @@ for (let frame = 0; frame < frames; frame += 1) {
   if (attack || record) {
     bossFrames.push({
       frame: relativeFrame,
+      roundIndex: memory[0x41],
       pc: `$${nes.cpu.REG_PC.toString(16).padStart(4, "0")}`,
       ...boss,
       fields: {

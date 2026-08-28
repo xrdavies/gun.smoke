@@ -243,7 +243,8 @@ An isolated `$B080` Sniper fires at ages 134, 224, 405, 495 and 585 frames,
 then releases its slot at age 732. The routine's 90-frame base cooldown is
 visible directly; the longer middle gap is a missed discrete aiming window.
 Its ROM Y coordinate advances with the camera at the measured scroll rate while
-the X lane stays fixed; the runtime carries ROM-tagged Snipers with that scroll.
+the X lane stays fixed; the runtime carries ROM-tagged Snipers with that scroll
+and releases them at the observed NES screen boundary `Y=252`.
 Each shot enters a cover dispatch for 90 NES frames, disabling collision until
 the actor returns to its firing state.
 Their dispatch `0x2f` bullets use the ROM's quantized 32-direction speed table

@@ -1286,10 +1286,21 @@ export type DevilHawkMovementState = {
   actionKind: "hold" | "jump";
   correctionHoldFrames: number;
   correctionReleaseFrames: number;
+  romExactActions?: boolean;
+  actionBounceCounter?: number;
 };
 
 export function createDevilHawkMovementState(x: number, y: number): DevilHawkMovementState {
   return { frame: DEVIL_HAWK_RANDOM_ROUTE_START_FRAME, mode: "move", x, y, heading: 0x40, segmentFrames: 30, gait: 3, actionCounter: 30, actionFrames: 0, actionHeading: 0x40, actionKind: "hold", correctionHoldFrames: 0, correctionReleaseFrames: 0 };
+}
+
+function devilHawkVerticalBounceDelta(counter: number): number {
+  if (counter >= 20) return -5;
+  if (counter >= 16) return -4;
+  if (counter >= 12) return -3;
+  if (counter >= 8) return -1;
+  if (counter >= 4) return 0;
+  return 1;
 }
 
 function advanceDevilHawkGait(state: DevilHawkMovementState, heading = state.heading): void {
@@ -1303,6 +1314,24 @@ export function advanceDevilHawkMovement(state: DevilHawkMovementState, targetFr
   while (state.frame < targetFrame) {
     state.frame += 1;
     if (state.mode === "action") {
+      if (state.romExactActions && state.actionKind === "jump") {
+        if (state.actionFrames > 0) {
+          state.actionFrames -= 1;
+          if (state.actionFrames === 0) state.actionBounceCounter = 24;
+          continue;
+        }
+        if (state.actionBounceCounter !== undefined) {
+          state.actionBounceCounter -= 1;
+          if (state.actionBounceCounter < 0) {
+            state.actionBounceCounter = undefined;
+            state.mode = "move";
+            continue;
+          }
+          state.y += devilHawkVerticalBounceDelta(state.actionBounceCounter);
+          if (state.actionBounceCounter === 18) fullFans.push(true);
+          continue;
+        }
+      }
       state.actionFrames -= 1;
       if (state.actionKind === "jump") advanceDevilHawkGait(state, DEVIL_HAWK_ACTION_HEADINGS[Math.max(0, state.actionFrames) >> 1] ?? state.actionHeading);
       if (state.actionKind === "hold" && state.actionFrames === 13) fullFans.push(false);
@@ -1349,6 +1378,7 @@ export function advanceDevilHawkMovement(state: DevilHawkMovementState, targetFr
         state.actionFrames = 32;
         state.actionKind = "jump";
         state.actionHeading = Math.floor(state.y) >= 88 ? 0x40 : 0xc0;
+        if (state.romExactActions) state.actionFrames = 26;
         continue;
       }
     }

@@ -1792,6 +1792,7 @@ class GunSmokeGame {
           unit.devilHawkState.segmentFrames = DEVIL_HAWK_RANDOM_HANDOFF_SEGMENT_FRAMES;
           unit.devilHawkState.gait = DEVIL_HAWK_RANDOM_HANDOFF_GAIT;
           unit.devilHawkState.actionCounter = DEVIL_HAWK_RANDOM_HANDOFF_ACTION_COUNTER;
+          unit.devilHawkState.romExactActions = true;
         }
         devilFireFans = advanceDevilHawkMovement(unit.devilHawkState, devilHawkCombatFrame, () => this.nextRomRandomThirdFirstSumByte(), () => this.nextRomRandomSecondThirdSumByte()).fullFans;
         unit.x = unit.devilHawkState.x * NES_WORLD_X_SCALE;

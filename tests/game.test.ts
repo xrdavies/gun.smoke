@@ -813,6 +813,18 @@ describe("Gun.Smoke vertical slice", () => {
     expect(correction.actionFrames).toBe(0);
     advanceDevilHawkMovement(correction, 3737, () => 0, () => 0);
     expect(correction.mode).toBe("move");
+
+    const exact = createDevilHawkMovementState(119 + 220 / 256, 109 + 206 / 256);
+    exact.heading = 0x44;
+    exact.segmentFrames = 71;
+    exact.gait = 0x84;
+    exact.actionCounter = 14;
+    exact.romExactActions = true;
+    advanceDevilHawkMovement(exact, 3634, () => 0, () => 9);
+    const exactFan = advanceDevilHawkMovement(exact, 3666, () => 0, () => 0).fullFans;
+    expect({ x: Math.floor(exact.x), y: Math.floor(exact.y), mode: exact.mode, actionFrames: exact.actionFrames, fan: exactFan }).toEqual({ x: 133, y: 64, mode: "action", actionFrames: 0, fan: [true] });
+    advanceDevilHawkMovement(exact, 3685, () => 0, () => 0);
+    expect({ x: Math.floor(exact.x), y: Math.floor(exact.y), mode: exact.mode }).toEqual({ x: 133, y: 44, mode: "move" });
   });
 
   it("matches the traced Ninja Boss entrance", () => {

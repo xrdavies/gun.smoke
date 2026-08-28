@@ -413,8 +413,8 @@ canvas so keyboard control continues after DOM interaction.
 
 Automatic map scroll now carries Billy's world-space Y coordinate by the same
 delta, keeping his screen position stable while idle. Eight-direction movement
-then ranges across nearly the full visible height; horizontal bounds remain
-terrain-specific so buildings and cliff edges retain their gameplay role.
+uses the measured NES center bounds `x=16..240,y=48..216`; buildings and cliff
+edges retain their gameplay role through the decoded Round collision map.
 
 ## Known Approximation Boundary
 

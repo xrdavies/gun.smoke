@@ -800,6 +800,10 @@ Holding Left for 60 real frames moves Billy about 75 NES pixels. The procedural
 world therefore uses 169.025625 world pixels per second;
 with `$78` set to any nonzero Boots stock and `$45=2`, the same trace moves 100
 pixels. The runtime therefore uses a non-stacking `4 / 3` Boots multiplier.
+The movement routine clamps Billy's center to NES `x=16..240` and `y=48..216`
+before terrain probes. Runtime uses those fixed screen bounds and leaves
+Round-specific road, building, and cliff restrictions to the decoded collision
+map rather than applying an additional authored road-width clamp.
 
 OAM projectile traces show straight A+B pistol shots moving 6 pixels per frame,
 and single-button two-gun diagonal pairs moving about `(2,-5)` and `(3,-5)`

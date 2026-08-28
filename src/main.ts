@@ -1050,9 +1050,21 @@ class GunSmokeGame {
     const edge = (960 - roadWidth) / 2;
     const segments = ROUND_SEGMENTS[this.stage - 1] ?? ROUND_SEGMENTS[0]!;
     this.backgrounds.push(new Sprite({ texture: mapTexture, sampler: this.sampler, position: { x: 480, y: roundLength / 2 }, size: { x: 960, y: roundLength }, anchor: { x: 0.5, y: 0.5 }, color: tint, layer: -20 }));
+    const roadTint = this.stage === 2 ? [0.76, 0.72, 0.62, 1] as Rgba : this.stage === 3 ? [0.72, 0.62, 0.48, 1] as Rgba : this.stage === 6 ? [0.64, 0.68, 0.78, 1] as Rgba : [0.82, 0.68, 0.48, 1] as Rgba;
     for (let y = -360; y < roundLength + 650; y += 180) {
       let landmark = segments[0]?.landmark ?? "town";
       for (const candidate of segments) if (y >= candidate.at) landmark = candidate.landmark;
+      if (this.stage !== 5) {
+        this.backgrounds.push(new Sprite({
+          texture: road,
+          sampler: this.sampler,
+          position: { x: 480, y: y + 90 },
+          size: { x: roadWidth, y: 180 },
+          anchor: { x: 0.5, y: 0.5 },
+          color: roadTint,
+          layer: -19,
+        }));
+      }
       if (this.stage === 5) {
         const forestSegment = Math.floor(y / 180);
         const bridge = forestSegment % 3 === 1;

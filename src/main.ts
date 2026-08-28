@@ -937,7 +937,7 @@ class GunSmokeGame {
         [projectile.vx, projectile.vy] = banditBillProjectileVelocity(boss.x, boss.y, this.player.x, this.player.y);
       }
       boss.volleysFired += 1;
-      if (boss.banditState) boss.banditState.pauseFrames = BANDIT_BILL_ATTACK_PAUSE_FRAMES;
+      if (boss.banditState && boss.banditState.pauseFrames === 0) boss.banditState.pauseFrames = BANDIT_BILL_ATTACK_PAUSE_FRAMES;
       this.bossFireClock = banditBillCooldown(boss.volleysFired);
       this.beep(168, 0.045);
       return;

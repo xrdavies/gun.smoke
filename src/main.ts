@@ -2466,7 +2466,7 @@ class ReferenceRomGame {
     }
     let engine: Engine | undefined;
     try {
-      engine = await Engine.create({ canvas, autoStart: false, input: true });
+      engine = await Engine.create({ canvas, autoStart: false, input: true, fixedDelta: 1 / NES_FRAME_RATE });
       return new ReferenceRomGame(engine, nes, Controller, frame, audio, pcm, metadata);
     } catch (error) {
       engine?.destroy();

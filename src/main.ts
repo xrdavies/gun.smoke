@@ -1360,10 +1360,11 @@ class GunSmokeGame {
         const boundary = unit.rockNextBoundary ?? 24;
         if (unit.age * NES_FRAME_RATE >= boundary) {
           const fromLeft = (unit.romOriginX ?? unit.x) < 480;
-          const probeHeading = fromLeft ? 8 : boundary === 24 ? 24 : 16;
+          const probeHeading = fromLeft ? 14 : 16;
           const [probeX, probeY] = nesActorCollisionProbeOffset(probeHeading);
-          const screenX = unit.x / NES_WORLD_X_SCALE + probeX;
-          const screenY = (unit.y - this.scroll) / NES_WORLD_Y_SCALE + probeY;
+          const [previousOffsetX, previousOffsetY] = fallingRockPosition((boundary - 1) / NES_FRAME_RATE, fromLeft);
+          const screenX = (unit.romOriginX ?? unit.x) / NES_WORLD_X_SCALE + previousOffsetX + probeX;
+          const screenY = (unit.romOriginY ?? unit.y - this.scroll) / NES_WORLD_Y_SCALE + previousOffsetY + probeY;
           if (boundary >= ROCK_IMPACT_DELAY * NES_FRAME_RATE || !roundTerrainPresentAtNes(this.stage, this.scroll, screenX, screenY)) {
             unit.exploding = true;
             unit.targetY = unit.y;

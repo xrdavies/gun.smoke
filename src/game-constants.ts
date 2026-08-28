@@ -37,13 +37,14 @@ export const NES_FRAME_RATE = 60.098;
 export type RomRandomState = [number, number, number, number];
 export const ROM_RANDOM_SEED: RomRandomState = [0x88, 0, 0, 0];
 
-// The ROM advances $AC-$AF once per NMI with adjacent bit-1 taps.
-export function advanceRomRandom(state: RomRandomState, feedback = 0): RomRandomState {
+// The AC/AD bit-1 tap seeds one carry that ripples through all four bytes.
+export function advanceRomRandom(state: RomRandomState): RomRandomState {
   const next: RomRandomState = [...state];
+  let carry = ((next[0]! ^ next[1]!) & 0x02) !== 0 ? 0x80 : 0;
   for (let index = 0; index < next.length; index += 1) {
-    const following = index + 1 < next.length ? next[index + 1]! : feedback;
-    const carry = ((next[index]! ^ following) & 0x02) !== 0 ? 0x80 : 0;
-    next[index] = carry | (next[index]! >> 1);
+    const value = next[index]!;
+    next[index] = carry | (value >> 1);
+    carry = (value & 0x01) !== 0 ? 0x80 : 0;
   }
   next[0] = (next[0]! + 1) & 0xff;
   return next;

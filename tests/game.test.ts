@@ -47,11 +47,12 @@ describe("Gun.Smoke vertical slice", () => {
     expect([151, 152, 251, 252, 291, 292].map((frame) => playerDeathPhase(frame / NES_FRAME_RATE))).toEqual(["dying", "hidden", "hidden", "ready", "ready", "active"]);
   });
 
-  it("advances the ROM random register with the NMI taps", () => {
+  it("advances the ROM random register with the NMI carry chain", () => {
     let state: [number, number, number, number] = [...ROM_RANDOM_SEED];
     for (let count = 0; count < 4; count += 1) state = advanceRomRandom(state);
-    expect(state).toEqual([202, 0, 0, 0]);
-    expect(advanceRomRandom([0, 2, 2, 0])).toEqual([129, 1, 129, 0]);
+    expect(state).toEqual([202, 96, 0, 0]);
+    expect(advanceRomRandom([0, 2, 2, 0])).toEqual([129, 1, 1, 0]);
+    expect(advanceRomRandom([8, 35, 208, 121])).toEqual([133, 17, 232, 60]);
     expect(mixRomRandomSum([93, 58, 115, 248])).toEqual([93, 151, 115, 248]);
     expect(mixRomRandomFirstSum([93, 58, 115, 248])).toEqual([151, 58, 115, 248]);
     expect(mixRomRandomDifference([93, 58, 115, 248])).toEqual([34, 58, 115, 248]);

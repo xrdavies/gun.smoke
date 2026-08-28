@@ -270,6 +270,8 @@ Event `at=1743,x=248,y=80,code=7,phase=0` starts in dispatch `0x59`, fires at
 frame 64, and uses a distinct 590-frame route that exits through the top edge.
 Event `at=1983,x=248,y=48,code=7,phase=1` uses a 475-frame route, fires at
 frame 95, and exits through the right screen boundary.
+The following same-coordinate event at `at=2079` uses a different 675-frame
+route and fires at frame 59; the routes are scoped by event index.
 Complete scoped side traces are selected for matching entries: Round 2 uses
 569 frames for code 8 at `y=32`, 371 for code 8 at `y=64`, 963 for code 9 at
 `y=32`, and 360 for code 9 at `y=64`; Round 3 uses 581/384-frame code 7

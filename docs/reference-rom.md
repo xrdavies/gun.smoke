@@ -340,6 +340,9 @@ Round 1's `at=1983,x=248,y=48,code=7,phase=1` event follows a 475-frame
 route. Its first opportunity at frame 31 misses the facing gate, frame 95 fires,
 and the actor later exits through the right screen boundary. The following
 same-coordinate event does not share this route.
+That following `at=2079,x=248,y=48,code=7,phase=1` event instead lives for
+675 frames. Its seed schedules its successful shot at frame 59, and it exits
+at `Y=252`; the two traces diverge by frame 22 despite identical entry data.
 Two complete Round 2 `y=32`
 side traces are now used when their entry coordinate matches in Round 2: code 8
 follows the 569-frame left-edge trace and code 9 follows the 963-frame right-edge

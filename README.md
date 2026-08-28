@@ -7,8 +7,8 @@ the engine package builds its `dist` output during `npm install`. This keeps a
 fresh clone independent of a sibling `../engine` directory.
 
 The repository contains a playable six-round loop: title screen, automatic
-vertical scrolling, eight-way movement, three-direction shooting, enemy
-formations and projectiles, Money Bags, life pickups, stage bosses, spendable score,
+vertical scrolling, eight-way movement, three-direction shooting, ROM-event-driven
+enemies and projectiles, Money Bags, life pickups, stage bosses, spendable score,
 damage recovery, wanted-poster gates, two final Wingate encounters, game over
 and a completion state.
 

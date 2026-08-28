@@ -13,7 +13,7 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, banditBillOpeningY, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, bomberCanThrow, bomberMovementDuration, bomberMovementVelocity, BOMBER_THROW_DURATION, BOSS_DEFEAT_ANIMATION_DURATION, bossReward, BOOTS_SPEED_MULTIPLIER, bossSpriteVisible, canSpawnPlayerBullet, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, contactSourceShouldClear, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_LIFETIME, dynamiteVerticalOffset, EMPTY_BARREL_EXPLOSION_LIFETIME, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X_LANES, FATMAN_JOE_ENTRY_Y, fallingRockOnScreen, fallingRockPosition, fatmanJoeOpeningY, formationEntryY, HATCHET_LIFETIME, HORSE_HIT_INVULNERABILITY, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_LANES, NINJA_FIRST_SHOT_DELAY, NINJA_LIFETIME, ninjaAttackPosition, ninjaOpeningY, PLAYER_DEATH_ANIMATION_DURATION, PLAYER_DEATH_RECOVERY_DURATION, playerDeathPhase, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_IMPACT_LIFETIME, ROCK_LIFETIME, ROAD_WIDTHS, ROM_ENEMY_SCREEN_MAX_Y, ROM_OBJECT_DROP_SPEED, ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, segmentDelay, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_SIDE_LIFETIME, SHOTGUNNER_SIDE_SHOT_FRAME, SHOTGUNNER_VOLLEY_INTERVAL, shotgunnerPosition, shotgunnerSidePosition, shouldLoopStage, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_CODE2_SHOT_FRAMES, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_DURATION, WINGATE_ENTRY_X_LANES, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, wingateOpeningY, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type Formation, type ItemType, type LandmarkType, type ShopType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, banditBillOpeningY, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, bomberCanThrow, bomberMovementDuration, bomberMovementVelocity, BOMBER_THROW_DURATION, BOSS_DEFEAT_ANIMATION_DURATION, bossReward, BOOTS_SPEED_MULTIPLIER, bossSpriteVisible, canSpawnPlayerBullet, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, contactSourceShouldClear, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_LIFETIME, dynamiteVerticalOffset, EMPTY_BARREL_EXPLOSION_LIFETIME, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X_LANES, FATMAN_JOE_ENTRY_Y, fallingRockOnScreen, fallingRockPosition, fatmanJoeOpeningY, HATCHET_LIFETIME, HORSE_HIT_INVULNERABILITY, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_LANES, NINJA_FIRST_SHOT_DELAY, NINJA_LIFETIME, ninjaAttackPosition, ninjaOpeningY, PLAYER_DEATH_ANIMATION_DURATION, PLAYER_DEATH_RECOVERY_DURATION, playerDeathPhase, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_IMPACT_LIFETIME, ROCK_LIFETIME, ROAD_WIDTHS, ROM_ENEMY_SCREEN_MAX_Y, ROM_OBJECT_DROP_SPEED, ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_SIDE_LIFETIME, SHOTGUNNER_SIDE_SHOT_FRAME, SHOTGUNNER_VOLLEY_INTERVAL, shotgunnerPosition, shotgunnerSidePosition, shouldLoopStage, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_CODE2_SHOT_FRAMES, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_DURATION, WINGATE_ENTRY_X_LANES, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, wingateOpeningY, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type ItemType, type ShopType, type WeaponName } from "./game-constants";
 import { GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, gunmanCanFire, GUNMAN_FLANK_LIFETIMES, GUNMAN_FLANK_SHOT_FRAMES, GUNMAN_LIFETIME, GUNMAN_TOP_LIFETIMES_FRAMES, gunmanFirstOpportunityFrame, gunmanFlankPosition, gunmanTopBranch, gunmanTopPosition, gunmanProjectileVelocity, GUNMAN_SHOT_OPPORTUNITY_INTERVAL, mediumProjectileHeadingVelocity, mediumProjectileVelocity } from "./game-constants";
 import { BOMBER_ENTRY_DURATION, bomberOpeningY } from "./game-constants";
 import { advanceFirebreather, advanceHatchet, advanceSpear, createFirebreatherState, createHatchetState, createSpearState, FIREBREATHER_LIFETIME, FIREBREATHER_PROJECTILE_OFFSET_NES, nesActorCollisionProbeOffset, SPEAR_LIFETIME, SPEAR_PROJECTILE_OFFSET_NES, type FirebreatherState, type HatchetState, type SpearState } from "./game-constants";
@@ -221,13 +221,6 @@ function collisionTextureRows(rows: readonly number[], seed: number): string[] {
   }).join(""));
 }
 
-function formationOffsets(formation: Formation): readonly number[] {
-  if (formation === "wedge") return [-2, -1, 1, 2];
-  if (formation === "cross") return [-2, 0, 2];
-  if (formation === "rear") return [-1, 0, 1];
-  return [-1, 0, 1];
-}
-
 function atlasRows(rows: readonly string[]): string[] {
   const width = Math.max(...rows.map((row) => row.length));
   return rows.map((row) => {
@@ -271,7 +264,6 @@ class GunSmokeGame {
   smartBombArmed = false;
   powerups = { boots: 0, rifle: 0 };
   time = 0;
-  spawnClock = 0.6;
   fireClock = 0;
   fireMask = 0;
   bombLatch = false;
@@ -281,7 +273,6 @@ class GunSmokeGame {
   inventoryOpen = false;
   inventoryWeaponIndex = 0;
   inventoryDirectionLatch = 0;
-  enemyFireClock = 1.2;
   bossFireClock = 1;
   invulnerable = 0;
   invulnerableDestroysEnemies = false;
@@ -292,9 +283,6 @@ class GunSmokeGame {
   hasWanted = false;
   romEventCursor = 0;
   romObjectCursor = 0;
-  readonly romEventMode = true;
-  stageLoopCount = 0;
-  currentLandmark: LandmarkType = "town";
   wingatePhase = 0;
   wingateRespawnClock = 0;
   weapon: WeaponName = "pistol";
@@ -500,8 +488,6 @@ class GunSmokeGame {
     this.lives = 3;
     this.scroll = 0;
     this.camera.position.y = 270;
-    this.spawnClock = 0.8;
-    this.enemyFireClock = 1.2;
     this.bossFireClock = 1;
     this.fireClock = 0;
     this.fireMask = 0;
@@ -517,7 +503,6 @@ class GunSmokeGame {
     this.wingateRespawnClock = 0;
     this.romObjectCursor = 0;
     this.romEventCursor = 0;
-    this.stageLoopCount = 0;
     this.shopIndex = 0;
     this.shopSpawnCursor = 0;
     this.shopOpen = false;
@@ -662,7 +647,7 @@ class GunSmokeGame {
     this.player.sprite.visible = this.invulnerable <= 0 || Math.floor(this.time * 14) % 2 === 0;
     this.updatePlayerFire(delta);
     this.updateSmartBomb();
-    this.updateSpawns(delta);
+    this.updateSpawns();
     this.updateNinjaBossTeleport(delta);
     this.updateEnemyFire(delta);
     for (const unit of this.units) this.updateUnit(unit, delta);
@@ -802,20 +787,9 @@ class GunSmokeGame {
     this.showMessage(this.smartBombArmed ? "SMART BOMB ARMED" : "SMART BOMB OFF");
   }
 
-  private updateSpawns(delta: number): void {
-    this.spawnClock -= delta;
+  private updateSpawns(): void {
     this.spawnRomEvents();
     if (this.scroll >= (ROUND_BOSS_TRIGGERS[this.stage - 1] ?? ROUND_BOSS_TRIGGERS[0]!) && this.hasWanted && !this.bossSpawned && this.wingateRespawnClock <= 0) this.spawnBoss();
-    if (this.romEventMode) return;
-    if (this.spawnClock <= 0) {
-      const segments = ROUND_SEGMENTS[this.stage - 1] ?? ROUND_SEGMENTS[0]!;
-      const nextSegment = this.bossSpawned ? undefined : segments.find((segment) => this.scroll < segment.at);
-      if (nextSegment) {
-        this.spawnClock = Math.max(0.01, segmentDelay(this.scroll, nextSegment.at, WORLD_SCROLL_SPEED));
-        return;
-      }
-      this.spawnFormation(this.bossSpawned);
-    }
   }
 
   private spawnRomEvents(): void {
@@ -940,22 +914,7 @@ class GunSmokeGame {
       if (this.stage === 1 && boss.age < boss.invulnerableUntil) return;
       this.bossFireClock -= delta;
       if (this.bossFireClock <= 0) this.fireBoss(boss, boss.age + delta);
-      return;
     }
-    this.enemyFireClock -= delta;
-    if (this.enemyFireClock > 0) return;
-    const shooters = this.units.filter((unit) => unit.kind === "enemy" && unit.enemyType === "gunman" && unit.romBehavior === undefined && !unit.exploding && unit.hp > 0 && unit.y < this.player.y);
-    const shooter = shooters[Math.floor(this.nextRandom() * shooters.length)];
-    if (shooter) {
-      const angle = Math.atan2(this.player.y - shooter.y, this.player.x - shooter.x);
-      const projectile = this.spawnEnemyProjectile(shooter.x, shooter.y + 12);
-      if (projectile) {
-        projectile.vx = Math.cos(angle) * (90 + this.stage * 7);
-        projectile.vy = Math.sin(angle) * (90 + this.stage * 7);
-        projectile.radius = 7;
-      }
-    }
-    this.enemyFireClock = Math.max(0.6, 1.75 - this.stage * 0.18);
   }
 
   private fireBoss(boss: Unit, effectiveAge = boss.age): void {
@@ -1129,28 +1088,6 @@ class GunSmokeGame {
 
   private isPlayerBlocked(x: number, y: number): boolean {
     return roundCollisionBlocks(this.stage, this.scroll, x, y);
-  }
-
-  private spawnFormation(bossEncounter = false): void {
-    const roadHalf = (ROAD_WIDTHS[this.stage - 1] ?? 520) / 2;
-    const center = clamp(480 + (this.nextRandom() - 0.5) * (roadHalf * 1.5), 80, 880);
-    const y = formationEntryY(this.scroll, bossEncounter);
-    const segments = ROUND_SEGMENTS[this.stage - 1] ?? ROUND_SEGMENTS[0]!;
-    let segment = segments[0]!;
-    for (const candidate of segments) if (this.scroll >= candidate.at) segment = candidate;
-    this.currentLandmark = segment.landmark;
-    const offsets = formationOffsets(segment.formation);
-    const types = segment.enemyTypes;
-    for (const offset of offsets) {
-      const enemyType = types[Math.floor(this.nextRandom() * types.length)] ?? "gunman";
-      const entersFromBehind = enemyType === "backstabber" || (segment.formation === "rear" && enemyType === "gunman");
-      const entryY = entersFromBehind ? this.scroll + 520 : y - Math.abs(offset) * 22;
-      const sniperX = offset <= 0 ? 480 - roadHalf + 22 : 480 + roadHalf - 22;
-      const enemy = this.spawnUnit("enemy", enemyType === "sniper" ? sniperX : clamp(center + offset * 66, 54, 906), entryY, 1 + Number(this.stage >= 4), enemyType);
-      enemy.vx = segment.formation === "cross" ? offset * 32 : (this.nextRandom() - 0.5) * (55 + this.stage * 8);
-      enemy.vy = entersFromBehind ? -100 : enemyType === "sniper" ? 0 : 24 + this.stage * 6;
-    }
-    this.spawnClock = segment.interval;
   }
 
   private openShop(index: number): void {
@@ -2199,8 +2136,6 @@ class GunSmokeGame {
     }
     this.stage += 1;
     this.scroll = 0;
-    this.spawnClock = 0.8;
-    this.enemyFireClock = 1.2;
     this.bossFireClock = 1;
     this.bossSpawned = false;
     this.hasWanted = false;
@@ -2210,7 +2145,6 @@ class GunSmokeGame {
     this.deathCommitted = false;
     this.romObjectCursor = 0;
     this.romEventCursor = 0;
-    this.stageLoopCount = 0;
     this.shopIndex = 0;
     this.shopSpawnCursor = 0;
     this.hasHorse = false;
@@ -2225,7 +2159,6 @@ class GunSmokeGame {
   }
 
   private loopStage(): void {
-    this.stageLoopCount += 1;
     this.scroll = 0;
     this.camera.position.y = 270;
     this.player.x = PLAYER_ENTRY_X;
@@ -2236,8 +2169,6 @@ class GunSmokeGame {
     this.romEventCursor = 0;
     this.shopIndex = 0;
     this.shopSpawnCursor = 0;
-    this.spawnClock = 0.8;
-    this.enemyFireClock = 1.2;
     this.units.length = 0;
     if (this.stage === 2) {
       const horseBarrel = this.spawnUnit("barrel", ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, romEntityHitPoints(37), undefined, "horse");

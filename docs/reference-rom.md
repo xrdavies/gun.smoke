@@ -144,8 +144,7 @@ frames, then exits at age 228; the three shots begin at the actor coordinate,
 move about one NES Y pixel per frame, and use approximately `-1/8, 0, +1/8`
 NES X velocity. The runtime preserves both volleys and this ROM-tagged fan;
 the actor follows the measured full path through its final top-edge retreat and
-releases at frame 228;
-non-ROM fallback formations retain their procedural aim.
+releases at frame 228. The runtime has no non-ROM fallback formation path.
 Entity code `4` uses the same `$B0E5` routine but initializes at NES side lanes
 `x=4/248`. A right-edge isolation moves inward to offset `(-72,-22)` by frame
 114, emits one three-projectile fan, folds back toward the edge, and releases
@@ -347,8 +346,7 @@ player-relative offset before holding position; clean routes release between
 preserving these keyframes and one-shot timing with a self-generated
 second-tier direction-table projectile. ROM-tagged Ninja, Hatchet, Spear, and Firebreather
 shots use the same second-tier 32-direction table as Gunmen; side Firebreathers
-mask the selected heading to an even sector before allocation. Non-ROM fallback
-formations retain their continuous procedural aim.
+mask the selected heading to an even sector before allocation.
 An isolated `$B8F4` Hatchet Thrower descends to NES `y=40` in 20 frames, pauses
 for 20 frames, then patrols with the shared second-tier 32-heading movement
 table. Collision probes follow its facing edge; a blocked path starts a 34-frame
@@ -380,8 +378,7 @@ the center route fired at `260/312/520`, the left route at
 `156/208/312/364/520/884`. The actor has no 644-frame lifetime; it remains until
 collision, defeat, offscreen cleanup, or scene transition. The web runtime uses
 the decoded collision probes and action state machine while retaining its own
-random stream. Non-ROM fallback formations keep their procedural three-way
-spread.
+random stream.
 The `$BA51` Spear Thrower uses entity code `19` for a 24-frame top entrance and
 code `20` for a 40-frame side entrance. Each combines a five-step movement
 profile with the initializer heading; fixed-center traces reach NES `(144,77)`

@@ -155,7 +155,7 @@ his clean-trace X/Y movement path is replayed through the measured 3,472-frame
 combat window.
 Ordinary screen clears do not erase active low-slot Boss shots. ROM-tagged
 Ninja, Hatchet, Spear, and Firebreather shots use the shared discrete second-tier
-direction table; only procedural fallback formations use continuous aim.
+direction table; all active formations are driven by decoded ROM event records.
 Cutter enters from the top edge on one of the ROM's NES X lanes
 (`x=88/112/144/168`), descends through a short overshoot, and curves 15 NES pixels
 left to approximately `y=136` after 324 frames, holds that lane until frame 350,
@@ -302,9 +302,8 @@ ROM behavior actors are anchored in world space at their event trigger, then
 carry the camera scroll while their routine updates screen-relative movement.
 Hatchet and Spear state machines own their full screen-relative Y path, including
 the final offscreen retreat, and are exempt from the generic 160-NES-pixel clamp.
-Non-ROM fallback formations limit that descent to 160 NES pixels so authored
-fallback actors remain staged in the playable area instead of drifting through
-the camera indefinitely.
+The runtime has no non-ROM fallback formation path; all authored actors remain
+bounded by their decoded state machine, screen cleanup, or route lifetime.
 Dispatch `0x07` records with verified pickup conversions render as breakable
 barrels; codes 32 and 41 are also empty breakable barrels that enter a short
 post-hit explosion state without yielding a pickup. The web runtime exposes the

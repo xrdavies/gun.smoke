@@ -191,7 +191,9 @@ smoke window and attack clock from the newly selected lane. Devil Hawk fireballs
 discrete directional velocity table and their measured 45/36-frame lifetimes;
 its recorded X/Y movement route is replayed through combat frame 3,600, then
 uses the ROM's random movement/action state and boundary correction for the
-continued encounter; the separately measured fire cadence remains intact.
+continued encounter. Long-tail fire is emitted from those action states:
+the hold branch produces a three-shot fan and the jump branch a five-shot fan;
+the old fixed fire cadence is not used after the random-state handoff.
 Fatman Joe begins attack decisions after his measured entrance. A successful
 low-nibble attack gate and downward-sector check launches one aimed shell; after 31 frames it stops and
 splits into five stationary mines at four-frame intervals. The mines use the

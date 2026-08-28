@@ -924,13 +924,14 @@ class GunSmokeGame {
     const boss = this.units.find((unit) => unit.kind === "boss" && unit.hp > 0 && !unit.exploding);
     if (boss) {
       if (this.stage === MAX_STAGE) return;
+      if (this.stage === 3 && boss.devilHawkState) return;
       if (this.stage === 1 && boss.age < boss.invulnerableUntil) return;
       this.bossFireClock -= delta;
       if (this.bossFireClock <= 0) this.fireBoss(boss, boss.age + delta);
     }
   }
 
-  private fireBoss(boss: Unit, effectiveAge = boss.age): void {
+  private fireBoss(boss: Unit, effectiveAge = boss.age, devilFullFan?: boolean): void {
     if (this.stage === 1) {
       const projectile = this.spawnEnemyProjectile(boss.x, boss.y + 24);
       if (projectile) {
@@ -978,7 +979,7 @@ class GunSmokeGame {
       return;
     }
     if (this.stage === 3) {
-      const fullFan = boss.volleysFired === 0 || (boss.y - this.scroll) / NES_WORLD_Y_SCALE <= DEVIL_HAWK_FULL_FAN_MAX_Y_NES;
+      const fullFan = devilFullFan ?? (boss.volleysFired === 0 || (boss.y - this.scroll) / NES_WORLD_Y_SCALE <= DEVIL_HAWK_FULL_FAN_MAX_Y_NES);
       const headings = devilHawkFanHeadings(fullFan, nesAimHeading(boss.x, boss.y, this.player.x, this.player.y));
       boss.fired = true;
       for (const heading of headings) {
@@ -1765,12 +1766,13 @@ class GunSmokeGame {
         unit.x = unit.cutterState.x * NES_WORLD_X_SCALE;
         unit.y = this.scroll + unit.cutterState.y * NES_WORLD_Y_SCALE;
       }
+      let devilFireFans: readonly boolean[] = [];
       if (this.stage === 3 && devilHawkCombatFrame >= DEVIL_HAWK_RANDOM_ROUTE_START_FRAME) {
         unit.devilHawkState ??= createDevilHawkMovementState(
           devilHawkCombatX(unit.age, unit.bossEntryX ?? DEVIL_HAWK_ENTRY_X_LANES[3]!) / NES_WORLD_X_SCALE,
           devilHawkCombatY(unit.age) / NES_WORLD_Y_SCALE,
         );
-        advanceDevilHawkMovement(unit.devilHawkState, devilHawkCombatFrame, () => this.nextRomRandomThirdFirstSumByte(), () => this.nextRomRandomSecondThirdSumByte());
+        devilFireFans = advanceDevilHawkMovement(unit.devilHawkState, devilHawkCombatFrame, () => this.nextRomRandomThirdFirstSumByte(), () => this.nextRomRandomSecondThirdSumByte()).fullFans;
         unit.x = unit.devilHawkState.x * NES_WORLD_X_SCALE;
         unit.y = this.scroll + unit.devilHawkState.y * NES_WORLD_Y_SCALE;
       }
@@ -1808,6 +1810,7 @@ class GunSmokeGame {
       else if (this.stage === 5) unit.y = this.scroll + (unit.age <= FATMAN_JOE_ENTRY_DURATION ? fatmanJoeOpeningY(unit.age) : fatmanJoeCombatY(unit.age));
       else unit.y = this.scroll + 92 + Math.sin(unit.age * 2) * 18;
       for (let index = 0; index < wingateFireChecks; index += 1) this.fireBoss(unit);
+      for (const fullFan of devilFireFans) this.fireBoss(unit, unit.age, fullFan);
       unit.sprite.visible = bossSpriteVisible(this.stage, unit.age, unit.invulnerableUntil, ninjaTeleporting);
     } else if (unit.kind === "shopkeeper" || unit.kind === "sceneObject") {
       if (unit.vy !== 0) unit.y += scrollDelta * 2;

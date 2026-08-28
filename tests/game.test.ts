@@ -776,8 +776,12 @@ describe("Gun.Smoke vertical slice", () => {
     expect([Math.floor(movement.x), Math.floor(movement.y), movement.segmentFrames, movement.gait]).toEqual([122, 63, 29, 2]);
     advanceDevilHawkMovement(movement, 3618, () => 0, () => { actionCalls += 1; return 4; });
     expect({ actionCalls, mode: movement.mode, actionFrames: movement.actionFrames }).toEqual({ actionCalls: 1, mode: "action", actionFrames: 26 });
+    expect(advanceDevilHawkMovement(movement, 3631, () => 0, () => 0).fullFans).toEqual([false]);
     const held = [movement.x, movement.y];
     advanceDevilHawkMovement(movement, 3644, () => 0, () => 0);
+    const jump = createDevilHawkMovementState(122, 65);
+    advanceDevilHawkMovement(jump, 3618, () => 0, () => 9);
+    expect(advanceDevilHawkMovement(jump, 3650, () => 0, () => 0).fullFans).toEqual([true]);
     expect([movement.mode, movement.x, movement.y]).toEqual(["move", held[0], held[1]]);
     const correction = createDevilHawkMovementState(122 + 142 / 256, 65 + 180 / 256);
     advanceDevilHawkMovement(correction, 3618, () => 0, () => 4);

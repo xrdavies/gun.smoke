@@ -1244,12 +1244,15 @@ function advanceDevilHawkGait(state: DevilHawkMovementState, heading = state.hea
   if ((state.gait & 0x80) === 0) moveEncodedHeading(state, heading);
 }
 
-export function advanceDevilHawkMovement(state: DevilHawkMovementState, targetFrame: number, movementRandom: () => number, actionRandom: () => number): void {
+export function advanceDevilHawkMovement(state: DevilHawkMovementState, targetFrame: number, movementRandom: () => number, actionRandom: () => number): { readonly fullFans: readonly boolean[] } {
+  const fullFans: boolean[] = [];
   while (state.frame < targetFrame) {
     state.frame += 1;
     if (state.mode === "action") {
       state.actionFrames -= 1;
       if (state.actionKind === "jump") advanceDevilHawkGait(state, DEVIL_HAWK_ACTION_HEADINGS[Math.max(0, state.actionFrames) >> 1] ?? state.actionHeading);
+      if (state.actionKind === "hold" && state.actionFrames === 13) fullFans.push(false);
+      if (state.actionKind === "jump" && state.actionFrames === 0) fullFans.push(true);
       if (state.actionFrames <= 0) state.mode = "move";
       continue;
     }
@@ -1288,7 +1291,7 @@ export function advanceDevilHawkMovement(state: DevilHawkMovementState, targetFr
       }
       if (random >= 9) {
         state.mode = "action";
-        state.actionFrames = 24;
+        state.actionFrames = 32;
         state.actionKind = "jump";
         state.actionHeading = Math.floor(state.y) >= 88 ? 0x40 : 0xc0;
         continue;
@@ -1304,6 +1307,7 @@ export function advanceDevilHawkMovement(state: DevilHawkMovementState, targetFr
       state.heading = 0x40 | nesAimHeading(x * NES_WORLD_X_SCALE, y * NES_WORLD_Y_SCALE, 128 * NES_WORLD_X_SCALE, 96 * NES_WORLD_Y_SCALE);
     }
   }
+  return { fullFans };
 }
 
 function pingPongFrame(frame: number, endpoint: number): number {

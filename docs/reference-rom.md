@@ -93,9 +93,11 @@ renders dispatch `0x08` scene props, and preserves dispatch `0x07`
 breakable-container variants. Decoded shop and `0x07` objects descend at the
 measured one NES pixel every three frames.
 Round 4's 44 `$B5BF` records all select the enemy pool. Isolated contact
-verification identifies them as falling rock hazards: they travel toward the
-road center for about 24 frames, remain at the impact point for another 25
-frames, and touching one costs a life. The runtime renders a self-generated
+verification identifies them as falling rock hazards. A locked lifecycle trace
+follows dispatch `0x6C/0x6D` for 96 frames from NES `(4,48)` through a curved
+route to `(169,214)`, then dispatch `0x3D` remains non-colliding for 25 frames
+before release; right-edge records mirror the X path. Touching the flying state
+costs a life. The runtime replays those measured keyframes with a self-generated
 rock proxy and accounts it against the same seven slots as ordinary enemies.
 Dispatch `0x07` records with a verified pickup conversion now render as
 self-generated breakable barrels instead of enemy proxies. Codes `32` and `41`

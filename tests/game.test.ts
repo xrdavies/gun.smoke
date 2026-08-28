@@ -5,6 +5,7 @@ import { RIFLEMAN_LIFETIME, RIFLEMAN_PATH_NES, riflemanCanAttack, riflemanPositi
 import { bossSpriteVisible, NINJA_BOSS_TELEPORT_DELAY } from "../src/game-constants";
 import { hasWeaponStock } from "../src/game-constants";
 import { ENEMY_DEFEAT_ANIMATION_DURATION } from "../src/game-constants";
+import { ENEMY_DEFEAT_Y_OFFSETS_NES } from "../src/game-constants";
 import { addScore, MAX_SCORE } from "../src/game-constants";
 import { PLAYER_ENTRY_X, PLAYER_ENTRY_X_NES, PLAYER_ENTRY_Y, PLAYER_ENTRY_Y_NES } from "../src/game-constants";
 import { NINJA_ACTIVATION_DISTANCE_NES, NINJA_LIFETIME, ninjaCanThrow } from "../src/game-constants";
@@ -242,6 +243,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROM_EMPTY_BARREL_ENTITY_CODES).toEqual([32, 41]);
     expect(EMPTY_BARREL_EXPLOSION_LIFETIME).toBeCloseTo(10 / NES_FRAME_RATE, 9);
     expect(ENEMY_DEFEAT_ANIMATION_DURATION).toBeCloseTo(5 / NES_FRAME_RATE, 9);
+    expect(ENEMY_DEFEAT_Y_OFFSETS_NES).toEqual([0, -4, -7, -10, -12]);
     expect(ROM_FALLING_ROCK_BEHAVIORS).toEqual([5]);
     const fallingRockEvents = ROUND_ROM_ENEMY_EVENTS.flatMap((stream) => stream).filter((event) => event.behavior === 5);
     expect(fallingRockEvents.length).toBeGreaterThan(0);

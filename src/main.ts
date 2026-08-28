@@ -34,6 +34,7 @@ import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOS
 import { canSpawnEnemyProjectile } from "./game-constants";
 import { canSpawnBossProjectile } from "./game-constants";
 import { ENEMY_DEFEAT_ANIMATION_DURATION } from "./game-constants";
+import { ENEMY_DEFEAT_Y_OFFSETS_NES } from "./game-constants";
 import { hasSpecialAmmoStock, hasWeaponStock, romEnemyDrop, romEnemyScore } from "./game-constants";
 import { roundCollisionAtNes, roundCollisionBlocks, ROUND_COLLISION_ROWS } from "./round-collision";
 import { canSpawnRomPool, compareRomEventOrder, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_FALLING_ROCK_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
@@ -1325,8 +1326,10 @@ class GunSmokeGame {
       return;
     }
     if (unit.kind === "enemy" && unit.exploding) {
-      const progress = clamp((unit.age - (unit.maxAge - ENEMY_DEFEAT_ANIMATION_DURATION)) / ENEMY_DEFEAT_ANIMATION_DURATION, 0, 1);
-      unit.sprite.visible = Math.floor(progress * 8) % 2 === 0;
+      const frame = Math.min(ENEMY_DEFEAT_Y_OFFSETS_NES.length - 1, Math.floor((unit.age - (unit.maxAge - ENEMY_DEFEAT_ANIMATION_DURATION)) * NES_FRAME_RATE));
+      unit.targetY = (unit.targetY ?? unit.y) + WORLD_SCROLL_SPEED * delta;
+      unit.y = unit.targetY + ENEMY_DEFEAT_Y_OFFSETS_NES[frame]! * NES_WORLD_Y_SCALE;
+      unit.sprite.visible = frame % 2 === 0;
       unit.sprite.position = { x: unit.x, y: unit.y };
       if (unit.age >= unit.maxAge) unit.hp = 0;
       return;
@@ -1937,6 +1940,7 @@ class GunSmokeGame {
       target.hp = 1;
       target.exploding = true;
       target.maxAge = target.age + ENEMY_DEFEAT_ANIMATION_DURATION;
+      target.targetY = target.y;
       target.sprite.visible = true;
       if (target.romFlags !== undefined) {
         const hasSpecialStock = hasSpecialAmmoStock(this.weaponAmmo);

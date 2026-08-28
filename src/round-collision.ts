@@ -8,6 +8,9 @@ const encodedRounds = [
   "APAA8AD/AP8A/wD/AP8A/wD/AP8A/gD/AAAAAAAAAAAA4ADQADAAUADAAMAAAAAA/wD/AP8A/wB/AP8AAPAA8EDwAPAA8IDwAPAA8ADwAPAB8ADwA/AD8AvgB/AEAAEAAgABAAAAAAAAwABAAMAA0ADgANAA0ABAAEAAAAAAAAAAAAAAAAAAAAAAAAA/8D/wP/A/8D/wP/Af/D/8APwA/AD8APwA+AD8APAA8AHgAPADAAsADgAFABMAAwADAAcACAAEAAAAAAAAAAAAQAAAACAAEAAAgABAAOAA0AAAAEAAgABQANsAxwDgANADAAMAA0ADEA8ADwAP8A/wD/AP8P/w//D/8P/w/+D/8H8A/wAAwADQAHAAGAAEAAAAAAAAAwABAAD/Av8A/wD/AP8A/wD+AP8AAAAAIAAQAAAAAAAAAAAAAAAAAADAAMAHIgdSB/IH0gdABwAHIAcQBwAHCAPwB/Af8B/wH/Af8B/wH/Af8B/wf/B/8H/wf/B/4H/wPwB/AB8wHxAfAB8ADwAfAAAAAAAAAAAAAAAAAAAAAAAAAwAFgABAAAADAAvADEAGAANAAwAAAAAAAAAAAAAAAAD8APwA/AD8APwA/DD4EPwAAAAAAAAAAAAAAAB/wH9Af4B/QH/Qf8B/AH9AfwB/gH8AfwA/AH8AAPAA8ADwAPAA8ADwAP8A/wD/AP8A/wD/AP4A/wwABAAAAAAAAAAAIADAAMAA0ABAAAAAQAAAAAAAAAAAAAAAABMAAwAPAScAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAEABPAC8APwAfAM8AzwAPAA8A==",
 ] as const;
 
+// Round 4 terrain presence for routines that test a quadrant byte for zero.
+const encodedRound4Terrain = "f3fqq7//+rr//Nrqv/9u+9/86vrv/9v+//+q//v/tv6//3r/8//i////7//8/+7/e/+2/8f96v6/9W/6f9/66/z96ar//3rr//u6/t/3rvnL/+7+v//+/rP/Wv49/6r/Pv95//P/qv/f//r6zf9q6//17q7/+6rvL/+e+//y2vWz//r+b/6W////rv7//+r/z/+u////7v/7/+f/f/+u/+/93v7/9/r6/9Oq5sN/prvf/+mqz/+fqv//r6v//7ur/fx+rv/36r//77q+/z/qu///qa//76eb/3/vt//1r67/z7+b//f/qv/bf2f/+/++/+f/u/8//7////+//77/bb/Hf2vv/d+6+/23q//+ua3v98ev/49/Xd/bL7f/vb///8v/p//7f5f//f+r////rv/3P6v/9L++tz5rr1/+uav/8+er//+/qv//77f//b+vvzP/a//+f73/e//////////P/+v/v/9f//r/tb//f6/v/9+u6973r/736av/7+q2O/em25/+6u3c/+b/v3/6s/f5/v9v/9r////67v/Pep/f/O7mv//68u//fvvf/a7/9fzu/f/1nvrv3/7u/0/6rv/+662x/2vq3/P6+4//bvr//7v///7q/b/32vvP3+rq";
+
 const decodeRows = (encoded: string): readonly number[] => {
   const bytes = atob(encoded);
   const rows = new Array<number>(bytes.length / 2);
@@ -19,6 +22,7 @@ const decodeRows = (encoded: string): readonly number[] => {
 
 export const ROUND_COLLISION_ROWS: readonly (readonly number[])[] = encodedRounds.map(decodeRows);
 export const ROUND_COLLISION_ROW_COUNTS = ROUND_COLLISION_ROWS.map((rows) => rows.length);
+const ROUND4_TERRAIN_ROWS = decodeRows(encodedRound4Terrain);
 
 const NES_MAP_WIDTH = 256;
 const NES_MAP_ROW_PIXELS = 32;
@@ -36,6 +40,14 @@ export function roundCollisionBlocks(round: number, scroll: number, x: number, y
 export function roundCollisionAtNes(round: number, scroll: number, screenX: number, screenY: number): boolean {
   const rows = ROUND_COLLISION_ROWS[round - 1];
   if (!rows) return false;
+  return roundRowsContain(rows, scroll, screenX, screenY);
+}
+
+export function roundTerrainPresentAtNes(round: number, scroll: number, screenX: number, screenY: number): boolean {
+  return round === 4 && roundRowsContain(ROUND4_TERRAIN_ROWS, scroll, screenX, screenY);
+}
+
+function roundRowsContain(rows: readonly number[], scroll: number, screenX: number, screenY: number): boolean {
   const mapRows = rows.length / 2;
   const scrollNes = Math.max(0, Math.floor(scroll * NES_VIEW_HEIGHT / WORLD_HEIGHT));
   const fineScroll = (16 + scrollNes) & 31;

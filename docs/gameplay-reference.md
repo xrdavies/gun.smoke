@@ -258,9 +258,10 @@ than sharing the Ninja shuriken representation. Fatman Joe's shell is aimed and
 mobile before it splits into stationary, short-lived mines; neither phase
 shares Bomber dynamite's defusable delayed-explosion behavior.
 
-Round 4 falling rocks replay their measured 96-frame mirrored arc from the NES
-screen edge, then remain as a non-colliding impact effect for 25 frames. A rock
-destroyed by player fire, POW, or Smart Bomb enters that same impact state early.
+Round 4 falling rocks replay their measured mirrored arc from the NES screen
+edge and enter a 25-frame non-colliding impact effect when the decoded terrain
+or the route's 96-frame cap is reached. A rock destroyed by player fire, POW,
+or Smart Bomb enters that same impact state early.
 
 Landmark timing remains represented as four deterministic segments per Round,
 with explicit formation metadata and a landmark type (`town`, `rock`, `village`,

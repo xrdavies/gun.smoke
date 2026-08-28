@@ -33,7 +33,7 @@ import { SHOTGUNNER_PATH_NES, shotgunnerPosition } from "../src/game-constants";
 import { SHOTGUNNER_SIDE_LIFETIME, SHOTGUNNER_SIDE_PATH_NES, SHOTGUNNER_SIDE_SHOT_FRAME, shotgunnerSidePosition } from "../src/game-constants";
 import { hasSpecialAmmoStock, romEnemyDrop, romEnemyScore } from "../src/game-constants";
 import { piercingDamageAfterHit } from "../src/game-constants";
-import { roundCollisionAtNes, roundCollisionBlocks, ROUND_COLLISION_ROW_COUNTS } from "../src/round-collision";
+import { roundCollisionAtNes, roundCollisionBlocks, roundTerrainPresentAtNes, ROUND_COLLISION_ROW_COUNTS } from "../src/round-collision";
 import { canSpawnRomPool, compareRomEventOrder, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_ENEMY_SLOT_CAPACITY, ROM_ENTITY_HIT_POINTS, ROM_FALLING_ROCK_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_OBJECT_SLOT_CAPACITY, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_ENEMY_EVENT_COUNTS, ROUND_ROM_OBJECT_EVENTS, ROUND_ROM_OBJECT_EVENT_COUNTS, ROM_BEHAVIOR_ENEMY_TYPES, romEntityHitPoints, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX } from "../src/rom-event-data";
 
 describe("Gun.Smoke vertical slice", () => {
@@ -243,6 +243,9 @@ describe("Gun.Smoke vertical slice", () => {
     expect(roundCollisionBlocks(1, 45, 0, 455)).toBe(true);
     expect(roundCollisionBlocks(1, 2.25, 810, 60.75)).toBe(false);
     expect(roundCollisionBlocks(1, 2.25, 810, 114.75)).toBe(true);
+    expect(roundTerrainPresentAtNes(4, 0, 4, 48)).toBe(true);
+    expect(roundTerrainPresentAtNes(4, 0, 248, 48)).toBe(true);
+    expect(roundTerrainPresentAtNes(1, 0, 4, 48)).toBe(false);
   });
 
   it("keeps the ROM enemy event streams ordered and bounded", () => {

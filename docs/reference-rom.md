@@ -349,6 +349,9 @@ crosses the arena and exits through the top edge.
 Round 1's `at=2511,x=248,y=96,code=7,phase=0` event uses a 426-frame route.
 Its frame-64 first opportunity fires, followed by a leftward traversal and a
 right-boundary release.
+Round 1's `at=2559,x=4,y=112,code=7,phase=1` event uses a 557-frame route.
+Its early scheduler opportunities miss until frame 238, when the facing gate
+allows one shot; the actor later exits through the top edge.
 Two complete Round 2 `y=32`
 side traces are now used when their entry coordinate matches in Round 2: code 8
 follows the 569-frame left-edge trace and code 9 follows the 963-frame right-edge

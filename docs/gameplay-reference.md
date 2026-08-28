@@ -276,6 +276,8 @@ Event `at=2223,x=248,y=64,code=7,phase=0` uses a 464-frame route, fires at
 frame 57, and exits through the top edge.
 Event `at=2511,x=248,y=96,code=7,phase=0` uses a 426-frame route, fires at
 frame 64, and later exits through the right screen boundary.
+Event `at=2559,x=4,y=112,code=7,phase=1` uses a 557-frame route, first fires
+at frame 238, and exits through the top edge.
 Complete scoped side traces are selected for matching entries: Round 2 uses
 569 frames for code 8 at `y=32`, 371 for code 8 at `y=64`, 963 for code 9 at
 `y=32`, and 360 for code 9 at `y=64`; Round 3 uses 581/384-frame code 7

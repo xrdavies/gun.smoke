@@ -317,8 +317,12 @@ side entries begin counting immediately. `$04E0` remains a reused slot field.
 Round 2's single `code=7,x=56,y=0,phase=1` event is a distinct top-edge
 initializer. Its first scheduler wrap at frame 51 misses the facing gate, the
 second succeeds at frame 115, dispatch changes to `0x59` at frame 260, and the
-actor releases at frame 369. Runtime binds its complete coordinate trace to
-that Round/entry/phase instead of applying the 642-frame left-edge route.
+actor releases at frame 369.
+Round 3's single `code=7,x=80,y=0,phase=1` event is a distinct top-edge
+initializer. It enters movement state at frame 48, reaches its attack state at
+frame 160, changes to dispatch `0x5A` at frame 221, and releases at frame 324.
+Runtime binds both complete coordinate traces to their Round/entry/phase
+instead of applying the 642-frame left-edge route.
 Two complete Round 2 `y=32`
 side traces are now used when their entry coordinate matches in Round 2: code 8
 follows the 569-frame left-edge trace and code 9 follows the 963-frame right-edge

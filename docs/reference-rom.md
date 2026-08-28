@@ -311,7 +311,8 @@ uses a deterministic per-actor seed for this initial phase; exact slot-reuse
 seeding remains a documented parity boundary. Two complete Round 2 `y=32`
 side traces are now used when their entry coordinate matches: code 8 follows
 the 569-frame left-edge trace and code 9 follows the 963-frame right-edge
-trace; other entry heights retain the generic measured routes.
+trace; a second code 8 trace at `y=64` follows 371 measured frames. Other
+entry heights retain the generic measured routes.
 On defeat, `$CD4E-$CDAA` converts an event's `0x80` flag into dispatch `0x4e`.
 If `$90/$94/$98/$9c` show no special-gun ammunition, it increments that to `0x4f`;
 the `$E192` conversion table then maps them to Bullet (`0x29`) and Money
@@ -722,6 +723,12 @@ and correction branches can be replayed without exposing ROM code.
 `--match-x`, and `--match-y` filters. They are applied to the first candidate
 slot after the dispatch/variant match, allowing a side-entry signature to be
 selected without relying on a global `--skip` count.
+With `--list-candidates --isolate-candidates`, the tool clears ordinary enemy
+slots before each frame and records every dispatch activation, which is useful
+for enumerating side-entry signatures under the ROM's seven-slot limit.
+`--start-frame=<frame>` then clears those slots at a chosen absolute frame so a
+candidate can be replayed from its actual initializer instead of matching a
+later state in the same slot.
 Detailed scene samples also list active entity slots from the parallel arrays
 at `$0400/$0420/$0480/$0560/$05C0/$05E0`. The trace labels only the verified
 slot state, dispatch type, variant, script flags and coordinates; `$05C0` is

@@ -4,6 +4,8 @@ import path from "node:path";
 import { Controller, NES } from "jsnes";
 
 const args = process.argv.slice(2);
+const listCandidates = args.includes("--list-candidates");
+const isolateCandidates = args.includes("--isolate-candidates");
 const option = (name) => args.find((argument) => argument.startsWith(`--${name}=`))?.split("=")[1];
 const numberOption = (name, fallback) => Number.parseInt(option(name) ?? String(fallback), 0);
 const filename = args.find((argument) => !argument.startsWith("--")) ?? "Gun.Smoke.ZH.NES";
@@ -21,6 +23,7 @@ const matchState = option("match-state") === undefined ? undefined : numberOptio
 const matchHeading = option("match-heading") === undefined ? undefined : numberOption("match-heading", 0);
 const matchX = option("match-x") === undefined ? undefined : numberOption("match-x", 0);
 const matchY = option("match-y") === undefined ? undefined : numberOption("match-y", 0);
+const startFrame = option("start-frame") === undefined ? undefined : numberOption("start-frame", 0);
 const output = option("out") ?? ".rom-traces/entity.json";
 
 if (!fs.existsSync(filename)) {
@@ -36,6 +39,7 @@ if (!Number.isInteger(frames) || frames <= 0 || !Number.isInteger(traceFrames) |
 for (const [name, value] of [["--match-state", matchState], ["--match-heading", matchHeading], ["--match-x", matchX], ["--match-y", matchY]]) {
   if (value !== undefined && (!Number.isInteger(value) || value < 0 || value > 0xff)) throw new Error(`${name} must be an integer from 0 through 255`);
 }
+if (startFrame !== undefined && (!Number.isInteger(startFrame) || startFrame < 0 || startFrame >= frames)) throw new Error("--start-frame must be within --frames");
 
 const romBytes = fs.readFileSync(filename);
 const nes = new NES({ onFrame: () => {}, onAudioSample: () => {} });
@@ -79,6 +83,7 @@ const entityFrames = [];
 const projectileFrames = [];
 const allowedDispatches = new Set([dispatch - 2, dispatch - 1, dispatch, dispatch + 1, ...followDispatches]);
 const matchingSlots = new Set();
+const candidates = [];
 let matchesSeen = 0;
 let termination;
 for (let frame = 0; frame < frames; frame += 1) {
@@ -108,15 +113,25 @@ for (let frame = 0; frame < frames; frame += 1) {
     if (playerY !== undefined) memory[0x71] = playerY;
     for (let slot = 16; slot < 23; slot += 1) if (slot !== targetSlot) memory[0x400 + slot] = 0;
   }
+  if (targetSlot === undefined && startFrame !== undefined && frame === startFrame) {
+    for (let slot = 16; slot < 23; slot += 1) memory[0x400 + slot] = 0;
+    matchingSlots.clear();
+  }
+  if (listCandidates && isolateCandidates) for (let slot = 16; slot < 23; slot += 1) memory[0x400 + slot] = 0;
   nes.frame();
 
   if (targetSlot === undefined) {
     for (let slot = 16; slot < 23; slot += 1) {
-      if (!active(slot)) continue;
+      if (!active(slot)) {
+        matchingSlots.delete(slot);
+        continue;
+      }
       const candidate = entity(slot);
       const baseMatch = !advancing && candidate.dispatch === dispatch && (variant === undefined || candidate.variant === variant);
       if (!baseMatch || matchingSlots.has(slot)) continue;
       matchingSlots.add(slot);
+      candidates.push({ frame, ...candidate, player: { x: memory[0x74], y: memory[0x71] } });
+      if (listCandidates) continue;
       const matches = (matchState === undefined || candidate.state === matchState)
         && (matchHeading === undefined || candidate.heading === matchHeading)
         && (matchX === undefined || candidate.x === matchX)
@@ -157,6 +172,21 @@ for (let frame = 0; frame < frames; frame += 1) {
   if (relativeFrame >= traceFrames) break;
 }
 
+if (listCandidates) {
+  const result = {
+    source: filename,
+    sourceSha256: crypto.createHash("sha256").update(romBytes).digest("hex"),
+    frameRate: 60.098,
+    dispatch,
+    ...(round === undefined ? {} : { round }),
+    candidates,
+  };
+  fs.mkdirSync(path.dirname(output), { recursive: true });
+  fs.writeFileSync(output, JSON.stringify(result, null, 2));
+  console.log(`Wrote ${candidates.length} entity candidates to ${output}`);
+  process.exit(0);
+}
+
 if (targetSlot === undefined || targetStart === undefined) throw new Error(`Dispatch 0x${dispatch.toString(16)} was not observed`);
 const trace = {
   source: filename,
@@ -172,6 +202,7 @@ const trace = {
   ...(matchHeading === undefined ? {} : { matchHeading }),
   ...(matchX === undefined ? {} : { matchX }),
   ...(matchY === undefined ? {} : { matchY }),
+  ...(startFrame === undefined ? {} : { startFrame }),
   targetSlot,
   targetStart,
   player: { x: playerX, y: playerY },

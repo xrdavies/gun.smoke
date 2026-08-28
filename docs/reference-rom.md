@@ -332,6 +332,10 @@ Round 1's `at=1423,x=4,y=48,code=7,phase=0` event likewise has a distinct
 307-frame left-edge route. Its seed reaches the first opportunity at frame 64,
 which passes the facing gate; dispatch changes to `0x59` at frame 221 and the
 actor releases at `Y=252`.
+Round 1's `at=1743,x=248,y=80,code=7,phase=0` starts directly in dispatch
+`0x59`, fires at its frame-64 opportunity, then follows a distinct 590-frame
+route across the screen and exits through the top edge. It is not a mirror of
+the other 590-frame right-edge route.
 Two complete Round 2 `y=32`
 side traces are now used when their entry coordinate matches in Round 2: code 8
 follows the 569-frame left-edge trace and code 9 follows the 963-frame right-edge

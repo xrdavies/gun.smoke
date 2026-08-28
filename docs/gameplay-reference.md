@@ -266,6 +266,8 @@ Round 1 event `at=847,x=248,y=32,code=7,phase=0` additionally uses its measured
 590-frame right-edge route and first successful attack opportunity at frame 92.
 Event `at=1423,x=4,y=48,code=7,phase=0` uses a separate 307-frame left-edge
 route and fires at its first opportunity, frame 64.
+Event `at=1743,x=248,y=80,code=7,phase=0` starts in dispatch `0x59`, fires at
+frame 64, and uses a distinct 590-frame route that exits through the top edge.
 Complete scoped side traces are selected for matching entries: Round 2 uses
 569 frames for code 8 at `y=32`, 371 for code 8 at `y=64`, 963 for code 9 at
 `y=32`, and 360 for code 9 at `y=64`; Round 3 uses 581/384-frame code 7

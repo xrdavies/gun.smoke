@@ -2085,6 +2085,10 @@ class GunSmokeGame {
     if (this.smartBombArmed && this.smartBombs > 0) {
       this.smartBombs -= 1;
       this.smartBombArmed = false;
+      for (const unit of [...this.units]) {
+        if (unit.hp <= 0 || unit.exploding) continue;
+        if (unit.kind === "enemy" || unit.kind === "enemyBullet" && unit.projectileType === "rock") this.defeatTarget(unit);
+      }
       this.clearEnemyUnits();
       this.clearEnemyProjectiles();
       this.beep(75, 0.35);

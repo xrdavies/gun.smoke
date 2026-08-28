@@ -155,8 +155,9 @@ Projectile clear routine `$CDD4-$CDE0` only zeros those same eight slots. The
 POW path at `$CDAB-$CDD3` also handles ordinary enemy slots `$0410-$0416`, but
 not the low-slot Boss projectile pool. Runtime projectile-only clears leave
 falling rocks active, while POW, Smart Bomb and life-loss enemy clears remove
-them with the other enemy-slot actors. Smart Bomb uses the ROM's direct slot
-clear and therefore does not run ordinary defeat score/drop conversion first.
+them with the other enemy-slot actors. Smart Bomb enters this same `$CDAB`
+path, so ordinary enemy score and `$CD4E` drop conversion run before the slots
+are cleared; it is not a score-free direct erase.
 Its `$F294-$F2BB` branch does not write the Horse/Blue invulnerability timers,
 so runtime does not add a post-clear protection window.
 The Round 1 life-loss trace also clears active ordinary enemy actors in the same

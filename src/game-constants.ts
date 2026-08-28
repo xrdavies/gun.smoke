@@ -883,13 +883,13 @@ function banditBillCombatPosition(age: number, entryX = 192 * NES_WORLD_X_SCALE)
   const frame = Math.max(0, age * NES_FRAME_RATE - BANDIT_BILL_ENTRY_DURATION * NES_FRAME_RATE);
   const laneOffset = entryX / NES_WORLD_X_SCALE - 192;
   const first = BANDIT_BILL_COMBAT_PATH_EXTENDED_NES[0]!;
-  if (frame <= first[0]) return [(first[1] + laneOffset) * NES_WORLD_X_SCALE, first[2] * NES_WORLD_Y_SCALE];
   const last = BANDIT_BILL_COMBAT_PATH_EXTENDED_NES.at(-1)!;
-  if (frame >= last[0]) return [(last[1] + laneOffset) * NES_WORLD_X_SCALE, last[2] * NES_WORLD_Y_SCALE];
-  const nextIndex = BANDIT_BILL_COMBAT_PATH_EXTENDED_NES.findIndex(([at]) => at >= frame);
+  const sampledFrame = pingPongFrame(frame, last[0]);
+  if (sampledFrame <= first[0]) return [(first[1] + laneOffset) * NES_WORLD_X_SCALE, first[2] * NES_WORLD_Y_SCALE];
+  const nextIndex = BANDIT_BILL_COMBAT_PATH_EXTENDED_NES.findIndex(([at]) => at >= sampledFrame);
   const previous = BANDIT_BILL_COMBAT_PATH_EXTENDED_NES[nextIndex - 1]!;
   const next = BANDIT_BILL_COMBAT_PATH_EXTENDED_NES[nextIndex]!;
-  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  const amount = (sampledFrame - previous[0]) / (next[0] - previous[0]);
   return [
     (previous[1] + (next[1] - previous[1]) * amount + laneOffset) * NES_WORLD_X_SCALE,
     (previous[2] + (next[2] - previous[2]) * amount) * NES_WORLD_Y_SCALE,
@@ -975,13 +975,13 @@ function cutterCombatPosition(age: number, entryX = 144 * NES_WORLD_X_SCALE): re
     (sample[1] + laneOffset) * NES_WORLD_X_SCALE,
     sample[2] * NES_WORLD_Y_SCALE,
   ];
-  if (frame <= first[0]) return point(first);
   const last = CUTTER_COMBAT_PATH_EXTENDED_NES.at(-1)!;
-  if (frame >= last[0]) return point(last);
-  const nextIndex = CUTTER_COMBAT_PATH_EXTENDED_NES.findIndex(([at]) => at >= frame);
+  const sampledFrame = pingPongFrame(frame, last[0]);
+  if (sampledFrame <= first[0]) return point(first);
+  const nextIndex = CUTTER_COMBAT_PATH_EXTENDED_NES.findIndex(([at]) => at >= sampledFrame);
   const previous = CUTTER_COMBAT_PATH_EXTENDED_NES[nextIndex - 1]!;
   const next = CUTTER_COMBAT_PATH_EXTENDED_NES[nextIndex]!;
-  const amount = (frame - previous[0]) / (next[0] - previous[0]);
+  const amount = (sampledFrame - previous[0]) / (next[0] - previous[0]);
   return point([
     frame,
     previous[1] + (next[1] - previous[1]) * amount,

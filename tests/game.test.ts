@@ -608,6 +608,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(banditBillCombatX(BANDIT_BILL_ENTRY_DURATION + 3472 / NES_FRAME_RATE)).toBeCloseTo(190 * NES_WORLD_X_SCALE, 9);
     expect(banditBillCombatY(BANDIT_BILL_ENTRY_DURATION + 3472 / NES_FRAME_RATE)).toBeCloseTo(67 * NES_WORLD_Y_SCALE, 9);
     expect(banditBillCombatY(BANDIT_BILL_ENTRY_DURATION + 3600 / NES_FRAME_RATE)).toBeCloseTo(67 * NES_WORLD_Y_SCALE, 9);
+    expect(banditBillCombatY(BANDIT_BILL_ENTRY_DURATION + 4000 / NES_FRAME_RATE)).not.toBe(67 * NES_WORLD_Y_SCALE);
   });
 
   it("matches the traced Bandit Bill damage recovery", () => {
@@ -646,6 +647,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(cutterCombatY(CUTTER_ENTRY_DURATION + 3264 / NES_FRAME_RATE)).toBeCloseTo(49 * NES_WORLD_Y_SCALE, 9);
     expect(cutterCombatX(CUTTER_ENTRY_DURATION + 3600 / NES_FRAME_RATE)).toBeCloseTo(159 * NES_WORLD_X_SCALE, 9);
     expect(cutterCombatY(CUTTER_ENTRY_DURATION + 3600 / NES_FRAME_RATE)).toBeCloseTo(57 * NES_WORLD_Y_SCALE, 9);
+    expect(cutterCombatY(CUTTER_ENTRY_DURATION + 4000 / NES_FRAME_RATE)).not.toBe(57 * NES_WORLD_Y_SCALE);
     expect(CUTTER_FIRST_ATTACK_DELAY).toBeCloseTo(350 / NES_FRAME_RATE, 9);
     expect(CUTTER_ATTACK_INTERVAL).toBeCloseTo(256 / NES_FRAME_RATE, 9);
     expect(CUTTER_BOOMERANG_SPAWN_NES).toEqual([[-3, 3], [3, 2]]);

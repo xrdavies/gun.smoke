@@ -428,7 +428,9 @@ runtime follows the clean-trace X/Y combat path through frame 3,472. Controlled 
 fire shows each depleted health bar changing dispatch to hit state `0x8D` for
 8 frames and then invulnerable crawl state `0x8C` for 168 frames before
 returning to `0x88`. The actor continues from its current coordinate throughout
-that 176-frame recovery instead of moving to a fixed off-route position.
+that 176-frame recovery instead of moving to a fixed off-route position. After
+the recorded 3,472-frame route, the runtime uses a reflected continuation while
+the ROM's random route remains under study.
 The same controlled full-round trace identifies Round 2's Cutter as dispatch
 `0x90`, variant `0x5b`, entering from the top edge (`y=0`). Controlled runs
 the four-value initializer table defines NES horizontal entry lanes
@@ -438,7 +440,8 @@ lane through frame 258, then curves 15 pixels left while returning to `y=136`.
 The web runtime selects one measured lane and follows this two-axis opening,
 then holds the final entry X until its first attack at frame 350 and follows
 the recorded X/Y combat route through frame 3,264, including its 136-to-40/99 NES
-vertical profile and later return loops. At frame 350 it creates the paired `0x98/0x99`
+vertical profile and later return loops. After the recorded 3,264-frame route,
+the runtime reflects the path for continued movement. At frame 350 it creates the paired `0x98/0x99`
 boomerangs from Boss-relative offsets `(-3,+3)` and `(+3,+2)` NES pixels,
 holding those launch coordinates for the allocation frame and repeating every
 256 frames. Both use a 32-direction steering state: initial
@@ -516,8 +519,8 @@ shell-to-mine chain. During the random action branch, the ROM's `$B6` decision
 counter stops while the short route lasts 53 frames (`b8=16`) or the long route
 lasts 122 frames (`b8=40` followed by `b8=32`); the runtime extends its existing
 76-frame clock by those measured windows. The runtime replays the controlled
-attack trace's multi-hop X/Y profile through combat frame 3,600; later direction
-selection remains an approximation.
+attack trace's multi-hop X/Y profile through combat frame 3,600, then reflects
+that route for continued movement; later direction selection remains an approximation.
 Round 6's first Wingate encounter is dispatch `0xa3`, variant `0x65`. Both
 encounters select NES `x=64/104/152/192` at `y=0`, hold that lane and reach
 approximately `y=98` after 151 frames. The runtime preserves this first-
@@ -526,8 +529,9 @@ opening, both encounters hold X for about 17 frames before completing a
 measured 17-frame horizontal rush. The runtime now uses decoded unhurt-record X
 keyframes, mirrored from the selected entry lane, through the later combat
 sequence instead of constant-speed horizontal drift. The runtime now replays
-compressed X/Y keyframes from both unhurt traces through combat frame 3,600;
-the random attack scheduler remains an explicit approximation beyond those
+compressed X/Y keyframes from both unhurt traces through combat frame 3,600,
+then reflects those traces for continued movement; the random attack scheduler
+remains an explicit approximation beyond those
 recorded decisions.
 The first encounter clears both ordinary and low-slot projectile actors before
 entering a 264-frame empty interval. The real Wingate

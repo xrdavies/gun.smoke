@@ -152,7 +152,7 @@ Most Boss weapons use a six-slot projectile pool separate from the eight slots
 used by ordinary enemy gunfire, so field bullets cannot suppress those attacks;
 Bandit Bill's traced `0x30` shots are the exception and use the ordinary pool;
 his clean-trace X/Y movement path is replayed through the measured 3,472-frame
-combat window.
+combat window and reflected afterward for continued movement.
 Ordinary screen clears do not erase active low-slot Boss shots. ROM-tagged
 Ninja, Hatchet, Spear, and Firebreather shots use the shared discrete second-tier
 direction table; all active formations are driven by decoded ROM event records.
@@ -160,7 +160,8 @@ Cutter enters from the top edge on one of the ROM's NES X lanes
 (`x=88/112/144/168`), descends through a short overshoot, and curves 15 NES pixels
 left to approximately `y=136` after 324 frames, holds that lane until frame 350,
 then follows its recorded X/Y combat route with the first paired boomerangs
-and repeat every 256 frames. Both turn through measured 32-direction headings,
+and repeat every 256 frames, then reflects the route after the recorded window.
+Both turn through measured 32-direction headings,
 hold their launch offsets for one frame, capture Billy's position at NES
 `y=176`, and recalculate their return heading
 once before leaving the arena.

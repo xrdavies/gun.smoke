@@ -1137,14 +1137,12 @@ export function cutterBoomerangOnScreen(screenX: number, screenY: number): boole
 }
 
 export function cutterBoomerangVelocity(heading: number): readonly [number, number] {
-  const angle = ((heading & 31) - 8) * Math.PI / 16;
-  return [Math.cos(angle) * 2.5 * NES_FRAME_RATE * NES_WORLD_X_SCALE, Math.sin(angle) * 3 * NES_FRAME_RATE * NES_WORLD_Y_SCALE];
+  const [x, y] = SNIPER_BULLET_VELOCITIES_NES[heading & 31] ?? SNIPER_BULLET_VELOCITIES_NES[0];
+  return [x * 3 * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * 3 * NES_FRAME_RATE * NES_WORLD_Y_SCALE];
 }
 
 export function cutterBoomerangHeadingToward(originX: number, originY: number, targetX: number, targetY: number): number {
-  const x = (targetX - originX) / NES_WORLD_X_SCALE / 2.5;
-  const y = (targetY - originY) / NES_WORLD_Y_SCALE / 3;
-  return (Math.round(Math.atan2(y, x) / (Math.PI / 16)) + 8 + 32) % 32;
+  return nesAimHeading(originX, originY, targetX, targetY);
 }
 
 export function cutterBoomerangTurn(heading: number, target: number): number {

@@ -167,7 +167,7 @@ continues Cutter with the ROM's random direction segments and four-active/eight-
 movement gait rather than reflecting the sampled path. The same post-route
 state keeps the 256-frame attack cycle: 26 frames still, a directed climb to
 the upper arena boundary, and a short hold before random movement resumes.
-Both turn through measured 32-direction headings,
+Both turn through the NES three-pixel 32-direction velocity table,
 hold their launch offsets for one frame, capture Billy's position at NES
 `y=176`, and recalculate their return heading
 once before leaving the arena.

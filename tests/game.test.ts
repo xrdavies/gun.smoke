@@ -770,6 +770,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(cutterBoomerangHeadingToward(126 * NES_WORLD_X_SCALE, 139 * (540 / 240), 224 * NES_WORLD_X_SCALE, 176 * (540 / 240))).toBe(10);
     expect(cutterBoomerangHeadingToward(103 * NES_WORLD_X_SCALE, 99 * (540 / 240), 32 * NES_WORLD_X_SCALE, 176 * (540 / 240))).toBe(20);
     expect(cutterBoomerangHeadingToward(184 * NES_WORLD_X_SCALE, 176 * (540 / 240), 128 * NES_WORLD_X_SCALE, 216 * (540 / 240))).toBe(21);
+    expect(cutterBoomerangHeadingToward(73 * NES_WORLD_X_SCALE, 236 * (540 / 240), 128 * NES_WORLD_X_SCALE, 216 * (540 / 240))).toBe(6);
+    expect(cutterBoomerangVelocity(13)).toEqual([1.37109375 * NES_FRAME_RATE * NES_WORLD_X_SCALE, 2.484375 * NES_FRAME_RATE * NES_WORLD_Y_SCALE]);
     expect(cutterBoomerangVelocity(16)[0]).toBeCloseTo(0, 9);
     expect(cutterBoomerangVelocity(16)[1]).toBeCloseTo(3 * NES_FRAME_RATE * (540 / 240), 9);
     let heading: number = CUTTER_BOOMERANG_HEADINGS[0];
@@ -781,7 +783,7 @@ describe("Gun.Smoke vertical slice", () => {
       x += vx / NES_FRAME_RATE / NES_WORLD_X_SCALE;
       y += vy / NES_FRAME_RATE / (540 / 240);
     }
-    expect([x, y]).toEqual([expect.closeTo(19.7, 1), expect.closeTo(17.2, 1)]);
+    expect([x, y]).toEqual([19.4296875, 17.25]);
     expect(CUTTER_MOVEMENT_SPEED).toBeCloseTo((31 / 18) * NES_FRAME_RATE * NES_WORLD_X_SCALE, 9);
   });
 

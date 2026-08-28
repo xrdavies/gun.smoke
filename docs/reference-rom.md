@@ -497,7 +497,8 @@ boomerangs from Boss-relative offsets `(-3,+3)` and `(+3,+2)` NES pixels,
 holding those launch coordinates for the allocation frame and repeating every
 256 frames. Both use a 32-direction steering state: initial
 headings `14/18` turn toward fixed NES points `(224,176)/(32,176)` by one
-heading step every two frames. On reaching NES `y=176`, each captures Billy's
+heading step every two frames and use the shared third-tier discrete velocity
+table. On reaching NES `y=176`, each captures Billy's
 position, turns toward it, then recalculates that return heading once. The
 runtime uses this measured state machine for every volley rather than a fixed
 angular curve.

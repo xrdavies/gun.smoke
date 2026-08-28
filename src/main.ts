@@ -2327,12 +2327,15 @@ class GunSmokeGame {
       if (this.endingReadyTimer !== undefined) window.clearTimeout(this.endingReadyTimer);
       this.endingReadyTimer = window.setTimeout(() => {
         this.endingReady = true;
+        this.stopMusic();
         endingButton.disabled = false;
         endingButton.focus();
         this.pollPausedGamepad();
       }, WINGATE_ENDING_INPUT_DELAY * 1_000);
       endingScreen.hidden = false;
       gameOver.hidden = true;
+      this.musicStep = 0;
+      this.startMusic();
     } else {
       this.mode = "gameover";
       gameOver.hidden = false;
@@ -2393,6 +2396,7 @@ class GunSmokeGame {
 
   private playMusicStep(): void {
     if (!this.audio || this.audio.context.state !== "running") return;
+    const endingPattern = [262, 330, 392, 523, 392, 440, 523, 659, 523, 392, 349, 440, 523, 698, 659, 523] as const;
     const roundPatterns: readonly number[][] = [
       [262, 330, 392, 330, 294, 349, 440, 349],
       [196, 247, 294, 247, 220, 277, 330, 277],
@@ -2401,7 +2405,7 @@ class GunSmokeGame {
       [233, 294, 349, 294, 262, 330, 392, 330],
       [147, 185, 220, 185, 165, 208, 247, 208],
     ];
-    const pattern = roundPatterns[(this.stage - 1) % roundPatterns.length] ?? roundPatterns[0]!;
+    const pattern = this.mode === "ending" ? endingPattern : roundPatterns[(this.stage - 1) % roundPatterns.length] ?? roundPatterns[0]!;
     const oscillator = this.audio.context.createOscillator();
     const gain = this.audio.context.createGain();
     oscillator.type = this.bossSpawned ? "sawtooth" : "square";

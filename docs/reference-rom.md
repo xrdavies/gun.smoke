@@ -627,7 +627,9 @@ Round index 761 frames after the lethal transition. Runtime holds the ending
 screen for that measured sequence, and neither state adds another reward. The
 ending script ignores Start through frame 4,124 after Boss release; frame 4,125
 is the first accepted Start and resets the Round to the title path, so the web
-ending action uses the same lockout.
+ending action uses the same lockout. APU output remains active through that
+sequence and settles with the final screen; the recreation uses an original
+square-wave ending cue for the same interval rather than extracting ROM music.
 
 Current behavior map:
 

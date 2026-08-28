@@ -861,17 +861,18 @@ export function banditBillOpeningY(age: number): number {
 // X/Y keyframes sampled from the clean Round 1 Boss trace. The actor's lane
 // offset is applied by banditBillCombatPosition for the other entry lanes.
 const BANDIT_BILL_COMBAT_PATH_NES = [[0, 192, 64], [11, 192, 72], [47, 192, 72], [64, 187, 66], [80, 181, 59], [96, 173, 49], [112, 180, 49], [119, 186, 49], [128, 186, 49], [160, 186, 49], [176, 178, 49], [192, 166, 49], [208, 160, 49], [224, 151, 49], [227, 147, 49], [240, 147, 49], [272, 148, 49], [288, 160, 49], [304, 166, 49], [320, 175, 49], [335, 186, 49], [352, 186, 49], [368, 186, 49], [384, 191, 43], [400, 192, 42], [416, 186, 49], [432, 187, 59], [443, 192, 64], [464, 192, 64], [480, 192, 64], [496, 197, 59], [512, 202, 52], [528, 205, 49], [544, 200, 55], [551, 196, 60], [576, 196, 60], [592, 196, 60], [608, 196, 50], [624, 196, 42], [640, 196, 50], [656, 196, 60], [672, 196, 66], [688, 196, 66], [704, 196, 68], [720, 196, 82], [736, 196, 90], [752, 196, 100], [768, 196, 114], [784, 196, 114], [800, 196, 114], [816, 200, 109], [832, 205, 103], [848, 205, 103], [864, 197, 113], [880, 192, 118], [896, 192, 118], [912, 192, 118], [928, 185, 118], [944, 180, 118], [960, 192, 118], [976, 199, 118], [992, 205, 118], [1008, 205, 118], [1024, 205, 118], [1040, 197, 118], [1056, 185, 118], [1072, 179, 118], [1088, 171, 118], [1104, 166, 118], [1168, 166, 112], [1232, 166, 88], [1296, 166, 48], [1360, 170, 46], [1424, 193, 74], [1488, 193, 50], [1552, 193, 52], [1616, 191, 49], [1680, 199, 51], [1744, 207, 63], [1808, 194, 63], [1872, 169, 63], [1936, 165, 74], [2000, 150, 74], [2064, 125, 58], [2128, 135, 70], [2192, 135, 70], [2256, 125, 74], [2320, 125, 58], [2384, 138, 43], [2448, 142, 49], [2512, 142, 81], [2576, 142, 107], [2640, 142, 127], [2704, 118, 99], [2768, 114, 83], [2832, 114, 45], [2896, 134, 45], [2960, 154, 45], [3024, 167, 78], [3088, 179, 84], [3152, 203, 84], [3216, 198, 91], [3280, 184, 108], [3344, 198, 125], [3408, 190, 107], [3472, 190, 67]] as const;
+const BANDIT_BILL_COMBAT_PATH_EXTENDED_NES = [...BANDIT_BILL_COMBAT_PATH_NES, [3488, 190, 115], [3520, 190, 99], [3552, 190, 75], [3584, 190, 67], [3600, 190, 67]] as const;
 
 function banditBillCombatPosition(age: number, entryX = 192 * NES_WORLD_X_SCALE): readonly [number, number] {
   const frame = Math.max(0, age * NES_FRAME_RATE - BANDIT_BILL_ENTRY_DURATION * NES_FRAME_RATE);
   const laneOffset = entryX / NES_WORLD_X_SCALE - 192;
-  const first = BANDIT_BILL_COMBAT_PATH_NES[0]!;
+  const first = BANDIT_BILL_COMBAT_PATH_EXTENDED_NES[0]!;
   if (frame <= first[0]) return [(first[1] + laneOffset) * NES_WORLD_X_SCALE, first[2] * NES_WORLD_Y_SCALE];
-  const last = BANDIT_BILL_COMBAT_PATH_NES.at(-1)!;
+  const last = BANDIT_BILL_COMBAT_PATH_EXTENDED_NES.at(-1)!;
   if (frame >= last[0]) return [(last[1] + laneOffset) * NES_WORLD_X_SCALE, last[2] * NES_WORLD_Y_SCALE];
-  const nextIndex = BANDIT_BILL_COMBAT_PATH_NES.findIndex(([at]) => at >= frame);
-  const previous = BANDIT_BILL_COMBAT_PATH_NES[nextIndex - 1]!;
-  const next = BANDIT_BILL_COMBAT_PATH_NES[nextIndex]!;
+  const nextIndex = BANDIT_BILL_COMBAT_PATH_EXTENDED_NES.findIndex(([at]) => at >= frame);
+  const previous = BANDIT_BILL_COMBAT_PATH_EXTENDED_NES[nextIndex - 1]!;
+  const next = BANDIT_BILL_COMBAT_PATH_EXTENDED_NES[nextIndex]!;
   const amount = (frame - previous[0]) / (next[0] - previous[0]);
   return [
     (previous[1] + (next[1] - previous[1]) * amount + laneOffset) * NES_WORLD_X_SCALE,
@@ -948,21 +949,22 @@ export function cutterOpeningY(age: number): number {
   return cutterOpeningPosition(age)[1];
 }
 const CUTTER_COMBAT_PATH_NES = [[0, 129, 136], [16, 129, 136], [26, 129, 136], [27, 127, 134], [32, 119, 123], [48, 91, 90], [64, 63, 56], [71, 51, 41], [80, 51, 41], [112, 51, 41], [128, 51, 41], [131, 50, 40], [144, 56, 47], [176, 66, 59], [208, 80, 76], [240, 77, 92], [256, 71, 99], [288, 81, 86], [304, 109, 52], [311, 119, 40], [320, 119, 40], [352, 119, 40], [384, 126, 40], [416, 141, 40], [448, 159, 40], [464, 164, 45], [496, 176, 61], [512, 182, 68], [528, 182, 68], [544, 172, 55], [560, 160, 40], [576, 160, 40], [640, 160, 64], [704, 164, 84], [768, 145, 98], [832, 98, 41], [896, 98, 65], [960, 92, 105], [1024, 59, 105], [1088, 112, 40], [1152, 111, 40], [1216, 145, 40], [1280, 152, 40], [1344, 152, 40], [1408, 152, 42], [1472, 161, 60], [1536, 172, 48], [1600, 167, 41], [1664, 190, 70], [1728, 176, 98], [1792, 167, 109], [1856, 111, 41], [1920, 111, 49], [1984, 111, 95], [2048, 85, 105], [2112, 138, 40], [2176, 113, 40], [2240, 111, 56], [2304, 134, 84], [2368, 100, 41], [2432, 120, 41], [2496, 153, 41], [2560, 163, 41], [2624, 163, 41], [2688, 163, 57], [2752, 177, 86], [2816, 155, 112], [2880, 96, 41], [2944, 96, 41], [3008, 96, 79], [3072, 93, 121], [3136, 159, 41], [3200, 159, 41], [3264, 159, 49]] as const;
+const CUTTER_COMBAT_PATH_EXTENDED_NES = [...CUTTER_COMBAT_PATH_NES, [3328, 96, 79], [3392, 96, 119], [3456, 152, 50], [3520, 159, 41], [3584, 159, 47], [3600, 159, 57]] as const;
 
 function cutterCombatPosition(age: number, entryX = 144 * NES_WORLD_X_SCALE): readonly [number, number] {
   const frame = Math.max(0, age * NES_FRAME_RATE - CUTTER_ENTRY_DURATION * NES_FRAME_RATE);
   const laneOffset = entryX / NES_WORLD_X_SCALE - 144;
-  const first = CUTTER_COMBAT_PATH_NES[0]!;
+  const first = CUTTER_COMBAT_PATH_EXTENDED_NES[0]!;
   const point = (sample: readonly [number, number, number]): readonly [number, number] => [
     (sample[1] + laneOffset) * NES_WORLD_X_SCALE,
     sample[2] * NES_WORLD_Y_SCALE,
   ];
   if (frame <= first[0]) return point(first);
-  const last = CUTTER_COMBAT_PATH_NES.at(-1)!;
+  const last = CUTTER_COMBAT_PATH_EXTENDED_NES.at(-1)!;
   if (frame >= last[0]) return point(last);
-  const nextIndex = CUTTER_COMBAT_PATH_NES.findIndex(([at]) => at >= frame);
-  const previous = CUTTER_COMBAT_PATH_NES[nextIndex - 1]!;
-  const next = CUTTER_COMBAT_PATH_NES[nextIndex]!;
+  const nextIndex = CUTTER_COMBAT_PATH_EXTENDED_NES.findIndex(([at]) => at >= frame);
+  const previous = CUTTER_COMBAT_PATH_EXTENDED_NES[nextIndex - 1]!;
+  const next = CUTTER_COMBAT_PATH_EXTENDED_NES[nextIndex]!;
   const amount = (frame - previous[0]) / (next[0] - previous[0]);
   return point([
     frame,
@@ -1047,16 +1049,19 @@ const DEVIL_HAWK_COMBAT_X_NES = [
   [2401, 111], [2465, 101], [2529, 119], [2593, 123], [2657, 136], [2721, 145], [2785, 134], [2849, 136],
   [2913, 136], [2977, 136], [3041, 129], [3105, 109], [3169, 123], [3233, 129], [3297, 129], [3361, 122], [3425, 122],
 ] as const;
+const DEVIL_HAWK_COMBAT_PATH_EXTENDED_NES = [[3488, 133], [3520, 128], [3552, 85], [3584, 77], [3600, 65]] as const;
+const DEVIL_HAWK_COMBAT_X_EXTENDED_NES = [[3488, 122], [3520, 122], [3552, 122], [3584, 122], [3600, 122]] as const;
 export const DEVIL_HAWK_JUMP_PERIOD = 121;
 
 export function devilHawkCombatY(age: number): number {
   const frame = Math.max(0, age * NES_FRAME_RATE - DEVIL_HAWK_ENTRY_DURATION * NES_FRAME_RATE);
-  if (frame <= DEVIL_HAWK_COMBAT_PATH_NES[0]![0]) return DEVIL_HAWK_COMBAT_PATH_NES[0]![1] * NES_WORLD_Y_SCALE;
-  const last = DEVIL_HAWK_COMBAT_PATH_NES.at(-1)!;
+  const path = [...DEVIL_HAWK_COMBAT_PATH_NES, ...DEVIL_HAWK_COMBAT_PATH_EXTENDED_NES];
+  if (frame <= path[0]![0]) return path[0]![1] * NES_WORLD_Y_SCALE;
+  const last = path.at(-1)!;
   if (frame >= last[0]) return last[1] * NES_WORLD_Y_SCALE;
-  const nextIndex = DEVIL_HAWK_COMBAT_PATH_NES.findIndex(([at]) => at >= frame);
-  const previous = DEVIL_HAWK_COMBAT_PATH_NES[nextIndex - 1]!;
-  const next = DEVIL_HAWK_COMBAT_PATH_NES[nextIndex]!;
+  const nextIndex = path.findIndex(([at]) => at >= frame);
+  const previous = path[nextIndex - 1]!;
+  const next = path[nextIndex]!;
   const amount = (frame - previous[0]) / (next[0] - previous[0]);
   return (previous[1] + (next[1] - previous[1]) * amount) * NES_WORLD_Y_SCALE;
 }
@@ -1064,13 +1069,14 @@ export function devilHawkCombatY(age: number): number {
 export function devilHawkCombatX(age: number, entryX = 208 * NES_WORLD_X_SCALE): number {
   const frame = Math.max(0, age * NES_FRAME_RATE - DEVIL_HAWK_ENTRY_DURATION * NES_FRAME_RATE);
   const laneOffset = entryX / NES_WORLD_X_SCALE - 208;
-  const first = DEVIL_HAWK_COMBAT_X_NES[0]!;
+  const path = [...DEVIL_HAWK_COMBAT_X_NES, ...DEVIL_HAWK_COMBAT_X_EXTENDED_NES];
+  const first = path[0]!;
   if (frame <= first[0]) return (first[1] + laneOffset) * NES_WORLD_X_SCALE;
-  const last = DEVIL_HAWK_COMBAT_X_NES.at(-1)!;
+  const last = path.at(-1)!;
   if (frame >= last[0]) return (last[1] + laneOffset) * NES_WORLD_X_SCALE;
-  const nextIndex = DEVIL_HAWK_COMBAT_X_NES.findIndex(([at]) => at >= frame);
-  const previous = DEVIL_HAWK_COMBAT_X_NES[nextIndex - 1]!;
-  const next = DEVIL_HAWK_COMBAT_X_NES[nextIndex]!;
+  const nextIndex = path.findIndex(([at]) => at >= frame);
+  const previous = path[nextIndex - 1]!;
+  const next = path[nextIndex]!;
   const amount = (frame - previous[0]) / (next[0] - previous[0]);
   return (previous[1] + (next[1] - previous[1]) * amount + laneOffset) * NES_WORLD_X_SCALE;
 }
@@ -1202,18 +1208,19 @@ export function fatmanJoeOpeningY(age: number): number {
   return Math.max(0, Math.min(1, age / FATMAN_JOE_ENTRY_DURATION)) * FATMAN_JOE_ENTRY_END_Y;
 }
 const FATMAN_JOE_COMBAT_PATH_NES = [[0, 152, 112], [16, 152, 120], [32, 152, 136], [48, 152, 142], [64, 152, 134], [80, 152, 124], [96, 152, 124], [112, 139, 93], [128, 133, 94], [144, 125, 89], [160, 117, 89], [176, 110, 89], [192, 98, 89], [208, 90, 89], [224, 84, 89], [240, 73, 85], [256, 68, 78], [272, 63, 73], [288, 58, 67], [304, 58, 67], [320, 58, 73], [336, 58, 123], [352, 58, 169], [368, 74, 120], [384, 102, 91], [400, 114, 85], [416, 121, 77], [432, 128, 71], [448, 128, 85], [464, 123, 79], [480, 117, 72], [496, 117, 72], [512, 127, 41], [528, 136, 41], [544, 136, 41], [560, 127, 53], [576, 122, 58], [592, 115, 58], [608, 102, 58], [624, 102, 58], [640, 102, 64], [656, 102, 80], [672, 102, 154], [688, 103, 154], [704, 118, 74], [720, 132, 55], [730, 132, 55], [794, 130, 49], [858, 121, 67], [922, 120, 71], [986, 118, 68], [1050, 121, 42], [1114, 120, 56], [1178, 118, 55], [1242, 100, 69], [1306, 123, 61], [1370, 120, 127], [1434, 120, 51], [1498, 106, 52], [1562, 106, 98], [1626, 121, 61], [1690, 121, 61], [1754, 121, 49], [1818, 121, 56], [1882, 121, 83], [1946, 121, 53], [2010, 121, 75], [2074, 121, 81], [2138, 121, 56], [2202, 117, 98], [2266, 115, 81], [2330, 140, 42], [2394, 120, 66], [2458, 93, 83], [2522, 67, 73], [2586, 100, 67], [2650, 106, 67], [2714, 72, 67], [2778, 90, 95], [2842, 94, 101], [2906, 76, 68], [2970, 57, 46], [3034, 71, 70], [3098, 95, 99], [3162, 108, 115], [3226, 108, 115], [3290, 122, 79], [3354, 108, 46], [3418, 68, 46]] as const;
+const FATMAN_JOE_COMBAT_PATH_EXTENDED_NES = [...FATMAN_JOE_COMBAT_PATH_NES, [3488, 112, 67], [3520, 108, 46], [3552, 88, 46], [3584, 75, 46], [3600, 61, 46]] as const;
 
 function fatmanJoeCombatPosition(age: number, entryX = 152 * NES_WORLD_X_SCALE): readonly [number, number] {
   const frame = Math.max(0, age * NES_FRAME_RATE - FATMAN_JOE_ENTRY_DURATION * NES_FRAME_RATE);
   const laneOffset = entryX / NES_WORLD_X_SCALE - 152;
   const toWorldX = (x: number): number => clamp((x + laneOffset) * NES_WORLD_X_SCALE, ...fatmanJoeArenaXBounds());
-  const first = FATMAN_JOE_COMBAT_PATH_NES[0]!;
+  const first = FATMAN_JOE_COMBAT_PATH_EXTENDED_NES[0]!;
   if (frame <= first[0]) return [toWorldX(first[1]), first[2] * NES_WORLD_Y_SCALE];
-  const last = FATMAN_JOE_COMBAT_PATH_NES.at(-1)!;
+  const last = FATMAN_JOE_COMBAT_PATH_EXTENDED_NES.at(-1)!;
   if (frame >= last[0]) return [toWorldX(last[1]), last[2] * NES_WORLD_Y_SCALE];
-  const nextIndex = FATMAN_JOE_COMBAT_PATH_NES.findIndex(([at]) => at >= frame);
-  const previous = FATMAN_JOE_COMBAT_PATH_NES[nextIndex - 1]!;
-  const next = FATMAN_JOE_COMBAT_PATH_NES[nextIndex]!;
+  const nextIndex = FATMAN_JOE_COMBAT_PATH_EXTENDED_NES.findIndex(([at]) => at >= frame);
+  const previous = FATMAN_JOE_COMBAT_PATH_EXTENDED_NES[nextIndex - 1]!;
+  const next = FATMAN_JOE_COMBAT_PATH_EXTENDED_NES[nextIndex]!;
   const amount = (frame - previous[0]) / (next[0] - previous[0]);
   return [
     toWorldX(previous[1] + (next[1] - previous[1]) * amount),
@@ -1259,6 +1266,10 @@ const WINGATE_TRACE_PATHS_NES = [
   [[0, 152, 98], [16, 152, 58], [32, 128, 56], [34, 126, 56], [48, 117, 58], [64, 109, 60], [80, 102, 62], [96, 91, 64], [112, 83, 66], [128, 76, 68], [144, 65, 69], [160, 56, 69], [176, 50, 69], [192, 38, 69], [208, 35, 58], [224, 60, 53], [240, 83, 53], [256, 76, 53], [272, 68, 53], [288, 56, 53], [304, 63, 53], [320, 71, 53], [336, 83, 53], [368, 83, 53], [416, 83, 53], [448, 76, 53], [464, 71, 52], [480, 79, 42], [496, 79, 50], [512, 79, 60], [528, 79, 74], [544, 79, 82], [560, 80, 91], [576, 82, 83], [592, 71, 60], [608, 95, 60], [624, 104, 60], [640, 110, 60], [656, 110, 74], [672, 110, 84], [688, 110, 92], [704, 110, 60], [720, 128, 46], [736, 140, 57], [752, 151, 59], [768, 157, 61], [784, 149, 61], [800, 138, 61], [816, 131, 61], [832, 123, 61], [848, 118, 69], [864, 118, 77], [880, 118, 87], [896, 118, 87], [912, 119, 56], [928, 142, 63], [944, 150, 67], [960, 150, 75], [976, 150, 89], [992, 150, 82], [1008, 146, 52], [1024, 124, 57], [1040, 117, 59], [1049, 111, 60], [1113, 164, 86], [1177, 164, 86], [1241, 184, 86], [1305, 217, 86], [1369, 164, 62], [1433, 142, 57], [1497, 135, 57], [1561, 99, 57], [1625, 62, 57], [1689, 69, 57], [1753, 99, 57], [1817, 62, 57], [1881, 69, 57], [1945, 75, 93], [2009, 114, 51], [2073, 94, 51], [2137, 80, 83], [2201, 107, 51], [2265, 97, 51], [2329, 72, 45], [2393, 90, 52], [2457, 96, 54], [2521, 70, 54], [2585, 103, 54], [2649, 127, 48], [2713, 142, 66], [2777, 98, 74], [2841, 104, 74], [2905, 104, 57], [2969, 110, 80], [3033, 76, 80], [3097, 80, 40], [3161, 128, 50], [3225, 161, 50], [3289, 174, 50], [3353, 167, 50], [3417, 134, 50]] as const,
   [[0, 192, 98], [16, 192, 58], [32, 167, 50], [34, 165, 50], [48, 155, 50], [64, 147, 50], [80, 140, 50], [96, 129, 50], [112, 121, 50], [128, 114, 50], [144, 107, 50], [224, 107, 50], [240, 102, 50], [256, 94, 50], [272, 87, 50], [279, 82, 50], [288, 77, 54], [304, 72, 61], [320, 72, 69], [336, 72, 83], [352, 72, 93], [368, 72, 63], [384, 83, 40], [400, 100, 51], [416, 108, 51], [432, 120, 51], [448, 126, 51], [464, 133, 53], [480, 133, 67], [496, 133, 75], [512, 133, 85], [528, 133, 93], [544, 133, 59], [560, 114, 74], [576, 110, 80], [592, 105, 85], [672, 98, 85], [688, 92, 85], [704, 80, 85], [720, 72, 85], [736, 65, 85], [752, 65, 99], [768, 65, 59], [784, 90, 51], [800, 100, 51], [816, 107, 51], [832, 115, 51], [848, 127, 51], [864, 133, 51], [880, 125, 51], [896, 113, 51], [912, 107, 51], [928, 98, 51], [944, 87, 51], [960, 80, 51], [976, 72, 51], [992, 67, 51], [1024, 67, 51], [1049, 67, 51], [1113, 141, 57], [1177, 134, 57], [1241, 134, 93], [1305, 103, 66], [1369, 94, 79], [1433, 123, 58], [1497, 136, 85], [1561, 104, 67], [1625, 105, 82], [1689, 134, 56], [1753, 171, 60], [1817, 204, 60], [1881, 167, 60], [1945, 164, 60], [2009, 190, 60], [2073, 201, 63], [2137, 182, 36], [2201, 145, 56], [2265, 125, 58], [2329, 139, 58], [2393, 158, 58], [2457, 158, 58], [2521, 165, 58], [2585, 139, 66], [2649, 129, 46], [2713, 94, 81], [2777, 64, 81], [2841, 97, 70], [2905, 101, 48], [2969, 152, 63], [3033, 125, 71], [3097, 131, 50], [3161, 153, 93], [3225, 120, 93], [3289, 120, 60], [3353, 126, 60], [3417, 148, 66]] as const,
 ] as const;
+const WINGATE_TRACE_PATHS_EXTENDED_NES = [
+  [...WINGATE_TRACE_PATHS_NES[0], [3488, 174, 50], [3520, 161, 50], [3552, 141, 50], [3584, 141, 41], [3600, 127, 50]],
+  [...WINGATE_TRACE_PATHS_NES[1], [3488, 133, 60], [3520, 133, 60], [3552, 153, 60], [3584, 150, 71], [3600, 157, 71]],
+] as const;
 
 export function wingateRushOffset(frame: number, entryX = 152): number {
   const clamped = Math.max(0, Math.min(WINGATE_ENTRY_RUSH_DURATION * NES_FRAME_RATE, frame));
@@ -1273,7 +1284,7 @@ export function wingateRushOffset(frame: number, entryX = 152): number {
 
 export function wingateCombatY(age: number, phase = 0): number {
   const frame = Math.max(0, age * NES_FRAME_RATE - WINGATE_ENTRY_DURATION * NES_FRAME_RATE);
-  const path = WINGATE_TRACE_PATHS_NES[phase > 0 ? 1 : 0];
+  const path = WINGATE_TRACE_PATHS_EXTENDED_NES[phase > 0 ? 1 : 0];
   const first = path[0]!;
   if (frame <= first[0]) return first[2] * NES_WORLD_Y_SCALE;
   const last = path.at(-1)!;
@@ -1287,7 +1298,7 @@ export function wingateCombatY(age: number, phase = 0): number {
 
 export function wingateCombatX(age: number, phase = 0, entryX = 152): number {
   const frame = Math.max(0, age * NES_FRAME_RATE - WINGATE_ENTRY_DURATION * NES_FRAME_RATE);
-  const path = WINGATE_TRACE_PATHS_NES[phase > 0 ? 1 : 0];
+  const path = WINGATE_TRACE_PATHS_EXTENDED_NES[phase > 0 ? 1 : 0];
   const base = path[0]![1];
   const mirror = entryX < 128 ? -1 : 1;
   const position = (at: number): number => entryX + (at - base) * mirror;

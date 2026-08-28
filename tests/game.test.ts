@@ -596,6 +596,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(banditBillCombatX(BANDIT_BILL_ENTRY_DURATION + 1104 / NES_FRAME_RATE)).toBe(622.5);
     expect(banditBillCombatX(BANDIT_BILL_ENTRY_DURATION + 3472 / NES_FRAME_RATE)).toBeCloseTo(190 * NES_WORLD_X_SCALE, 9);
     expect(banditBillCombatY(BANDIT_BILL_ENTRY_DURATION + 3472 / NES_FRAME_RATE)).toBeCloseTo(67 * NES_WORLD_Y_SCALE, 9);
+    expect(banditBillCombatY(BANDIT_BILL_ENTRY_DURATION + 3600 / NES_FRAME_RATE)).toBeCloseTo(67 * NES_WORLD_Y_SCALE, 9);
   });
 
   it("matches the traced Bandit Bill damage recovery", () => {
@@ -630,8 +631,10 @@ describe("Gun.Smoke vertical slice", () => {
     expect(cutterCombatX(CUTTER_ENTRY_DURATION + 320 / NES_FRAME_RATE)).toBe(446.25);
     expect(cutterCombatX(CUTTER_ENTRY_DURATION + 560 / NES_FRAME_RATE)).toBe(600);
     expect(cutterCombatX(CUTTER_ENTRY_DURATION + 320 / NES_FRAME_RATE, 88 * NES_WORLD_X_SCALE)).toBe(236.25);
-    expect(cutterCombatX(CUTTER_ENTRY_DURATION + 3264 / NES_FRAME_RATE)).toBe(159 * NES_WORLD_X_SCALE);
-    expect(cutterCombatY(CUTTER_ENTRY_DURATION + 3264 / NES_FRAME_RATE)).toBe(49 * NES_WORLD_Y_SCALE);
+    expect(cutterCombatX(CUTTER_ENTRY_DURATION + 3264 / NES_FRAME_RATE)).toBeCloseTo(159 * NES_WORLD_X_SCALE, 9);
+    expect(cutterCombatY(CUTTER_ENTRY_DURATION + 3264 / NES_FRAME_RATE)).toBeCloseTo(49 * NES_WORLD_Y_SCALE, 9);
+    expect(cutterCombatX(CUTTER_ENTRY_DURATION + 3600 / NES_FRAME_RATE)).toBeCloseTo(159 * NES_WORLD_X_SCALE, 9);
+    expect(cutterCombatY(CUTTER_ENTRY_DURATION + 3600 / NES_FRAME_RATE)).toBeCloseTo(57 * NES_WORLD_Y_SCALE, 9);
     expect(CUTTER_FIRST_ATTACK_DELAY).toBeCloseTo(350 / NES_FRAME_RATE, 9);
     expect(CUTTER_ATTACK_INTERVAL).toBeCloseTo(256 / NES_FRAME_RATE, 9);
     expect(CUTTER_BOOMERANG_SPAWN_NES).toEqual([[-3, 3], [3, 2]]);
@@ -707,6 +710,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(devilHawkCombatX(DEVIL_HAWK_ENTRY_DURATION + 640 / NES_FRAME_RATE)).toBe(660);
     expect(devilHawkCombatY(DEVIL_HAWK_ENTRY_DURATION + 3425 / NES_FRAME_RATE)).toBe(85 * NES_WORLD_Y_SCALE);
     expect(devilHawkCombatX(DEVIL_HAWK_ENTRY_DURATION + 3425 / NES_FRAME_RATE)).toBe(122 * NES_WORLD_X_SCALE);
+    expect(devilHawkCombatY(DEVIL_HAWK_ENTRY_DURATION + 3600 / NES_FRAME_RATE)).toBeCloseTo(65 * NES_WORLD_Y_SCALE, 9);
+    expect(devilHawkCombatX(DEVIL_HAWK_ENTRY_DURATION + 3600 / NES_FRAME_RATE)).toBeCloseTo(122 * NES_WORLD_X_SCALE, 9);
   });
 
   it("matches the traced Ninja Boss entrance", () => {
@@ -745,6 +750,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(fatmanJoeCombatX(FATMAN_JOE_ENTRY_DURATION + 352 / NES_FRAME_RATE, 64 * NES_WORLD_X_SCALE)).toBe(155);
     expect(fatmanJoeCombatX(FATMAN_JOE_ENTRY_DURATION + 3418 / NES_FRAME_RATE)).toBe(68 * NES_WORLD_X_SCALE);
     expect(fatmanJoeCombatY(FATMAN_JOE_ENTRY_DURATION + 3418 / NES_FRAME_RATE)).toBe(46 * NES_WORLD_Y_SCALE);
+    expect(fatmanJoeCombatX(FATMAN_JOE_ENTRY_DURATION + 3600 / NES_FRAME_RATE)).toBe(61 * NES_WORLD_X_SCALE);
+    expect(fatmanJoeCombatY(FATMAN_JOE_ENTRY_DURATION + 3600 / NES_FRAME_RATE)).toBe(46 * NES_WORLD_Y_SCALE);
     expect(fatmanJoeArenaXBounds()).toEqual([155, 805]);
     expect(FATMAN_JOE_FIRST_ATTACK_DELAY).toBeCloseTo(95 / NES_FRAME_RATE, 9);
     expect(FATMAN_JOE_ATTACK_DECISION_INTERVAL).toBeCloseTo(76 / NES_FRAME_RATE, 9);
@@ -795,6 +802,10 @@ describe("Gun.Smoke vertical slice", () => {
     expect(wingateCombatY(WINGATE_ENTRY_DURATION + 3417 / NES_FRAME_RATE)).toBeCloseTo(50 * NES_WORLD_Y_SCALE, 9);
     expect(wingateCombatX(WINGATE_ENTRY_DURATION + 3417 / NES_FRAME_RATE, 1, 192)).toBeCloseTo(148, 9);
     expect(wingateCombatY(WINGATE_ENTRY_DURATION + 3417 / NES_FRAME_RATE, 1)).toBeCloseTo(66 * NES_WORLD_Y_SCALE, 9);
+    expect(wingateCombatX(WINGATE_ENTRY_DURATION + 3600 / NES_FRAME_RATE, 0, 152)).toBeCloseTo(127, 9);
+    expect(wingateCombatY(WINGATE_ENTRY_DURATION + 3600 / NES_FRAME_RATE, 0)).toBeCloseTo(50 * NES_WORLD_Y_SCALE, 9);
+    expect(wingateCombatX(WINGATE_ENTRY_DURATION + 3600 / NES_FRAME_RATE, 1, 192)).toBeCloseTo(157, 9);
+    expect(wingateCombatY(WINGATE_ENTRY_DURATION + 3600 / NES_FRAME_RATE, 1)).toBeCloseTo(71 * NES_WORLD_Y_SCALE, 9);
     expect(WINGATE_SECOND_ENTRY_Y_NES).toBe(0);
     expect(WINGATE_SECOND_ENTRY_Y).toBe(0);
     expect(WINGATE_ENTRY_RUSH_DURATION).toBeCloseTo(34 / NES_FRAME_RATE, 9);

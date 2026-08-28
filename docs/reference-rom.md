@@ -464,7 +464,7 @@ to a 125-frame interval. The runtime preserves these measured 5/3 fan geometries
 and lifetimes. The five-shot branch accepts aim
 sectors 8 through 24 (inclusive), as enforced by the ROM's `$C7E6` check. The
 runtime uses compressed X/Y keyframes from the unhurt Boss trace through
-combat frame 3,425; interpolation preserves the long recorded route while the
+combat frame 3,600; interpolation preserves the long recorded route while the
 separate attack scheduler remains subject to aim and random gates. The final
 sample is held until a longer trace establishes the next route branch.
 The same campaign reaches Round 4 and identifies its Ninja Boss as dispatch
@@ -513,7 +513,7 @@ shell-to-mine chain. During the random action branch, the ROM's `$B6` decision
 counter stops while the short route lasts 53 frames (`b8=16`) or the long route
 lasts 122 frames (`b8=40` followed by `b8=32`); the runtime extends its existing
 76-frame clock by those measured windows. The runtime replays the controlled
-attack trace's multi-hop X/Y profile through combat frame 3,418; later direction
+attack trace's multi-hop X/Y profile through combat frame 3,600; later direction
 selection remains an approximation.
 Round 6's first Wingate encounter is dispatch `0xa3`, variant `0x65`. Both
 encounters select NES `x=64/104/152/192` at `y=0`, hold that lane and reach
@@ -523,7 +523,7 @@ opening, both encounters hold X for about 17 frames before completing a
 measured 17-frame horizontal rush. The runtime now uses decoded unhurt-record X
 keyframes, mirrored from the selected entry lane, through the later combat
 sequence instead of constant-speed horizontal drift. The runtime now replays
-compressed X/Y keyframes from both unhurt traces through combat frame 3,417;
+compressed X/Y keyframes from both unhurt traces through combat frame 3,600;
 the random attack scheduler remains an explicit approximation beyond those
 recorded decisions.
 The first encounter clears both ordinary and low-slot projectile actors before

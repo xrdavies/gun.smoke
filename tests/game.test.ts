@@ -438,6 +438,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ninjaTraceLifetime(184, 0, 4, 0, 1071)).toBeCloseTo(279 / NES_FRAME_RATE, 9);
     expect(ninjaTraceLifetime(184, 0, 4, 0, 1199)).toBeCloseTo(257 / NES_FRAME_RATE, 9);
     expect(ninjaTraceLifetime(184, 0, 4, 0, 1583)).toBeCloseTo(202 / NES_FRAME_RATE, 9);
+    expect(ninjaTraceLifetime(184, 0, 4, 0, 3535)).toBeCloseTo(241 / NES_FRAME_RATE, 9);
     expect(ninjaTraceLifetime(184, 0, 4, 0)).toBeUndefined();
     expect(ninjaTracePosition(103 / NES_FRAME_RATE, 152, 0, 4, 0, 47)).toEqual([151 * NES_WORLD_X_SCALE, 123 * NES_WORLD_Y_SCALE]);
     expect(ninjaTracePosition(139 / NES_FRAME_RATE, 152, 0, 4, 0, 47)).toEqual([123 * NES_WORLD_X_SCALE, 90 * NES_WORLD_Y_SCALE]);
@@ -456,8 +457,10 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ninjaTracePosition(256 / NES_FRAME_RATE, 184, 0, 4, 0, 1199)).toEqual([168 * NES_WORLD_X_SCALE, 207 * NES_WORLD_Y_SCALE]);
     expect(ninjaTracePosition(116 / NES_FRAME_RATE, 184, 0, 4, 0, 1583)).toEqual([184 * NES_WORLD_X_SCALE, 154 * NES_WORLD_Y_SCALE]);
     expect(ninjaTracePosition(201 / NES_FRAME_RATE, 184, 0, 4, 0, 1583)).toEqual([175 * NES_WORLD_X_SCALE, 208 * NES_WORLD_Y_SCALE]);
+    expect(ninjaTracePosition(160 / NES_FRAME_RATE, 184, 0, 4, 0, 3535)).toEqual([124 * NES_WORLD_X_SCALE, 203 * NES_WORLD_Y_SCALE]);
+    expect(ninjaTracePosition(240 / NES_FRAME_RATE, 184, 0, 4, 0, 3535)).toEqual([96 * NES_WORLD_X_SCALE, 230 * NES_WORLD_Y_SCALE]);
     expect(ninjaTracePosition(103 / NES_FRAME_RATE, 184, 0, 4, 0)).toBeUndefined();
-    expect([ninjaTraceThrowFrame(4, 47), ninjaTraceThrowFrame(4, 63), ninjaTraceThrowFrame(4, 383), ninjaTraceThrowFrame(4, 751), ninjaTraceThrowFrame(4, 815), ninjaTraceThrowFrame(4, 1071), ninjaTraceThrowFrame(4, 1199), ninjaTraceThrowFrame(4, 1583), ninjaTraceThrowFrame(3, 47)]).toEqual([103, 103, false, false, 116, 116, 116, false, undefined]);
+    expect([ninjaTraceThrowFrame(4, 47), ninjaTraceThrowFrame(4, 63), ninjaTraceThrowFrame(4, 383), ninjaTraceThrowFrame(4, 751), ninjaTraceThrowFrame(4, 815), ninjaTraceThrowFrame(4, 1071), ninjaTraceThrowFrame(4, 1199), ninjaTraceThrowFrame(4, 1583), ninjaTraceThrowFrame(4, 3535), ninjaTraceThrowFrame(3, 47)]).toEqual([103, 103, false, false, 116, 116, 116, false, false, undefined]);
     expect(NINJA_LIFETIME).toBeCloseTo(303 / NES_FRAME_RATE, 9);
   });
 

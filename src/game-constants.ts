@@ -873,6 +873,8 @@ const NINJA_STAGE4_X184_AT1199_TRACE_SAMPLES_NES = decodeGunmanAbsoluteCoordinat
 
 const NINJA_STAGE4_X184_AT1583_TRACE_SAMPLES_NES = decodeGunmanAbsoluteCoordinateSamples("uAK4BLgGuAi4CrgMuA64ELgSuBS4FrgYuBq4HLgeuCC4ILgguCC4ILgguCC4ILgguCC4ILgguCC4ILgguCC4ILgguCC4ILgguCK4JLgmuCi4KrgsuC64MLgyuDS4Nrg4uDq4PLg+uEC4QrhEuEa4SLhKuEy4TrhQuFK4VLhWuFi4WrhcuF64YLhiuGS4ZrhouGq4bLhuuHC4crh0uHa4eLh6uHy4friAuIK4hLiGuIi4iriMuI64kLiSuJS4lriYuJi4mLiYuJi4mLiYuJi4mLiYuJi4mLiYuJi4mLiYuJi4mLiYuJi4mLiat5y3nregtqK2pLamtai1qrWstK60sLSys7SztrO3s7myu7K9sr+xwbHDscWwx7DJsMuvza/Jr8avw6/Br7+vvq+9r72vvq+/r8CvwK/Ar8Gvwa/Br8Kvwq/Cr8Ovw6/Dr8SvxK/Er8Wvxa/Fr8avxq/Gr8evx6/Hr8ivyK/Ir8mvya/Jr8qvyq/Kr8uvy6/Lr8yvzK/Mr82vza/Nr86vzq/Or8+vz6/Pr9A=");
 
+const NINJA_STAGE4_X184_AT3535_TRACE_SAMPLES_NES = decodeGunmanAbsoluteCoordinateSamples("uAK4BLgGuAi4CrgMuA64ELgSuBS4FrgYuBq4HLgeuCC4ILgguCC4ILgguCC4ILgguCC4ILgguCC4ILgguCC4ILgguCC4ILgguCK4JLgmuCi4KrgsuC64MLgyuDS4Nrg4uDq4PLg+uEC4QrhEuEa4SLhKuEy4TrhQuFK4VLhWuFi4WrhcuF64YLhiuGS4ZrhouGq4bLhuuHC4crh0uHa4eLh6uHy4friAuIK4hLiGuIi4iriMuI64kLiSuJS4lriYuJq4mriauJq4mriauJq4mriauJq4mriauJq4mriauJq4mriauJq4mriat5u1nLSds56xn7Cgr6Kto6ykqqWppqinpqilqaSroqyhraCunq+dsJuxmrKZtJe1lraVt5O4krmRuo+7jr2Nvou/isCIwYfChsOExIPGgseAyH/Jfsp8y3vMec14z3fQddF00nPTcdRw1W/Wbdhs2Wvaadto3GbdZd5k32LhYeJg42DfYNxg2WDXYNVg1GDTYNNg1GDVYNZg1mDWYNdg12DXYNhg2GDYYNlg2WDZYNpg2mDaYNtg22DbYNxg3GDcYN1g3WDdYN5g3mDeYN9g32DfYOBg4GDgYOFg4WDhYOJg4mDiYONg42DjYORg5GDkYOVg5WDlYOY=");
+
 function ninjaTraceSamples(originX: number, originY: number, stage: number, phase: number, eventAt?: number): readonly (readonly [number, number])[] | undefined {
   if (stage !== 4 || Math.round(originY) !== 0) return undefined;
   if (phase === 0 && Math.round(originX) === 152 && eventAt === 47) return NINJA_STAGE4_TRACE_SAMPLES_NES;
@@ -883,6 +885,7 @@ function ninjaTraceSamples(originX: number, originY: number, stage: number, phas
   if (phase === 0 && Math.round(originX) === 184 && eventAt === 1071) return NINJA_STAGE4_X184_AT1071_TRACE_SAMPLES_NES;
   if (phase === 0 && Math.round(originX) === 184 && eventAt === 1199) return NINJA_STAGE4_X184_AT1199_TRACE_SAMPLES_NES;
   if (phase === 0 && Math.round(originX) === 184 && eventAt === 1583) return NINJA_STAGE4_X184_AT1583_TRACE_SAMPLES_NES;
+  if (phase === 0 && Math.round(originX) === 184 && eventAt === 3535) return NINJA_STAGE4_X184_AT3535_TRACE_SAMPLES_NES;
   return undefined;
 }
 
@@ -898,7 +901,7 @@ export function ninjaTraceLifetime(originX: number, originY: number, stage: numb
 export function ninjaTraceThrowFrame(stage: number, eventAt?: number): number | false | undefined {
   if (stage !== 4) return undefined;
   if (eventAt === 47 || eventAt === 63) return 103;
-  if (eventAt === 383 || eventAt === 751 || eventAt === 1583) return false;
+  if (eventAt === 383 || eventAt === 751 || eventAt === 1583 || eventAt === 3535) return false;
   if (eventAt === 815 || eventAt === 1071 || eventAt === 1199) return 116;
   return undefined;
 }

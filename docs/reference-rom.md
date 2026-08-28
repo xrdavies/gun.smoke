@@ -582,8 +582,9 @@ mapping. The runtime still stores each original routine and entity code so
 long-tail random branches can be compared without changing the mapped types.
 The web runtime advances a ROM-shaped `$AC-$AF` random register once per NES
 frame (the `$FF08` adjacent bit-1 taps) and rotates those bytes for multiple
-same-frame decisions; the ROM's mutable `$B0` feedback byte remains outside
-this shared register model.
+same-frame decisions. It seeds that register at new-game initialization and
+keeps it across Round transitions, loops, and Continue; the ROM's mutable `$B0`
+feedback byte remains outside this shared register model.
 
 The one supply-shop record per Round carries entity flag `0x40`; its decoded
 NES X positions are `[200,64,216,216,72,216]`. Unflagged weapon-shop counts are

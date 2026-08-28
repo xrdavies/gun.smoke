@@ -1712,7 +1712,6 @@ class GunSmokeGame {
         }
       }
       if (unit.enemyType === "sniper") {
-        unit.y += scrollDelta;
         if ((unit.y - this.scroll) / NES_WORLD_Y_SCALE >= ROM_SCREEN_RELEASE_Y_NES) unit.hp = 0;
       }
       if (unit.x < 32 || unit.x > 928) unit.vx *= -1;

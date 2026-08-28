@@ -550,8 +550,9 @@ screen Y above 72, select the long route; `2..7` select the short route. The
 runtime fires the route's follow-up shell at the end of that measured window,
 then restarts the 76-frame decision clock. The runtime replays the controlled
 attack trace's multi-hop X/Y profile through combat frame 3,600, follows sparse
-samples through frame 12,000, then retains that profile for continued movement;
-the attack random gate and follow-up timing use the decoded ROM state.
+samples through frame 12,000, then holds the final sampled position in the ROM's
+post-route wait state; the attack random gate and follow-up timing use the
+decoded ROM state.
 Round 6's first Wingate encounter is dispatch `0xa3`, variant `0x65`. Both
 encounters select NES `x=64/104/152/192` at `y=0`, hold that lane and reach
 approximately `y=98` after 151 frames. Movement uses a repeating four-active,

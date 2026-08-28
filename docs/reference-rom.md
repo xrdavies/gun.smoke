@@ -525,8 +525,9 @@ Round 5's gate identifies Fatman Joe as dispatch `0x80`, variant `0x51`. His
 initializer selects NES `x=64/104/152/192` at `y=0` and keeps that lane for the
 first 170 frames and reaches about `y=112`. A 2,400-frame Boss trace spans NES
 `x=88..152`, beyond the runtime's former 54-pixel-wide center clamp; the web
-Boss now uses the full Round 5 road bounds. His attack decision timer first
-expires at frame 95 and repeats every 76 active frames; each decision uses a
+ Boss now uses the full Round 5 road bounds. His attack decision starts at
+frame 170 after the entry routine reaches its first 76-frame counter boundary,
+then repeats every 76 active frames; each decision uses a
 mutating `AC=(AC+AD)&0xff` random byte. Low nibbles `8..15` attempt an attack
 inside the downward heading sector; `0..7` select a movement action and pause
 the timer. A successful attack creates

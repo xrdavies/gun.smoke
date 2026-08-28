@@ -2720,6 +2720,10 @@ if (import.meta.env.DEV) Object.defineProperty(window, "__forceGunSmokeBoss", { 
   game.scroll = ROUND_BOSS_TRIGGERS[game.stage - 1] ?? ROUND_BOSS_TRIGGERS[0]!;
   (game as unknown as { updateSpawns(): void }).updateSpawns();
 } });
+if (import.meta.env.DEV) Object.defineProperty(window, "__defeatGunSmokeBoss", { value: () => {
+  const boss = game?.units.find((unit) => unit.kind === "boss" && unit.hp > 0 && !unit.exploding);
+  if (game && boss) (game as unknown as { defeatTarget(target: unknown): void }).defeatTarget(boss);
+} });
 if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeRound", { value: (stage: number) => {
   if (!game || !Number.isInteger(stage) || stage < 1 || stage > MAX_STAGE) return;
   game.stage = stage;

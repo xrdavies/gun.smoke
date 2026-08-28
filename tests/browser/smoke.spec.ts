@@ -104,6 +104,34 @@ test("creates each Boss from its wanted gate", async ({ page }) => {
   expect(pageErrors).toEqual([]);
 });
 
+test("completes the six-round Boss transition chain", async ({ page }) => {
+  const pageErrors: Error[] = [];
+  page.on("pageerror", (error) => pageErrors.push(error));
+  await page.clock.install();
+  await page.goto("/");
+  await page.locator("#start-button").click();
+  await page.locator("#continue-button").click();
+  await page.locator("#briefing-button").click();
+  for (let stage = 1; stage <= 5; stage += 1) {
+    await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), stage);
+    await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
+    await page.evaluate(() => (window as unknown as { __defeatGunSmokeBoss: () => void }).__defeatGunSmokeBoss());
+    await page.clock.runFor(1_700);
+    await expect(page.locator("#briefing-screen")).toBeVisible();
+    await expect(page.locator("#briefing-round")).toContainText(`ROUND ${stage + 1}`);
+    await page.locator("#briefing-button").click();
+  }
+  await page.evaluate(() => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(6));
+  await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
+  await page.evaluate(() => (window as unknown as { __defeatGunSmokeBoss: () => void }).__defeatGunSmokeBoss());
+  await page.clock.runFor(5_000);
+  await expect(page.locator("#boss-label")).toContainText("WINGATE II");
+  await page.evaluate(() => (window as unknown as { __defeatGunSmokeBoss: () => void }).__defeatGunSmokeBoss());
+  await page.clock.runFor(1_700);
+  await expect(page.locator("#ending-screen")).toBeVisible();
+  expect(pageErrors).toEqual([]);
+});
+
 test("accepts gamepad Start from the title flow", async ({ page }) => {
   await page.addInitScript(() => {
     let startPressed = false;

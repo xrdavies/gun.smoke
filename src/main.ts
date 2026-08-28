@@ -1779,7 +1779,7 @@ class GunSmokeGame {
           unit.y = this.scroll + (unit.romOriginY ?? unit.y - this.scroll) + dynamiteVerticalOffset(unit.age);
           if (unit.age >= DYNAMITE_HORIZONTAL_DURATION) unit.vx = 0;
         } else if (unit.vy === 0) {
-          unit.y = this.scroll + (unit.romOriginY ?? unit.y - this.scroll) + dynamiteVerticalOffset(DYNAMITE_AIRBORNE_DURATION);
+          unit.y = this.scroll + (unit.romOriginY ?? unit.y - this.scroll) + dynamiteVerticalOffset(DYNAMITE_AIRBORNE_DURATION) - DYNAMITE_LANDED_SPEED * delta;
           unit.vx = 0;
           unit.vy = DYNAMITE_LANDED_SPEED;
         }

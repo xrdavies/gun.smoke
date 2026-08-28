@@ -120,7 +120,7 @@ for (let frame = 0; frame < frames; frame += 1) {
   if (isolateCandidates && targetSlot === undefined) for (let slot = 16; slot < 23; slot += 1) memory[0x400 + slot] = 0;
   nes.frame();
 
-  if (targetSlot === undefined) {
+  if (targetSlot === undefined && (startFrame === undefined || frame >= startFrame)) {
     for (let slot = 16; slot < 23; slot += 1) {
       if (!active(slot)) {
         matchingSlots.delete(slot);

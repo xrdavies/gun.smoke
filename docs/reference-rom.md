@@ -490,9 +490,11 @@ and lifetimes. The five-shot branch accepts aim
 sectors 8 through 24 (inclusive), as enforced by the ROM's `$C7E6` check. The
 runtime uses compressed X/Y keyframes from the unhurt Boss trace through
 combat frame 3,600; interpolation preserves the long recorded route while the
-separate attack scheduler remains subject to aim and random gates. Beyond the
-recorded window the route is continued as a deterministic reflected trace until
-the random branch is modeled directly.
+separate attack scheduler remains subject to aim and random gates. After that
+window, the runtime uses the ROM's 48-frame action counter, `AE=(AE+AC)&0xff`
+movement decisions, discrete `24/48/72/96`-frame segments, short action holds,
+vertical action arcs, and screen-boundary correction rather than reflecting a
+finite trace. The measured fire cadence remains intact.
 The same campaign reaches Round 4 and identifies its Ninja Boss as dispatch
 `0xaa`, variant `0x6b`. Bank 3's paired coordinate tables define NES entry lanes
 `(112,64)`, `(192,64)`, `(120,144)`, and `(176,128)`. The runtime selects one

@@ -68,6 +68,18 @@ export function mixRomRandomSecondSum(state: RomRandomState): RomRandomState {
   return next;
 }
 
+export function mixRomRandomThirdFirstSum(state: RomRandomState): RomRandomState {
+  const next: RomRandomState = [...state];
+  next[2] = (next[2]! + next[0]!) & 0xff;
+  return next;
+}
+
+export function mixRomRandomSecondThirdSum(state: RomRandomState): RomRandomState {
+  const next: RomRandomState = [...state];
+  next[1] = (next[1]! + next[2]!) & 0xff;
+  return next;
+}
+
 export function mixRomRandomDifference(state: RomRandomState): RomRandomState {
   const next: RomRandomState = [...state];
   next[0] = (next[0]! - next[1]! - 1) & 0xff;
@@ -1119,6 +1131,84 @@ const DEVIL_HAWK_COMBAT_X_EXTENDED_NES = [[3488, 122], [3520, 122], [3552, 122],
 const DEVIL_HAWK_COMBAT_PATH_FULL_NES = [...DEVIL_HAWK_COMBAT_PATH_NES, ...DEVIL_HAWK_COMBAT_PATH_EXTENDED_NES] as const;
 const DEVIL_HAWK_COMBAT_X_FULL_NES = [...DEVIL_HAWK_COMBAT_X_NES, ...DEVIL_HAWK_COMBAT_X_EXTENDED_NES] as const;
 export const DEVIL_HAWK_JUMP_PERIOD = 121;
+
+const DEVIL_HAWK_MOVEMENT_HEADINGS = [0x40, 0x40, 0x44, 0x44, 0x48, 0x48, 0x4c, 0x4c, 0x50, 0x50, 0x54, 0x54, 0x58, 0x58, 0x5c, 0x5c] as const;
+const DEVIL_HAWK_ACTION_HEADINGS = [0x90, 0x90, 0x50, 0x50, 0x10, 0x10, 0x00, 0x00, 0x40, 0x40, 0x80, 0x80, 0xa2, 0x90, 0x9a, 0x20] as const;
+const DEVIL_HAWK_CORRECTION_HEADINGS = [0xc2, 0x90, 0x90, 0x50, 0x50, 0x10, 0x10, 0xc0, 0xc0, 0x00, 0x00, 0x40, 0x40, 0x80, 0x80, 0xc1] as const;
+export const DEVIL_HAWK_RANDOM_ROUTE_START_FRAME = 3_600;
+
+export type DevilHawkMovementState = {
+  frame: number;
+  mode: "move" | "action" | "correction";
+  x: number;
+  y: number;
+  heading: number;
+  segmentFrames: number;
+  gait: number;
+  actionCounter: number;
+  actionFrames: number;
+  actionHeading: number;
+  actionKind: "hold" | "jump";
+};
+
+export function createDevilHawkMovementState(x: number, y: number): DevilHawkMovementState {
+  return { frame: DEVIL_HAWK_RANDOM_ROUTE_START_FRAME, mode: "move", x, y, heading: 0x40, segmentFrames: 30, gait: 3, actionCounter: 30, actionFrames: 0, actionHeading: 0x40, actionKind: "hold" };
+}
+
+function advanceDevilHawkGait(state: DevilHawkMovementState, heading = state.heading): void {
+  state.gait = (state.gait - 1) & 0xff;
+  if ((state.gait & 0x7f) === 0) state.gait = (state.gait & 0x80) !== 0 ? 4 : 0x88;
+  if ((state.gait & 0x80) === 0) moveEncodedHeading(state, heading);
+}
+
+export function advanceDevilHawkMovement(state: DevilHawkMovementState, targetFrame: number, movementRandom: () => number, actionRandom: () => number): void {
+  while (state.frame < targetFrame) {
+    state.frame += 1;
+    if (state.mode === "action") {
+      state.actionFrames -= 1;
+      if (state.actionKind === "jump") advanceDevilHawkGait(state, DEVIL_HAWK_ACTION_HEADINGS[Math.max(0, state.actionFrames) >> 1] ?? state.actionHeading);
+      if (state.actionFrames <= 0) state.mode = "move";
+      continue;
+    }
+    if (state.mode === "correction") {
+      state.actionFrames -= 1;
+      advanceDevilHawkGait(state, DEVIL_HAWK_CORRECTION_HEADINGS[Math.max(0, state.actionFrames) >> 1] ?? state.heading);
+      if (state.actionFrames <= 0) state.mode = "move";
+      continue;
+    }
+    state.actionCounter = (state.actionCounter + 1) % 48;
+    if (state.segmentFrames === 0) {
+      const random = movementRandom() & 0xff;
+      state.heading = DEVIL_HAWK_MOVEMENT_HEADINGS[random & 0x0f] ?? DEVIL_HAWK_MOVEMENT_HEADINGS[0];
+      state.segmentFrames = ((random & 0x03) + 1) * 24;
+    }
+    state.segmentFrames -= 1;
+    advanceDevilHawkGait(state);
+    if (state.actionCounter === 0) {
+      const random = actionRandom() & 0x0f;
+      if (random > 0 && random < 9) {
+        state.mode = "action";
+        state.actionFrames = 26;
+        state.actionKind = "hold";
+        continue;
+      }
+      if (random >= 9) {
+        state.mode = "action";
+        state.actionFrames = 24;
+        state.actionKind = "jump";
+        state.actionHeading = Math.floor(state.y) >= 88 ? 0x40 : 0xc0;
+        continue;
+      }
+    }
+    const x = Math.floor(state.x);
+    const y = Math.floor(state.y);
+    if (x < 32 || x >= 224 || y < 48 || y >= 144) {
+      state.mode = "correction";
+      state.actionFrames = 32;
+      state.heading = 0x40 | nesAimHeading(x * NES_WORLD_X_SCALE, y * NES_WORLD_Y_SCALE, 96 * NES_WORLD_X_SCALE, 128 * NES_WORLD_Y_SCALE);
+    }
+  }
+}
 
 function pingPongFrame(frame: number, endpoint: number): number {
   if (frame <= endpoint || endpoint <= 0) return frame;

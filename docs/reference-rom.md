@@ -397,7 +397,9 @@ wait and 32-count composite movement action. The first action begins at frames
 `12/20` skip the opportunity. The player aim must then fall within `10..23`, is
 masked to an even heading, and creates dispatch `0x33` at the actor coordinate.
 At action boundaries the routine alternates reversing its route and selecting
-a new route from `4/12/20/28`, making each opportunity 72 frames apart without
+a new route from `4/12/20/28`. The random branch writes
+`(AC - AD - 1) & 0xff` back to `$AC` (the incoming carry is clear) and uses
+bits `0x18` as the encoded direction, making each opportunity 72 frames apart without
 making every opportunity a throw.
 The fixed-center natural samples fired at top frames `144/216/360` and side
 frames `160/232`; their initial random direction skipped frames `72/88`.

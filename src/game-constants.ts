@@ -48,6 +48,18 @@ export function advanceRomRandom(state: RomRandomState, feedback = 0): RomRandom
   next[0] = (next[0]! + 1) & 0xff;
   return next;
 }
+
+export function mixRomRandomSum(state: RomRandomState): RomRandomState {
+  const next: RomRandomState = [...state];
+  next[1] = (next[1]! + next[0]!) & 0xff;
+  return next;
+}
+
+export function mixRomRandomDifference(state: RomRandomState): RomRandomState {
+  const next: RomRandomState = [...state];
+  next[0] = (next[0]! - next[1]! - 1) & 0xff;
+  return next;
+}
 export const BOSS_BAR_RECOVERY_DURATION = 8 / NES_FRAME_RATE;
 export const MAX_LIVES = 5;
 export const MAX_SCORE = 999_990;
@@ -735,7 +747,7 @@ export function advanceSpear(state: SpearState, targetFrame: number, playerX: nu
     state.remaining -= 1;
     if (state.remaining === 0) {
       if (state.mode === "move" && state.reverseAtEnd) state.heading = (state.heading + 0x10) & 0xdf;
-      else state.heading = 0x44 | ((randomByte() & 3) << 3);
+      else state.heading = 0x44 | (randomByte() & 0x18);
       if (state.mode === "move") state.reverseAtEnd = !state.reverseAtEnd;
       state.mode = "wait";
       state.remaining = SPEAR_WAIT_FRAMES;

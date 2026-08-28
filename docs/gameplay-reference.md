@@ -243,9 +243,10 @@ separate 205/202/202/241-frame no-throw routes. Events
 delay their Shuriken until frame 116 and follow separate
 258/279/257/228/257-frame routes;
 other entries retain the parameterized route.
-Gunmen use the same quantized table at the faster second tier, check their
-movement-facing gate on an observed `40/52/58/62` first phase and every 64
-frames thereafter, and replay the measured top-entry
+Gunmen use the same quantized table at the faster second tier. Their first
+movement-facing check is derived from the spawn-time `$0540` seed (the first
+natural Round 1 seeds yield `58/52/69` frames), then repeats every 64
+frames. Runtime replays the measured top-entry
 movement through the center/left/right release paths (549/828/1196 frames).
 Those three paths use the complete isolated ROM frame samples, preserving their
 discrete jumps and screen-release boundaries rather than interpolating between

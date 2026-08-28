@@ -11,6 +11,7 @@ const output = args.find((argument) => argument.startsWith("--out="))?.split("="
 const stateFile = args.find((argument) => argument.startsWith("--state="))?.split("=")[1];
 const attack = args.includes("--attack");
 const followY = args.includes("--follow-y");
+const weapon = args.find((argument) => argument.startsWith("--weapon="))?.split("=")[1] ?? "pistol";
 const record = args.includes("--record");
 const clearField = args.includes("--clear-field");
 if (!fs.existsSync(filename)) {
@@ -20,6 +21,7 @@ if (!fs.existsSync(filename)) {
 if (!Number.isInteger(frames) || frames <= 0) throw new Error("--frames must be a positive integer");
 if (!Number.isInteger(bossFramesLimit) || bossFramesLimit <= 0) throw new Error("--boss-frames must be a positive integer");
 if (stateFile && !fs.existsSync(stateFile)) throw new Error(`State file not found: ${stateFile}`);
+if (!new Set(["pistol", "magnum"]).has(weapon)) throw new Error("--weapon must be pistol or magnum");
 
 const romBytes = fs.readFileSync(filename);
 const nes = new NES({ onFrame: () => {}, onAudioSample: () => {} });
@@ -71,6 +73,10 @@ for (let frame = 0; frame < frames; frame += 1) {
   if (memory[0x4b] === 0 && mapPointer >= mapEnd - 24) memory[0x49] = 1;
   memory[0x7c] = 255;
   if (attack && bossStart !== undefined) {
+    if (weapon === "magnum") {
+      memory[0x88] = 4;
+      memory[0x9c] = 255;
+    }
     memory[0x74] = memory[0x5ee] ?? memory[0x74];
     if (followY) memory[0x71] = Math.min(216, (memory[0x5ce] ?? memory[0x71]) + 64);
     const pressed = (frame - bossStart) % 5 === 0;
@@ -156,6 +162,7 @@ const trace = {
   sourceSha256: crypto.createHash("sha256").update(romBytes).digest("hex"),
   frameRate: 60.098,
   followY,
+  weapon,
   bossStart,
   roundState: roundState(),
   mapperBank,

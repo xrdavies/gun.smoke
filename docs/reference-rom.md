@@ -616,6 +616,8 @@ including the CPU PC and complete Boss parallel-array fields;
 allows repeatable hit-point traces for large vertical routes such as Fatman
 Joe. `--clear-field` preserves player projectile slots while clearing unrelated
 actors and enemy weapons, so controlled shots can still reach the Boss.
+`--weapon=magnum` selects the ROM Magnum weapon code and supplies stock for a
+controlled three-point damage trace; the default is Pistol.
 The output is an ignored observation artifact under `.rom-traces/`; it is not
 runtime game data or copied ROM code.
 

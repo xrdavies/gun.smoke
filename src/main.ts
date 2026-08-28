@@ -441,7 +441,7 @@ class GunSmokeGame {
   }
 
   static async create(): Promise<GunSmokeGame> {
-    const engine = await Engine.create({ canvas, autoStart: false });
+    const engine = await Engine.create({ canvas, autoStart: false, fixedDelta: 1 / NES_FRAME_RATE });
     const game = new GunSmokeGame(engine);
     engine.start();
     return game;

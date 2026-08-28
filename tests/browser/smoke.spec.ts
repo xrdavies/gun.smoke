@@ -87,6 +87,23 @@ test("runs ROM event streams in every round", async ({ page }) => {
   expect(pageErrors).toEqual([]);
 });
 
+test("creates each Boss from its wanted gate", async ({ page }) => {
+  const pageErrors: Error[] = [];
+  page.on("pageerror", (error) => pageErrors.push(error));
+  await page.goto("/");
+  await page.locator("#start-button").click();
+  await page.locator("#continue-button").click();
+  await page.locator("#briefing-button").click();
+  const bosses = ["BANDIT BILL", "CUTTER", "DEVIL HAWK", "NINJA", "FATMAN JOE", "WINGATE"];
+  for (const [index, boss] of bosses.entries()) {
+    await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), index + 1);
+    await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
+    await page.waitForTimeout(50);
+    await expect(page.locator("#boss-label")).toContainText(boss);
+  }
+  expect(pageErrors).toEqual([]);
+});
+
 test("accepts gamepad Start from the title flow", async ({ page }) => {
   await page.addInitScript(() => {
     let startPressed = false;

@@ -2710,6 +2710,12 @@ let game: GunSmokeGame | undefined;
 let referenceGame: ReferenceRomGame | undefined;
 if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeInvulnerable", { value: (duration: number) => { if (game) game.invulnerable = duration; } });
 if (import.meta.env.DEV) Object.defineProperty(window, "__showGunSmokeGameOver", { value: () => { if (game) (game as unknown as { finish(won: boolean): void }).finish(false); } });
+if (import.meta.env.DEV) Object.defineProperty(window, "__forceGunSmokeBoss", { value: () => {
+  if (!game) return;
+  game.hasWanted = true;
+  game.scroll = ROUND_BOSS_TRIGGERS[game.stage - 1] ?? ROUND_BOSS_TRIGGERS[0]!;
+  (game as unknown as { updateSpawns(): void }).updateSpawns();
+} });
 if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeRound", { value: (stage: number) => {
   if (!game || !Number.isInteger(stage) || stage < 1 || stage > MAX_STAGE) return;
   game.stage = stage;

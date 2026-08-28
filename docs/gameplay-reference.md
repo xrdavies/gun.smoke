@@ -243,6 +243,9 @@ Those three paths use the complete isolated ROM frame samples, preserving their
 discrete jumps and screen-release boundaries rather than interpolating between
 sparse waypoints. The samples are bound to the captured `x=88,y=0` entry;
 other entry lanes retain the same branch selection with parameterized offsets.
+The left-edge code-7 side route is likewise replayed from a complete 642-frame
+integer trace and mirrored for its right-edge counterpart; code 8 and code 9
+retain their separate measured keyframe routes.
 Riflemen advance,
 enter their attack state at 122 NES frames once they are at least 48 NES pixels
 downscreen and within 96 NES Y pixels of Billy, then fire five shots at

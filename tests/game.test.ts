@@ -575,8 +575,8 @@ describe("Gun.Smoke vertical slice", () => {
   it("matches the traced flank Gunman variants", () => {
     expect(GUNMAN_FLANK_SHOT_FRAMES).toEqual({ 7: [64, 410], 8: [309], 9: [399, 463] });
     expect(GUNMAN_FLANK_LIFETIMES).toEqual({ 7: 642 / NES_FRAME_RATE, 8: 508 / NES_FRAME_RATE, 9: 826 / NES_FRAME_RATE });
-    expect(gunmanFlankPosition(7, 64 / NES_FRAME_RATE)).toEqual([46, 31]);
-    expect(gunmanFlankPosition(7, 338 / NES_FRAME_RATE)).toEqual([192, 212]);
+    expect(gunmanFlankPosition(7, 64 / NES_FRAME_RATE)).toEqual([47, 32]);
+    expect(gunmanFlankPosition(7, 338 / NES_FRAME_RATE)).toEqual([192, 213]);
     expect(gunmanFlankPosition(7, 641 / NES_FRAME_RATE)).toEqual([158, 218]);
     expect(gunmanFlankPosition(8, 247 / NES_FRAME_RATE)).toEqual([0, 82]);
     expect(gunmanFlankPosition(8, 309 / NES_FRAME_RATE)).toEqual([51, 128]);

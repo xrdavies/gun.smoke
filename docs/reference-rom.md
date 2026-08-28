@@ -295,8 +295,11 @@ samples both player axes when the branch runs at frame 50, mirrors the matching
 measured route, and does not apply the top-entry Gunman timing.
 The same routine has distinct side-entry initializers. Entity code `7` enters
 from either edge on a mirrored route, fires at frames 64/410 and releases at
-frame 642. Entity code `8` holds the left edge while scrolling, lunges inward at
-about frame 247, fires at frame 309 and releases at frame 508. Entity code `9` enters from the right, follows a
+frame 642. The left-edge `x=4,y=32` event has a complete 642-frame integer
+coordinate trace; the runtime replays that normalized trace and mirrors it for
+the right-edge initializer. Entity code `8` holds the left edge while scrolling,
+lunges inward at about frame 247, fires at frame 309 and releases at frame 508.
+Entity code `9` enters from the right, follows a
 long mirrored loop, fires at frames 399/463 and releases at frame 826. Runtime
 uses separate measured keyframes and lifetimes for these ROM-tagged variants
 instead of applying the top-entry Gunman timing.

@@ -835,6 +835,7 @@ class GunSmokeGame {
       prop.romEntityCode = event.entityCode;
       prop.romFlags = event.flags;
       prop.romPool = event.pool;
+      prop.vy = ROM_OBJECT_DROP_SPEED;
       prop.sprite.color = [0.58 + ((event.entityCode - 44) % 3) * 0.08, 0.68, 0.78, 1];
       return;
     }

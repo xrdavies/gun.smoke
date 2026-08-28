@@ -111,8 +111,8 @@ Dispatch `0x07` records with a verified pickup conversion now render as
 self-generated breakable barrels instead of enemy proxies. Codes `32` and `41`
 are also breakable empty barrels: controlled pulse traces move them to dispatch
 `0x09` for about 10 frames before release, with no pickup conversion. Dispatch
-`0x08` records are static scene props and use the same original landmark texture
-family. The web runtime models codes `32/41` as shootable empty barrels while
+`0x08` records are non-interactive scene props, use the same original landmark
+texture family, and advance one NES screen pixel every three frames. The web runtime models codes `32/41` as shootable empty barrels while
 their short explosion animation remains a visual approximation.
 Contact verification confirms object codes `33` and `34` drop Boots and Rifle
 respectively after destruction. The same isolated contact trace shows code

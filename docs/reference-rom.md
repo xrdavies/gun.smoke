@@ -272,7 +272,7 @@ Natural `$B284` top-entry Gunmen begin with scheduler seeds `56`, `72`, and
 advances by three until wrapping at 192, so an
 attack opportunity repeats every 64 frames and only fires when the actor's
 stored movement heading is within two sectors of its integer aim at Billy.
-Isolated first phases appear at frames `40/52/58/62`; the complete left route
+Isolated entry movement phases appear at frames `40/52/58/62`; the complete left route
 fires again at frame 314, while the complete right route fires again at frames
 570 and 1146. The runtime preserves those observed phases, the 64-frame retry,
 and the captured per-frame headings instead of imposing a one-shot limit. The

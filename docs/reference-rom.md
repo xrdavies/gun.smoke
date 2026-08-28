@@ -727,12 +727,12 @@ pairs from `(0,-12)` through `(12,0)`, while A+B uses the symmetric
 the same measured movement speed as base Pistol shots; Magnum also emits the
 same two-gun pair as Pistol for each trigger. Shotgun projectiles live for 11
 frames. Projectile byte `$0540` is `1` for Pistol, Shotgun and Machine
-Gun and `3` for Magnum, matching the runtime damage values. Magnum's collision
-path subtracts each target's `$0460` value from that byte; this includes
-ordinary enemy projectile actors. Only the remaining damage continues to the
-next target, so a three-point shot that defeats a one-point Gunman or bullet
-actor carries two points onward. The web runtime preserves that damage budget
-while retaining its self-generated Magnum piercing body.
+Gun and `3` for Magnum, matching the runtime damage values. The collision path
+subtracts the bullet's `$0460` damage from each target's `$0540` durability;
+the bullet damage is not reduced after a hit. A three-point Magnum shot therefore
+deals three points to every eligible target it pierces, including ordinary
+enemy projectile actors. Boss targets still expose only their current bar's
+durability to the runtime so damage cannot spill into the next protected bar.
 Held-input traces fire Shotgun and Magnum once, while code `2` Machine Gun
 continues to allocate projectile pairs at its measured cadence. Isolated
 single-side traces measure base Pistol vectors near `(2,-5),(3,-5)` NES pixels

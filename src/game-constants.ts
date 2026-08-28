@@ -143,11 +143,6 @@ export function canSpawnPlayerBullet(active: number): boolean {
   return active < PLAYER_BULLET_CAPACITY;
 }
 
-export function piercingDamageAfterHit(damage: number, targetHitPoints: number): { damage: number; consumed: boolean } {
-  const remaining = Math.max(0, damage - Math.max(0, targetHitPoints));
-  return { damage: remaining, consumed: remaining === 0 };
-}
-
 export function canSpawnEnemyProjectile(active: number, requested = 1): boolean {
   return active + requested <= ENEMY_PROJECTILE_CAPACITY;
 }

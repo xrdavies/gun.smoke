@@ -21,7 +21,7 @@ import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanCanAttack, rifl
 import { BANDIT_BILL_DAMAGE_RECOVERY_DURATION, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, banditBillCombatX, banditBillCombatY, banditBillProjectileVelocity } from "./game-constants";
 import { banditBillCooldown } from "./game-constants";
 import { advanceInvulnerability, BLUE_YASHICHI_DURATION, BOSS_BAR_RECOVERY_DURATION, bossCurrentBarHitPoints, bossHealthProfile, bossTotalHitPoints, lifePickup, scoreBossDefeat, shouldClearProjectilesAfterBossDefeat } from "./game-constants";
-import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, piercingDamageAfterHit, PLAYER_ENTRY_X, PLAYER_ENTRY_Y, pistolBulletSpeedFactor, pistolVelocities, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
+import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, PLAYER_ENTRY_X, PLAYER_ENTRY_Y, pistolBulletSpeedFactor, pistolVelocities, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
 import { addScore } from "./game-constants";
 import { ninjaCanThrow } from "./game-constants";
@@ -1917,10 +1917,7 @@ class GunSmokeGame {
         if (bullet.piercing) {
           const projectile = this.units.find((candidate) => candidate.kind === "enemyBullet" && candidate.projectileType !== "ninjaSmoke" && candidate.projectileType !== "grenade" && candidate.projectileType !== "rock" && candidate.hp > 0 && distance(bullet, candidate) <= bullet.radius + candidate.radius);
           if (projectile) {
-            const result = piercingDamageAfterHit(bullet.damage, projectile.hp);
-            projectile.hp = Math.max(0, projectile.hp - bullet.damage);
-            bullet.damage = result.damage;
-            if (result.consumed) bullet.hp = 0;
+            projectile.hp = 0;
             continue;
           }
         }
@@ -1934,11 +1931,6 @@ class GunSmokeGame {
           ? bossCurrentBarHitPoints(previousHp, bossHealthProfile(this.stage, this.wingatePhase).hitPoints)
           : previousHp;
         target.hp -= Math.min(bullet.damage, targetHitPoints);
-        if (bullet.piercing) {
-          const result = piercingDamageAfterHit(bullet.damage, targetHitPoints);
-          bullet.damage = result.damage;
-          if (result.consumed) bullet.hp = 0;
-        }
         if (target.hp > 0) {
           this.handleBossDamage(target, previousHp);
           continue;

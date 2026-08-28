@@ -523,6 +523,7 @@ class GunSmokeGame {
     this.inventoryOpen = false;
     this.hasHorse = false;
     this.horseHealth = 0;
+    this.horseSprite.visible = false;
     this.smartBombArmed = false;
     this.units.length = 0;
     this.buildBackground();

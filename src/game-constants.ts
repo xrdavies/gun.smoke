@@ -1037,7 +1037,9 @@ function cutterCombatPosition(age: number, entryX = 144 * NES_WORLD_X_SCALE): re
     sample[2] * NES_WORLD_Y_SCALE,
   ];
   const last = CUTTER_COMBAT_PATH_EXTENDED_NES.at(-1)!;
-  const sampledFrame = pingPongFrame(frame, last[0]);
+  // The sampled route ends in an active random movement state; hold this
+  // anchor while the runtime hands control to the decoded post-route logic.
+  const sampledFrame = Math.min(frame, last[0]);
   if (sampledFrame <= first[0]) return point(first);
   const nextIndex = CUTTER_COMBAT_PATH_EXTENDED_NES.findIndex(([at]) => at >= sampledFrame);
   const previous = CUTTER_COMBAT_PATH_EXTENDED_NES[nextIndex - 1]!;
@@ -1056,6 +1058,43 @@ export function cutterCombatY(age: number): number {
 
 export function cutterCombatX(age: number, entryX = 144 * NES_WORLD_X_SCALE): number {
   return cutterCombatPosition(age, entryX)[0];
+}
+
+export const CUTTER_RANDOM_ROUTE_START_FRAME = 12_000;
+const CUTTER_MOVEMENT_HEADINGS = [0x40, 0x44, 0x48, 0x48, 0x4c, 0x4c, 0x50, 0x50, 0x54, 0x54, 0x58, 0x58, 0x5c, 0x5c, 0x5c, 0x5c] as const;
+
+export type CutterMovementState = {
+  frame: number;
+  x: number;
+  y: number;
+  heading: number;
+  segmentFrames: number;
+  gait: number;
+};
+
+export function createCutterMovementState(x: number, y: number): CutterMovementState {
+  return { frame: CUTTER_RANDOM_ROUTE_START_FRAME, x, y, heading: 0x58, segmentFrames: 35, gait: 0x84 };
+}
+
+export function advanceCutterMovement(state: CutterMovementState, targetFrame: number, randomByte: () => number): void {
+  while (state.frame < targetFrame) {
+    state.frame += 1;
+    if (state.segmentFrames === 0) {
+      const random = randomByte() & 0xff;
+      state.heading = CUTTER_MOVEMENT_HEADINGS[random & 0x0f] ?? CUTTER_MOVEMENT_HEADINGS[0];
+      state.segmentFrames = ((random & 0x03) + 1) * 24;
+    }
+    state.segmentFrames -= 1;
+    state.gait = (state.gait - 1) & 0xff;
+    if ((state.gait & 0x7f) === 0) state.gait = (state.gait & 0x80) !== 0 ? 4 : 0x88;
+    if ((state.gait & 0x80) === 0) moveEncodedHeading(state, state.heading);
+    const x = Math.floor(state.x);
+    const y = Math.floor(state.y);
+    if (x < 32 || x >= 224 || y < 40 || y >= 144) {
+      state.heading = (state.heading + 0x10) & 0xdf;
+      moveEncodedHeading(state, state.heading);
+    }
+  }
 }
 export const DEVIL_HAWK_ENTRY_X_NES = [88, 128, 168, 208] as const;
 export const DEVIL_HAWK_ENTRY_X_LANES = DEVIL_HAWK_ENTRY_X_NES.map((value) => value * NES_WORLD_X_SCALE);

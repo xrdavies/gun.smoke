@@ -161,8 +161,9 @@ Cutter enters from the top edge on one of the ROM's NES X lanes
 (`x=88/112/144/168`), descends through a short overshoot, and curves 15 NES pixels
 left to approximately `y=136` after 324 frames, holds that lane until frame 350,
 then follows its recorded X/Y combat route with the first paired boomerangs
-and repeat every 256 frames, then follows sparse measured samples through frame
-12,000 before reflecting the route.
+and repeat every 256 frames. After the 12,000-frame measured route, the runtime
+continues Cutter with the ROM's random direction segments and four-active/eight-idle
+movement gait rather than reflecting the sampled path.
 Both turn through measured 32-direction headings,
 hold their launch offsets for one frame, capture Billy's position at NES
 `y=176`, and recalculate their return heading
@@ -196,7 +197,7 @@ low-nibble attack gate and downward-sector check launches one aimed shell; after
 splits into five stationary mines at four-frame intervals. The mines use the
 measured symmetric offsets and last about 29 NES frames. His multi-hop X/Y
 profile follows the controlled Boss trace through combat frame 3,600, uses
-sparse measured samples through frame 12,000, then reflects the route. The runtime
+sparse measured samples through frame 12,000, then holds the final sample. The runtime
 pauses the 76-frame attack counter during the measured 53-frame short or
 122-frame long movement action, fires the follow-up shell at action end, and
 then resumes the counter; its attack random gate and follow-up timing use the

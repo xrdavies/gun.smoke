@@ -29,7 +29,7 @@ import { ninjaCanThrow } from "./game-constants";
 import { FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeAimAllowsLaunch, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, FATMAN_JOE_MOVEMENT_SPEED, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, fatmanJoeCombatX, fatmanJoeCombatY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "./game-constants";
 import { advanceDevilHawkMovement, advanceWingateMovement, createDevilHawkMovementState, createWingateMovementState, WINGATE_BULLET_LIFETIME, wingateCanFire, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, type DevilHawkMovementState, type WingateMovementState } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_LIFETIME, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
-import { CUTTER_ENTRY_DURATION, cutterBoomerangOnScreen, cutterCombatX, cutterCombatY, cutterOpeningX, cutterOpeningY } from "./game-constants";
+import { advanceCutterMovement, createCutterMovementState, CUTTER_ENTRY_DURATION, CUTTER_RANDOM_ROUTE_START_FRAME, cutterBoomerangOnScreen, cutterCombatX, cutterCombatY, cutterOpeningX, cutterOpeningY, type CutterMovementState } from "./game-constants";
 import { DEVIL_HAWK_ENTRY_DURATION, devilHawkAttackDelay, devilHawkFanHeadings, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_FULL_FAN_LIFETIME, DEVIL_HAWK_FULL_FAN_MAX_Y_NES, DEVIL_HAWK_POST_ENTRY_X_HOLD, devilHawkProjectileVelocity, DEVIL_HAWK_SIDE_FAN_LIFETIME, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY, nesAimHeading } from "./game-constants";
 import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_PREPARE_DELAY, NINJA_BOSS_PREPARE_CONTROLLER_DURATION, NINJA_BOSS_PREPARE_DURATION, NINJA_BOSS_SHURIKEN_LIFETIME, NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES, NINJA_BOSS_SHURIKEN_VELOCITIES_NES, NINJA_BOSS_TELEPORT_DELAY, ninjaBossCombatX, ninjaBossCombatY, ninjaBossNextTeleportAt, ninjaBossPreparePosition } from "./game-constants";
 import { canSpawnEnemyProjectile } from "./game-constants";
@@ -116,6 +116,7 @@ interface Unit {
   bossEntryX?: number;
   bossEntryY?: number;
   fatmanFollowup?: boolean;
+  cutterState?: CutterMovementState;
   devilHawkState?: DevilHawkMovementState;
   wingateState?: WingateMovementState;
   bossProjectile?: boolean;
@@ -1247,7 +1248,7 @@ class GunSmokeGame {
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: frameDuration },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, riflemanAimHeading: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined, rockPhase: undefined,
+      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, riflemanAimHeading: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, cutterState: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined, rockPhase: undefined,
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" || sceneObject ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
@@ -1741,7 +1742,17 @@ class GunSmokeGame {
       const wingateFireChecks = this.stage === 6 && unit.wingateState
         ? advanceWingateMovement(unit.wingateState, Math.floor(unit.age * NES_FRAME_RATE), () => this.nextRomRandomSecondSumByte()).fireChecks
         : 0;
+      const cutterCombatFrame = Math.floor(unit.age * NES_FRAME_RATE - CUTTER_ENTRY_DURATION * NES_FRAME_RATE);
       const devilHawkCombatFrame = Math.floor(unit.age * NES_FRAME_RATE - DEVIL_HAWK_ENTRY_DURATION * NES_FRAME_RATE);
+      if (this.stage === 2 && cutterCombatFrame >= CUTTER_RANDOM_ROUTE_START_FRAME) {
+        unit.cutterState ??= createCutterMovementState(
+          cutterCombatX(unit.age, unit.bossEntryX ?? CUTTER_ENTRY_X_LANES[2]!) / NES_WORLD_X_SCALE,
+          cutterCombatY(unit.age) / NES_WORLD_Y_SCALE,
+        );
+        advanceCutterMovement(unit.cutterState, cutterCombatFrame, () => this.nextRomRandomSecondSumByte());
+        unit.x = unit.cutterState.x * NES_WORLD_X_SCALE;
+        unit.y = this.scroll + unit.cutterState.y * NES_WORLD_Y_SCALE;
+      }
       if (this.stage === 3 && devilHawkCombatFrame >= DEVIL_HAWK_RANDOM_ROUTE_START_FRAME) {
         unit.devilHawkState ??= createDevilHawkMovementState(
           devilHawkCombatX(unit.age, unit.bossEntryX ?? DEVIL_HAWK_ENTRY_X_LANES[3]!) / NES_WORLD_X_SCALE,
@@ -1752,6 +1763,7 @@ class GunSmokeGame {
         unit.y = this.scroll + unit.devilHawkState.y * NES_WORLD_Y_SCALE;
       }
       if (this.stage === 6 && unit.wingateState) unit.x = unit.wingateState.x * NES_WORLD_X_SCALE;
+      else if (this.stage === 2 && unit.cutterState) unit.x = unit.cutterState.x * NES_WORLD_X_SCALE;
       else if (this.stage === 3 && unit.devilHawkState) unit.x = unit.devilHawkState.x * NES_WORLD_X_SCALE;
       else if (this.stage === 1 && unit.age <= BANDIT_BILL_ENTRY_DURATION) unit.x = unit.bossEntryX ?? unit.x;
       else if (this.stage === 1) unit.x = banditBillCombatX(unit.age, unit.bossEntryX ?? unit.x);
@@ -1770,6 +1782,7 @@ class GunSmokeGame {
       const [minBossX, maxBossX] = this.stage === 5 ? fatmanJoeArenaXBounds() : edgeEntryBoss ? [0, 960] : [380, 580];
       if (unit.x < minBossX || unit.x > maxBossX) unit.vx *= -1;
       if (this.stage === 6 && unit.wingateState) unit.y = this.scroll + unit.wingateState.y * NES_WORLD_Y_SCALE;
+      else if (this.stage === 2 && unit.cutterState) unit.y = this.scroll + unit.cutterState.y * NES_WORLD_Y_SCALE;
       else if (this.stage === 3 && unit.devilHawkState) unit.y = this.scroll + unit.devilHawkState.y * NES_WORLD_Y_SCALE;
       else if (this.stage === 1) unit.y = this.scroll + (unit.age <= BANDIT_BILL_ENTRY_DURATION ? banditBillOpeningY(unit.age) : banditBillCombatY(unit.age, unit.bossEntryX ?? 192 * (960 / 256)));
       else if (this.stage === 2) unit.y = this.scroll + (unit.age <= CUTTER_ENTRY_DURATION ? cutterOpeningY(unit.age) : cutterCombatY(unit.age));

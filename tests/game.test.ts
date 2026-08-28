@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { advanceRomRandom, mixRomRandomDifference, mixRomRandomSum, ROM_RANDOM_SEED } from "../src/game-constants";
+import { advanceRomRandom, mixRomRandomDifference, mixRomRandomFirstSum, mixRomRandomSum, ROM_RANDOM_SEED } from "../src/game-constants";
 import { AMMO_GAIN, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, bomberCanThrow, bomberMovementDecision, bomberMovementDuration, BOMBER_MOVEMENT_DURATIONS, bomberMovementVelocity, BOMBER_THROW_CHANCE, BOMBER_THROW_DURATION, bossReward, BOSS_DEFEAT_ANIMATION_DURATION, BOSS_REWARDS, BOOTS_SPEED_MULTIPLIER, clamp, distance, DYNAMITE_AIRBORNE_DURATION, DYNAMITE_LANDED_DURATION, DYNAMITE_LIFETIME, DYNAMITE_WORLD_SPEED, EMPTY_BARREL_EXPLOSION_LIFETIME, fallingRockOnScreen, fallingRockPosition, FIREBREATHER_FIRST_DECISION_DELAY, formationEntryY, HORSE_HIT_INVULNERABILITY, MACHINE_GUN_BULLET_LIFETIME, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_BULLET_SPEED, NES_DIAGONAL_BULLET_X, NES_DIAGONAL_BULLET_Y, NES_FRAME_RATE, NES_PLAYER_SPEED, NES_SCROLL_SPEED, NINJA_FIRST_SHOT_DELAY, NINJA_PROJECTILE_SPEED, obstacleBlocks, PISTOL_BULLET_LIFETIME, PLAYER_DEATH_ANIMATION_DURATION, PLAYER_DEATH_RECOVERY_DURATION, PLAYER_RESPAWN_HIDDEN_DURATION, PLAYER_RESPAWN_READY_DURATION, playerDeathPhase, RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_FLIGHT_PATH_NES, ROCK_FLIGHT_PATH_PHASE0_NES, ROCK_IMPACT_DELAY, ROCK_IMPACT_LIFETIME, ROCK_LIFETIME, ROM_OBJECT_DROP_SPEED, ROM_SCREEN_RELEASE_Y_NES, ROAD_WIDTHS, ROUND_BOSS_GATE_SCROLL_NES, ROUND_BOSS_TRIGGERS, ROUND_ENEMY_TYPES, ROUND_LENGTHS, ROUND_LOOP_SCROLL_NES, ROUND_OBSTACLES, ROUND_SEGMENTS, scoreBossDefeat, SHOTGUN_BULLET_LIFETIME, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_VOLLEY_INTERVAL, SHOP_COSTS, SHOP_TYPES, shouldClearProjectilesAfterBossDefeat, SMART_BOMB_CAPACITY, SNIPER_CODE2_SHOT_FRAMES, SNIPER_COVER_DURATION, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, sniperProjectileVelocity, segmentDelay, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, shouldLoopStage } from "../src/game-constants";
 import { GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, GUNMAN_BOTTOM_NEAR_DISTANCE_NES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, gunmanCanFire, GUNMAN_ENTRY_PATH_NES, GUNMAN_FIRST_OPPORTUNITY_FRAMES, GUNMAN_FLANK_LIFETIMES, GUNMAN_FLANK_SHOT_FRAMES, GUNMAN_LIFETIME, GUNMAN_TOP_LIFETIMES_FRAMES, gunmanFirstOpportunityFrame, gunmanFlankPosition, gunmanOpeningY, gunmanTopBranch, gunmanTopPosition, gunmanProjectileVelocity, GUNMAN_SHOT_OPPORTUNITY_INTERVAL } from "../src/game-constants";
 import { RIFLEMAN_LIFETIME, RIFLEMAN_PATH_NES, riflemanCanAttack, riflemanPosition, riflemanShotHeading, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_PATH_NES, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition, mediumProjectileHeadingVelocity, mediumProjectileVelocity } from "../src/game-constants";
@@ -24,8 +24,8 @@ import { BOSS_BAR_RECOVERY_DURATION, bossCurrentBarHitPoints, bossHealthProfile,
 import { RIFLE_BULLET_SPEED_MULTIPLIER } from "../src/game-constants";
 import { BOSS_PROJECTILE_CAPACITY, canSpawnBossProjectile, canSpawnEnemyProjectile, canSpawnPlayerBullet, ENEMY_PROJECTILE_CAPACITY, machineGunVelocities, pistolBulletSpeedFactor, pistolShots, pistolVelocities, PLAYER_BULLET_CAPACITY, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "../src/game-constants";
 import { LIFE_OVERFLOW_SCORE, lifePickup, MAX_POWERUP_STOCK, POWERUP_OVERFLOW_SCORE, storedPowerupPickup } from "../src/game-constants";
-import { FATMAN_JOE_ATTACK_CHANCE, FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeAimHeading, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, FATMAN_JOE_LONG_ACTION_DURATION, FATMAN_JOE_MINE_INTERVAL, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_MOVEMENT_SPEED, FATMAN_JOE_SHORT_ACTION_DURATION, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, FATMAN_JOE_SHELL_SPLIT_DELAY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "../src/game-constants";
-import { WINGATE_ATTACK_INTERVAL, wingateAimHeading, WINGATE_BULLET_LIFETIME, WINGATE_BULLET_VELOCITIES_NES, wingateCanFire, WINGATE_ENTRY_RUSH_DURATION, WINGATE_FIRE_CHANCE, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, wingateRushOffset, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateCombatX, wingateCombatY } from "../src/game-constants";
+import { FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeAimHeading, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, FATMAN_JOE_LONG_ACTION_DURATION, FATMAN_JOE_MINE_INTERVAL, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_MOVEMENT_SPEED, FATMAN_JOE_SHORT_ACTION_DURATION, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, FATMAN_JOE_SHELL_SPLIT_DELAY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "../src/game-constants";
+import { WINGATE_ATTACK_INTERVAL, wingateAimHeading, WINGATE_BULLET_LIFETIME, WINGATE_BULLET_VELOCITIES_NES, wingateCanFire, WINGATE_ENTRY_RUSH_DURATION, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, wingateRushOffset, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateCombatX, wingateCombatY } from "../src/game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_LIFETIME, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SCREEN_MAX_X_NES, CUTTER_BOOMERANG_SCREEN_MAX_Y_NES, CUTTER_BOOMERANG_SCREEN_MIN_X_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangOnScreen, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "../src/game-constants";
 import { CUTTER_MOVEMENT_SPEED } from "../src/game-constants";
 import { devilHawkAttackDelay, devilHawkFanHeadings, DEVIL_HAWK_ATTACK_FRAMES, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_FULL_FAN_HEADINGS, DEVIL_HAWK_FULL_FAN_LIFETIME, DEVIL_HAWK_FULL_FAN_MAX_Y_NES, DEVIL_HAWK_JUMP_PERIOD, devilHawkProjectileVelocity, DEVIL_HAWK_SIDE_FAN_LIFETIME, DEVIL_HAWK_VOLLEY_INTERVAL } from "../src/game-constants";
@@ -53,6 +53,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(state).toEqual([202, 0, 0, 0]);
     expect(advanceRomRandom([0, 2, 2, 0])).toEqual([129, 1, 129, 0]);
     expect(mixRomRandomSum([93, 58, 115, 248])).toEqual([93, 151, 115, 248]);
+    expect(mixRomRandomFirstSum([93, 58, 115, 248])).toEqual([151, 58, 115, 248]);
     expect(mixRomRandomDifference([93, 58, 115, 248])).toEqual([34, 58, 115, 248]);
   });
 
@@ -790,12 +791,11 @@ describe("Gun.Smoke vertical slice", () => {
     expect(fatmanJoeArenaXBounds()).toEqual([155, 805]);
     expect(FATMAN_JOE_FIRST_ATTACK_DELAY).toBeCloseTo(95 / NES_FRAME_RATE, 9);
     expect(FATMAN_JOE_ATTACK_DECISION_INTERVAL).toBeCloseTo(76 / NES_FRAME_RATE, 9);
-    expect(FATMAN_JOE_ATTACK_CHANCE).toBe(0.5);
     expect(FATMAN_JOE_SHORT_ACTION_DURATION).toBeCloseTo(53 / NES_FRAME_RATE, 9);
     expect(FATMAN_JOE_LONG_ACTION_DURATION).toBeCloseTo(122 / NES_FRAME_RATE, 9);
-    expect(fatmanJoeMovementActionDuration(72 * (540 / 240), 0.25)).toBe(FATMAN_JOE_SHORT_ACTION_DURATION);
-    expect(fatmanJoeMovementActionDuration(71 * (540 / 240), 0.25)).toBe(FATMAN_JOE_LONG_ACTION_DURATION);
-    expect(fatmanJoeMovementActionDuration(72 * (540 / 240), 0.124)).toBe(FATMAN_JOE_LONG_ACTION_DURATION);
+    expect(fatmanJoeMovementActionDuration(72 * (540 / 240), 4)).toBe(FATMAN_JOE_SHORT_ACTION_DURATION);
+    expect(fatmanJoeMovementActionDuration(71 * (540 / 240), 4)).toBe(FATMAN_JOE_LONG_ACTION_DURATION);
+    expect(fatmanJoeMovementActionDuration(72 * (540 / 240), 1)).toBe(FATMAN_JOE_LONG_ACTION_DURATION);
     expect(FATMAN_JOE_SHELL_FLIGHT_DURATION).toBeCloseTo(31 / NES_FRAME_RATE, 9);
     expect(FATMAN_JOE_SHELL_SPLIT_DELAY).toBeCloseTo(35 / NES_FRAME_RATE, 9);
     expect(FATMAN_JOE_SHELL_LIFETIME).toBeCloseTo(61 / NES_FRAME_RATE, 9);
@@ -808,8 +808,8 @@ describe("Gun.Smoke vertical slice", () => {
     const joe = { x: 90 * NES_WORLD_X_SCALE, y: 89 * (540 / 240) };
     const billy = { x: 20 * NES_WORLD_X_SCALE, y: 216 * (540 / 240) };
     expect(fatmanJoeAimHeading(joe.x, joe.y, billy.x, billy.y)).toBe(18);
-    expect([fatmanJoeCanLaunch(joe.x, joe.y, billy.x, billy.y, 0.49), fatmanJoeCanLaunch(joe.x, joe.y, billy.x, billy.y, 0.5)]).toEqual([false, true]);
-    expect(fatmanJoeCanLaunch(joe.x, joe.y, joe.x + 100, joe.y, 1)).toBe(false);
+    expect([fatmanJoeCanLaunch(joe.x, joe.y, billy.x, billy.y, 7), fatmanJoeCanLaunch(joe.x, joe.y, billy.x, billy.y, 8)]).toEqual([false, true]);
+    expect(fatmanJoeCanLaunch(joe.x, joe.y, joe.x + 100, joe.y, 15)).toBe(false);
     const [shellVx, shellVy] = fatmanJoeShellVelocity(joe.x, joe.y, billy.x, billy.y);
     expect(shellVx).toBeCloseTo(-0.9375 * NES_FRAME_RATE * NES_WORLD_X_SCALE, 9);
     expect(shellVy).toBeCloseTo(2.77734375 * NES_FRAME_RATE * (540 / 240), 9);
@@ -854,7 +854,6 @@ describe("Gun.Smoke vertical slice", () => {
     expect(WINGATE_FIRST_SHOT_DELAY).toBeCloseTo(4 / NES_FRAME_RATE, 9);
     expect(WINGATE_SECOND_FIRST_SHOT_DELAY).toBeCloseTo(277 / NES_FRAME_RATE, 9);
     expect(WINGATE_ATTACK_INTERVAL).toBeCloseTo(12 / NES_FRAME_RATE, 9);
-    expect(WINGATE_FIRE_CHANCE).toBe(0.75);
     expect(WINGATE_BULLET_LIFETIME).toBeCloseTo(64 / NES_FRAME_RATE, 9);
     expect(WINGATE_BULLET_VELOCITIES_NES).toEqual([[1.15625, 1.40625], [0.9140625, 1.65625], [0.625, 1.8515625], [0.3125, 1.9453125], [0, 2], [-0.3125, 1.9453125], [-0.625, 1.8515625], [-0.9140625, 1.65625], [-1.15625, 1.40625]]);
     expect(WINGATE_PROJECTILE_X_OFFSET_NES).toBe(-8);
@@ -862,8 +861,8 @@ describe("Gun.Smoke vertical slice", () => {
     const actor = { x: 114 * NES_WORLD_X_SCALE, y: 50 * (540 / 240) };
     const target = { x: 39 * NES_WORLD_X_SCALE, y: 118 * (540 / 240) };
     expect(wingateAimHeading(actor.x, actor.y, target.x, target.y)).toBe(20);
-    expect([wingateCanFire(actor.x, actor.y, target.x, target.y, 0.24), wingateCanFire(actor.x, actor.y, target.x, target.y, 0.25)]).toEqual([false, true]);
-    expect(wingateCanFire(actor.x, actor.y, actor.x + 100, actor.y, 1)).toBe(false);
+    expect([wingateCanFire(actor.x, actor.y, target.x, target.y, 0), wingateCanFire(actor.x, actor.y, target.x, target.y, 1)]).toEqual([false, true]);
+    expect(wingateCanFire(actor.x, actor.y, actor.x + 100, actor.y, 3)).toBe(false);
     const [wingateVx, wingateVy] = wingateProjectileVelocity(actor.x, actor.y, target.x, target.y);
     expect(wingateVx).toBeCloseTo(-1.15625 * NES_FRAME_RATE * NES_WORLD_X_SCALE, 9);
     expect(wingateVy).toBeCloseTo(1.40625 * NES_FRAME_RATE * (540 / 240), 9);

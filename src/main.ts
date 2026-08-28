@@ -11,7 +11,7 @@ import {
   World,
 } from "@xrdavies/2d-engine";
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
-import { advanceRomRandom, mixRomRandomDifference, mixRomRandomSum, ROM_RANDOM_SEED } from "./game-constants";
+import { advanceRomRandom, mixRomRandomDifference, mixRomRandomFirstSum, mixRomRandomSum, ROM_RANDOM_SEED } from "./game-constants";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
 import { AMMO_GAIN, banditBillOpeningY, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, bomberCanThrow, bomberMovementDecision, bomberMovementDuration, bomberMovementVelocity, BOMBER_THROW_DURATION, BOSS_DEFEAT_ANIMATION_DURATION, bossReward, BOOTS_SPEED_MULTIPLIER, bossSpriteVisible, canSpawnPlayerBullet, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, contactSourceShouldClear, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_LIFETIME, dynamiteVerticalOffset, EMPTY_BARREL_EXPLOSION_LIFETIME, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X_LANES, FATMAN_JOE_ENTRY_Y, fallingRockOnScreen, fallingRockPosition, fatmanJoeOpeningY, HATCHET_LIFETIME, HORSE_HIT_INVULNERABILITY, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_LANES, NINJA_FIRST_SHOT_DELAY, NINJA_LIFETIME, ninjaAttackPosition, ninjaOpeningY, PLAYER_DEATH_ANIMATION_DURATION, PLAYER_DEATH_RECOVERY_DURATION, playerDeathPhase, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_IMPACT_LIFETIME, ROCK_LIFETIME, ROAD_WIDTHS, ROM_OBJECT_DROP_SPEED, ROM_SCREEN_RELEASE_Y_NES, ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_SIDE_LIFETIME, SHOTGUNNER_SIDE_SHOT_FRAME, SHOTGUNNER_VOLLEY_INTERVAL, shotgunnerPosition, shotgunnerSidePosition, shouldLoopStage, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_CODE2_SHOT_FRAMES, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_DURATION, WINGATE_ENTRY_X_LANES, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, wingateOpeningY, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type ItemType, type ShopType, type WeaponName } from "./game-constants";
@@ -26,7 +26,7 @@ import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, PLAYER_ENTR
 import { storedPowerupPickup } from "./game-constants";
 import { addScore } from "./game-constants";
 import { ninjaCanThrow } from "./game-constants";
-import { FATMAN_JOE_ATTACK_CHANCE, FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, FATMAN_JOE_MOVEMENT_SPEED, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, fatmanJoeCombatX, fatmanJoeCombatY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "./game-constants";
+import { FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, FATMAN_JOE_MOVEMENT_SPEED, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, fatmanJoeCombatX, fatmanJoeCombatY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "./game-constants";
 import { WINGATE_ATTACK_INTERVAL, WINGATE_BULLET_LIFETIME, wingateCanFire, WINGATE_ENTRY_RUSH_DURATION, WINGATE_FIRST_SHOT_DELAY, WINGATE_MOVEMENT_SPEED, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, WINGATE_SECOND_FIRST_SHOT_DELAY, wingateCombatX, wingateCombatY, wingateRushOffset } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_LIFETIME, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { CUTTER_ENTRY_DURATION, cutterBoomerangOnScreen, cutterCombatX, cutterCombatY, cutterOpeningX, cutterOpeningY } from "./game-constants";
@@ -937,7 +937,7 @@ class GunSmokeGame {
       return;
     }
     if (this.stage === MAX_STAGE) {
-      if (wingateCanFire(boss.x, boss.y, this.player.x, this.player.y, this.nextRandom())) {
+      if (wingateCanFire(boss.x, boss.y, this.player.x, this.player.y, this.nextRomRandomFirstSumByte())) {
         const projectile = this.spawnEnemyProjectile(boss.x + WINGATE_PROJECTILE_X_OFFSET_NES * NES_WORLD_X_SCALE, boss.y + WINGATE_PROJECTILE_Y_OFFSET_NES * NES_WORLD_Y_SCALE, true);
         if (projectile) {
           [projectile.vx, projectile.vy] = wingateProjectileVelocity(boss.x, boss.y, this.player.x, this.player.y);
@@ -992,8 +992,8 @@ class GunSmokeGame {
       return;
     }
     if (this.stage === 5) {
-      const random = this.nextRandom();
-      if (fatmanJoeCanLaunch(boss.x, boss.y, this.player.x, this.player.y, random)) {
+      const randomByte = this.nextRomRandomFirstSumByte();
+      if (fatmanJoeCanLaunch(boss.x, boss.y, this.player.x, this.player.y, randomByte)) {
         const projectile = this.spawnEnemyProjectile(boss.x - 8 * NES_WORLD_X_SCALE, boss.y + 6 * NES_WORLD_Y_SCALE, true);
         if (projectile) {
           projectile.projectileType = "grenadeShell";
@@ -1007,8 +1007,8 @@ class GunSmokeGame {
           this.beep(240, 0.045);
         }
       }
-      const actionDuration = random < 1 - FATMAN_JOE_ATTACK_CHANCE
-        ? fatmanJoeMovementActionDuration(boss.y - this.scroll, random)
+      const actionDuration = (randomByte & 0x0f) < 8
+        ? fatmanJoeMovementActionDuration(boss.y - this.scroll, randomByte)
         : 0;
       this.bossFireClock = FATMAN_JOE_ATTACK_DECISION_INTERVAL + actionDuration;
       return;
@@ -2317,6 +2317,11 @@ class GunSmokeGame {
   private nextRomRandomSumByte(): number {
     this.randomState = mixRomRandomSum(this.randomState);
     return this.randomState[1]!;
+  }
+
+  private nextRomRandomFirstSumByte(): number {
+    this.randomState = mixRomRandomFirstSum(this.randomState);
+    return this.randomState[0]!;
   }
 
   private nextRomRandomDifferenceByte(): number {

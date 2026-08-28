@@ -517,8 +517,9 @@ first 170 frames and reaches about `y=112`. A 2,400-frame Boss trace spans NES
 `x=88..152`, beyond the runtime's former 54-pixel-wide center clamp; the web
 Boss now uses the full Round 5 road bounds. His attack decision timer first
 expires at frame 95 and repeats every 76 active frames; each decision uses a
-half-probability random gate plus the downward heading sector, while movement
-actions pause the timer. A successful attack creates
+mutating `AC=(AC+AD)&0xff` random byte. Low nibbles `8..15` attempt an attack
+inside the downward heading sector; `0..7` select a movement action and pause
+the timer. A successful attack creates
 one moving `0x86` shell at Boss offset `(-8,+6)` NES pixels. The shell uses the
 shared integer direction quantizer, flies for 31 frames, and becomes a
 stationary split controller. Beginning four frames later, it emits five `0x3f`
@@ -527,7 +528,9 @@ mines at 4-frame intervals with relative offsets
 29 frames and the controller releases at age 61. Runtime preserves this full
 shell-to-mine chain. During the random action branch, the ROM's `$B6` decision
 counter stops while the short route lasts 53 frames (`b8=16`) or the long route
-lasts 122 frames (`b8=40` followed by `b8=32`); the runtime extends its existing
+lasts 122 frames (`b8=40` followed by `b8=32`). Low nibbles `0..1`, or a Boss
+screen Y above 72, select the long route; `2..7` select the short route. The
+runtime extends its existing
 76-frame clock by those measured windows. The runtime replays the controlled
 attack trace's multi-hop X/Y profile through combat frame 3,600, follows sparse
 samples through frame 12,000, then reflects that route for continued movement;
@@ -543,8 +546,8 @@ sequence instead of constant-speed horizontal drift. The runtime now replays
 compressed X/Y keyframes from both unhurt traces through combat frame 3,600,
 follows sparse samples through frame 12,000, then reflects those traces for
 continued movement; the random attack scheduler
-remains an explicit approximation beyond those
-recorded decisions.
+uses the decoded ROM gate, while later random movement directions remain an
+explicit approximation beyond the recorded route.
 The first encounter clears both ordinary and low-slot projectile actors before
 entering a 264-frame empty interval. The real Wingate
 then reuses dispatch `0xa3`, variant `0x65` and the same 151-frame vertical
@@ -555,7 +558,8 @@ fixed X lane. The runtime preserves the delay, a fresh lane selection, and the
 phase-specific vertical combat profile.
 Both encounters begin attack checks at their measured phase time: frame 4 for
 the decoy and frame 277 for real Wingate. A check repeats every 12 frames, then
-requires a three-of-four random gate and Billy inside the downward heading
+updates `AC=(AC+AD)&0xff` and requires its low two bits to be nonzero, plus
+Billy inside the downward heading
 sector `12..20` before allocating a projectile. This explains skipped checks and the
 non-fixed volley lengths in longer traces. Each `0x30` bullet begins at Boss
 offset `(-8,+6)` NES pixels, uses the routine's quantized 32-direction aim, and

@@ -55,6 +55,12 @@ export function mixRomRandomSum(state: RomRandomState): RomRandomState {
   return next;
 }
 
+export function mixRomRandomFirstSum(state: RomRandomState): RomRandomState {
+  const next: RomRandomState = [...state];
+  next[0] = (next[0]! + next[1]!) & 0xff;
+  return next;
+}
+
 export function mixRomRandomDifference(state: RomRandomState): RomRandomState {
   const next: RomRandomState = [...state];
   next[0] = (next[0]! - next[1]! - 1) & 0xff;
@@ -1221,7 +1227,6 @@ export const FATMAN_JOE_ENTRY_DURATION = 170 / NES_FRAME_RATE;
 export const FATMAN_JOE_MOVEMENT_SPEED = (40 / 75) * NES_FRAME_RATE * NES_WORLD_X_SCALE;
 export const FATMAN_JOE_FIRST_ATTACK_DELAY = 95 / NES_FRAME_RATE;
 export const FATMAN_JOE_ATTACK_DECISION_INTERVAL = 76 / NES_FRAME_RATE;
-export const FATMAN_JOE_ATTACK_CHANCE = 0.5;
 export const FATMAN_JOE_SHORT_ACTION_DURATION = 53 / NES_FRAME_RATE;
 export const FATMAN_JOE_LONG_ACTION_DURATION = 122 / NES_FRAME_RATE;
 export const FATMAN_JOE_SHELL_FLIGHT_DURATION = 31 / NES_FRAME_RATE;
@@ -1237,13 +1242,13 @@ export function fatmanJoeAimHeading(originX: number, originY: number, targetX: n
   return nesAimHeading(originX, originY, targetX, targetY);
 }
 
-export function fatmanJoeCanLaunch(originX: number, originY: number, targetX: number, targetY: number, random: number): boolean {
+export function fatmanJoeCanLaunch(originX: number, originY: number, targetX: number, targetY: number, randomByte: number): boolean {
   const heading = fatmanJoeAimHeading(originX, originY, targetX, targetY);
-  return random >= 1 - FATMAN_JOE_ATTACK_CHANCE && heading >= 14 && heading <= 18;
+  return (randomByte & 0x0f) >= 8 && heading >= 14 && heading <= 18;
 }
 
-export function fatmanJoeMovementActionDuration(originY: number, random: number): number {
-  return random < 0.125 || originY / NES_WORLD_Y_SCALE < 72 ? FATMAN_JOE_LONG_ACTION_DURATION : FATMAN_JOE_SHORT_ACTION_DURATION;
+export function fatmanJoeMovementActionDuration(originY: number, randomByte: number): number {
+  return (randomByte & 0x0f) < 2 || originY / NES_WORLD_Y_SCALE < 72 ? FATMAN_JOE_LONG_ACTION_DURATION : FATMAN_JOE_SHORT_ACTION_DURATION;
 }
 
 export function fatmanJoeShellVelocity(originX: number, originY: number, targetX: number, targetY: number): readonly [number, number] {
@@ -1305,7 +1310,6 @@ export const WINGATE_SECOND_SPAWN_DELAY = 264 / NES_FRAME_RATE;
 export const WINGATE_FIRST_SHOT_DELAY = 4 / NES_FRAME_RATE;
 export const WINGATE_SECOND_FIRST_SHOT_DELAY = 277 / NES_FRAME_RATE;
 export const WINGATE_ATTACK_INTERVAL = 12 / NES_FRAME_RATE;
-export const WINGATE_FIRE_CHANCE = 0.75;
 export const WINGATE_BULLET_LIFETIME = 64 / NES_FRAME_RATE;
 export const WINGATE_BULLET_VELOCITIES_NES = [[1.15625, 1.40625], [0.9140625, 1.65625], [0.625, 1.8515625], [0.3125, 1.9453125], [0, 2], [-0.3125, 1.9453125], [-0.625, 1.8515625], [-0.9140625, 1.65625], [-1.15625, 1.40625]] as const;
 export const WINGATE_PROJECTILE_X_OFFSET_NES = -8;
@@ -1371,9 +1375,9 @@ export function wingateAimHeading(originX: number, originY: number, targetX: num
   return nesAimHeading(originX, originY, targetX, targetY);
 }
 
-export function wingateCanFire(originX: number, originY: number, targetX: number, targetY: number, random: number): boolean {
+export function wingateCanFire(originX: number, originY: number, targetX: number, targetY: number, randomByte: number): boolean {
   const heading = wingateAimHeading(originX, originY, targetX, targetY);
-  return random >= 1 - WINGATE_FIRE_CHANCE && heading >= 12 && heading <= 20;
+  return (randomByte & 0x03) !== 0 && heading >= 12 && heading <= 20;
 }
 
 export function wingateProjectileVelocity(originX: number, originY: number, targetX: number, targetY: number): readonly [number, number] {

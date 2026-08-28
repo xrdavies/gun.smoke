@@ -1877,33 +1877,35 @@ class GunSmokeGame {
     const bullets = this.units.filter((unit) => unit.kind === "bullet" && unit.hp > 0);
     const targets = this.units.filter((unit) => (unit.kind === "barrel" || (unit.kind === "enemy" || unit.kind === "boss") && unit.sprite.visible || unit.kind === "enemyBullet" && unit.projectileType === "rock") && !unit.exploding && unit.hp > 0);
     for (const bullet of bullets) {
-      if (bullet.piercing) {
-        const projectile = this.units.find((candidate) => candidate.kind === "enemyBullet" && candidate.projectileType !== "ninjaSmoke" && candidate.projectileType !== "grenade" && candidate.projectileType !== "rock" && candidate.hp > 0 && distance(bullet, candidate) <= bullet.radius + candidate.radius);
-        if (projectile) {
-          const result = piercingDamageAfterHit(bullet.damage, projectile.hp);
-          projectile.hp = Math.max(0, projectile.hp - bullet.damage);
+      while (bullet.hp > 0) {
+        if (bullet.piercing) {
+          const projectile = this.units.find((candidate) => candidate.kind === "enemyBullet" && candidate.projectileType !== "ninjaSmoke" && candidate.projectileType !== "grenade" && candidate.projectileType !== "rock" && candidate.hp > 0 && distance(bullet, candidate) <= bullet.radius + candidate.radius);
+          if (projectile) {
+            const result = piercingDamageAfterHit(bullet.damage, projectile.hp);
+            projectile.hp = Math.max(0, projectile.hp - bullet.damage);
+            bullet.damage = result.damage;
+            if (result.consumed) bullet.hp = 0;
+            continue;
+          }
+        }
+        const target = targets.find((candidate) => (candidate.kind === "barrel" || candidate.kind === "enemy" || candidate.kind === "boss" || candidate.kind === "enemyBullet" && candidate.projectileType === "rock") && candidate.hp > 0 && !candidate.exploding && !bullet.hitTargets?.has(candidate) && distance(bullet, candidate) <= bullet.radius + candidate.radius);
+        if (!target) break;
+        if (!this.isBossVulnerable(target)) break;
+        if (bullet.piercing) bullet.hitTargets?.add(target);
+        else bullet.hp = 0;
+        const previousHp = target.hp;
+        target.hp -= bullet.damage;
+        if (bullet.piercing) {
+          const result = piercingDamageAfterHit(bullet.damage, previousHp);
           bullet.damage = result.damage;
           if (result.consumed) bullet.hp = 0;
+        }
+        if (target.hp > 0) {
+          this.handleBossDamage(target, previousHp);
           continue;
         }
+        this.defeatTarget(target);
       }
-      const target = targets.find((candidate) => (candidate.kind === "barrel" || candidate.kind === "enemy" || candidate.kind === "boss" || candidate.kind === "enemyBullet" && candidate.projectileType === "rock") && candidate.hp > 0 && !candidate.exploding && !bullet.hitTargets?.has(candidate) && distance(bullet, candidate) <= bullet.radius + candidate.radius);
-      if (!target) continue;
-      if (!this.isBossVulnerable(target)) continue;
-      if (bullet.piercing) bullet.hitTargets?.add(target);
-      else bullet.hp = 0;
-      const previousHp = target.hp;
-      target.hp -= bullet.damage;
-      if (bullet.piercing) {
-        const result = piercingDamageAfterHit(bullet.damage, previousHp);
-        bullet.damage = result.damage;
-        if (result.consumed) bullet.hp = 0;
-      }
-      if (target.hp > 0) {
-        this.handleBossDamage(target, previousHp);
-        continue;
-      }
-      this.defeatTarget(target);
     }
     for (const unit of this.units.filter((candidate) => candidate.hp > 0)) {
       if (unit.hp <= 0) continue;

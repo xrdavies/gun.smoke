@@ -10,6 +10,7 @@ const bossFramesLimit = Number(args.find((argument) => argument.startsWith("--bo
 const output = args.find((argument) => argument.startsWith("--out="))?.split("=")[1] ?? ".rom-traces/boss.json";
 const stateFile = args.find((argument) => argument.startsWith("--state="))?.split("=")[1];
 const attack = args.includes("--attack");
+const followY = args.includes("--follow-y");
 const record = args.includes("--record");
 const clearField = args.includes("--clear-field");
 if (!fs.existsSync(filename)) {
@@ -71,6 +72,7 @@ for (let frame = 0; frame < frames; frame += 1) {
   memory[0x7c] = 255;
   if (attack && bossStart !== undefined) {
     memory[0x74] = memory[0x5ee] ?? memory[0x74];
+    if (followY) memory[0x71] = Math.min(216, (memory[0x5ce] ?? memory[0x71]) + 64);
     const pressed = (frame - bossStart) % 5 === 0;
     for (const button of [Controller.BUTTON_A, Controller.BUTTON_B]) {
       if (pressed) nes.buttonDown(1, button);
@@ -80,8 +82,9 @@ for (let frame = 0; frame < frames; frame += 1) {
   if (clearField && bossStart !== undefined) {
     for (let slot = 2; slot < 32; slot += 1) {
       const lowBossSlot = stateFile && slot < 8;
+      const playerProjectile = slot >= 8 && slot < 14;
       const banditBillShot = !stateFile && Boolean(nes.cpu.mem[0x400 + slot] & 0x80) && nes.cpu.mem[0x420 + slot] === 0x30;
-      if (slot !== 14 && !lowBossSlot && !banditBillShot) nes.cpu.mem[0x400 + slot] = 0;
+      if (slot !== 14 && !lowBossSlot && !playerProjectile && !banditBillShot) nes.cpu.mem[0x400 + slot] = 0;
     }
   }
   nes.frame();
@@ -152,6 +155,7 @@ const trace = {
   ...(stateFile ? { sourceState: stateFile } : {}),
   sourceSha256: crypto.createHash("sha256").update(romBytes).digest("hex"),
   frameRate: 60.098,
+  followY,
   bossStart,
   roundState: roundState(),
   mapperBank,

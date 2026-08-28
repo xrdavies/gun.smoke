@@ -608,6 +608,10 @@ projectile range; for example Devil Hawk's five `0xA2` fireballs appear there.
 `--record` captures every Boss frame without injecting fire input or Boss damage,
 including the CPU PC and complete Boss parallel-array fields;
 `--attack` remains the controlled player-fire variant.
+`--follow-y` keeps Billy 64 NES pixels below the Boss during `--attack`, which
+allows repeatable hit-point traces for large vertical routes such as Fatman
+Joe. `--clear-field` preserves player projectile slots while clearing unrelated
+actors and enemy weapons, so controlled shots can still reach the Boss.
 The output is an ignored observation artifact under `.rom-traces/`; it is not
 runtime game data or copied ROM code.
 

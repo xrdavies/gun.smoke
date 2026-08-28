@@ -168,6 +168,10 @@ export const ROM_OBJECT_DROP_SPEED = WORLD_SCROLL_SPEED * 2;
 export const ROM_SCREEN_RELEASE_Y_NES = 252;
 export const ROM_PROJECTILE_SCREEN_SIZE_NES = 256;
 
+export function romActorScreenYReleased(screenY: number): boolean {
+  return Math.round(screenY) >= ROM_SCREEN_RELEASE_Y_NES;
+}
+
 export function romProjectileOnScreen(screenX: number, screenY: number): boolean {
   return screenX >= 0 && screenX < ROM_PROJECTILE_SCREEN_SIZE_NES && screenY >= 0 && screenY < ROM_PROJECTILE_SCREEN_SIZE_NES;
 }
@@ -791,7 +795,7 @@ export function advanceSpear(state: SpearState, targetFrame: number, playerX: nu
       if (aim >= 10 && aim <= 23) shots.push(aim & 0x1e);
     }
   }
-  return { shots, dead: Math.round(state.y) >= ROM_SCREEN_RELEASE_Y_NES };
+  return { shots, dead: romActorScreenYReleased(state.y) };
 }
 
 export const BACKSTABBER_AMBUSH_DROP_SPEED = 45;

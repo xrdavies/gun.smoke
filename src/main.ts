@@ -118,6 +118,7 @@ interface Unit {
   bossCycleStart?: number;
   bossNextTeleportAt?: number;
   rockNextBoundary?: number;
+  rockPhase?: number;
   nextFireAt: number;
   volleysFired: number;
 }
@@ -855,6 +856,7 @@ class GunSmokeGame {
       rock.romOriginX = rock.x;
       rock.romOriginY = romEventWorldY(event);
       rock.rockNextBoundary = 24;
+      rock.rockPhase = event.phase;
       rock.hp = romEntityHitPoints(event.entityCode);
       rock.value = romEnemyScore(event.entityCode);
       rock.vx = 0;
@@ -1218,7 +1220,7 @@ class GunSmokeGame {
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: frameDuration },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, riflemanAimHeading: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined,
+      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, riflemanAimHeading: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined, rockPhase: undefined,
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" || sceneObject ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
@@ -1291,7 +1293,7 @@ class GunSmokeGame {
         unit.y = unit.targetY;
         unit.sprite.visible = Math.floor((unit.maxAge - unit.age) * NES_FRAME_RATE) % 2 === 0;
       } else {
-        const [offsetX, offsetY] = fallingRockPosition(unit.age, (unit.romOriginX ?? unit.x) < 480);
+        const [offsetX, offsetY] = fallingRockPosition(unit.age, (unit.romOriginX ?? unit.x) < 480, unit.rockPhase);
         unit.x = (unit.romOriginX ?? unit.x) + offsetX * NES_WORLD_X_SCALE;
         unit.y = this.scroll + (unit.romOriginY ?? 0) + offsetY * NES_WORLD_Y_SCALE;
         const boundary = unit.rockNextBoundary ?? 24;
@@ -1304,7 +1306,7 @@ class GunSmokeGame {
           const fromLeft = (unit.romOriginX ?? unit.x) < 480;
           const probeHeading = fromLeft ? 14 : 16;
           const [probeX, probeY] = nesActorCollisionProbeOffset(probeHeading);
-          const [previousOffsetX, previousOffsetY] = fallingRockPosition((boundary - 1) / NES_FRAME_RATE, fromLeft);
+          const [previousOffsetX, previousOffsetY] = fallingRockPosition((boundary - 1) / NES_FRAME_RATE, fromLeft, unit.rockPhase);
           const screenX = (unit.romOriginX ?? unit.x) / NES_WORLD_X_SCALE + previousOffsetX + probeX;
           const screenY = (unit.romOriginY ?? unit.y - this.scroll) / NES_WORLD_Y_SCALE + previousOffsetY + probeY;
           if (boundary >= ROCK_IMPACT_DELAY * NES_FRAME_RATE || !roundCollisionAtNes(this.stage, this.scroll, screenX, screenY)) {

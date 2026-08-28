@@ -20,7 +20,7 @@ const streams = manifest.rounds.map((round) => {
   const bytes = [];
   for (const record of round.records.filter((candidate) => candidate.command === "spawn" && candidate.behaviorRoutine)) {
     const at = record.nesScrollAt;
-    bytes.push(at & 0xff, at >> 8, record.index & 0xff, record.index >> 8, record.x ?? 0, record.y ?? 0, routineIds[record.behaviorRoutine], record.entityCode ?? 0, record.entityFlags ?? 0, record.slotPool === "object" ? 1 : 0);
+    bytes.push(at & 0xff, at >> 8, record.index & 0xff, record.index >> 8, record.x ?? 0, record.y ?? 0, routineIds[record.behaviorRoutine], record.entityCode ?? 0, record.entityFlags ?? 0, record.phase ?? 0, record.slotPool === "object" ? 1 : 0);
   }
   return Buffer.from(bytes).toString("base64");
 });
@@ -39,7 +39,7 @@ const source = [
   "// Generated from .rom-traces/round-events/manifest.json. Runtime keeps data only, not ROM code/assets.",
   `export const ROM_BEHAVIOR_ROUTINES = ${JSON.stringify(routines)} as const;`,
   "",
-  "export type RomEnemyEvent = { at: number; order: number; x: number; y: number; behavior: number; entityCode: number; flags: number; pool: \"enemy\" | \"object\" };",
+  "export type RomEnemyEvent = { at: number; order: number; x: number; y: number; behavior: number; entityCode: number; flags: number; phase: number; pool: \"enemy\" | \"object\" };",
   "",
   `const ROUND_EVENT_STREAMS = ${JSON.stringify(streams, null, 2)} as const;`,
   `const ROUND_OBJECT_STREAMS = ${JSON.stringify(objectStreams, null, 2)} as const;`,
@@ -48,7 +48,7 @@ const source = [
   "const decodeStream = (encoded: string): readonly RomEnemyEvent[] => {",
   "  const bytes = Uint8Array.from(atob(encoded), (character) => character.charCodeAt(0));",
   "  const events: RomEnemyEvent[] = [];",
-  "  for (let offset = 0; offset + 9 < bytes.length; offset += 10) {",
+  "  for (let offset = 0; offset + 10 < bytes.length; offset += 11) {",
   "    events.push({",
   "      at: (bytes[offset] ?? 0) | ((bytes[offset + 1] ?? 0) << 8),",
   "      order: (bytes[offset + 2] ?? 0) | ((bytes[offset + 3] ?? 0) << 8),",
@@ -57,7 +57,8 @@ const source = [
   "      behavior: bytes[offset + 6] ?? 0,",
   "      entityCode: bytes[offset + 7] ?? 0,",
   "      flags: bytes[offset + 8] ?? 0,",
-  "      pool: bytes[offset + 9] === 1 ? \"object\" : \"enemy\",",
+  "      phase: bytes[offset + 9] ?? 0,",
+  "      pool: bytes[offset + 10] === 1 ? \"object\" : \"enemy\",",
   "    });",
   "  }",
   "  return events;",

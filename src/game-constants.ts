@@ -1288,6 +1288,7 @@ export type DevilHawkMovementState = {
   correctionReleaseFrames: number;
   romExactActions?: boolean;
   actionBounceCounter?: number;
+  actionCooldownFrames?: number;
 };
 
 export function createDevilHawkMovementState(x: number, y: number): DevilHawkMovementState {
@@ -1325,6 +1326,8 @@ export function advanceDevilHawkMovement(state: DevilHawkMovementState, targetFr
           if (state.actionBounceCounter < 0) {
             state.actionBounceCounter = undefined;
             state.mode = "move";
+            state.actionCounter = 47;
+            state.actionCooldownFrames = 28;
             continue;
           }
           state.y += devilHawkVerticalBounceDelta(state.actionBounceCounter);
@@ -1338,6 +1341,20 @@ export function advanceDevilHawkMovement(state: DevilHawkMovementState, targetFr
       if (state.actionKind === "jump" && state.actionFrames === 0) fullFans.push(true);
       if (state.actionFrames <= 0) state.mode = "move";
       continue;
+    }
+    if (state.romExactActions && state.actionCooldownFrames !== undefined) {
+      if (state.actionCooldownFrames > 0) {
+        state.actionCooldownFrames -= 1;
+        if (state.actionCooldownFrames > 0) continue;
+      }
+      state.actionCooldownFrames = undefined;
+      if (state.actionCounter === 47) {
+        state.actionCounter = 0;
+        state.mode = "action";
+        state.actionFrames = 26;
+        state.actionKind = "jump";
+        continue;
+      }
     }
     if (state.mode === "correction") {
       if (state.correctionHoldFrames > 0) {

@@ -1430,6 +1430,7 @@ class GunSmokeGame {
         unit.sprite.visible = unit.age >= unit.invulnerableUntil;
       } else if (unit.enemyType === "bomber") {
         const tracedBomber = unit.romBehavior === 4;
+        if (tracedBomber) unit.y += scrollDelta;
         const throwDynamite = (): void => {
           unit.bomberState = "throwing";
           unit.nextFireAt = unit.age + BOMBER_THROW_DURATION;

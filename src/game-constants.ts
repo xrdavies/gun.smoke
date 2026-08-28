@@ -228,6 +228,7 @@ export const DYNAMITE_LIFETIME = DYNAMITE_AIRBORNE_DURATION + DYNAMITE_LANDED_DU
 export const DYNAMITE_WORLD_SPEED = 89 * (540 / 240) / DYNAMITE_AIRBORNE_DURATION;
 export const DYNAMITE_HORIZONTAL_DURATION = 40 / NES_FRAME_RATE;
 export const DYNAMITE_AIM_FACTOR = 0.25;
+export const DYNAMITE_LANDED_SPEED = WORLD_SCROLL_SPEED;
 export const DYNAMITE_VERTICAL_PATH_NES = [[0, 0], [20, 18], [40, 32], [212, 89]] as const;
 export function bomberOpeningY(age: number): number {
   return Math.max(0, Math.min(1, age / BOMBER_ENTRY_DURATION)) * BOMBER_ENTRY_END_Y;

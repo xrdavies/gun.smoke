@@ -2050,7 +2050,6 @@ class GunSmokeGame {
       for (const target of [...this.units]) {
         if (target.kind === "enemy" && target.hp > 0 && !target.exploding) this.defeatTarget(target);
       }
-      this.clearEnemyUnits();
       this.clearEnemyProjectiles();
     } else if (item === "skull") {
       this.powerups.boots = Math.max(0, this.powerups.boots - 1);
@@ -2089,7 +2088,6 @@ class GunSmokeGame {
         if (unit.hp <= 0 || unit.exploding) continue;
         if (unit.kind === "enemy" || unit.kind === "enemyBullet" && unit.projectileType === "rock") this.defeatTarget(unit);
       }
-      this.clearEnemyUnits();
       this.clearEnemyProjectiles();
       this.beep(75, 0.35);
       this.showMessage("SMART BOMB");

@@ -157,7 +157,8 @@ not the low-slot Boss projectile pool. Runtime projectile-only clears leave
 falling rocks active, while POW, Smart Bomb and life-loss enemy clears remove
 them with the other enemy-slot actors. Smart Bomb enters this same `$CDAB`
 path, so ordinary enemy score and `$CD4E` drop conversion run before the slots
-are cleared; it is not a score-free direct erase.
+are released; the runtime preserves the short defeat state before releasing
+those enemy actors. It is not a score-free direct erase.
 Its `$F294-$F2BB` branch does not write the Horse/Blue invulnerability timers,
 so runtime does not add a post-clear protection window.
 The Round 1 life-loss trace also clears active ordinary enemy actors in the same

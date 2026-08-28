@@ -51,6 +51,24 @@ test("starts the WebGPU stage and renders gameplay", async ({ page }) => {
   expect(pageErrors).toEqual([]);
 });
 
+test("renders all six procedural rounds", async ({ page }) => {
+  const pageErrors: Error[] = [];
+  page.on("pageerror", (error) => pageErrors.push(error));
+  await page.goto("/");
+  await page.locator("#start-button").click();
+  await page.locator("#continue-button").click();
+  await page.locator("#briefing-button").click();
+  const hashes: string[] = [];
+  for (const [stage, name] of ["HICKSVILLE", "ROCKY PASS", "NATIVE VILLAGE", "CLIFF VALLEY", "FOREST", "WINGATE TOWN"].entries()) {
+    await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), stage + 1);
+    await expect(page.locator("#stage-label")).toHaveText(`ROUND ${stage + 1} ${name}`);
+    await page.waitForTimeout(50);
+    hashes.push(crypto.createHash("sha256").update(await page.locator("#game-canvas").screenshot()).digest("hex"));
+  }
+  expect(new Set(hashes).size).toBe(6);
+  expect(pageErrors).toEqual([]);
+});
+
 test("accepts gamepad Start from the title flow", async ({ page }) => {
   await page.addInitScript(() => {
     let startPressed = false;

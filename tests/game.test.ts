@@ -822,6 +822,24 @@ describe("Gun.Smoke vertical slice", () => {
 
   it("matches the traced first Wingate entrance", () => {
     const movement = createWingateMovementState(152);
+    const boundary = createWingateMovementState(152);
+    boundary.mode = "move";
+    boundary.x = 31.99;
+    boundary.y = 97.99;
+    boundary.heading = 0xc0;
+    boundary.gait = 0x88;
+    boundary.segmentFrames = 1;
+    advanceWingateMovement(boundary, 1, () => 0);
+    expect(boundary.mode).toBe("correction");
+    const inside = createWingateMovementState(152);
+    inside.mode = "move";
+    inside.x = 32.01;
+    inside.y = 40.01;
+    inside.heading = 0xc0;
+    inside.gait = 0x88;
+    inside.segmentFrames = 1;
+    advanceWingateMovement(inside, 1, () => 0);
+    expect(inside.mode).toBe("move");
     expect(advanceWingateMovement(movement, 5, () => 0).fireChecks).toBe(1);
     advanceWingateMovement(movement, 152, () => 0);
     expect({ mode: movement.mode, x: Math.floor(movement.x), y: Math.floor(movement.y), heading: movement.heading, segment: movement.segmentFrames, gait: movement.gait }).toEqual({ mode: "correction", x: 152, y: 98, heading: 0x40, segment: 103, gait: 4 });

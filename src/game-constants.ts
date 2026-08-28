@@ -1346,7 +1346,9 @@ export function createWingateMovementState(x: number, phase = 0): WingateMovemen
 }
 
 function wingateInsideArena(state: WingateMovementState): boolean {
-  return state.y >= 40 && state.y < 98 && state.x >= 32 && state.x < 224;
+  const x = Math.floor(state.x);
+  const y = Math.floor(state.y);
+  return y >= 40 && y < 98 && x >= 32 && x < 224;
 }
 
 function wingateCorrectionHeading(state: WingateMovementState): number {

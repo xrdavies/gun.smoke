@@ -318,8 +318,10 @@ entries use separate left/right traces of 581/384 frames; its code 8 left
 phases and entry heights retain the generic measured routes until their
 slot-state traces are captured. Round 6 controlled traces additionally cover
 code 7 left/right entries at `y=32` and a left entry at `y=64` for 342/453/918
-frames respectively; those route samples remain scoped to Round 6 and their
-matching entry coordinates.
+frames respectively, plus a true code 8 left `y=32` entry for 447 frames.
+Those route samples remain scoped to Round 6 and their matching entry
+coordinates. A code 9 right `y=48` trace remains active after 1,200 frames, so
+it retains the generic state path rather than receiving an unverified lifetime.
 On defeat, `$CD4E-$CDAA` converts an event's `0x80` flag into dispatch `0x4e`.
 If `$90/$94/$98/$9c` show no special-gun ammunition, it increments that to `0x4f`;
 the `$E192` conversion table then maps them to Bullet (`0x29`) and Money

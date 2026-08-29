@@ -19,7 +19,7 @@ import { advanceBackstabberRaid, createBackstabberRaidState, type BackstabberRai
 import { advanceGunmanFlankMovement, advanceSniperFiring, createGunmanFlankMovementState, createSniperFiringState, GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, gunmanCanFire, GUNMAN_FLANK_INITIAL_STATE_FRAMES, gunmanFlankFirstOpportunityFrame, gunmanFlankLifetime, gunmanFlankMovementFacingHeading, gunmanFlankUsesDynamicState, GUNMAN_LIFETIME, GUNMAN_TOP_LIFETIMES_FRAMES, gunmanFirstOpportunityFrame, gunmanFlankPosition, gunmanTopBranch, gunmanTopHeading, gunmanTopPosition, gunmanProjectileVelocity, GUNMAN_SHOT_OPPORTUNITY_INTERVAL, mediumProjectileHeadingVelocity, mediumProjectileVelocity, type GunmanFlankMovementState, type SniperFiringState } from "./game-constants";
 import { BOMBER_ENTRY_DURATION, bomberOpeningY } from "./game-constants";
 import { advanceFirebreather, advanceHatchet, advanceSpear, createFirebreatherState, createHatchetState, createSpearState, FIREBREATHER_LIFETIME, FIREBREATHER_PROJECTILE_OFFSET_NES, nesActorCollisionProbeOffset, SPEAR_LIFETIME, SPEAR_PROJECTILE_OFFSET_NES, type FirebreatherState, type HatchetState, type SpearState } from "./game-constants";
-import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanAttackHeadingAtStart, riflemanCanAttack, riflemanPosition, riflemanShotHeading, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition, sniperProjectileVelocity } from "./game-constants";
+import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanAttackHeadingAtStart, riflemanCanAttack, riflemanFirstShotFrame, riflemanPosition, riflemanShotHeading, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition, sniperProjectileVelocity } from "./game-constants";
 import { advanceBanditBillMovement, BANDIT_BILL_ATTACK_PAUSE_FRAMES, BANDIT_BILL_DAMAGE_RECOVERY_DURATION, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, BANDIT_BILL_PROJECTILE_OFFSET_NES, BANDIT_BILL_RANDOM_HANDOFF_FINE_X, BANDIT_BILL_RANDOM_HANDOFF_FINE_Y, BANDIT_BILL_RANDOM_ROUTE_START_FRAME, banditBillCombatX, banditBillCombatY, banditBillProjectileVelocity, createBanditBillMovementState, type BanditBillMovementState } from "./game-constants";
 import { banditBillCooldown } from "./game-constants";
 import { advanceInvulnerability, BLUE_YASHICHI_DURATION, BOSS_BAR_RECOVERY_DURATION, bossCurrentBarHitPoints, bossHealthProfile, bossTotalHitPoints, lifePickup, scoreBossDefeat, shouldClearProjectilesAfterBossDefeat } from "./game-constants";
@@ -1579,14 +1579,16 @@ class GunSmokeGame {
           unit.x += unit.vx * delta;
           unit.y += (unit.age * NES_FRAME_RATE < RIFLEMAN_ATTACK_STATE_FRAME ? unit.vy : -unit.vy * 0.75) * delta;
         }
+        const riflemanFrame = Math.floor(unit.age * NES_FRAME_RATE);
         if (tracedRifleman && !sideRifleman && !unit.riflemanAttackStarted) {
           const attackHeading = riflemanAttackHeadingAtStart(unit.x, unit.y, this.player.x, this.player.y);
           if (attackHeading !== undefined) {
             unit.riflemanAttackStarted = true;
             unit.riflemanAimHeading = attackHeading;
+            unit.nextFireAt = riflemanFirstShotFrame(riflemanFrame) / NES_FRAME_RATE;
           }
         }
-        if (!sideRifleman && unit.nextFireAt === 0) unit.nextFireAt = RIFLEMAN_FIRST_SHOT_DELAY;
+        if (!sideRifleman && !tracedRifleman && unit.nextFireAt === 0) unit.nextFireAt = RIFLEMAN_FIRST_SHOT_DELAY;
         const sideShotFrame = sideRifleman ? RIFLEMAN_SIDE_SHOT_FRAMES[unit.volleysFired] : undefined;
         const nextRiflemanShot = sideRifleman ? sideShotFrame === undefined ? undefined : sideShotFrame / NES_FRAME_RATE : unit.nextFireAt;
         const canRiflemanFire = sideRifleman || !tracedRifleman

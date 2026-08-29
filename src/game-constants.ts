@@ -462,6 +462,7 @@ export function banditBillProjectileVelocity(originX: number, originY: number, t
 }
 export const RIFLEMAN_FIRST_SHOT_DELAY = 138 / NES_FRAME_RATE;
 export const RIFLEMAN_ATTACK_STATE_FRAME = 122;
+export const RIFLEMAN_ATTACK_TO_FIRST_SHOT_FRAMES = Math.round(RIFLEMAN_FIRST_SHOT_DELAY * NES_FRAME_RATE) - RIFLEMAN_ATTACK_STATE_FRAME;
 export const RIFLEMAN_SHOT_INTERVAL = 16 / NES_FRAME_RATE;
 export const RIFLEMAN_SHOTS_PER_VOLLEY = 5;
 export const RIFLEMAN_LIFETIME = 364 / NES_FRAME_RATE;
@@ -480,6 +481,10 @@ export function riflemanAttackHeadingAtStart(actorX: number, actorY: number, pla
   return riflemanCanAttack(actorY, playerY)
     ? nesAimHeading(actorX, actorY, playerX, playerY)
     : undefined;
+}
+
+export function riflemanFirstShotFrame(attackStartFrame: number): number {
+  return attackStartFrame + RIFLEMAN_ATTACK_TO_FIRST_SHOT_FRAMES;
 }
 
 const RIFLEMAN_SHOT_HEADINGS = [[20, 22, 20, 18, 20], [16, 18, 16, 14, 16], [12, 14, 12, 10, 12]] as const;

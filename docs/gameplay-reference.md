@@ -590,8 +590,8 @@ on frame 531, and releases on the following frame without firing.
 Riflemen advance,
 enter their attack state on the first frame when they are at least 48 NES pixels
 downscreen and within 96 NES Y pixels of Billy, capture the aim sector at that
-transition, then fire five shots at
-138/154/170/186/202 through one quantized five-heading fan captured at attack
+transition, then fire five shots starting 16 frames later and repeating every
+16 frames through one quantized five-heading fan captured at attack
 start and centered on the selected left, center, or right sector,
 and retreat toward the top of the playfield. Entity code `15` instead enters
 from either edge, fires three shots at 97/113/129 frames, and returns to its

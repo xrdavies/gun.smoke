@@ -57,6 +57,8 @@ Round 6 `at=3919` preserves its event-specific allocation-frame X and then
 uses the shared state machine across all 1,419 controlled frames.
 Round 6 `at=4543` also uses the shared state machine through its complete
 303-frame route.
+Round 3 `at=1119` replaces its generic code-8 path with the shared state
+machine verified across all 282 controlled frames.
 
 ## Delivery Stages
 

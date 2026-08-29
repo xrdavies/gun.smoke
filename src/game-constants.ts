@@ -1040,6 +1040,7 @@ export type GunmanFlankMovementState = {
 export function gunmanFlankUsesDynamicState(entityCode: 7 | 8 | 9, originY: number, stage: number, phase: number, eventAt?: number, fromRight = false): boolean {
   if (stage === 5 && entityCode === 7 && (eventAt === 1759 || eventAt === 1903 || eventAt === 2735)) return true;
   if (stage === 4 && entityCode === 7 && [1503, 1695, 1727, 1743, 2527].includes(eventAt ?? -1)) return true;
+  if (stage === 3 && entityCode === 8 && eventAt === 1119) return true;
   if (stage === 6 && entityCode === 8 && eventAt === 2207) return true;
   if (stage === 6 && entityCode === 9 && (eventAt === 2783 || eventAt === 3919)) return true;
   if (stage === 6 && entityCode === 7 && eventAt === 4543) return true;

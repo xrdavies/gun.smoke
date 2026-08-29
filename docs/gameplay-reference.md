@@ -481,6 +481,8 @@ entry uses a separate shorter trace and exits through the bottom edge. It uses
 trace. Round 6 also has controlled code 7 traces for left/right `y=32` and left
 `y=64` entries (342/453/918 frames), plus 578/447-frame code 8 left `y=32`
 phase-0/phase-1 traces and a 776-frame code 9 right `y=48`, phase-1 trace.
+Round 3 `at=1119,x=4,y=96,code=8,phase=1` instead uses the shared state
+machine and matches all 282 controlled frames through its bottom-edge release.
 The Round 6 right-side code-7 `y=64` event does not reuse the left-only trace;
 it runs the shared player- and terrain-driven Gunman state machine.
 Round 6 `at=2207,x=4,y=96,code=8,phase=1` also uses that state machine and

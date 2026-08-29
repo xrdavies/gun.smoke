@@ -515,6 +515,8 @@ The `at=1279,x=168,phase=1` route (`fineX=184,fineY=212`) throws at frames
 116/153, returns to its authored lane, and releases at frame 311.
 The `at=1375,x=168,phase=1` route (`fineX=61,fineY=154`) crosses a random
 movement branch, throws at 116/204/241/278/315, and releases at frame 430.
+The `at=1391,x=200,phase=0` route (`fineX=184,fineY=28`) throws at frame 116,
+settles on its post-attack lane, and releases at frame 256.
 `at=3215,x=208,
 phase=0` entry holds its lane, emits its first Shuriken at frame 116, and
 releases after 284 frames; the runtime binds its fixed-point per-frame trace.

@@ -346,6 +346,14 @@ frames, tracks Billy while either axis is at least 56 NES pixels away, then
 selects a side state while close. One side state rotates every five frames after
 leaving that range until roaming; the other preserves its heading. Terrain
 collision returns it to tracking.
+
+The state-machine fallback is verified against two additional complete Round 2
+replays: the `at=911,x=4,y=32,code=7,phase=0` route matches all 643 recorded
+frames with Billy held at NES `(136,216)`, and the
+`at=1199,x=248,y=32,code=7,phase=0` route matches all 573 frames with Billy at
+NES `(120,215)`. Both comparisons include coarse coordinates, slot fractions
+and terrain probes; they are not visual-only matches.
+
 Codes 8 and 9 advance from their side until their collision probe opens and
 Billy is within 101 vertical pixels, run a 51-frame mirrored lunge, then join
 the same tracking states. Terrain probes and screen exits are evaluated each

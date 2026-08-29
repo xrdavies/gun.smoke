@@ -590,9 +590,9 @@ shortcut.
 An isolated `$B775` Rifleman descends one NES pixel per frame through frame 93,
 enters its attack state on the first frame when its screen Y is at least 48 NES
 pixels and Billy is within 96 NES Y pixels (frame 94 in the captured route),
-captures the aim sector at that transition, then emits three dispatch `0x30`
+captures the aim sector at that transition, then emits five dispatch `0x30`
 shots 16 frames apart, beginning 16 frames later. The integer aim selects one
-of three three-heading fans centered on sectors `12`, `16`, or `20`, captured
+of three five-heading fans centered on sectors `12`, `16`, or `20`, captured
 when the attack state starts; each bullet uses the second-tier
 direction table at about two NES pixels per frame. It returns to its movement state at frame 184,
 retreats toward the top edge, and releases at frame 308. The runtime
@@ -600,9 +600,10 @@ preserves this measured vertical path, volley cadence, actor-relative launch
 coordinate and slot lifetime for ROM-tagged Riflemen.
 Entity code `15` is a side-entry Rifleman. A right-edge isolation advances 65
 NES pixels inward by frame 80, continues down from screen `y=32` to `y=62`,
-fires one three-dispatch `0x30` fan at frame 96, then returns to
+captures its aim when the attack state starts at frame 80, fires five dispatch
+`0x30` shots at frames 96/112/128/144/160, then returns to
 the edge and releases at frame 258. Runtime mirrors this path for the left-edge
-records instead of applying code `14`'s top-entry three-shot cycle.
+records instead of applying code `14`'s top-entry path.
 An isolated `$B671` Ninja enters its attack state once Billy is within 64 NES
 Y pixels, then emits one dispatch `0x31` Shuriken no earlier than age 103
 frames. Its entrance holds the authored lane for 16 frames while descending

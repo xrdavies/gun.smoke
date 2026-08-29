@@ -95,13 +95,13 @@ Round 3 `at=4831` also uses the shared state machine through its complete
 582-frame map-wrap route.
 Round 3's same-frame Boss-gate `at=4863` record uses the shared state machine
 through its complete 381-frame route.
-Top-entry Riflemen now capture their three-shot fan at the ROM attack-state
+Top-entry Riflemen now capture their five-shot fan at the ROM attack-state
 transition (the first frame meeting the Y/distance gate), rather than
 recalculating the aim at the first shot; their first shot is scheduled 16 NES
-frames after that transition, for a three-shot fan. Side-entry and generic
+frames after that transition, for a five-shot sequence. Side-entry and generic
 fallback paths remain separate.
-Side-entry Riflemen now use the traced `y=32..62` path and three-shot cadence
-at frame 96 before their frame-258 release.
+Side-entry Riflemen now use the traced `y=32..62` path, frame-80 aim lock and
+five-shot 96/112/128/144/160 cadence before their frame-258 release.
 
 ## Delivery Stages
 

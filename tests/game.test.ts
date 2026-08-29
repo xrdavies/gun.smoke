@@ -784,6 +784,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(BANDIT_BILL_ENTRY_DURATION).toBeCloseTo(96 / NES_FRAME_RATE, 9);
     expect(BANDIT_BILL_ENTRY_SPEED_Y).toBeCloseTo((64 / 96) * NES_FRAME_RATE * (540 / 240), 9);
     expect(banditBillOpeningY(0)).toBe(0);
+    expect([8, 9, 12, 13, 20, 21].map((frame) => banditBillOpeningY(frame / NES_FRAME_RATE) / NES_WORLD_Y_SCALE)).toEqual([0, 2, 8, 8, 8, 10]);
     expect(banditBillOpeningY(BANDIT_BILL_ENTRY_DURATION / 2)).toBe(72);
     expect(banditBillOpeningY(BANDIT_BILL_ENTRY_DURATION)).toBe(144);
     expect(banditBillProjectileVelocity(192 * NES_WORLD_X_SCALE, 72 * NES_WORLD_Y_SCALE, 88 * NES_WORLD_X_SCALE, 215 * NES_WORLD_Y_SCALE)).toEqual([-1.37109375 * NES_FRAME_RATE * NES_WORLD_X_SCALE, 2.484375 * NES_FRAME_RATE * NES_WORLD_Y_SCALE]);

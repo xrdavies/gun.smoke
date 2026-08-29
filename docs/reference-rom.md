@@ -528,8 +528,9 @@ is below 176 or 104. Runtime uses the same byte and Y thresholds for entry and
 Ninja re-entry instead of consuming a separate floating random value. The gate traces
 place his initial entity at the top edge (`y=0`) and observe
 four horizontal entry lanes, NES `x=96/128/160/192`; after 96 frames the actor
-reaches approximately `y=64`. The web runtime selects one of those measured
-lanes and uses the corresponding downward entry speed. After the opening, the
+reaches `y=64`. The entrance holds for 9 frames, then repeats four frames of
+2-pixel downward movement and eight idle frames. The web runtime selects one
+of the measured lanes and replays that gait. After the opening, the
 runtime follows the clean-trace X/Y combat path through frame 3,472. Controlled pulse
 fire shows each depleted health bar changing dispatch to hit state `0x8D` for
 8 frames and then invulnerable crawl state `0x8C` for 168 frames before

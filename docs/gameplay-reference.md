@@ -156,6 +156,8 @@ his clean-trace X/Y movement path is replayed through the measured 3,472-frame
 combat window, with sparse unhurt samples extending it to frame 7,680 before
 continuing the ROM's random movement state. The handoff retains the recorded
 NES subpixels (`fineX=64`, `fineY=200`) before the 24-frame route pause.
+His 96-frame entrance holds for 9 frames, then repeats four 2-pixel downward
+steps followed by eight idle frames until reaching NES `y=64`.
 Ordinary screen clears do not erase active low-slot Boss shots. ROM-tagged
 Ninja, Hatchet, Spear, and Firebreather shots use the shared discrete second-tier
 direction table; all active formations are driven by decoded ROM event records.

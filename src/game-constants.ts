@@ -1161,7 +1161,11 @@ export const BANDIT_BILL_CRAWL_DURATION = 168 / NES_FRAME_RATE;
 export const BANDIT_BILL_DAMAGE_RECOVERY_DURATION = BANDIT_BILL_HIT_STUN_DURATION + BANDIT_BILL_CRAWL_DURATION;
 
 export function banditBillOpeningY(age: number): number {
-  return Math.max(0, Math.min(1, age / BANDIT_BILL_ENTRY_DURATION)) * BANDIT_BILL_ENTRY_END_Y;
+  const frame = Math.max(0, Math.min(96, Math.round(age * NES_FRAME_RATE)));
+  if (frame < 9) return 0;
+  const elapsed = frame - 9;
+  const movedFrames = Math.floor(elapsed / 12) * 4 + Math.min(4, elapsed % 12 + 1);
+  return Math.min(64, movedFrames * 2) * NES_WORLD_Y_SCALE;
 }
 // X/Y keyframes sampled from the clean Round 1 Boss trace. The actor's lane
 // offset is applied by banditBillCombatPosition for the other entry lanes.

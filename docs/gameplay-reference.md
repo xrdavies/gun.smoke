@@ -345,6 +345,8 @@ releases after 198 frames.
 Additional captured branches are `at=1519,x=104,phase=0` (one throw at 116,
 224 frames), `at=2031,x=56,phase=0` (throws at 116/153, 266 frames), and
 `at=2239,x=104,phase=1` (one throw at 116, 228 frames).
+The `at=1535,x=144,phase=1` route is a 143-frame no-throw branch, while
+`at=3055,x=56,phase=0` throws at 116/153 and releases after 335 frames.
 `at=3215,x=208,phase=0`
 holds its lane, fires at frame 116, and releases after 284 frames using a
 fixed-point trace. Event `at=3407,x=224,phase=0` uses the same frame-116 throw gate from its own

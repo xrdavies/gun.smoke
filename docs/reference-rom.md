@@ -545,6 +545,8 @@ The earlier `at=2015` record is skipped by pool pressure. Event
 `at=2207,x=56,phase=1` is a 212-frame no-throw route in the captured neutral
 slot state. Event `at=2543,x=56,phase=0` (`fineX=36,fineY=132`) is a 256-frame
 single-throw route and releases after settling near its left lane.
+Event `at=2559,x=128,phase=1` in the captured neutral slot state is a
+210-frame no-throw route and releases after its lower-edge retreat.
 `at=3215,x=208,
 phase=0` entry holds its lane, emits its first Shuriken at frame 116, and
 releases after 284 frames; the runtime binds its fixed-point per-frame trace.

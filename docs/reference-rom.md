@@ -531,7 +531,9 @@ four horizontal entry lanes, NES `x=96/128/160/192`; after 96 frames the actor
 reaches `y=64`. The entrance holds for 9 frames, then repeats four frames of
 2-pixel downward movement and eight idle frames. The web runtime selects one
 of the measured lanes and replays that gait. After the opening, the
-runtime follows the clean-trace X/Y combat path through frame 3,472. Controlled pulse
+runtime follows all 3,505 integer X/Y samples from the clean trace through
+combat frame 3,504. Later absolute-age samples are shifted back by the 96-frame
+entrance, ending at combat frame 7,584 before the frame-7,680 handoff. Controlled pulse
 fire shows each depleted health bar changing dispatch to hit state `0x8D` for
 8 frames and then invulnerable crawl state `0x8C` for 168 frames before
 returning to `0x88`. The actor continues from its current coordinate throughout

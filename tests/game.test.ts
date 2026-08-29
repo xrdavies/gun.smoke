@@ -789,6 +789,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(banditBillOpeningY(BANDIT_BILL_ENTRY_DURATION)).toBe(144);
     expect(banditBillProjectileVelocity(192 * NES_WORLD_X_SCALE, 72 * NES_WORLD_Y_SCALE, 88 * NES_WORLD_X_SCALE, 215 * NES_WORLD_Y_SCALE)).toEqual([-1.37109375 * NES_FRAME_RATE * NES_WORLD_X_SCALE, 2.484375 * NES_FRAME_RATE * NES_WORLD_Y_SCALE]);
     expect(banditBillCombatX(BANDIT_BILL_ENTRY_DURATION)).toBe(720);
+    expect([1, 7, 8, 9, 10, 11].map((frame) => banditBillCombatY(BANDIT_BILL_ENTRY_DURATION + frame / NES_FRAME_RATE) / NES_WORLD_Y_SCALE)).toEqual([64, 64, 66, 68, 70, 72]);
     expect(banditBillCombatY(BANDIT_BILL_ENTRY_DURATION + 11 / NES_FRAME_RATE)).toBe(162);
     expect(banditBillCombatY(BANDIT_BILL_ENTRY_DURATION + 119 / NES_FRAME_RATE)).toBeCloseTo(110.25, 9);
     expect(banditBillCombatX(BANDIT_BILL_ENTRY_DURATION + 227 / NES_FRAME_RATE)).toBeCloseTo(551.25, 9);
@@ -796,8 +797,10 @@ describe("Gun.Smoke vertical slice", () => {
     expect(banditBillCombatX(BANDIT_BILL_ENTRY_DURATION + 1104 / NES_FRAME_RATE)).toBe(622.5);
     expect(banditBillCombatX(BANDIT_BILL_ENTRY_DURATION + 3472 / NES_FRAME_RATE)).toBeCloseTo(190 * NES_WORLD_X_SCALE, 9);
     expect(banditBillCombatY(BANDIT_BILL_ENTRY_DURATION + 3472 / NES_FRAME_RATE)).toBeCloseTo(67 * NES_WORLD_Y_SCALE, 9);
-    expect(banditBillCombatY(BANDIT_BILL_ENTRY_DURATION + 3600 / NES_FRAME_RATE)).toBeCloseTo(67 * NES_WORLD_Y_SCALE, 9);
-    expect(banditBillCombatX(BANDIT_BILL_ENTRY_DURATION + 4096 / NES_FRAME_RATE)).toBeCloseTo(125 * NES_WORLD_X_SCALE, 9);
+    expect(banditBillCombatY(BANDIT_BILL_ENTRY_DURATION + 3504 / NES_FRAME_RATE)).toBeCloseTo(67 * NES_WORLD_Y_SCALE, 9);
+    expect(banditBillCombatY(BANDIT_BILL_ENTRY_DURATION + 3505 / NES_FRAME_RATE)).toBeLessThan(68 * NES_WORLD_Y_SCALE);
+    expect(banditBillCombatX(BANDIT_BILL_ENTRY_DURATION + 4000 / NES_FRAME_RATE)).toBeCloseTo(125 * NES_WORLD_X_SCALE, 9);
+    expect(banditBillCombatX(BANDIT_BILL_ENTRY_DURATION + 7584 / NES_FRAME_RATE)).toBeCloseTo(187 * NES_WORLD_X_SCALE, 9);
     expect(banditBillCombatY(BANDIT_BILL_ENTRY_DURATION + 7680 / NES_FRAME_RATE)).toBeCloseTo(95 * NES_WORLD_Y_SCALE, 9);
     expect(banditBillCombatY(BANDIT_BILL_ENTRY_DURATION + 4000 / NES_FRAME_RATE)).not.toBe(67 * NES_WORLD_Y_SCALE);
   });

@@ -152,9 +152,9 @@ Joe remain visible during their recovery/launch protection windows.
 Most Boss weapons use a six-slot projectile pool separate from the eight slots
 used by ordinary enemy gunfire, so field bullets cannot suppress those attacks;
 Bandit Bill's traced `0x30` shots are the exception and use the ordinary pool;
-his clean-trace X/Y movement path is replayed through the measured 3,472-frame
-combat window, with sparse unhurt samples extending it to frame 7,680 before
-continuing the ROM's random movement state. The handoff retains the recorded
+his clean-trace X/Y movement path is replayed for all 3,505 measured combat
+frames, with absolute-age samples shifted onto the combat timeline through
+frame 7,584 and held to the frame-7,680 random-state handoff. The handoff retains the recorded
 NES subpixels (`fineX=64`, `fineY=200`) before the 24-frame route pause.
 His 96-frame entrance holds for 9 frames, then repeats four 2-pixel downward
 steps followed by eight idle frames until reaching NES `y=64`.

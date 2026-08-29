@@ -303,6 +303,8 @@ Event `at=2879,x=88,phase=1` with the same neutral fraction is a 201-frame
 no-throw route and releases after descending in place.
 Event `at=2911,x=72,phase=1` with the neutral fraction throws at 116/153 and
 releases after 277 frames.
+Event `at=2943,x=48,phase=1` with the neutral fraction is a 209-frame
+no-throw route and releases at the lower screen boundary.
 `at=3215,x=208,phase=0`
 holds its lane, fires at frame 116, and releases after 284 frames using a
 fixed-point trace. Event `at=3407,x=224,phase=0` uses the same frame-116 throw gate from its own

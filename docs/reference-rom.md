@@ -706,8 +706,11 @@ not ROM timers; actors now remain until defeat, contact, offscreen cleanup, or
 scene transition.
 The `$B82F` Round 5 Backstabber variant is an ambush actor rather than a
 projectile shooter: its X remains fixed, it descends roughly 178 NES pixels, and
-its slot is released after 532 frames. The runtime keeps this state
-separate from the `$B46E` movement variant.
+its slot is released after 532 frames. The captured route starts at `y=1`,
+advances one NES pixel every three frames, preserves the inherited fine Y byte,
+and reaches `y=178` on frame 531. Runtime replays that discrete descent instead
+of treating 178 as a world-pixel cap, and keeps this state separate from the
+`$B46E` movement variant.
 The `$B46E` Backstabber variant is a mirrored side raid. It captures Billy's
 32-direction heading once, then combines that first-tier movement with a
 second-tier arc heading. Each 64-frame move segment advances the arc heading

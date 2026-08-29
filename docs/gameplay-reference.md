@@ -498,6 +498,9 @@ The `$B46E` side-raid Backstabber uses the same fixed-point movement primitives:
 it captures Billy's heading at spawn, combines first-tier pursuit with a
 four-frame second-tier arc, pauses in its 30-frame cover dispatch, and repeats
 until the screen coordinate overflows. It does not fire.
+The `$B82F` ambush variant instead fixes X, begins at screen `y=1`, advances one
+NES pixel every three frames while retaining its slot fraction, reaches `y=178`
+on frame 531, and releases on the following frame without firing.
 Riflemen advance,
 enter their attack state at 122 NES frames once they are at least 48 NES pixels
 downscreen and within 96 NES Y pixels of Billy, then fire five shots at

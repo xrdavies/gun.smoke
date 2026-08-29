@@ -923,9 +923,14 @@ export function advanceSpear(state: SpearState, targetFrame: number, playerX: nu
   return { shots, dead: romActorScreenYReleased(state.y) };
 }
 
-export const BACKSTABBER_AMBUSH_DROP_SPEED = 45;
-export const BACKSTABBER_AMBUSH_DEPTH = 178;
+export const BACKSTABBER_AMBUSH_DEPTH_NES = 178;
+export const BACKSTABBER_AMBUSH_DEPTH = BACKSTABBER_AMBUSH_DEPTH_NES * NES_WORLD_Y_SCALE;
 export const BACKSTABBER_AMBUSH_LIFETIME = 532 / NES_FRAME_RATE;
+
+export function backstabberAmbushY(age: number, fineY = 0): number {
+  const frame = Math.max(0, Math.round(age * NES_FRAME_RATE));
+  return (Math.min(BACKSTABBER_AMBUSH_DEPTH_NES, 1 + Math.floor(frame / 3)) + fineY) * NES_WORLD_Y_SCALE;
+}
 export type BackstabberRaidState = {
   frame: number;
   mode: "move" | "wait";

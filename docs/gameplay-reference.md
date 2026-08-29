@@ -158,9 +158,10 @@ Joe remain visible during their damage recovery windows.
 Most Boss weapons use a six-slot projectile pool separate from the eight slots
 used by ordinary enemy gunfire, so field bullets cannot suppress those attacks;
 Bandit Bill's traced `0x30` shots are the exception and use the ordinary pool;
-his clean-trace X/Y movement path is replayed for all 3,505 measured combat
-frames, with absolute-age samples shifted onto the combat timeline through
-frame 7,584 and held to the frame-7,680 random-state handoff. The handoff retains the recorded
+his clean-trace X/Y movement path is replayed for 3,505 measured combat
+frames, and a second controlled trace extends the available samples to frame
+7,991 on the combat timeline. Runtime consumes the route through the measured
+frame-7,680 random-state handoff, which retains the recorded
 NES subpixels (`fineX=64`, `fineY=200`) before the 24-frame route pause.
 His 96-frame entrance holds for 9 frames, then repeats four 2-pixel downward
 steps followed by eight idle frames until reaching NES `y=64`.
@@ -172,8 +173,9 @@ Cutter enters from the top edge on one of the ROM's NES X lanes
 left to approximately `y=136` after 324 frames, using the captured discrete
 entrance steps. It holds that lane until frame 350,
 then follows its recorded X/Y combat route. The first paired boomerangs launch
-at frame 350 and repeat every 256 frames. All 3,277 measured combat frames are
-replayed directly before the existing sparse route continues through frame 12,000. The runtime then
+at frame 350 and repeat every 256 frames. The available traces cover 14,677
+measured combat frames through frame 14,676; runtime consumes the route through
+the frame-12,000 handoff and then
 continues Cutter with the ROM's random direction segments and four-active/eight-idle
 movement gait rather than reflecting the sampled path. The same post-route
 state keeps the 256-frame attack cycle: 26 frames still, a directed climb to
@@ -205,8 +207,8 @@ teleports naturally during its route and after each lost health bar. The runtime
 hides the Boss for the measured 90-frame teleport delay, then restarts its entry
 smoke window and attack clock from the newly selected lane. Devil Hawk fireballs use the ROM's
 discrete directional velocity table and their measured 45/36-frame lifetimes;
-its recorded X/Y movement route is replayed through all 3,458 available combat
-frames, then
+its available recorded X/Y movement route covers 11,858 combat frames, while
+runtime consumes it through the frame-3,600 handoff and then
 uses the ROM's random movement/action state and boundary correction for the
 continued encounter. Long-tail fire is emitted from those action states:
 the hold branch produces a three-shot fan, while the high-position vertical

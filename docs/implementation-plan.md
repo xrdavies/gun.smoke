@@ -24,7 +24,7 @@ input; ROM bytes, extracted artwork, and Capcom source are not distributed.
 | ROM event scheduler | Complete for extracted scripts | Per-round enemy/object streams, map phases, independent seven/six-slot pools and slot fine coordinates |
 | Resources and combat | Complete for modeled rules | Weapons, ammo, score, drops, shops, Smart Bomb, Horse, damage and death state |
 | Ordinary enemy routines | Mostly complete | All core behavior routines are mapped; every Round 4 Ninja script record has a state-qualified trace or decoded-state fallback, while other long-tail random branches stay explicit |
-| Boss routines | Mostly complete | Measured entrances, attacks, health bars and traced routes are implemented; sparse tails continue from ROM-shaped state |
+| Boss routines | Mostly complete | Measured entrances, attacks, health bars and long ROM X/Y traces are implemented for Bandit Bill, Cutter, Devil Hawk and Fatman Joe; remaining tails continue from ROM-shaped state |
 | Original visual/audio assets | Intentional baseline | Procedural textures and Web Audio are used instead of redistributed commercial assets |
 
 Recent evidence-backed parity passes closed the full Round 4 Ninja script set,

@@ -1175,7 +1175,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(banditBillCombatY(BANDIT_BILL_ENTRY_DURATION + 3505 / NES_FRAME_RATE)).toBeLessThan(68 * NES_WORLD_Y_SCALE);
     expect(banditBillCombatX(BANDIT_BILL_ENTRY_DURATION + 4000 / NES_FRAME_RATE)).toBeCloseTo(125 * NES_WORLD_X_SCALE, 9);
     expect(banditBillCombatX(BANDIT_BILL_ENTRY_DURATION + 7584 / NES_FRAME_RATE)).toBeCloseTo(187 * NES_WORLD_X_SCALE, 9);
-    expect(banditBillCombatY(BANDIT_BILL_ENTRY_DURATION + 7680 / NES_FRAME_RATE)).toBeCloseTo(95 * NES_WORLD_Y_SCALE, 9);
+    expect(banditBillCombatY(BANDIT_BILL_ENTRY_DURATION + 7680 / NES_FRAME_RATE)).toBeCloseTo(107 * NES_WORLD_Y_SCALE, 9);
     expect(banditBillCombatY(BANDIT_BILL_ENTRY_DURATION + 4000 / NES_FRAME_RATE)).not.toBe(67 * NES_WORLD_Y_SCALE);
   });
 

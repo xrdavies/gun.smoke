@@ -756,14 +756,15 @@ the later damage-recovery crawl pauses firing. The entrance holds for 9 frames, 
 of the measured lanes and replays that gait. Devil Hawk uses its captured
 stepped descent before the opening. After the opening, the
 runtime follows all 3,505 integer X/Y samples from the clean trace through
-combat frame 3,504. Later absolute-age samples are shifted back by the 96-frame
-entrance, ending at combat frame 7,584 before the frame-7,680 handoff. Controlled pulse
+combat frame 3,504. A second controlled unhurt trace extends the available
+samples to 7,992 combat frames through frame 7,991 after shifting back the
+96-frame entrance; runtime consumes the route through the frame-7,680 handoff.
+Controlled pulse
 fire shows each depleted health bar changing dispatch to hit state `0x8D` for
 8 frames and then invulnerable crawl state `0x8C` for 168 frames before
 returning to `0x88`. The actor continues from its current coordinate throughout
 that 176-frame recovery instead of moving to a fixed off-route position. After
-the recorded 3,472-frame route, sparse unhurt samples extend the runtime route
-to frame 7,680; the runtime then continues the decoded random direction
+the recorded route reaches the handoff, the runtime continues the decoded random direction
 segments and four-active/eight-idle gait.
 The same controlled full-round trace identifies Round 2's Cutter as dispatch
 `0x90`, variant `0x5b`, entering from the top edge (`y=0`). Controlled runs
@@ -775,9 +776,10 @@ The web runtime selects one measured lane and follows the captured two-axis
 opening steps,
 then holds the final entry X until its first attack at frame 350 and follows
 all 3,277 recorded combat X/Y frames through frame 3,276, including its
-136-to-40/99 NES vertical profile and later return loops. After the complete
-trace, the runtime follows sparse measured samples through frame 12,000, then
-continues with the ROM's random direction segments and four-active/eight-idle gait. At frame 350 it creates the paired `0x98/0x99`
+136-to-40/99 NES vertical profile and later return loops. A second controlled
+unhurt trace extends the available samples to 14,677 combat frames through
+frame 14,676; runtime consumes the route through the frame-12,000 handoff and
+then continues with the ROM's random direction segments and four-active/eight-idle gait. At frame 350 it creates the paired `0x98/0x99`
 boomerangs from Boss-relative offsets `(-3,+3)` and `(+3,+2)` NES pixels,
 holding those launch coordinates for the allocation frame and repeating every
 256 frames. Both use a 32-direction steering state: initial
@@ -809,9 +811,10 @@ lifetime. The controlled unhurt trace attempts attacks at frames
 to a 125-frame interval. The runtime preserves these measured 5/3 fan geometries
 and lifetimes. The five-shot branch accepts aim
 sectors 8 through 24 (inclusive), as enforced by the ROM's `$C7E6` check. The
-runtime uses complete integer X/Y samples from the unhurt Boss trace through
-combat frame 3,457; the discrete samples preserve the long recorded route while the
-separate attack scheduler remains subject to aim and random gates. After that
+runtime uses complete integer X/Y samples from the unhurt Boss traces through
+combat frame 11,857; the discrete samples preserve the long recorded route while the
+separate attack scheduler remains subject to aim and random gates. Runtime consumes
+the route through the frame-3,600 handoff; after that
 window, the runtime uses the ROM's 48-frame action counter, `AE=(AE+AC)&0xff`
 movement decisions, discrete `24/48/72/96`-frame segments, short action holds,
 vertical action arcs, and screen-boundary correction rather than reflecting a

@@ -247,6 +247,10 @@ events `at=47,x=152,phase=0` and `at=63,x=184,phase=1` use their measured
 244-frame second movement and release traces. Event `at=351,x=208,phase=1`
 fires at frame 103 and releases after 255 frames, while
 `at=399,x=224,phase=0` follows a 221-frame no-throw route. Later event
+`at=735,x=152,phase=1` has a 202-frame no-throw route for the captured slot
+fractions `fineX=239,fineY=81`; the same event can take a different random
+branch and is therefore left on the generic state path when those fractions do
+not match.
 `at=3215,x=208,phase=0`
 holds its lane, fires at frame 116, and releases after 284 frames using a
 fixed-point trace. Event `at=3407,x=224,phase=0` uses the same frame-116 throw gate from its own

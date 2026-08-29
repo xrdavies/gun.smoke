@@ -500,6 +500,10 @@ player-relative offset before holding position; clean routes release between
 their second post-throw movement and release transitions. The early
 `at=351,x=208,phase=1` entry fires at frame 103 and releases after 255 frames;
 `at=399,x=224,phase=0` takes a 221-frame no-throw branch. The later
+`at=735,x=152,phase=1` entry has a 202-frame no-throw route in the captured
+slot state (`fineX=239,fineY=81`); because the ROM can reuse this event with a
+different random state, the runtime binds the trace only to those initial
+fractions and keeps other instances on the generic routine.
 `at=3215,x=208,
 phase=0` entry holds its lane, emits its first Shuriken at frame 116, and
 releases after 284 frames; the runtime binds its fixed-point per-frame trace.

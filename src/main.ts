@@ -977,7 +977,7 @@ class GunSmokeGame {
     if (event.behavior === 1) enemy.maxAge = SHOTGUNNER_LIFETIME;
     if (sideShotgunner) enemy.maxAge = SHOTGUNNER_SIDE_LIFETIME;
     if (event.behavior === 2) enemy.maxAge = GUNMAN_LIFETIME;
-    if (event.behavior === 6) enemy.maxAge = ninjaTraceLifetime(event.x, event.y, this.stage, event.phase, event.at) ?? NINJA_LIFETIME;
+    if (event.behavior === 6) enemy.maxAge = ninjaTraceLifetime(event.x, event.y, this.stage, event.phase, event.at, enemy.romSpawnFineX, enemy.romSpawnFineY) ?? NINJA_LIFETIME;
     if (event.behavior === 2 && event.entityCode === 5) enemy.maxAge = GUNMAN_BOTTOM_LIFETIMES.far;
     if (flankCode !== undefined) enemy.maxAge = enemy.gunmanFlankState ? Number.POSITIVE_INFINITY : gunmanFlankLifetime(flankCode, event.y, this.stage, event.phase, event.x > 128, event.at);
     if (event.behavior === 3) enemy.maxAge = Number.POSITIVE_INFINITY;
@@ -1478,7 +1478,7 @@ class GunSmokeGame {
         if (tracedNinja) {
           const originX = unit.romOriginX ?? unit.x;
           const originY = unit.romOriginY ?? unit.y - this.scroll;
-          const tracedPosition = ninjaTracePosition(unit.age, originX / NES_WORLD_X_SCALE, originY / NES_WORLD_Y_SCALE, this.stage, unit.romPhase ?? 0, unit.romEventAt);
+          const tracedPosition = ninjaTracePosition(unit.age, originX / NES_WORLD_X_SCALE, originY / NES_WORLD_Y_SCALE, this.stage, unit.romPhase ?? 0, unit.romEventAt, unit.romSpawnFineX, unit.romSpawnFineY);
           if (tracedPosition) {
             unit.x = tracedPosition[0];
             unit.y = this.scroll + tracedPosition[1];
@@ -1495,7 +1495,7 @@ class GunSmokeGame {
           unit.x += (unit.vx + Math.sin(unit.age * 6 + unit.phase) * 90) * delta;
           unit.y += unit.vy * 1.8 * delta;
         }
-        const tracedThrowFrame = unit.romBehavior === 6 ? ninjaTraceThrowFrame(this.stage, unit.romEventAt) : undefined;
+        const tracedThrowFrame = unit.romBehavior === 6 ? ninjaTraceThrowFrame(this.stage, unit.romEventAt, unit.romSpawnFineX, unit.romSpawnFineY) : undefined;
         const throwAt = typeof tracedThrowFrame === "number" ? tracedThrowFrame / NES_FRAME_RATE : NINJA_FIRST_SHOT_DELAY;
         const canThrow = tracedThrowFrame === false ? false : tracedThrowFrame !== undefined || ninjaCanThrow(unit.y, this.player.y);
         if (!unit.fired && unit.age >= throwAt && (tracedThrowFrame === false || canThrow)) {

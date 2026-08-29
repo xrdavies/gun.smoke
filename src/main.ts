@@ -534,6 +534,8 @@ class GunSmokeGame {
     this.horseSprite.visible = false;
     this.smartBombArmed = false;
     this.units.length = 0;
+    this.romEnemyFineX.fill(0);
+    this.romEnemyFineY.fill(0);
     this.buildBackground();
     this.player.x = PLAYER_ENTRY_X;
     this.player.y = PLAYER_ENTRY_Y;
@@ -2881,6 +2883,8 @@ if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeRound", { v
   game.scroll = 0;
   game.camera.position.y = 270;
   game.units.length = 0;
+  game.romEnemyFineX.fill(0);
+  game.romEnemyFineY.fill(0);
   game.bossSpawned = false;
   game.romEventCursor = 0;
   game.romObjectCursor = 0;

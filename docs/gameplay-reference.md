@@ -247,8 +247,9 @@ some long-tail random branches remain marked as approximations.
 Snipers are edge-mounted static shooters that adjust among six discrete lane
 headings toward Billy, keep an 8-bit 90-frame firing cooldown, and do not walk
 with field enemies. The actor remains visible and collidable while that
-countdown runs. The code `2`
-opposite-side variant also fires at the otherwise missed age-314 aiming window.
+countdown runs. The code `2` opposite-side variant uses the same lane/cooldown
+state with its opposite initial lane; its six-shot ages in the reference are
+one seeded route, not a separate fixed schedule.
 Ordinary Ninjas hold their entry lane through a short pause, descend to the
 combat line, then make a brief player-relative diagonal retreat after their
 frame-103 Shuriken and release within the measured 303-frame route cap. Round 4

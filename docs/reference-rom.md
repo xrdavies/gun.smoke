@@ -285,9 +285,10 @@ visible and collidable throughout it. Runtime now executes this lane/cooldown
 state instead of indexing a fixed list of ages.
 Their dispatch `0x2f` bullets use the ROM's quantized 32-direction speed table
 at the first speed tier rather than continuous-angle velocity.
-The opposite-side entity code `2` keeps the same lifetime but hits every middle
-window, firing at ages 134, 224, 314, 404, 495 and 585. Runtime selects the
-schedule by entity code rather than dropping code `2`'s third shot.
+The opposite-side entity code `2` starts from its opposite lane and shares the
+same six-lane/cooldown routine. Its isolated six-shot ages are a seeded route;
+runtime now derives them from the lane, cooldown and aim gate instead of
+selecting a fixed schedule by entity code.
 Natural `$B284` top-entry Gunmen begin with scheduler seeds `56`, `72`, and
 `22`, producing first attack opportunities at ages 58, 52, and 69. `$0540`
 advances by three until wrapping at 192, so an

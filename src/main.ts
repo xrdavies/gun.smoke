@@ -1324,6 +1324,7 @@ class GunSmokeGame {
       if (isBanditBill || isCutter) boss.vx = 0;
       if (isFirstWingate) boss.wingateState = createWingateMovementState(boss.x / NES_WORLD_X_SCALE, this.wingatePhase, true);
       if (isFatmanJoe) boss.vx = (boss.phase < Math.PI ? 1 : -1) * FATMAN_JOE_MOVEMENT_SPEED;
+      if (isBanditBill) boss.invulnerableUntil = BANDIT_BILL_ENTRY_DURATION;
       if (isNinjaBoss) boss.invulnerableUntil = NINJA_BOSS_ENTRY_INVULNERABILITY;
       if (isFatmanJoe) boss.invulnerableUntil = FATMAN_JOE_ENTRY_DURATION;
       if (isNinjaBoss) boss.bossNextTeleportAt = ninjaBossNextTeleportAt();

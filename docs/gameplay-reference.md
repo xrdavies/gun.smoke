@@ -146,7 +146,8 @@ Boss encounters use their measured per-bar durability: Bandit Bill has four
 1-hit bars, Fatman Joe six 12-hit bars, and the Wingate decoy/real encounters
 use one 6-hit bar followed by six 12-hit bars. After each lost health bar Bandit Bill
 spends 8 NES frames in hit stun and 168 frames in an invulnerable crawl without
-teleporting away from his current route, while Cutter and Devil
+teleporting away from his current route. His 96-frame entrance is also protected,
+while Cutter and Devil
 Hawk become vulnerable only after their opening attack. Fatman Joe is
 protected during his 170-frame entrance and vulnerable when the first shell launches;
 Cutter's boomerangs also curve in opposite directions.

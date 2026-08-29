@@ -742,7 +742,8 @@ is below 176 or 104. Runtime uses the same byte and Y thresholds for entry and
 Ninja re-entry instead of consuming a separate floating random value. The gate traces
 place his initial entity at the top edge (`y=0`) and observe
 four horizontal entry lanes, NES `x=96/128/160/192`; after 96 frames the actor
-reaches `y=64`. The entrance holds for 9 frames, then repeats four frames of
+reaches `y=64`. State `0x9c` protects that entrance; the controlled damage
+trace first exposes state `0x98` at relative frame 95. The entrance holds for 9 frames, then repeats four frames of
 2-pixel downward movement and eight idle frames. The web runtime selects one
 of the measured lanes and replays that gait. Devil Hawk uses its captured
 stepped descent before the opening. After the opening, the

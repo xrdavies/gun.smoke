@@ -503,10 +503,9 @@ their second post-throw movement and release transitions. The early
 `at=735,x=152,phase=1` entry has a 202-frame no-throw route in the captured
 slot state (`fineX=239,fineY=81`); because the ROM can reuse this event with a
 different random state, the runtime binds the trace only to those initial
-fractions and keeps other instances on the generic routine. A second capture
-with `fineX=161,fineY=5` observes throws at frames 116/153/190/227 through its
-frame-260 capture limit; runtime schedules those throws without treating that
-limit as a release. The captured
+fractions and keeps other instances on the generic routine. A complete second
+capture with `fineX=161,fineY=5` throws at frames 116/153/190/227 and releases
+at frame 266; runtime binds its full fixed-point route. The captured
 `at=767,x=216,phase=1` route (`fineX=51,fineY=66`) throws at frame 116 and
 releases at frame 258 under the same state-qualified binding rule.
 `at=3215,x=208,

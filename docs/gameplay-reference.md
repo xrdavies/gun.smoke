@@ -250,9 +250,9 @@ fires at frame 103 and releases after 255 frames, while
 `at=735,x=152,phase=1` has a 202-frame no-throw route for the captured slot
 fractions `fineX=239,fineY=81`; the same event can take a different random
 branch and is therefore left on the generic state path when those fractions do
-not match. The observed `fineX=161,fineY=5` branch throws at frames
-116/153/190/227; only those verified throws are scheduled because that capture
-ends before natural release. Event `at=767,x=216,phase=1` similarly binds its captured
+not match. The `fineX=161,fineY=5` branch throws at frames 116/153/190/227 and
+releases at frame 266; its complete fixed-point route is bound separately.
+Event `at=767,x=216,phase=1` similarly binds its captured
 `fineX=51,fineY=66` state to a frame-116 throw and 258-frame release route.
 `at=3215,x=208,phase=0`
 holds its lane, fires at frame 116, and releases after 284 frames using a

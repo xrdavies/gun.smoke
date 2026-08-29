@@ -29,6 +29,9 @@ Reference ROM provenance and verified header metadata are recorded in
 The gameplay target and approximation boundary are recorded in
 [`docs/gameplay-reference.md`](docs/gameplay-reference.md).
 
+The staged implementation scope and current parity status are recorded in
+[`docs/implementation-plan.md`](docs/implementation-plan.md).
+
 ```sh
 npm install
 npm run dev

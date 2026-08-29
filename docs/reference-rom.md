@@ -758,7 +758,7 @@ stepped descent before the opening. After the opening, the
 runtime follows all 3,505 integer X/Y samples from the clean trace through
 combat frame 3,504. A second controlled unhurt trace extends the available
 samples to 7,992 combat frames through frame 7,991 after shifting back the
-96-frame entrance; runtime consumes the route through the frame-7,680 handoff.
+96-frame entrance; runtime consumes the route through the frame-7,584 handoff.
 Controlled pulse
 fire shows each depleted health bar changing dispatch to hit state `0x8D` for
 8 frames and then invulnerable crawl state `0x8C` for 168 frames before

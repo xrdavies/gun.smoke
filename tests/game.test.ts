@@ -1186,11 +1186,11 @@ describe("Gun.Smoke vertical slice", () => {
   });
 
   it("continues Bandit Bill from the sampled route", () => {
-    expect(BANDIT_BILL_RANDOM_ROUTE_START_FRAME).toBe(7_680);
+    expect(BANDIT_BILL_RANDOM_ROUTE_START_FRAME).toBe(7_584);
     expect([BANDIT_BILL_RANDOM_HANDOFF_FINE_X, BANDIT_BILL_RANDOM_HANDOFF_FINE_Y, BANDIT_BILL_ATTACK_PAUSE_FRAMES, BANDIT_BILL_ROUTE_HANDOFF_PAUSE_FRAMES]).toEqual([64, 200, 37, 24]);
     const movement = createBanditBillMovementState(187, 95);
     advanceBanditBillMovement(movement, BANDIT_BILL_RANDOM_ROUTE_START_FRAME + 25, () => 0xd5);
-    expect({ frame: movement.frame, x: Math.floor(movement.x), y: Math.floor(movement.y), pause: movement.pauseFrames }).toEqual({ frame: 7_705, x: 187, y: 95, pause: 0 });
+    expect({ frame: movement.frame, x: Math.floor(movement.x), y: Math.floor(movement.y), pause: movement.pauseFrames }).toEqual({ frame: 7_609, x: 187, y: 95, pause: 0 });
     advanceBanditBillMovement(movement, BANDIT_BILL_RANDOM_ROUTE_START_FRAME + 36, () => 0xd5);
     expect({ x: Math.round(movement.x), y: Math.round(movement.y), heading: movement.heading }).toEqual({ x: 182, y: 101, heading: 0x54 });
     const handoff = createBanditBillMovementState(187 + BANDIT_BILL_RANDOM_HANDOFF_FINE_X / 256, 95 + BANDIT_BILL_RANDOM_HANDOFF_FINE_Y / 256);

@@ -1962,7 +1962,7 @@ export function banditBillCombatY(age: number, entryX = 192 * NES_WORLD_X_SCALE)
   return banditBillCombatPosition(age, entryX)[1];
 }
 
-export const BANDIT_BILL_RANDOM_ROUTE_START_FRAME = 7_680;
+export const BANDIT_BILL_RANDOM_ROUTE_START_FRAME = 7_584;
 export const BANDIT_BILL_RANDOM_HANDOFF_FINE_X = 64;
 export const BANDIT_BILL_RANDOM_HANDOFF_FINE_Y = 200;
 export const BANDIT_BILL_ATTACK_PAUSE_FRAMES = 37;

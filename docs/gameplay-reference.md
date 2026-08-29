@@ -161,7 +161,7 @@ Bandit Bill's traced `0x30` shots are the exception and use the ordinary pool;
 his clean-trace X/Y movement path is replayed for 3,505 measured combat
 frames, and a second controlled trace extends the available samples to frame
 7,991 on the combat timeline. Runtime consumes the route through the measured
-frame-7,680 random-state handoff, which retains the recorded
+frame-7,584 random-state handoff, which retains the recorded
 NES subpixels (`fineX=64`, `fineY=200`) before the 24-frame route pause.
 His 96-frame entrance holds for 9 frames, then repeats four 2-pixel downward
 steps followed by eight idle frames until reaching NES `y=64`.

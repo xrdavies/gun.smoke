@@ -268,6 +268,8 @@ Event `at=1423,x=4,y=48,code=7,phase=0` uses a separate 307-frame left-edge
 route and fires at its first opportunity, frame 64.
 Event `at=1743,x=248,y=80,code=7,phase=0` starts in dispatch `0x59`, fires at
 frame 64, and uses a distinct 590-frame route that exits through the top edge.
+Event `at=1791,x=4,y=128,code=7,phase=1` uses a 252-frame route, fires at
+frame 64, and exits through the bottom edge.
 Event `at=1983,x=248,y=48,code=7,phase=1` uses a 475-frame route, fires at
 frame 95, and exits through the right screen boundary.
 The following same-coordinate event at `at=2079` uses a different 675-frame

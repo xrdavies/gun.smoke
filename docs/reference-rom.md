@@ -336,6 +336,9 @@ Round 1's `at=1743,x=248,y=80,code=7,phase=0` starts directly in dispatch
 `0x59`, fires at its frame-64 opportunity, then follows a distinct 590-frame
 route across the screen and exits through the top edge. It is not a mirror of
 the other 590-frame right-edge route.
+Round 1's `at=1791,x=4,y=128,code=7,phase=1` event uses a 252-frame route.
+It starts in dispatch `0x59`, changes to `0x57` at frame 26, fires at frame 64,
+and releases at `Y=252`.
 Round 1's `at=1983,x=248,y=48,code=7,phase=1` event follows a 475-frame
 route. Its first opportunity at frame 31 misses the facing gate, frame 95 fires,
 and the actor later exits through the right screen boundary. The following

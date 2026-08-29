@@ -561,8 +561,8 @@ export type HatchetState = {
   y: number;
 };
 
-export function createHatchetState(x: number, y = 0): HatchetState {
-  return { frame: 0, mode: "entry", wait: 0, heading: x < 128 ? 8 : 24, turn: 0, mirrored: x >= 128, lowerArc: false, attackLocked: false, aimHeading: 16, animationPhase: 1, x, y };
+export function createHatchetState(x: number, y = 0, fineX = 0, fineY = 0): HatchetState {
+  return { frame: 0, mode: "entry", wait: 0, heading: x < 128 ? 8 : 24, turn: 0, mirrored: x >= 128, lowerArc: false, attackLocked: false, aimHeading: 16, animationPhase: 1, x: x + fineX / 256, y: y + fineY / 256 };
 }
 
 export function advanceHatchet(state: HatchetState, targetFrame: number, playerX: number, playerY: number, blocked: (probeX: number, probeY: number) => boolean): { readonly shots: readonly number[]; readonly dead: boolean } {
@@ -665,8 +665,8 @@ export type FirebreatherState = {
   y: number;
 };
 
-export function createFirebreatherState(x: number, y: number, heading: number): FirebreatherState {
-  return { frame: 0, mode: "entry", wait: FIREBREATHER_ENTRY_FRAMES, heading: heading & 31, nextDecision: Math.round(FIREBREATHER_FIRST_DECISION_DELAY * NES_FRAME_RATE), x, y };
+export function createFirebreatherState(x: number, y: number, heading: number, fineX = 0, fineY = 0): FirebreatherState {
+  return { frame: 0, mode: "entry", wait: FIREBREATHER_ENTRY_FRAMES, heading: heading & 31, nextDecision: Math.round(FIREBREATHER_FIRST_DECISION_DELAY * NES_FRAME_RATE), x: x + fineX / 256, y: y + fineY / 256 };
 }
 
 export function advanceFirebreather(state: FirebreatherState, targetFrame: number, playerX: number, playerY: number, blocked: (probeX: number, probeY: number) => boolean, randomByte: () => number): { readonly shots: readonly number[] } {
@@ -774,15 +774,15 @@ export type SpearState = {
   y: number;
 };
 
-export function createSpearState(x: number, y: number, sideEntry: boolean): SpearState {
+export function createSpearState(x: number, y: number, sideEntry: boolean, fineX = 0, fineY = 0): SpearState {
   return {
     frame: 0,
     mode: "entry",
     remaining: sideEntry ? SPEAR_SIDE_ENTRY_FRAMES : SPEAR_TOP_ENTRY_FRAMES,
     heading: sideEntry ? x >= 128 ? 0x58 : 0x48 : 0x10,
     reverseAtEnd: true,
-    x,
-    y: y + 1,
+    x: x + fineX / 256,
+    y: y + 1 + fineY / 256,
   };
 }
 

@@ -1650,7 +1650,7 @@ class GunSmokeGame {
             }
           }
         } else {
-          const state = unit.spearState ??= createSpearState((unit.romOriginX ?? unit.x) / NES_WORLD_X_SCALE, (unit.y - this.scroll) / NES_WORLD_Y_SCALE, unit.romEntityCode === 20);
+          const state = unit.spearState ??= createSpearState((unit.romOriginX ?? unit.x) / NES_WORLD_X_SCALE, (unit.y - this.scroll) / NES_WORLD_Y_SCALE, unit.romEntityCode === 20, this.romEnemyFineX[unit.romSlot ?? 0], this.romEnemyFineY[unit.romSlot ?? 0]);
           const result = advanceSpear(
             state,
             Math.floor(unit.age * NES_FRAME_RATE),
@@ -1690,7 +1690,7 @@ class GunSmokeGame {
             }
           }
         } else {
-          const state = unit.hatchetState ??= createHatchetState((unit.romOriginX ?? unit.x) / NES_WORLD_X_SCALE, (unit.y - this.scroll) / NES_WORLD_Y_SCALE);
+          const state = unit.hatchetState ??= createHatchetState((unit.romOriginX ?? unit.x) / NES_WORLD_X_SCALE, (unit.y - this.scroll) / NES_WORLD_Y_SCALE, this.romEnemyFineX[unit.romSlot ?? 0], this.romEnemyFineY[unit.romSlot ?? 0]);
           const result = advanceHatchet(
             state,
             Math.floor(unit.age * NES_FRAME_RATE),
@@ -1732,7 +1732,7 @@ class GunSmokeGame {
           }
         } else {
           const originX = (unit.romOriginX ?? unit.x) / NES_WORLD_X_SCALE;
-          const state = unit.firebreatherState ??= createFirebreatherState(originX, (unit.y - this.scroll) / NES_WORLD_Y_SCALE, unit.romEntityCode === 22 ? originX < 128 ? 8 : 24 : 16);
+          const state = unit.firebreatherState ??= createFirebreatherState(originX, (unit.y - this.scroll) / NES_WORLD_Y_SCALE, unit.romEntityCode === 22 ? originX < 128 ? 8 : 24 : 16, this.romEnemyFineX[unit.romSlot ?? 0], this.romEnemyFineY[unit.romSlot ?? 0]);
           const result = advanceFirebreather(
             state,
             Math.floor(unit.age * NES_FRAME_RATE),

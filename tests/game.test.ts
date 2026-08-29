@@ -536,6 +536,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(HATCHET_LIFETIME).toBeCloseTo(1042 / NES_FRAME_RATE, 9);
     expect([HATCHET_ENTRY_DEPTH_NES, HATCHET_ENTRY_PAUSE_FRAMES, HATCHET_TURN_FRAMES, HATCHET_THROW_FRAMES]).toEqual([40, 20, 34, 26]);
     expect(HATCHET_PATROL_BOUNDS_NES).toEqual([40, 216]);
+    expect(createHatchetState(120, 0, 133, 218)).toMatchObject({ x: 120 + 133 / 256, y: 218 / 256 });
     expect([hatchetTurnHeading(33, false, false), hatchetTurnHeading(0, false, false), hatchetTurnHeading(33, true, false), hatchetTurnHeading(33, true, true)]).toEqual([9, 24, 7, 25]);
     expect([nesActorCollisionProbeOffset(0), nesActorCollisionProbeOffset(8), nesActorCollisionProbeOffset(16), nesActorCollisionProbeOffset(24)]).toEqual([[0, -12], [12, 0], [0, 12], [-12, 0]]);
     expect(hatchetCanThrow(128 * NES_WORLD_X_SCALE, 0, 144 * NES_WORLD_X_SCALE, 100 * NES_WORLD_Y_SCALE)).toBe(true);
@@ -561,6 +562,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(FIREBREATHER_LIFETIME).toBe(Number.POSITIVE_INFINITY);
     expect([FIREBREATHER_ENTRY_FRAMES, FIREBREATHER_AIM_WAIT_FRAMES, FIREBREATHER_READY_WAIT_FRAMES, FIREBREATHER_DECISION_INTERVAL_FRAMES, FIREBREATHER_MOVE_FRAMES, FIREBREATHER_ATTACK_FRAMES, FIREBREATHER_ACTIVATION_DISTANCE_NES]).toEqual([32, 40, 20, 52, 24, 39, 96]);
     expect(FIREBREATHER_PROJECTILE_OFFSET_NES).toEqual([0, -1]);
+    expect(createFirebreatherState(88, 0, 16, 144, 242)).toMatchObject({ x: 88 + 144 / 256, y: 242 / 256 });
     const state = createFirebreatherState(88, 0, 16);
     const shots: { frame: number; heading: number }[] = [];
     for (let frame = 1; frame <= 312; frame += 1) {
@@ -582,6 +584,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(SPEAR_LIFETIME).toBe(Number.POSITIVE_INFINITY);
     expect([SPEAR_TOP_ENTRY_FRAMES, SPEAR_SIDE_ENTRY_FRAMES, SPEAR_WAIT_FRAMES, SPEAR_MOVE_FRAMES, SPEAR_ATTACK_REMAINING_FRAME]).toEqual([24, 40, 40, 32, 24]);
     expect(SPEAR_PROJECTILE_OFFSET_NES).toEqual([0, 0]);
+    expect(createSpearState(248, 32, true, 200, 191)).toMatchObject({ x: 248 + 200 / 256, y: 33 + 191 / 256 });
     const replay = (sideEntry: boolean) => {
       const state = createSpearState(sideEntry ? 248 : 144, sideEntry ? 32 : 0, sideEntry);
       const shots: { frame: number; heading: number }[] = [];

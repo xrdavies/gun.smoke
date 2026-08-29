@@ -474,6 +474,8 @@ drop a Money Bag; unmarked enemies do not drop either pickup. Defeat score also
 uses the ROM dispatch table: Gunmen, Snipers, Bombers and Firebreathers are 100;
 Ninjas, Riflemen and Hatchet Throwers are 200; Shotgunners are 300; and
 Backstabbers and Spear Throwers are 400.
+ROM-tagged pickups keep their source pool and fixed screen X while descending;
+only non-ROM procedural drops use the cosmetic horizontal drift.
 Enemy durability also comes from each ROM entity initializer rather than the
 Round number: ordinary shooters range from one to four hit points, while
 breakable barrels take six points of projectile damage. Falling rocks use the

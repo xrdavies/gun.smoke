@@ -862,6 +862,8 @@ class GunSmokeGame {
   private spawnRomObjectEvent(event: RomObjectEvent): void {
     const activeObjects = this.units.filter((unit) => unit.romPool === event.pool && unit.romEntityCode !== undefined && unit.hp > 0).length;
     if (!canSpawnRomPool(event.pool, activeObjects)) return;
+    const romSlot = event.pool === "enemy" ? this.allocateRomEnemySlot() : undefined;
+    if (event.pool === "enemy" && romSlot === undefined) return;
     const romRandomSeed = event.entityCode < 0x20 ? this.nextRomSpawnSeedByte() : undefined;
     if (event.semantic === "weaponShop" || event.semantic === "supplyShop") {
       const keeper = this.spawnUnit("shopkeeper", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), 1);
@@ -872,6 +874,7 @@ class GunSmokeGame {
       keeper.romRandomSeed = romRandomSeed;
       keeper.romFlags = event.flags;
       keeper.romPool = event.pool;
+      keeper.romSlot = romSlot;
       return;
     }
     if (event.semantic === "sceneObject" && ROM_SCENE_PROP_DISPATCH_TYPES.includes(event.dispatchType as 8)) {
@@ -1348,15 +1351,16 @@ class GunSmokeGame {
     return projectile;
   }
 
-  private spawnRomDrop(kind: "ammo" | "item" | "moneyBag", x: number, y: number, entityCode: number, itemType?: ItemType): void {
-    const active = this.units.filter((unit) => unit.romPool === "enemy" && unit.romEntityCode !== undefined && unit.hp > 0).length;
-    if (!canSpawnRomPool("enemy", active)) return;
-    const romSlot = this.allocateRomEnemySlot();
-    if (romSlot === undefined) return;
+  private spawnRomDrop(kind: "ammo" | "item" | "moneyBag", x: number, y: number, entityCode: number, itemType?: ItemType, pool: "enemy" | "object" = "enemy"): void {
+    const active = this.units.filter((unit) => unit.romPool === pool && unit.romEntityCode !== undefined && unit.hp > 0).length;
+    if (!canSpawnRomPool(pool, active)) return;
+    const romSlot = pool === "enemy" ? this.allocateRomEnemySlot() : undefined;
+    if (pool === "enemy" && romSlot === undefined) return;
     const drop = this.spawnUnit(kind, x, y, 1, undefined, itemType);
-    drop.romPool = "enemy";
+    drop.romPool = pool;
     drop.romEntityCode = entityCode;
     drop.romSlot = romSlot;
+    if (romSlot === undefined) return;
     const screenX = x / NES_WORLD_X_SCALE;
     const screenY = (y - this.scroll) / NES_WORLD_Y_SCALE;
     this.romEnemyFineX[romSlot] = Math.floor((screenX - Math.floor(screenX)) * 256) & 0xff;
@@ -1366,6 +1370,14 @@ class GunSmokeGame {
   private allocateRomEnemySlot(): number | undefined {
     const usedSlots = new Set(this.units.filter((unit) => unit.romPool === "enemy" && unit.romSlot !== undefined && unit.hp > 0).map((unit) => unit.romSlot));
     return Array.from({ length: 7 }, (_, slot) => slot).find((slot) => !usedSlots.has(slot));
+  }
+
+  private syncRomEnemyFine(unit: Unit): void {
+    if (unit.romSlot === undefined) return;
+    const screenX = unit.x / NES_WORLD_X_SCALE;
+    const screenY = (unit.y - this.scroll) / NES_WORLD_Y_SCALE;
+    this.romEnemyFineX[unit.romSlot] = Math.floor((screenX - Math.floor(screenX)) * 256) & 0xff;
+    this.romEnemyFineY[unit.romSlot] = Math.floor((screenY - Math.floor(screenY)) * 256) & 0xff;
   }
 
   private updateUnit(unit: Unit, delta: number, scrollDelta = 0): void {
@@ -1386,6 +1398,7 @@ class GunSmokeGame {
       unit.y = unit.targetY + ENEMY_DEFEAT_Y_OFFSETS_NES[frame]! * NES_WORLD_Y_SCALE;
       unit.sprite.visible = frame % 2 === 0;
       unit.sprite.position = { x: unit.x, y: unit.y };
+      this.syncRomEnemyFine(unit);
       if (unit.age >= unit.maxAge) unit.hp = 0;
       return;
     }
@@ -1401,6 +1414,7 @@ class GunSmokeGame {
         const boundary = unit.rockNextBoundary ?? 24;
         const screenY = (unit.y - this.scroll) / NES_WORLD_Y_SCALE;
         if (!fallingRockOnScreen(screenY)) {
+          this.syncRomEnemyFine(unit);
           unit.hp = 0;
           return;
         }
@@ -1421,6 +1435,7 @@ class GunSmokeGame {
         }
       }
       unit.sprite.position = { x: unit.x, y: unit.y };
+      this.syncRomEnemyFine(unit);
       if (unit.age >= unit.maxAge) unit.hp = 0;
       return;
     }
@@ -1847,13 +1862,6 @@ class GunSmokeGame {
       if (unit.enemyType === "sniper") {
         if ((unit.y - this.scroll) / NES_WORLD_Y_SCALE >= ROM_SCREEN_RELEASE_Y_NES) unit.hp = 0;
       }
-      if (unit.romSlot !== undefined) {
-        const slot = unit.romSlot;
-        const screenX = unit.x / NES_WORLD_X_SCALE;
-        const screenY = (unit.y - this.scroll) / NES_WORLD_Y_SCALE;
-        this.romEnemyFineX[slot] = Math.floor((screenX - Math.floor(screenX)) * 256) & 0xff;
-        this.romEnemyFineY[slot] = Math.floor((screenY - Math.floor(screenY)) * 256) & 0xff;
-      }
       if (unit.x < 32 || unit.x > 928) unit.vx *= -1;
     } else if (unit.kind === "boss") {
       const ninjaCycleStart = this.stage === 4 ? unit.bossCycleStart ?? 0 : 0;
@@ -1964,7 +1972,7 @@ class GunSmokeGame {
       }
     } else if (unit.kind === "moneyBag" || unit.kind === "item" || unit.kind === "ammo") {
       unit.y += scrollDelta * 2;
-      unit.x += Math.sin(unit.age * 4 + unit.phase) * 14 * delta;
+      if (unit.romPool === undefined) unit.x += Math.sin(unit.age * 4 + unit.phase) * 14 * delta;
       if ((unit.y - this.scroll) / NES_WORLD_Y_SCALE >= ROM_SCREEN_RELEASE_Y_NES) unit.hp = 0;
     } else {
       unit.y += scrollDelta;
@@ -2067,6 +2075,7 @@ class GunSmokeGame {
       const coordinateBoundProjectile = unit.kind === "enemyBullet" && unit.projectileType !== "rock" && unit.projectileType !== "dynamite" && unit.projectileType !== "ninjaSmoke" && unit.projectileType !== "grenade";
       if (coordinateBoundProjectile && !romProjectileOnScreen(unit.x / NES_WORLD_X_SCALE, (unit.y - this.scroll) / NES_WORLD_Y_SCALE)) unit.hp = 0;
     }
+    this.syncRomEnemyFine(unit);
     unit.sprite.position = { x: unit.x, y: unit.y };
   }
 
@@ -2151,7 +2160,7 @@ class GunSmokeGame {
         return;
       }
       if (target.itemType) {
-        this.spawnRomDrop("item", target.x, target.y, target.romEntityCode ?? 0, target.itemType);
+        this.spawnRomDrop("item", target.x, target.y, target.romEntityCode ?? 0, target.itemType, target.romPool ?? "object");
       }
     } else if (target.kind === "enemy") {
       target.hp = 1;

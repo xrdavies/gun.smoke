@@ -491,6 +491,8 @@ The left-side `at=2527,x=4,y=80,code=7,phase=1` route matches 630 frames
 through its top-edge release.
 The left-side `at=1743,x=4,y=48,code=7,phase=0` route matches 360 frames
 through its bottom-edge release.
+The left-side `at=1695,x=4,y=64,code=7,phase=1` route independently matches
+360 frames through the same release.
 Other rounds,
 phases and entry heights use the generic routes until their slot-state traces
 are captured.

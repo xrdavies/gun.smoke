@@ -128,7 +128,10 @@ are also breakable empty barrels: controlled pulse traces move them to dispatch
 texture family, and advance one NES screen pixel every three frames. The web runtime models codes `32/41` as shootable empty barrels while
 their short explosion animation remains a visual approximation.
 Contact verification confirms object codes `33` and `34` drop Boots and Rifle
-respectively after destruction. The same isolated contact trace shows code
+respectively after destruction. An attacked Round 1 object-pool trace shows
+code `33` changing from dispatch `0x07` to Boots dispatch `0x20` in the same
+slot at relative frame 37; the converted pickup resets its three-frame descent
+phase and is not allocated as a second object. The same isolated contact trace shows code
 `35` converting to dispatch `0x22` (the ROM's all-enemy effect), code `36`
 converting to dispatch `0x23` and adding 200 points on contact, code `37`
 creating the horse actor, code `38` converting to dispatch `0x25` and
@@ -1046,6 +1049,10 @@ reuses the same entity coordinate with different slot fractions.
 `--pool=object` switches candidate and isolation scans from the seven ordinary
 enemy slots to object slots `2..7`; event-index attribution then filters for the
 same object pool. The default remains `--pool=enemy`.
+`--attack` follows a selected target from below with controlled Magnum A+B
+pulses. It is used to record lethal dispatch transitions without conflating
+them with a later slot reuse; `--follow=<dispatch>` can keep tracing the
+converted actor in that same slot.
 With `--list-candidates --isolate-candidates`, the tool clears ordinary enemy
 slots before each frame and records every dispatch activation, which is useful
 for enumerating side-entry signatures under the ROM's seven-slot limit.

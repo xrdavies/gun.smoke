@@ -6,6 +6,7 @@ import { Controller, NES } from "jsnes";
 const args = process.argv.slice(2);
 const listCandidates = args.includes("--list-candidates");
 const isolateCandidates = args.includes("--isolate-candidates");
+const attack = args.includes("--attack");
 const option = (name) => args.find((argument) => argument.startsWith(`--${name}=`))?.split("=")[1];
 const numberOption = (name, fallback) => Number.parseInt(option(name) ?? String(fallback), 0);
 const filename = args.find((argument) => !argument.startsWith("--")) ?? "Gun.Smoke.ZH.NES";
@@ -171,8 +172,20 @@ for (let frame = 0; frame < frames; frame += 1) {
     nes.buttonUp(1, Controller.BUTTON_B);
   }
   if (targetSlot !== undefined) {
-    if (playerX !== undefined) memory[0x74] = playerX;
-    if (playerY !== undefined) memory[0x71] = playerY;
+    if (attack) {
+      memory[0x74] = memory[0x5e0 + targetSlot];
+      memory[0x71] = Math.min(216, memory[0x5c0 + targetSlot] + 96);
+      memory[0x88] = 4;
+      memory[0x9c] = 255;
+      const pressed = targetStart !== undefined && (frame - targetStart) % 5 === 0;
+      for (const button of [Controller.BUTTON_A, Controller.BUTTON_B]) {
+        if (pressed) nes.buttonDown(1, button);
+        else nes.buttonUp(1, button);
+      }
+    } else {
+      if (playerX !== undefined) memory[0x74] = playerX;
+      if (playerY !== undefined) memory[0x71] = playerY;
+    }
     for (let slot = slotStart; slot < slotEnd; slot += 1) if (slot !== targetSlot) memory[0x400 + slot] = 0;
   }
   if (targetSlot === undefined && startFrame !== undefined && frame === startFrame) {
@@ -252,6 +265,7 @@ for (let frame = 0; frame < frames; frame += 1) {
     frameRate: 60.098,
     dispatch,
     pool,
+    attack,
     ...(round === undefined ? {} : { round }),
     candidates,
   };
@@ -269,6 +283,7 @@ const trace = {
   frameRate: 60.098,
   dispatch,
   pool,
+  attack,
   followDispatches,
   skip,
   ...(round === undefined ? {} : { round }),

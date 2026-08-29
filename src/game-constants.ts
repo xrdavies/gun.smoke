@@ -910,13 +910,11 @@ export function advanceGunmanFlankMovement(
     const [probeX, probeY] = nesActorCollisionProbeOffset(state.heading);
     if (!blocked(state.x + probeX, state.y + probeY)) return;
     state.mode = "chase";
-    state.heading = (state.heading + 16) & 31;
-    move();
+    move((state.heading + 16) & 31);
   };
 
   while (state.frame < targetFrame && !state.dead) {
     state.frame += 1;
-    state.y += NES_SCROLL_SPEED / NES_FRAME_RATE;
 
     if (state.mode === "entry") {
       state.timer -= 1;
@@ -926,7 +924,7 @@ export function advanceGunmanFlankMovement(
       const [probeX, probeY] = nesActorCollisionProbeOffset(state.heading);
       const sideProbeX = state.x + (state.fromRight ? -16 : 16) + probeX;
       if (blocked(sideProbeX, state.y + probeY)) move();
-      else if (Math.abs(playerY - state.y) < GUNMAN_FLANK_SIDE_TRIGGER_DISTANCE_NES) {
+      else if (Math.abs(playerY - Math.floor(state.y)) < GUNMAN_FLANK_SIDE_TRIGGER_DISTANCE_NES) {
         state.mode = "lunge";
         state.timer = GUNMAN_FLANK_LUNGE_FRAMES;
       }
@@ -942,10 +940,12 @@ export function advanceGunmanFlankMovement(
         move(heading);
       }
     } else {
-      const far = Math.abs(playerY - state.y) >= GUNMAN_FLANK_NEAR_DISTANCE_NES || Math.abs(playerX - state.x) >= GUNMAN_FLANK_NEAR_DISTANCE_NES;
+      const actorX = Math.floor(state.x);
+      const actorY = Math.floor(state.y);
+      const far = Math.abs(playerY - actorY) >= GUNMAN_FLANK_NEAR_DISTANCE_NES || Math.abs(playerX - actorX) >= GUNMAN_FLANK_NEAR_DISTANCE_NES;
       if (state.mode === "chase") {
         if (far) {
-          const target = nesAimHeading(state.x * NES_WORLD_X_SCALE, state.y * NES_WORLD_Y_SCALE, playerX * NES_WORLD_X_SCALE, playerY * NES_WORLD_Y_SCALE);
+          const target = nesAimHeading(actorX * NES_WORLD_X_SCALE, actorY * NES_WORLD_Y_SCALE, playerX * NES_WORLD_X_SCALE, playerY * NES_WORLD_Y_SCALE);
           const difference = (target - state.heading + 48) % 32 - 16;
           if (difference !== 0) state.heading = (state.heading + Math.sign(difference) + 32) & 31;
           moveAndBounce();
@@ -953,26 +953,23 @@ export function advanceGunmanFlankMovement(
           state.orbitDirection = state.heading < 16 ? 1 : -1;
           state.heading = (state.heading - state.orbitDirection * 8 + 32) & 31;
           state.mode = "orbit";
-          state.timer = 0;
-          state.orbitPassedDown = false;
         }
       } else if (state.mode === "orbit") {
         state.timer = (state.timer + 1) % 5;
-        if (!far && state.timer === 0) {
+        if (far && state.timer === 0) {
           state.heading = (state.heading + state.orbitDirection + 32) & 31;
           if (state.heading === 16) state.orbitPassedDown = true;
           if (state.heading === 0 && state.orbitPassedDown) {
             state.mode = "roam";
-            if (outsideScreen()) state.dead = true;
-            continue;
           }
         }
-        moveAndBounce();
+        if (state.mode === "orbit") moveAndBounce();
       } else {
         moveAndBounce();
       }
     }
 
+    if (state.frame % 3 === 0) state.y += 1;
     if (outsideScreen()) state.dead = true;
   }
 }

@@ -816,12 +816,18 @@ describe("Gun.Smoke vertical slice", () => {
     expect(entry).toMatchObject({ mode: "orbit", heading: 0, orbitDirection: 1 });
 
     const orbit = { ...entry, x: 100, y: 100, heading: 15, timer: 4, orbitPassedDown: false };
-    advanceGunmanFlankMovement(orbit, orbit.frame + 1, 100, 100, () => false);
+    advanceGunmanFlankMovement(orbit, orbit.frame + 1, 200, 200, () => false);
     expect(orbit).toMatchObject({ mode: "orbit", heading: 16, orbitPassedDown: true });
     orbit.heading = 31;
     orbit.timer = 4;
-    advanceGunmanFlankMovement(orbit, orbit.frame + 1, orbit.x, orbit.y, () => false);
+    advanceGunmanFlankMovement(orbit, orbit.frame + 1, 200, 200, () => false);
     expect(orbit).toMatchObject({ mode: "roam", heading: 0 });
+
+    const bounce = { ...entry, mode: "roam" as const, x: 100, y: 100, heading: 8, timer: 2, orbitPassedDown: true };
+    advanceGunmanFlankMovement(bounce, bounce.frame + 1, 200, 200, () => true);
+    expect(bounce).toMatchObject({ mode: "chase", heading: 8, timer: 2, orbitPassedDown: true });
+    advanceGunmanFlankMovement(bounce, bounce.frame + 1, bounce.x, bounce.y, () => false);
+    expect(bounce).toMatchObject({ mode: "orbit", heading: 0, timer: 2, orbitPassedDown: true });
 
     const side = createGunmanFlankMovementState(8, 4, 115, false);
     expect(gunmanFlankMovementFacingHeading(side)).toBe(16);

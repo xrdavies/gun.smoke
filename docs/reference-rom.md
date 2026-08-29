@@ -319,8 +319,9 @@ side entries begin counting immediately. `$04E0` remains a reused slot field.
 The movement routine itself branches on actor state. Code 7 starts with a
 48-frame entry, then turns one heading step per frame toward Billy while either
 axis is at least 56 pixels away. Inside that square it chooses a clockwise or
-counter-clockwise orbit, adjusts one heading step every five frames, and leaves
-the orbit after passing heading 16 and returning to heading 0. Terrain contact
+counter-clockwise side heading; after leaving the square it adjusts one heading
+step every five frames and enters roaming after passing heading 16 and returning
+to heading 0. Terrain contact
 reverses its heading and returns it to tracking. Codes 8 and 9 advance from a
 side while the forward terrain probe is blocked, wait until Billy is within 101
 vertical pixels, execute a 51-frame mirrored lunge, and then enter the shared

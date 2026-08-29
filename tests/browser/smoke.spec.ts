@@ -133,6 +133,10 @@ test("runs the distinct Boss projectile chains", async ({ page }) => {
   await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), 1);
   await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
   expect(await bossProtection()).toBeCloseTo(96 / 60.098, 9);
+  await page.clock.runFor(1_700);
+  expect(await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; volleysFired: number }> }).__getGunSmokeUnits().find((unit) => unit.kind === "boss")?.volleysFired)).toBe(0);
+  await page.clock.runFor(150);
+  expect(await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; volleysFired: number }> }).__getGunSmokeUnits().find((unit) => unit.kind === "boss")?.volleysFired)).toBe(1);
   await page.evaluate(() => (window as unknown as { __fireGunSmokeBoss: () => void }).__fireGunSmokeBoss());
   expect(await waitForBossProjectile(page, ["bullet"], 300, false)).toBe(true);
 

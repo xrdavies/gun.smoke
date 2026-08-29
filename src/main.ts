@@ -1025,7 +1025,7 @@ class GunSmokeGame {
     if (boss) {
       if (this.stage === MAX_STAGE) return;
       if (this.stage === 3 && boss.devilHawkState) return;
-      if (this.stage === 1 && boss.age < boss.invulnerableUntil) return;
+      if (this.stage === 1 && boss.age >= BANDIT_BILL_ENTRY_DURATION && boss.age < boss.invulnerableUntil) return;
       this.bossFireClock -= delta;
       if (this.bossFireClock <= 0) this.fireBoss(boss, boss.age + delta);
     }
@@ -2934,7 +2934,7 @@ class ReferenceRomGame {
 let game: GunSmokeGame | undefined;
 let referenceGame: ReferenceRomGame | undefined;
 if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeInvulnerable", { value: (duration: number) => { if (game) game.invulnerable = duration; } });
-if (import.meta.env.DEV) Object.defineProperty(window, "__getGunSmokeUnits", { value: () => game?.units.map((unit) => ({ kind: unit.kind, itemType: unit.itemType, projectileType: unit.projectileType, bossProjectile: unit.bossProjectile, romPool: unit.romPool, romSlot: unit.romSlot, romEntityCode: unit.romEntityCode, hp: unit.hp, age: unit.age, invulnerableUntil: unit.invulnerableUntil })) ?? [] });
+if (import.meta.env.DEV) Object.defineProperty(window, "__getGunSmokeUnits", { value: () => game?.units.map((unit) => ({ kind: unit.kind, itemType: unit.itemType, projectileType: unit.projectileType, bossProjectile: unit.bossProjectile, romPool: unit.romPool, romSlot: unit.romSlot, romEntityCode: unit.romEntityCode, hp: unit.hp, age: unit.age, invulnerableUntil: unit.invulnerableUntil, volleysFired: unit.volleysFired })) ?? [] });
 if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeWeapon", { value: (weapon: WeaponName, ammo: number) => {
   if (!game || weapon === "pistol" || !Number.isInteger(ammo) || ammo < 1) return;
   game.weaponAmmo[weapon] = ammo;

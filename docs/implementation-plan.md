@@ -65,6 +65,8 @@ Round 3 `at=3823` independently uses the shared state machine through its
 complete 282-frame phase-0 route.
 Round 3's flagged `at=4239` route uses the shared state machine through all 301
 frames while preserving its existing drop flag.
+Round 3 `at=4831` also uses the shared state machine through its complete
+582-frame map-wrap route.
 
 ## Delivery Stages
 

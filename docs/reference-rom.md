@@ -354,6 +354,9 @@ ROM's natural release at `Y=253` for Billy held at `(152,216)`.
 Round 3's `at=255,x=4,y=64,code=7,phase=1` route also matches the shared state
 machine for all 581 coarse/fine samples. The former integer-only fixed route
 lost the inherited X fraction on frame 1 and ran one Y pixel high.
+The flagged right-side `at=4255,x=248,y=64,code=7,phase=1` event independently
+matches the state machine for all 384 coarse/fine samples; its former integer
+trace had the same inherited-fraction limitation.
 The mirrored `at=1839,x=248,y=32,code=9,phase=0` branch also matches all 873
 coarse/fine samples and its `Y=252` release when captured with the other enemy
 slots isolated. A normal crowded pass may fail to allocate this script record;

@@ -577,6 +577,8 @@ The Round 4 `at=3215,x=160` record is a separate 268-frame single-throw route
 with the neutral slot fraction.
 The same trigger's `x=192` record uses a 332-frame route with throws at
 116/153/190 and a separate neutral slot fraction.
+Event `at=3327,x=56,phase=1` in the neutral captured state throws at frame
+116 and releases after 256 frames.
 `at=3215,x=208,
 phase=0` entry holds its lane, emits its first Shuriken at frame 116, and
 releases after 284 frames; the runtime binds its fixed-point per-frame trace.

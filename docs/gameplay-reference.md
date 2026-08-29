@@ -327,6 +327,9 @@ The same trigger's `x=200` record uses a 237-frame single-throw route with
 the separate neutral slot fraction.
 Event `at=3407,x=120,phase=0` with the neutral fraction throws at frame 116
 and releases after 271 frames; its `x=224` partner retains its separate route.
+The first Ninja in the `at=3519` group (`x=152,phase=1`) takes a 225-frame
+no-throw route in the neutral slot state; the other same-frame Ninja is checked
+separately.
 `at=3215,x=208,phase=0`
 holds its lane, fires at frame 116, and releases after 284 frames using a
 fixed-point trace. Event `at=3407,x=224,phase=0` uses the same frame-116 throw gate from its own

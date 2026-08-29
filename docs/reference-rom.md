@@ -390,6 +390,10 @@ no-shot route and releases at `Y=252`.
 Round 1's `at=1775,x=248,y=32,code=9,phase=0` event follows a distinct
 696-frame route and begins its traced projectile activity at frame 367 before
 the actor exits through the upper edge.
+Round 1's `at=511,x=248,y=96,code=9,phase=1` event starts directly in dispatch
+`0x5d`, changes through the `0x57/0x59` movement states, and follows a complete
+823-frame route before its final screen release. The runtime binds its
+compressed per-frame coordinates instead of using the generic code-9 side path.
 Two complete Round 2 `y=32`
 side traces are now used when their entry coordinate matches in Round 2: the
 code-8 `at=623` entry follows the 569-frame left-edge trace and code 9 follows

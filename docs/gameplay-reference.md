@@ -300,6 +300,9 @@ Event `at=1263,x=4,y=64,code=8,phase=0` uses a separate 411-frame route and
 exits through the bottom edge without firing.
 Event `at=1775,x=248,y=32,code=9,phase=0` uses a distinct 696-frame route;
 its first traced projectile begins at frame 367 before the actor exits upward.
+Event `at=511,x=248,y=96,code=9,phase=1` starts in the ROM's `0x5d` state,
+transitions through its `0x57/0x59` movement states, and uses a complete
+823-frame coordinate route to the final screen release.
 Event `at=351,x=4,y=32,code=7,phase=1` uses a 312-frame route and exits through
 the bottom edge.
 Event `at=399,x=4,y=32,code=7,phase=0` uses a 618-frame route and exits through

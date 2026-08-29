@@ -599,9 +599,12 @@ releases after 284 frames; the runtime binds its fixed-point per-frame trace.
 The `at=3407,x=224,phase=0` entry follows the same 116-frame first throw gate
 from its own lane and releases after 252 frames; its fixed-point route is also
 bound separately because its post-throw path differs from `at=3215`. Event
-`at=383,x=184,phase=1` and `at=751/1583/3535,x=184,phase=0` take random
-no-throw branches and release after 205/202/202/241 frames. Event
+`at=383,x=184,phase=1` and `at=751/1583,x=184,phase=0` take random
+no-throw branches and release after 205/202/202 frames. Event
 `at=943,x=168,phase=0` is another no-throw route and releases after 201 frames.
+The `at=3535,x=184,phase=0` record has two captured slot states: fine
+`x=135/256,y=35/256` is a 241-frame no-throw branch, while neutral
+fine `x=176/256,y=0` emits at frame 117 and releases after 277 frames.
 Event `at=1103,x=160,phase=0` emits its first Shuriken at frame 116 and
 releases after 260 frames using a separate fixed-point route.
 Event `at=1711,x=160,phase=0` emits Shuriken at frames 116 and 153, then

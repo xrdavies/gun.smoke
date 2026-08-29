@@ -469,7 +469,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ninjaTraceLifetime(184, 0, 4, 0, 1199)).toBeCloseTo(257 / NES_FRAME_RATE, 9);
     expect(ninjaTraceLifetime(184, 0, 4, 0, 1583)).toBeCloseTo(202 / NES_FRAME_RATE, 9);
     expect(ninjaTraceLifetime(184, 0, 4, 1, 1727)).toBeCloseTo(257 / NES_FRAME_RATE, 9);
-    expect(ninjaTraceLifetime(184, 0, 4, 0, 3535)).toBeCloseTo(241 / NES_FRAME_RATE, 9);
+    expect(ninjaTraceLifetime(184, 0, 4, 0, 3535, 135 / 256, 35 / 256)).toBeCloseTo(241 / NES_FRAME_RATE, 9);
+    expect(ninjaTraceLifetime(184, 0, 4, 0, 3535, 176 / 256, 0)).toBeCloseTo(277 / NES_FRAME_RATE, 9);
     expect(ninjaTraceLifetime(184, 0, 4, 0, 3727)).toBeCloseTo(228 / NES_FRAME_RATE, 9);
     expect(ninjaTraceLifetime(208, 0, 4, 0, 3215)).toBeCloseTo(284 / NES_FRAME_RATE, 9);
     expect(ninjaTraceLifetime(224, 0, 4, 0, 3407)).toBeCloseTo(252 / NES_FRAME_RATE, 9);
@@ -540,8 +541,9 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ninjaTracePosition(201 / NES_FRAME_RATE, 184, 0, 4, 0, 1583)).toEqual([175 * NES_WORLD_X_SCALE, 208 * NES_WORLD_Y_SCALE]);
     expect(ninjaTracePosition(160 / NES_FRAME_RATE, 184, 0, 4, 1, 1727)).toEqual([157 * NES_WORLD_X_SCALE, 132 * NES_WORLD_Y_SCALE]);
     expect(ninjaTracePosition(256 / NES_FRAME_RATE, 184, 0, 4, 1, 1727)).toEqual([168 * NES_WORLD_X_SCALE, 207 * NES_WORLD_Y_SCALE]);
-    expect(ninjaTracePosition(160 / NES_FRAME_RATE, 184, 0, 4, 0, 3535)).toEqual([124 * NES_WORLD_X_SCALE, 203 * NES_WORLD_Y_SCALE]);
-    expect(ninjaTracePosition(240 / NES_FRAME_RATE, 184, 0, 4, 0, 3535)).toEqual([96 * NES_WORLD_X_SCALE, 230 * NES_WORLD_Y_SCALE]);
+    expect(ninjaTracePosition(160 / NES_FRAME_RATE, 184, 0, 4, 0, 3535, 135 / 256, 35 / 256)).toEqual([124 * NES_WORLD_X_SCALE, 203 * NES_WORLD_Y_SCALE]);
+    expect(ninjaTracePosition(240 / NES_FRAME_RATE, 184, 0, 4, 0, 3535, 135 / 256, 35 / 256)).toEqual([96 * NES_WORLD_X_SCALE, 230 * NES_WORLD_Y_SCALE]);
+    expect(ninjaTracePosition(276 / NES_FRAME_RATE, 184, 0, 4, 0, 3535, 176 / 256, 0)).toEqual([(96 + 180 / 256) * NES_WORLD_X_SCALE, (227 + 36 / 256) * NES_WORLD_Y_SCALE]);
     expect(ninjaTracePosition(160 / NES_FRAME_RATE, 184, 0, 4, 0, 3727)).toEqual([150 * NES_WORLD_X_SCALE, 131 * NES_WORLD_Y_SCALE]);
     expect(ninjaTracePosition(227 / NES_FRAME_RATE, 184, 0, 4, 0, 3727)).toEqual([108 * NES_WORLD_X_SCALE, 255 * NES_WORLD_Y_SCALE]);
     expect(ninjaTracePosition(0, 208, 0, 4, 0, 3215)).toEqual([(208 + 171 / 256) * NES_WORLD_X_SCALE, (2 + 197 / 256) * NES_WORLD_Y_SCALE]);
@@ -602,7 +604,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ninjaTracePosition(224 / NES_FRAME_RATE, 152, 0, 4, 1, 3519, 176 / 256, 0)).toEqual([(96 + 8 / 256) * NES_WORLD_X_SCALE, (224 + 232 / 256) * NES_WORLD_Y_SCALE]);
     expect(ninjaTracePosition(254 / NES_FRAME_RATE, 216, 0, 4, 1, 3519, 44 / 256, 0)).toEqual([(95 + 210 / 256) * NES_WORLD_X_SCALE, (217 + 184 / 256) * NES_WORLD_Y_SCALE]);
     expect(ninjaTracePosition(103 / NES_FRAME_RATE, 184, 0, 4, 0)).toBeUndefined();
-    expect([ninjaTraceThrowFrame(4, 47), ninjaTraceThrowFrame(4, 63), ninjaTraceThrowFrame(4, 351), ninjaTraceThrowFrame(4, 399), ninjaTraceThrowFrame(4, 735, 239 / 256, 81 / 256), ninjaTraceThrowFrame(4, 767, 51 / 256, 66 / 256), ninjaTraceThrowFrame(4, 943), ninjaTraceThrowFrame(4, 1103), ninjaTraceThrowFrame(4, 1711), ninjaTraceThrowFrame(4, 3215), ninjaTraceThrowFrame(4, 3407), ninjaTraceThrowFrame(4, 383), ninjaTraceThrowFrame(4, 751), ninjaTraceThrowFrame(4, 815), ninjaTraceThrowFrame(4, 1071), ninjaTraceThrowFrame(4, 1199), ninjaTraceThrowFrame(4, 1583), ninjaTraceThrowFrame(4, 1727), ninjaTraceThrowFrame(4, 3535), ninjaTraceThrowFrame(4, 3727), ninjaTraceThrowFrame(3, 47)]).toEqual([103, 103, 103, false, false, 116, false, 116, 116, 116, 116, false, false, 116, 116, 116, false, 116, false, 116, undefined]);
+    expect([ninjaTraceThrowFrame(4, 47), ninjaTraceThrowFrame(4, 63), ninjaTraceThrowFrame(4, 351), ninjaTraceThrowFrame(4, 399), ninjaTraceThrowFrame(4, 735, 239 / 256, 81 / 256), ninjaTraceThrowFrame(4, 767, 51 / 256, 66 / 256), ninjaTraceThrowFrame(4, 943), ninjaTraceThrowFrame(4, 1103), ninjaTraceThrowFrame(4, 1711), ninjaTraceThrowFrame(4, 3215), ninjaTraceThrowFrame(4, 3407), ninjaTraceThrowFrame(4, 383), ninjaTraceThrowFrame(4, 751), ninjaTraceThrowFrame(4, 815), ninjaTraceThrowFrame(4, 1071), ninjaTraceThrowFrame(4, 1199), ninjaTraceThrowFrame(4, 1583), ninjaTraceThrowFrame(4, 1727), ninjaTraceThrowFrame(4, 3535, 135 / 256, 35 / 256), ninjaTraceThrowFrame(4, 3727), ninjaTraceThrowFrame(3, 47)]).toEqual([103, 103, 103, false, false, 116, false, 116, 116, 116, 116, false, false, 116, 116, 116, false, 116, false, 116, undefined]);
+    expect(ninjaTraceThrowFrames(4, 3535, 176 / 256, 0)).toEqual([117]);
     expect(ninjaTraceThrowFrames(4, 735, 161 / 256, 5 / 256)).toEqual([116, 153, 190, 227]);
     expect(ninjaTraceThrowFrames(4, 1071)).toEqual([116, 153]);
     expect(ninjaTraceThrowFrames(4, 1711)).toEqual([116, 153]);

@@ -325,6 +325,9 @@ Event `at=3391,x=152,phase=1` with the neutral fraction throws at frame 116
 and releases after 224 frames.
 The same trigger's `x=200` record uses a 237-frame single-throw route with
 the separate neutral slot fraction.
+The `at=3535,x=184,phase=0` record has two captured slot states: fine
+`x=135/256,y=35/256` is a 241-frame no-throw branch, while neutral
+fine `x=176/256,y=0` throws on frame 117 and releases after 277 frames.
 Event `at=3535,x=120,phase=0` with the neutral fraction prepares on frame 116,
 throws on frame 117, and releases after 272 frames.
 Event `at=3407,x=120,phase=0` with the neutral fraction throws at frame 116
@@ -337,8 +340,8 @@ after its mirrored return.
 holds its lane, fires at frame 116, and releases after 284 frames using a
 fixed-point trace. Event `at=3407,x=224,phase=0` uses the same frame-116 throw gate from its own
 lane and releases after 252 frames with a separate fixed-point route.
-`at=383,x=184,phase=1` and `at=751/1583/3535,x=184,phase=0` events follow
-separate 205/202/202/241-frame no-throw routes. Event `at=943,x=168,phase=0`
+`at=383,x=184,phase=1` and `at=751/1583,x=184,phase=0` events follow
+separate 205/202/202-frame no-throw routes. Event `at=943,x=168,phase=0`
 uses a 201-frame no-throw route. Event `at=1103,x=160,phase=0` fires at frame
 116 and follows a 260-frame fixed-point route. Events
 `at=1711,x=160,phase=0` fires at frames 116 and 153 and releases after 284

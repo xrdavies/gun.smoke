@@ -555,10 +555,14 @@ The `$B82F` Round 5 Backstabber variant is an ambush actor rather than a
 projectile shooter: its X remains fixed, it descends roughly 178 NES pixels, and
 its slot is released after 532 frames. The runtime keeps this state
 separate from the `$B46E` movement variant.
-The `$B46E` Backstabber variant is a mirrored side raid. Left/right traces both
-live for 369 frames; during the first 160 frames the actor crosses 174 NES
-pixels while following the same measured vertical bends. The runtime
-interpolates seven mirrored checkpoints instead of sending it straight upward.
+The `$B46E` Backstabber variant is a mirrored side raid. It captures Billy's
+32-direction heading once, then combines that first-tier movement with a
+second-tier arc heading. Each 64-frame move segment advances the arc heading
+every four frames; a 30-frame cover dispatch follows, and the next segment
+starts with a new arc profile. The actor releases as the 8-bit screen X/Y
+coordinates leave the playfield, so the apparent lifetime changes with player
+position, terrain and slot fractions rather than being a fixed 369-frame cap.
+The runtime now executes these move, cover and release states directly.
 Neither isolated Backstabber routine creates a projectile, so only Gunmen
 remain eligible for the runtime's generic field-enemy firing clock.
 An early Boss-gate trace identifies Bandit Bill as dispatch `0x88`, variant

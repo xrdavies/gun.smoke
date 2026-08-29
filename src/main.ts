@@ -14,7 +14,8 @@ import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import { advanceRomRandom, mixRomRandomDifference, mixRomRandomFirstSum, mixRomRandomSecondSum, mixRomRandomSecondThirdSum, mixRomRandomSpawn, mixRomRandomSum, mixRomRandomThirdFirstSum, ROM_RANDOM_SEED } from "./game-constants";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, banditBillOpeningY, backstabberRaidOffset, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BACKSTABBER_RAID_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, bomberCanThrow, bomberMovementDecision, bomberMovementDuration, bomberMovementUsesRandom, bomberMovementVelocity, BOMBER_THROW_DURATION, BOSS_DEFEAT_ANIMATION_DURATION, bossReward, bossSpriteVisible, canSpawnPlayerBullet, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, DEVIL_HAWK_RANDOM_ROUTE_START_FRAME, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, contactSourceShouldClear, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_LIFETIME, dynamiteVerticalOffset, EMPTY_BARREL_EXPLOSION_LIFETIME, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X_LANES, FATMAN_JOE_ENTRY_Y, fallingRockOnScreen, fallingRockPosition, fatmanJoeOpeningY, HATCHET_LIFETIME, HORSE_HIT_INVULNERABILITY, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_LANES, NINJA_FIRST_SHOT_DELAY, NINJA_LIFETIME, ninjaAttackPosition, ninjaBossEntryLaneIndex, ninjaOpeningY, PLAYER_DEATH_ANIMATION_DURATION, PLAYER_DEATH_RECOVERY_DURATION, playerDeathPhase, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_IMPACT_LIFETIME, ROCK_LIFETIME, ROAD_WIDTHS, ROM_OBJECT_DROP_SPEED, ROM_SCREEN_RELEASE_Y_NES, romActorScreenYReleased, ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_SIDE_LIFETIME, SHOTGUNNER_SIDE_SHOT_FRAME, SHOTGUNNER_VOLLEY_INTERVAL, shotgunnerPosition, shotgunnerSidePosition, shouldLoopStage, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_CODE2_SHOT_FRAMES, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_X_LANES, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type ItemType, type ShopType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, banditBillOpeningY, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, bomberCanThrow, bomberMovementDecision, bomberMovementDuration, bomberMovementUsesRandom, bomberMovementVelocity, BOMBER_THROW_DURATION, BOSS_DEFEAT_ANIMATION_DURATION, bossReward, bossSpriteVisible, canSpawnPlayerBullet, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, DEVIL_HAWK_RANDOM_ROUTE_START_FRAME, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, contactSourceShouldClear, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_LIFETIME, dynamiteVerticalOffset, EMPTY_BARREL_EXPLOSION_LIFETIME, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X_LANES, FATMAN_JOE_ENTRY_Y, fallingRockOnScreen, fallingRockPosition, fatmanJoeOpeningY, HATCHET_LIFETIME, HORSE_HIT_INVULNERABILITY, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_LANES, NINJA_FIRST_SHOT_DELAY, NINJA_LIFETIME, ninjaAttackPosition, ninjaBossEntryLaneIndex, ninjaOpeningY, PLAYER_DEATH_ANIMATION_DURATION, PLAYER_DEATH_RECOVERY_DURATION, playerDeathPhase, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_IMPACT_LIFETIME, ROCK_LIFETIME, ROAD_WIDTHS, ROM_OBJECT_DROP_SPEED, ROM_SCREEN_RELEASE_Y_NES, romActorScreenYReleased, ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_SIDE_LIFETIME, SHOTGUNNER_SIDE_SHOT_FRAME, SHOTGUNNER_VOLLEY_INTERVAL, shotgunnerPosition, shotgunnerSidePosition, shouldLoopStage, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_CODE2_SHOT_FRAMES, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_X_LANES, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type ItemType, type ShopType, type WeaponName } from "./game-constants";
+import { advanceBackstabberRaid, createBackstabberRaidState, type BackstabberRaidState } from "./game-constants";
 import { advanceGunmanFlankMovement, createGunmanFlankMovementState, GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, gunmanCanFire, GUNMAN_FLANK_INITIAL_STATE_FRAMES, gunmanFlankFirstOpportunityFrame, gunmanFlankLifetime, gunmanFlankMovementFacingHeading, gunmanFlankUsesDynamicState, GUNMAN_LIFETIME, GUNMAN_TOP_LIFETIMES_FRAMES, gunmanFirstOpportunityFrame, gunmanFlankPosition, gunmanTopBranch, gunmanTopHeading, gunmanTopPosition, gunmanProjectileVelocity, GUNMAN_SHOT_OPPORTUNITY_INTERVAL, mediumProjectileHeadingVelocity, mediumProjectileVelocity, type GunmanFlankMovementState } from "./game-constants";
 import { BOMBER_ENTRY_DURATION, bomberOpeningY } from "./game-constants";
 import { advanceFirebreather, advanceHatchet, advanceSpear, createFirebreatherState, createHatchetState, createSpearState, FIREBREATHER_LIFETIME, FIREBREATHER_PROJECTILE_OFFSET_NES, nesActorCollisionProbeOffset, SPEAR_LIFETIME, SPEAR_PROJECTILE_OFFSET_NES, type FirebreatherState, type HatchetState, type SpearState } from "./game-constants";
@@ -112,6 +113,7 @@ interface Unit {
   gunmanBottomRoute?: "near" | "far";
   gunmanTopBranch?: "center" | "left" | "right";
   gunmanFlankState?: GunmanFlankMovementState;
+  backstabberRaidState?: BackstabberRaidState;
   riflemanAimHeading?: number;
   hatchetState?: HatchetState;
   firebreatherState?: FirebreatherState;
@@ -937,6 +939,9 @@ class GunSmokeGame {
     enemy.romPool = event.pool;
     enemy.romOriginX = enemy.x;
     enemy.romOriginY = romEventWorldY(event);
+    if (event.behavior === 3) {
+      enemy.backstabberRaidState = createBackstabberRaidState(event.x, event.y, this.player.x / NES_WORLD_X_SCALE, (this.player.y - this.scroll) / NES_WORLD_Y_SCALE);
+    }
     if (flankCode !== undefined && gunmanFlankUsesDynamicState(flankCode, event.y, this.stage, event.phase, event.at)) {
       enemy.gunmanFlankState = createGunmanFlankMovementState(flankCode, event.x, event.y, event.x > 128);
     }
@@ -947,7 +952,7 @@ class GunSmokeGame {
     if (event.behavior === 6) enemy.maxAge = ninjaTraceLifetime(event.x, event.y, this.stage, event.phase, event.at) ?? NINJA_LIFETIME;
     if (event.behavior === 2 && event.entityCode === 5) enemy.maxAge = GUNMAN_BOTTOM_LIFETIMES.far;
     if (flankCode !== undefined) enemy.maxAge = enemy.gunmanFlankState ? Number.POSITIVE_INFINITY : gunmanFlankLifetime(flankCode, event.y, this.stage, event.phase, event.x > 128, event.at);
-    if (event.behavior === 3) enemy.maxAge = BACKSTABBER_RAID_LIFETIME;
+    if (event.behavior === 3) enemy.maxAge = Number.POSITIVE_INFINITY;
     if (event.behavior === 8) enemy.maxAge = BACKSTABBER_AMBUSH_LIFETIME;
     if (event.behavior === 9) enemy.maxAge = HATCHET_LIFETIME;
     if (event.behavior === 7) enemy.maxAge = RIFLEMAN_LIFETIME;
@@ -1297,7 +1302,7 @@ class GunSmokeGame {
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: frameDuration },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romEventAt: undefined, romRandomSeed: undefined, romPhase: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, gunmanFlankState: undefined, riflemanAimHeading: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, banditState: undefined, cutterState: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined, rockPhase: undefined,
+      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romEventAt: undefined, romRandomSeed: undefined, romPhase: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, gunmanFlankState: undefined, backstabberRaidState: undefined, riflemanAimHeading: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, banditState: undefined, cutterState: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined, rockPhase: undefined,
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" || sceneObject ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
@@ -1403,10 +1408,11 @@ class GunSmokeGame {
     if (unit.kind === "enemy") {
       if (unit.enemyType === "sniper") unit.y += scrollDelta * 2;
       if (unit.enemyType === "backstabber") {
-        if (unit.romBehavior === 3) {
-          const [x, y] = backstabberRaidOffset(unit.age * NES_FRAME_RATE);
-          unit.x = (unit.romOriginX ?? unit.x) + x * (960 / 256) * ((unit.romOriginX ?? unit.x) < 480 ? 1 : -1);
-          unit.y = this.scroll + (unit.romOriginY ?? 0) + y * (540 / 240);
+        if (unit.romBehavior === 3 && unit.backstabberRaidState) {
+          advanceBackstabberRaid(unit.backstabberRaidState, Math.round(unit.age * NES_FRAME_RATE));
+          unit.x = unit.backstabberRaidState.x * NES_WORLD_X_SCALE;
+          unit.y = this.scroll + unit.backstabberRaidState.y * NES_WORLD_Y_SCALE;
+          if (unit.backstabberRaidState.dead) unit.hp = 0;
         } else if (unit.romBehavior === 8) {
           unit.y = this.scroll + Math.min(unit.age * BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_DEPTH);
         } else {

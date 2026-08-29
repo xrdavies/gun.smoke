@@ -830,8 +830,65 @@ export function advanceSpear(state: SpearState, targetFrame: number, playerX: nu
 export const BACKSTABBER_AMBUSH_DROP_SPEED = 45;
 export const BACKSTABBER_AMBUSH_DEPTH = 178;
 export const BACKSTABBER_AMBUSH_LIFETIME = 532 / NES_FRAME_RATE;
-export const BACKSTABBER_RAID_PATH = [[0, 0, 0], [40, 66, -15], [80, 103, 42], [120, 129, 44], [160, 174, 89], [200, 184, 83], [368, 213, 74]] as const;
-export const BACKSTABBER_RAID_LIFETIME = 369 / NES_FRAME_RATE;
+export type BackstabberRaidState = {
+  frame: number;
+  mode: "move" | "wait";
+  segment: number;
+  remaining: number;
+  wait: number;
+  heading: number;
+  arcHeading: number;
+  increasingArc: boolean;
+  x: number;
+  y: number;
+  dead: boolean;
+};
+
+export function createBackstabberRaidState(x: number, y: number, playerX: number, playerY: number): BackstabberRaidState {
+  return {
+    frame: 0,
+    mode: "move",
+    segment: 1,
+    remaining: 64,
+    wait: 0,
+    heading: nesAimHeading(x * NES_WORLD_X_SCALE, y * NES_WORLD_Y_SCALE, playerX * NES_WORLD_X_SCALE, playerY * NES_WORLD_Y_SCALE),
+    arcHeading: 0x40,
+    increasingArc: x < 128,
+    x,
+    y,
+    dead: false,
+  };
+}
+
+export function advanceBackstabberRaid(state: BackstabberRaidState, targetFrame: number): void {
+  while (state.frame < targetFrame && !state.dead) {
+    state.frame += 1;
+    const waited = state.mode === "wait";
+    if (state.mode === "move") {
+      moveEncodedHeading(state, state.heading & 0xdf);
+      moveEncodedHeading(state, state.arcHeading);
+      state.remaining -= 1;
+      if (state.remaining % 4 === 0) {
+        state.arcHeading = (state.arcHeading + (state.increasingArc ? 1 : 31)) & 0xdf;
+      }
+      if (state.remaining === 0) {
+        state.mode = "wait";
+        state.wait = 1;
+      }
+    } else if (state.wait >= 30) {
+      state.mode = "move";
+      state.segment += 1;
+      state.remaining = 64;
+      state.arcHeading = state.segment === 2 ? 0 : 0x40;
+      state.wait += 1;
+    } else {
+      state.wait += 1;
+    }
+    if (waited && state.frame % 3 === 0) state.y += 1;
+    state.dead = state.x < 0 || state.x >= 256 || state.y < 0 || state.y >= ROM_SCREEN_RELEASE_Y_NES;
+  }
+}
+
 export const GUNMAN_SHOT_OPPORTUNITY_INTERVAL = 64 / NES_FRAME_RATE;
 export const GUNMAN_LIFETIME = 560 / NES_FRAME_RATE;
 // The measured center route releases at 549; side routes are kept at the
@@ -2228,15 +2285,6 @@ export function banditBillCooldown(shotsFired: number): number {
   return shotsFired % BANDIT_BILL_SHOTS_PER_VOLLEY === 0 ? BANDIT_BILL_VOLLEY_GAP : BANDIT_BILL_SHOT_INTERVAL;
 }
 
-export function backstabberRaidOffset(frame: number): readonly [number, number] {
-  const nextIndex = BACKSTABBER_RAID_PATH.findIndex(([at]) => at >= frame);
-  if (nextIndex < 0) return [BACKSTABBER_RAID_PATH.at(-1)![1], BACKSTABBER_RAID_PATH.at(-1)![2]];
-  if (nextIndex === 0) return [BACKSTABBER_RAID_PATH[0][1], BACKSTABBER_RAID_PATH[0][2]];
-  const previous = BACKSTABBER_RAID_PATH[nextIndex - 1]!;
-  const next = BACKSTABBER_RAID_PATH[nextIndex]!;
-  const amount = (frame - previous[0]) / (next[0] - previous[0]);
-  return [previous[1] + (next[1] - previous[1]) * amount, previous[2] + (next[2] - previous[2]) * amount];
-}
 
 export type ShopType = "weapons" | "supplies";
 export const SHOP_TYPES: readonly (readonly ShopType[])[] = [

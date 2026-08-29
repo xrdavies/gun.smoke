@@ -349,6 +349,10 @@ Codes 8 and 9 advance from their side until their collision probe opens and
 Billy is within 101 vertical pixels, run a 51-frame mirrored lunge, then join
 the same tracking states. Terrain probes and screen exits are evaluated each
 NES frame.
+The `$B46E` side-raid Backstabber uses the same fixed-point movement primitives:
+it captures Billy's heading at spawn, combines first-tier pursuit with a
+four-frame second-tier arc, pauses in its 30-frame cover dispatch, and repeats
+until the screen coordinate overflows. It does not fire.
 Riflemen advance,
 enter their attack state at 122 NES frames once they are at least 48 NES pixels
 downscreen and within 96 NES Y pixels of Billy, then fire five shots at

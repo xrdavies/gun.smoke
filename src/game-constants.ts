@@ -2546,7 +2546,6 @@ export const FATMAN_JOE_SHELL_LIFETIME = 61 / NES_FRAME_RATE;
 export const FATMAN_JOE_MINE_INTERVAL = 4 / NES_FRAME_RATE;
 export const FATMAN_JOE_MINE_OFFSETS_NES = [[-16, 4], [-10, 12], [0, 16], [10, 12], [16, 4]] as const;
 export const FATMAN_JOE_GRENADE_LIFETIME = 29 / NES_FRAME_RATE;
-export const FATMAN_JOE_LAUNCH_INVULNERABILITY = 0.75;
 const FATMAN_JOE_SHELL_VELOCITIES_NES = [[0.9375, 2.77734375], [0.46875, 2.91796875], [0, 3], [-0.46875, 2.91796875], [-0.9375, 2.77734375]] as const;
 
 export function fatmanJoeAimHeading(originX: number, originY: number, targetX: number, targetY: number): number {

@@ -146,7 +146,13 @@ test("runs the distinct Boss projectile chains", async ({ page }) => {
 
   await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), 5);
   await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
+  const fatmanProtection = async () => page.evaluate(() => {
+    const boss = (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; invulnerableUntil: number }> }).__getGunSmokeUnits().find((unit) => unit.kind === "boss");
+    return boss?.invulnerableUntil;
+  });
+  expect(await fatmanProtection()).toBeCloseTo(170 / 60.098, 9);
   await page.evaluate(() => (window as unknown as { __fireGunSmokeBoss: (randomByte: number) => void }).__fireGunSmokeBoss(8));
+  expect(await fatmanProtection()).toBeCloseTo(170 / 60.098, 9);
   expect(await waitForBossProjectile(page, ["grenadeShell", "grenade"], 300)).toBe(true);
 
   await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), 6);

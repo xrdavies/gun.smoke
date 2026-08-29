@@ -853,7 +853,12 @@ then repeats every 76 active frames; each decision uses a
 mutating `AC=(AC+AD)&0xff` random byte. Low nibbles `8..15` attempt an attack
 inside the downward heading sector; `0..7` select a movement action and pause
 the timer. A successful attack creates
-one moving `0x86` shell at Boss offset `(-8,+6)` NES pixels. The shell uses the
+one moving `0x86` shell at Boss offset `(-8,+6)` NES pixels. A controlled Magnum
+trace keeps Fatman in
+opening state `0x9c` through frame 169, observes the shell and vulnerable
+`0x98` state on frame 170, and lands a hit on frame 172. Runtime therefore
+protects only the 170-frame entrance; shell launch does not add a separate
+0.75-second invulnerability window. The shell uses the
 shared integer direction quantizer, flies for 31 frames, and becomes a
 stationary split controller. Beginning four frames later, it emits five `0x3f`
 mines at 4-frame intervals with relative offsets

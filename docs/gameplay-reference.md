@@ -148,12 +148,12 @@ use one 6-hit bar followed by six 12-hit bars. After each lost health bar Bandit
 spends 8 NES frames in hit stun and 168 frames in an invulnerable crawl without
 teleporting away from his current route, while Cutter and Devil
 Hawk become vulnerable only after their opening attack. Fatman Joe is
-vulnerable before each bomb-gun firing and briefly protected during the launch;
+protected during his 170-frame entrance and vulnerable when the first shell launches;
 Cutter's boomerangs also curve in opposite directions.
 Ninja remains invulnerable during its opening smoke and every teleport/re-entry
 window; hidden Boss sprites cannot deal contact damage or be damaged by bullets.
 Snipers are likewise non-colliding while inside cover. Bandit Bill and Fatman
-Joe remain visible during their recovery/launch protection windows.
+Joe remain visible during their damage recovery windows.
 Most Boss weapons use a six-slot projectile pool separate from the eight slots
 used by ordinary enemy gunfire, so field bullets cannot suppress those attacks;
 Bandit Bill's traced `0x30` shots are the exception and use the ordinary pool;

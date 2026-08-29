@@ -351,6 +351,9 @@ counter boundary: entering the orbit with timer `0xff` wraps to zero without a
 turn, while the later `4 -> 0` wrap advances the heading. With that 8-bit
 behavior preserved, all 483 coarse/fine coordinate samples match through the
 ROM's natural release at `Y=253` for Billy held at `(152,216)`.
+Round 3's `at=255,x=4,y=64,code=7,phase=1` route also matches the shared state
+machine for all 581 coarse/fine samples. The former integer-only fixed route
+lost the inherited X fraction on frame 1 and ran one Y pixel high.
 The mirrored `at=1839,x=248,y=32,code=9,phase=0` branch also matches all 873
 coarse/fine samples and its `Y=252` release when captured with the other enemy
 slots isolated. A normal crowded pass may fail to allocate this script record;

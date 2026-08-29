@@ -481,6 +481,9 @@ entry uses a separate shorter trace and exits through the bottom edge. It uses
 trace. Round 6 also has controlled code 7 traces for left/right `y=32` and left
 `y=64` entries (342/453/918 frames), plus 578/447-frame code 8 left `y=32`
 phase-0/phase-1 traces and a 776-frame code 9 right `y=48`, phase-1 trace.
+Round 3 `at=255,x=4,y=64,code=7,phase=1` now uses the shared state machine
+instead of its former integer-only fixed trace, preserving all 581 coarse and
+subpixel samples through its top-edge release.
 Round 3 `at=1119,x=4,y=96,code=8,phase=1` instead uses the shared state
 machine and matches all 282 controlled frames through its bottom-edge release.
 Round 3 `at=687,x=4,y=64,code=7,phase=0` also uses the shared state machine for

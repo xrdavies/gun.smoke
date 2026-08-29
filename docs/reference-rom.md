@@ -413,6 +413,9 @@ The at1903 code-7 phase-0 entry follows a 732-frame route to the bottom edge.
 The at1967 code-7 phase-0 entry follows a 678-frame route to the top edge.
 The at911 code-9 phase-0 half of the simultaneous pair follows a complete
 963-frame route to the bottom edge.
+The at943 code-9 phase-0 `y=48` entry follows a separate 849-frame route to the
+bottom edge; its early lunge-to-tracking handoff does not match the generic
+state-machine branch, so the runtime binds this event-specific trace.
 The at975 code-9 phase-0 y64 entry follows a complete 676-frame route to the
 bottom edge.
 The former 360-frame "code-9 y64" trace is the Round 2 `at=2671` code-7 right

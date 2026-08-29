@@ -327,6 +327,9 @@ Event `at=1967,x=4,y=48,code=7,phase=0` uses a 678-frame route and exits through
 the top edge.
 The `at=911,x=248,y=32,code=9,phase=0` side of the simultaneous pair uses a
 963-frame route and exits through the bottom edge.
+The `at=943,x=248,y=48,code=9,phase=0` entry uses a separate 849-frame route;
+its event-specific handoff is replayed directly rather than using the generic
+side state.
 Event `at=975,x=248,y=64,code=9,phase=0` uses a 676-frame route and exits through
 the bottom edge.
 Event `at=2671,x=248,y=64,code=7,phase=0` uses a 360-frame route and exits through

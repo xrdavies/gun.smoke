@@ -323,11 +323,13 @@ Event `at=1967,x=4,y=48,code=7,phase=0` uses a 678-frame route and exits through
 the top edge.
 The `at=911,x=248,y=32,code=9,phase=0` side of the simultaneous pair uses a
 963-frame route and exits through the bottom edge.
+Event `at=2671,x=248,y=64,code=7,phase=0` uses a 360-frame route and exits through
+the left edge.
 Complete scoped side traces are selected for matching entries: Round 2 uses
 569 frames for the code-8 `at=623` entry at `y=32`. The at351 code-7 phase-1
 entry uses a separate shorter trace and exits through the bottom edge. It uses
-371 for code 8 at `y=64` (including at207), 963 for code 9 at
-`y=32`, and 360 for code 9 at `y=64`; Round 3 uses 581/384-frame code 7
+371 for code 8 at `y=64` (including at207) and 963 for code 9 at
+`y=32`; Round 3 uses 581/384-frame code 7
 `y=64`, phase-1 left/right traces and a 379-frame code 8 `y=64`, phase-0
 trace. Round 6 also has controlled code 7 traces for left/right `y=32` and left
 `y=64` entries (342/453/918 frames), plus 578/447-frame code 8 left `y=32`

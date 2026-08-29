@@ -659,7 +659,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(GUNMAN_FLANK_INITIAL_STATE_FRAMES).toBe(250);
     expect([135, 188, 0, 70].map((seed) => gunmanFlankFirstOpportunityFrame(seed))).toEqual([19, 2, 64, 41]);
     expect(gunmanFlankFirstOpportunityFrame(132, 0)).toBe(32);
-    expect([gunmanFlankLifetime(8), gunmanFlankLifetime(9), gunmanFlankLifetime(8, 32), gunmanFlankLifetime(9, 32), gunmanFlankLifetime(8, 64), gunmanFlankLifetime(9, 64)]).toEqual([508, 826, 569, 963, 371, 360].map((frames) => frames / NES_FRAME_RATE));
+    expect([gunmanFlankLifetime(8), gunmanFlankLifetime(9), gunmanFlankLifetime(8, 32), gunmanFlankLifetime(9, 32), gunmanFlankLifetime(8, 64), gunmanFlankLifetime(9, 64)]).toEqual([508, 826, 569, 963, 371, 826].map((frames) => frames / NES_FRAME_RATE));
     expect(gunmanFlankLifetime(8, 64, 3, 1)).toBeCloseTo(508 / NES_FRAME_RATE, 9);
     expect(gunmanFlankLifetime(8, 64, 3, 0)).toBeCloseTo(379 / NES_FRAME_RATE, 9);
     expect(gunmanFlankLifetime(7, 0, 2, 1)).toBeCloseTo(369 / NES_FRAME_RATE, 9);
@@ -773,9 +773,9 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankPosition(8, 0, 64, 2, 0, false, 207)).toEqual([1, 1]);
     expect(gunmanFlankPosition(8, 370 / NES_FRAME_RATE, 64, 2, 0, false, 207)).toEqual([120, -64]);
     expect(gunmanFlankPosition(8, 370 / NES_FRAME_RATE, 64)).toEqual([119, -65]);
-    expect(gunmanFlankPosition(9, 64 / NES_FRAME_RATE, 64)).toEqual([-46, 34]);
-    expect(gunmanFlankPosition(9, 200 / NES_FRAME_RATE, 64)).toEqual([-127, 90]);
-    expect(gunmanFlankPosition(9, 359 / NES_FRAME_RATE, 64)).toEqual([-248, 81]);
+    expect(gunmanFlankLifetime(7, 64, 2, 0, true, 2671)).toBeCloseTo(360 / NES_FRAME_RATE, 9);
+    expect(gunmanFlankPosition(7, 64 / NES_FRAME_RATE, 64, 2, 0, true, 2671)).toEqual([46, 35]);
+    expect(gunmanFlankPosition(7, 359 / NES_FRAME_RATE, 64, 2, 0, true, 2671)).toEqual([248, 82]);
     expect(gunmanFlankPosition(8, 96 / NES_FRAME_RATE, 64, 3, 1)).toEqual([0, 31.870445344129553]);
     expect(gunmanFlankPosition(9, 96 / NES_FRAME_RATE, 64, 3)).toEqual([-69.1025641025641, 38.66666666666667]);
     expect(gunmanFlankPosition(8, 96 / NES_FRAME_RATE, 64, 3, 0)).toEqual([31, 32]);

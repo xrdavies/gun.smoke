@@ -389,9 +389,11 @@ The at1903 code-7 phase-0 entry follows a 732-frame route to the bottom edge.
 The at1967 code-7 phase-0 entry follows a 678-frame route to the top edge.
 The at911 code-9 phase-0 half of the simultaneous pair follows a complete
 963-frame route to the bottom edge.
+The former 360-frame "code-9 y64" trace is the Round 2 `at=2671` code-7 right
+entry; it is now scoped to that event and exits through the left edge.
 and a code 9 trace
-at `y=64` follows 360 measured frames. Round 3's code 7 `y=64`, phase-1
-entries use separate left/right traces of 581/384 frames; its code 8 left
+Round 3's code 7 `y=64`, phase-1 entries use separate left/right traces of
+581/384 frames; its code 8 left
 `y=64`, phase-0 initializer has a separate 379-frame trace. Other rounds,
 phases and entry heights retain the generic measured routes until their
 slot-state traces are captured. Round 6 controlled traces additionally cover

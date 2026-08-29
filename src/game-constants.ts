@@ -1042,6 +1042,7 @@ export function gunmanFlankUsesDynamicState(entityCode: 7 | 8 | 9, originY: numb
   if (stage === 4 && entityCode === 7 && [1503, 1695, 1727, 1743, 2527].includes(eventAt ?? -1)) return true;
   if (stage === 6 && entityCode === 8 && eventAt === 2207) return true;
   if (stage === 6 && entityCode === 9 && (eventAt === 2783 || eventAt === 3919)) return true;
+  if (stage === 6 && entityCode === 7 && eventAt === 4543) return true;
   if (stage === 6 && entityCode === 7 && Math.round(originY) === 64 && fromRight) return true;
   if (stage !== 2 || entityCode === 7 && Math.round(originY) === 0 && phase === 1) return false;
   if (entityCode === 7) return ![351, 399, 1135, 1167, 1231, 1407, 1903, 1967, 2671].includes(eventAt ?? -1);

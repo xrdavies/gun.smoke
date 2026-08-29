@@ -269,6 +269,8 @@ the same-frame `at=1551` pair. The allocated `at=1551,x=128,phase=0` route
 with `fineX=246,fineY=23` throws at 116/153/190 and releases after 383 frames.
 The following `at=1567` pair likewise allocates only `x=152`; its
 `fineX=81,fineY=204` route throws at frame 116 and releases after 228 frames.
+Event `at=1743,x=144,phase=0` with `fineX=88,fineY=46` follows another
+228-frame single-throw route and releases through the 8-bit Y boundary.
 `at=3215,x=208,phase=0`
 holds its lane, fires at frame 116, and releases after 284 frames using a
 fixed-point trace. Event `at=3407,x=224,phase=0` uses the same frame-116 throw gate from its own

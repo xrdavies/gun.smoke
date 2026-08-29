@@ -524,6 +524,8 @@ record in the same-frame `at=1551` pair. Its allocated `x=128,phase=0` route
 (`fineX=246,fineY=23`) throws at 116/153/190 and releases at frame 383.
 The following `at=1567` pair also allocates only its earlier `x=152` record;
 that `fineX=81,fineY=204` route throws at frame 116 and releases at frame 228.
+Event `at=1743,x=144,phase=0` (`fineX=88,fineY=46`) follows another
+228-frame single-throw route and releases through the 8-bit Y boundary.
 `at=3215,x=208,
 phase=0` entry holds its lane, emits its first Shuriken at frame 116, and
 releases after 284 frames; the runtime binds its fixed-point per-frame trace.

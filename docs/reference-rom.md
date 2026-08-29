@@ -817,7 +817,8 @@ runtime game data or copied ROM code.
 `npm run trace:rom:entity -- --dispatch=0x57 --trace-frames=600` locks onto the
 first naturally initialized ordinary enemy with that dispatch, clears the other
 seven-slot actors, and records every parallel-array field plus the ordinary
-projectile pool. `--variant=0x43`, `--state=...`, and fixed `--player-x/--player-y`
+projectile pool. Each sample keeps both frame-start `playerBefore` and frame-end
+`player` coordinates. `--variant=0x43`, `--state=...`, and fixed `--player-x/--player-y`
 values narrow later-Round comparisons without synthesizing an entity state.
 `--round=3` accelerates earlier Boss gates with automated player fire and Boss
 health clamped to one before searching that Round, so the target actor still

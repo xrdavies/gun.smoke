@@ -118,6 +118,7 @@ for (let frame = 0; frame < frames; frame += 1) {
     matchingSlots.clear();
   }
   if (isolateCandidates && targetSlot === undefined) for (let slot = 16; slot < 23; slot += 1) memory[0x400 + slot] = 0;
+  const playerBefore = { x: memory[0x74], y: memory[0x71] };
   nes.frame();
 
   if (targetSlot === undefined && (startFrame === undefined || frame >= startFrame)) {
@@ -130,7 +131,7 @@ for (let frame = 0; frame < frames; frame += 1) {
       const baseMatch = !advancing && candidate.dispatch === dispatch && (variant === undefined || candidate.variant === variant);
       if (!baseMatch || matchingSlots.has(slot)) continue;
       matchingSlots.add(slot);
-      candidates.push({ frame, ...candidate, player: { x: memory[0x74], y: memory[0x71] } });
+      candidates.push({ frame, ...candidate, playerBefore, player: { x: memory[0x74], y: memory[0x71] } });
       if (listCandidates) continue;
       const matches = (matchState === undefined || candidate.state === matchState)
         && (matchHeading === undefined || candidate.heading === matchHeading)
@@ -156,6 +157,7 @@ for (let frame = 0; frame < frames; frame += 1) {
   entityFrames.push({
     frame: relativeFrame,
     ...entity(targetSlot),
+    playerBefore,
     player: { x: memory[0x74], y: memory[0x71] },
     random: { ac: memory[0xac], ad: memory[0xad], ae: memory[0xae], af: memory[0xaf] },
     zeroPage: { b0: memory[0xb0], b4: memory[0xb4], b5: memory[0xb5], ba: memory[0xba], bc: memory[0xbc] },

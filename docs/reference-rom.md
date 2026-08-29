@@ -524,8 +524,10 @@ The `at=1391,x=200,phase=0` route (`fineX=184,fineY=28`) throws at frame 116,
 settles on its post-attack lane, and releases at frame 256.
 The `at=1407,x=144,phase=1` route (`fineX=100,fineY=182`) throws at frames
 116/227, crosses a movement branch, and releases at frame 334.
-The seven-slot pool skips the `at=1519/1535` records and the later `x=240`
-record in the same-frame `at=1551` pair. Its allocated `x=128,phase=0` route
+The `at=1519,x=104,phase=0` and `at=1535,x=144,phase=1` records have
+state-qualified captures when their enemy slots are available; the later
+`x=240` record in the same-frame `at=1551` pair is skipped by the seven-slot
+pool. Its allocated `x=128,phase=0` route
 (`fineX=246,fineY=23`) throws at 116/153/190 and releases at frame 383.
 The following `at=1567` pair also allocates only its earlier `x=152` record;
 that `fineX=81,fineY=204` route throws at frame 116 and releases at frame 228.
@@ -599,11 +601,12 @@ frames respectively.
 The later `at=3743,x=120,phase=1` route emits once at frame 116 and releases
 after 228 frames; `at=3759,x=152,phase=0` also emits once at frame 116 and
 releases after 198 frames.
-Additional captured branches are `at=1519,x=104,phase=0` (one emission at
-116, 224 frames), `at=2031,x=56,phase=0` (emissions at 116/153, 266 frames),
-and `at=2239,x=104,phase=1` (one emission at 116, 228 frames).
-The `at=1535,x=144,phase=1` route is a 143-frame no-emission branch, while
-`at=3055,x=56,phase=0` emits at 116/153 and releases after 335 frames.
+State-qualified captures cover `at=1519,x=104,phase=0` (one emission at 116,
+224 frames) and `at=1535,x=144,phase=1` (143-frame no-emission) branches. The
+allocated `at=2031,x=56,phase=0` route emits at
+116/153 and releases after 266 frames; `at=2239,x=104,phase=1` emits once at
+116 and releases after 228 frames. The `at=3055,x=56,phase=0` route emits at
+116/153 and releases after 335 frames.
 `at=3215,x=208,
 phase=0` entry holds its lane, emits its first Shuriken at frame 116, and
 releases after 284 frames; the runtime binds its fixed-point per-frame trace.

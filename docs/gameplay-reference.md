@@ -264,8 +264,10 @@ Event `at=1391,x=200,phase=0` with `fineX=184,fineY=28` throws at frame 116,
 settles on its post-attack lane, and releases after 256 frames.
 Event `at=1407,x=144,phase=1` with `fineX=100,fineY=182` throws at frames
 116/227, crosses a movement branch, and releases after 334 frames.
-Pool pressure skips the `at=1519/1535` records and the later `x=240` half of
-the same-frame `at=1551` pair. The allocated `at=1551,x=128,phase=0` route
+The `at=1519,x=104,phase=0` and `at=1535,x=144,phase=1` records have
+state-qualified captures when their enemy slots are available; the later
+`x=240` half of the same-frame `at=1551` pair is skipped by pool pressure.
+The allocated `at=1551,x=128,phase=0` route
 with `fineX=246,fineY=23` throws at 116/153/190 and releases after 383 frames.
 The following `at=1567` pair likewise allocates only `x=152`; its
 `fineX=81,fineY=204` route throws at frame 116 and releases after 228 frames.
@@ -342,11 +344,12 @@ frames respectively.
 The later `at=3743,x=120,phase=1` route fires once at frame 116 and releases
 after 228 frames; `at=3759,x=152,phase=0` also fires once at frame 116 and
 releases after 198 frames.
-Additional captured branches are `at=1519,x=104,phase=0` (one throw at 116,
-224 frames), `at=2031,x=56,phase=0` (throws at 116/153, 266 frames), and
-`at=2239,x=104,phase=1` (one throw at 116, 228 frames).
-The `at=1535,x=144,phase=1` route is a 143-frame no-throw branch, while
-`at=3055,x=56,phase=0` throws at 116/153 and releases after 335 frames.
+State-qualified captures cover `at=1519,x=104,phase=0` (one throw at 116,
+224 frames) and `at=1535,x=144,phase=1` (143-frame no-throw) branches. The
+allocated `at=2031,x=56,phase=0` route throws at
+116/153 and releases after 266 frames; `at=2239,x=104,phase=1` throws once
+at 116 and releases after 228 frames. The `at=3055,x=56,phase=0` route
+throws at 116/153 and releases after 335 frames.
 `at=3215,x=208,phase=0`
 holds its lane, fires at frame 116, and releases after 284 frames using a
 fixed-point trace. Event `at=3407,x=224,phase=0` uses the same frame-116 throw gate from its own

@@ -500,6 +500,9 @@ player-relative offset before holding position; clean routes release between
 their second post-throw movement and release transitions. The `at=351,x=208,
 phase=1` entry holds its lane, emits its first Shuriken at frame 116, and
 releases after 284 frames; the runtime binds its fixed-point per-frame trace.
+The `at=399,x=224,phase=0` entry follows the same 116-frame first throw gate
+from its own lane and releases after 252 frames; its fixed-point route is also
+bound separately because its post-throw path differs from `at=351`.
 Event
 `at=383,x=184,phase=1` and `at=751/1583/3535,x=184,phase=0` take random
 no-throw branches and release after 205/202/202/241 frames. Events

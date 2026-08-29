@@ -1128,10 +1128,13 @@ const NINJA_STAGE4_X184_AT1727_TRACE_SAMPLES_NES = decodeGunmanAbsoluteCoordinat
 
 const NINJA_STAGE4_AT351_FIXED_TRACE_NES = decodeFixedCoordinateSamples("0ALFq9AExavQBsWr0AjFq9AKxavQDMWr0A7Fq9AQxavQEsWr0BTFq9AWxavQGMWr0BrFq9AcxavQHsWr0CDFq9AgxavQIMWr0CDFq9AgxavQIMWr0CDFq9AgxavQIMWr0CDFq9AgxavQIMWr0CDFq9AgxavQIMWr0CDFq9AgxavQIMWr0CDFq9AgxavQIMWr0CLFq9AkxavQJsWr0CjFq9AqxavQLMWr0C7Fq9AwxavQMsWr0DTFq9A2xavQOMWr0DrFq9A8xavQPsWr0EDFq9BCxavQRMWr0EbFq9BIxavQSsWr0EzFq9BOxavQUMWr0FLFq9BUxavQVsWr0FjFq9BaxavQXMWr0F7Fq9BgxavQYsWr0GTFq9BmxavQaMWr0GrFq9BsxavQbsWr0HDFq9ByxavQdMWr0HbFq9B4xavQesWr0HzFq9B+xavQgMWr0ILFq9CExavQhsWr0IjFq9CKxavQjMWr0I7Fq9CQxavQksWr0JTFq9CWxavQmMWr0JjFq9CYxavQmMWr0JjFq9CYxavQmMWr0JjFq9CYxavQmMWr0JjFq9CYxavQmMWr0JjFq9CYxavQmMWr0JjFq9CYxavQmMWr0JjFq9CYxavOlqnvzZGNM8uNcXfJiVW7x4Y5/8aDHUPEgAGHwn3ly8F7yQ+/ea1TvXiRl7t3ddu6d1kfuHc9Y7Z3Iae0dwXrtHcF67R3Beu0dwXrtHcF67R3Beu0dwXrtHcF67R3Beu0dwXrtHcF67R3Beu0dwXrtHcF67R3Beu0dwXrtHcF67R3Beu0dwXrtHcF67R3BeuzdOkvsnZRB7B3ud+veSG3rnqJj6178WesfVk/q37BF6mAKe+ogZHHp4L5n6aEYXelhclPpIcxJ6KImf+higHXoItpr5+M0YeejjlfnY+hN5yRCQ+aknHnmZPZv5iVQZeXlqlvlpgRR5WZeR+TmuH3kpxJz5GdsaeQnxl/j6CBV46h6S+No1EHi6S534qmIbeJp4mPiKjxZ4eqWT+Gq8EXhK0p74OukceCr/mfgbFhd4CyyU9/tDEnfbWZ/3y3Add7uGmvernRh3m7OV94vKE3d74JD3W/ced0wNm/c8JBl3LDqW9xxRFHcMZ5H27H4fdtyUnPbMqxp2vMGX9qzYFXac7pL2jQUQdm0bnfZdMht2TUiY9j1fFnYtdZP2HYwRdf2invX9Yp71/TKe9f0CnvX84p71/MKe9fyynvX8op71/KKe9fyynvX80p71/NKe9fzSnvX84p71/OKe9fzinvX88p71/PKe9fzynvX9Ap71/QKe9f0CnvX9Ep71/RKe9f0SnvX9Ip71/SKe9f0invX9Mp71/TKe9f0ynvX9Qp71/UKe9f1CnvX9Up71/VKe9f1SnvX9Yp71/WKe9f1invX9cp71/XKe9f1ynvX9gp71/YKe9f2CnvX9kp71/ZKe9f2SnvX9op71/aKe9f2invX9sp71/bKe9f2ynvX9wp71/cKe9f3CnvX90p71/dKe8=");
 const NINJA_STAGE4_AT351_TRACE_SAMPLES_NES = NINJA_STAGE4_AT351_FIXED_TRACE_NES.map(([x, y]) => [x, y] as const);
+const NINJA_STAGE4_AT399_FIXED_TRACE_NES = decodeFixedCoordinateSamples("4AKVj+AElY/gBpWP4AiVj+AKlY/gDJWP4A6Vj+AQlY/gEpWP4BSVj+AWlY/gGJWP4BqVj+AclY/gHpWP4CCVj+AglY/gIJWP4CCVj+AglY/gIJWP4CCVj+AglY/gIJWP4CCVj+AglY/gIJWP4CCVj+AglY/gIJWP4CCVj+AglY/gIJWP4CCVj+AglY/gIJWP4CKVj+AklY/gJpWP4CiVj+AqlY/gLJWP4C6Vj+AwlY/gMpWP4DSVj+A2lY/gOJWP4DqVj+A8lY/gPpWP4ECVj+BClY/gRJWP4EaVj+BIlY/gSpWP4EyVj+BOlY/gUJWP4FKVj+BUlY/gVpWP4FiVj+BalY/gXJWP4F6Vj+BglY/gYpWP4GSVj+BmlY/gaJWP4GqVj+BslY/gbpWP4HCVj+BylY/gdJWP4HaVj+B4lY/gepWP4HyVj+B+lY/ggJWP4IKVj+CElY/ghpWP4IiVj+CKlY/gjJWP4I6Vj+CQlY/gkpWP4JSVj+CWlY/gmJWP4JiVj+CYlY/gmJWP4JiVj+CYlY/gmJWP4JiVj+CYlY/gmJWP4JiVj+CYlY/gmJWP4JiVj+CYlY/gmJWP4JiVj+CYlY/gmJWP4JiVj+CYlY/elnnT3ZFdF9uNQVvZiSWf14YJ49aC7SfUf9Fr0n21r9B7mfPPeX03zXhhe8t3Rb/KdykDyHcNR8Z28YvEdtXPxHbVz8R21c/EdtXPxHbVz8R21c/EdtXPxHbVz8R21c/EdtXPxHbVz8R21c/EdtXPxHbVz8R21c/EdtXPxHbVz8R21c/EdtXPxHbVz8R21c/DdLkTwXYh68B3icO/ePGbvnpZc717wUu8fSkjun6R+7l/+dO4gWGrt4LJg7aEMVu1hZkztIcBC7KIaeOxidG7sIs5k6+MoWuujglDrY9xG6uQ2fOqkkHLqZOpo6iVEXunlnlTppfhK6WZSQOjmrHbopwZs6GdgYugnuljn6BRO56huROcoyHrm6SJw5ql8ZuZp1lzmKjBS5eqKSOVq5H7lKz505OuYauSr8mDkbExW5CymTOPtAELjbVp44y20buLuDmTirmha4m7CUOIvHEbhr3Z84W/QcuEwKmjg8IRe4LDeVOBxOErgMZJA37Hsdt9yRmzfMqBi3vL6WN6zVE7ec65E3fQIet20YnDddLxm3TUWXNz1cFLctcpI3DYkftv2fnTbtthq23cyYNs3jFba9+ZM2rhAQto4mnjZ+PRu2blOZNl5qFrZOgJQ2PpcRth6tnzYOxBy1/tqaNe7xF7XfB5U1zx4Stb80kDWfSx21j2GbNX94GLVvjpY1X6UTtU+7kTUv0h61H+icNQ//Gb");
+const NINJA_STAGE4_AT399_TRACE_SAMPLES_NES = NINJA_STAGE4_AT399_FIXED_TRACE_NES.map(([x, y]) => [x, y] as const);
 
 function ninjaTraceSamples(originX: number, originY: number, stage: number, phase: number, eventAt?: number): readonly (readonly [number, number])[] | undefined {
   if (stage !== 4 || Math.round(originY) !== 0) return undefined;
   if (phase === 1 && Math.round(originX) === 208 && eventAt === 351) return NINJA_STAGE4_AT351_TRACE_SAMPLES_NES;
+  if (phase === 0 && Math.round(originX) === 224 && eventAt === 399) return NINJA_STAGE4_AT399_TRACE_SAMPLES_NES;
   if (phase === 0 && Math.round(originX) === 152 && eventAt === 47) return NINJA_STAGE4_TRACE_SAMPLES_NES;
   if (phase === 1 && Math.round(originX) === 184 && eventAt === 63) return NINJA_STAGE4_X184_AT63_TRACE_SAMPLES_NES;
   if (phase === 1 && Math.round(originX) === 184 && eventAt === 383) return NINJA_STAGE4_X184_AT383_TRACE_SAMPLES_NES;
@@ -1148,7 +1151,11 @@ function ninjaTraceSamples(originX: number, originY: number, stage: number, phas
 
 export function ninjaTracePosition(age: number, originX: number, originY: number, stage: number, phase = 0, eventAt?: number): readonly [number, number] | undefined {
   const frame = Math.max(0, Math.round(age * NES_FRAME_RATE));
-  const fixed = stage === 4 && phase === 1 && Math.round(originX) === 208 && Math.round(originY) === 0 && eventAt === 351 ? NINJA_STAGE4_AT351_FIXED_TRACE_NES[frame] : undefined;
+  const fixed = stage === 4 && Math.round(originY) === 0
+    ? phase === 1 && Math.round(originX) === 208 && eventAt === 351 ? NINJA_STAGE4_AT351_FIXED_TRACE_NES[frame]
+      : phase === 0 && Math.round(originX) === 224 && eventAt === 399 ? NINJA_STAGE4_AT399_FIXED_TRACE_NES[frame]
+        : undefined
+    : undefined;
   if (fixed) return [(fixed[0] + fixed[3] / 256) * NES_WORLD_X_SCALE, (fixed[1] + fixed[2] / 256) * NES_WORLD_Y_SCALE];
   const sample = ninjaTraceSamples(originX, originY, stage, phase, eventAt)?.[frame];
   return sample ? [sample[0] * NES_WORLD_X_SCALE, sample[1] * NES_WORLD_Y_SCALE] : undefined;
@@ -1161,6 +1168,7 @@ export function ninjaTraceLifetime(originX: number, originY: number, stage: numb
 export function ninjaTraceThrowFrame(stage: number, eventAt?: number): number | false | undefined {
   if (stage !== 4) return undefined;
   if (eventAt === 351) return 116;
+  if (eventAt === 399) return 116;
   if (eventAt === 47 || eventAt === 63) return 103;
   if (eventAt === 383 || eventAt === 751 || eventAt === 1583 || eventAt === 3535) return false;
   if (eventAt === 815 || eventAt === 1071 || eventAt === 1199 || eventAt === 1727 || eventAt === 3727) return 116;

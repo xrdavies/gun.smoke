@@ -360,6 +360,8 @@ allows one shot; the actor later exits through the top edge.
 Round 1's `at=2671,x=248,y=48,code=7,phase=0` event follows a distinct
 582-frame route. Its first opportunity fires at frame 73, and the actor later
 releases at `Y=252`.
+Round 1's `at=703,x=248,y=32,code=7,phase=1` event follows a separate
+583-frame route, fires at frame 67, and releases at `Y=252`.
 Two complete Round 2 `y=32`
 side traces are now used when their entry coordinate matches in Round 2: code 8
 follows the 569-frame left-edge trace and code 9 follows the 963-frame right-edge

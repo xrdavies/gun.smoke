@@ -319,6 +319,8 @@ The same trigger's `x=192` record uses a 332-frame route with throws at
 116/153/190 and a separate neutral slot fraction.
 Event `at=3327,x=56,phase=1` in the neutral captured state throws at frame
 116 and releases after 256 frames.
+The same trigger's `x=96` record uses a 335-frame route with throws at
+116/153/190 and a separate neutral slot fraction.
 `at=3215,x=208,phase=0`
 holds its lane, fires at frame 116, and releases after 284 frames using a
 fixed-point trace. Event `at=3407,x=224,phase=0` uses the same frame-116 throw gate from its own

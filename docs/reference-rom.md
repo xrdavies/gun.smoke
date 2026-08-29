@@ -509,8 +509,10 @@ bound separately because its post-throw path differs from `at=3215`. Event
 `at=383,x=184,phase=1` and `at=751/1583/3535,x=184,phase=0` take random
 no-throw branches and release after 205/202/202/241 frames. Event
 `at=943,x=168,phase=0` is another no-throw route and releases after 201 frames.
-Events
-`at=815/1071/1199/3727,x=184,phase=0` and `at=1727,x=184,phase=1`
+Event `at=1103,x=160,phase=0` emits its first Shuriken at frame 116 and
+releases after 260 frames using a separate fixed-point route.
+Events `at=815/1071/1199/3727,x=184,phase=0` and
+`at=1727,x=184,phase=1`
 reach the activation range later, throw at frame 116, and release after
 258/279/257/228/257 frames. Runtime binds those routes and throw frames to their event indexes
 and retains the 303-frame cap for other Ninja entries. ROM-tagged Ninja, Hatchet, Spear, and Firebreather

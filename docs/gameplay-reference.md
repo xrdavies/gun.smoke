@@ -487,6 +487,8 @@ Round 3 `at=687,x=4,y=64,code=7,phase=0` also uses the shared state machine for
 all 330 controlled frames rather than the phase-1 y=64 fixed trace.
 Its later phase-0 `at=1711,x=4,y=64,code=7` counterpart independently matches
 311 controlled state-machine frames through release.
+The earlier phase-0 `at=1647,x=4,y=64,code=7` event independently matches 312
+controlled state-machine frames through release.
 The second-loop `at=319,x=4,y=48,code=7,phase=1` event matches 501 controlled
 state-machine frames through its right-edge release.
 The `at=959,x=4,y=80,code=7,phase=1` event matches 302 controlled state-machine

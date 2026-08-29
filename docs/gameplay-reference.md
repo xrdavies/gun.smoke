@@ -282,9 +282,9 @@ Event `at=2223,x=80,phase=0` (the record previously captured at the shared
 map-pointer window) with `fineX=210,fineY=133` throws at frame 116,
 returns along its lower lane, and releases after 257 frames.
 The earlier `at=2015` record is skipped by pool pressure. Event
-`at=2543,x=56,phase=0` with `fineX=36,fineY=132` is a 256-frame single-throw
-route and releases after settling near its left lane; the `at=2207` record is
-the earlier skipped instance.
+`at=2207,x=56,phase=1` is a 212-frame no-throw route in the captured neutral
+slot state. Event `at=2543,x=56,phase=0` with `fineX=36,fineY=132` is a
+256-frame single-throw route and releases after settling near its left lane.
 `at=3215,x=208,phase=0`
 holds its lane, fires at frame 116, and releases after 284 frames using a
 fixed-point trace. Event `at=3407,x=224,phase=0` uses the same frame-116 throw gate from its own

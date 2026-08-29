@@ -28,6 +28,7 @@ const matchFineY = option("match-fine-y") === undefined ? undefined : numberOpti
 const matchMapPointer = option("match-map-pointer") === undefined ? undefined : numberOption("match-map-pointer", 0);
 const matchMapPage = option("match-map-page") === undefined ? undefined : numberOption("match-map-page", 0);
 const matchScrollOffset = option("match-scroll-offset") === undefined ? undefined : numberOption("match-scroll-offset", 0);
+const matchEventIndex = option("match-event-index") === undefined ? undefined : numberOption("match-event-index", 0);
 const startFrame = option("start-frame") === undefined ? undefined : numberOption("start-frame", 0);
 const output = option("out") ?? ".rom-traces/entity.json";
 
@@ -44,6 +45,7 @@ if (!Number.isInteger(frames) || frames <= 0 || !Number.isInteger(traceFrames) |
 for (const [name, value] of [["--match-state", matchState], ["--match-heading", matchHeading], ["--match-x", matchX], ["--match-y", matchY], ["--match-fine-x", matchFineX], ["--match-fine-y", matchFineY]]) {
   if (value !== undefined && (!Number.isInteger(value) || value < 0 || value > 0xff)) throw new Error(`${name} must be an integer from 0 through 255`);
 }
+if (matchEventIndex !== undefined && (!Number.isInteger(matchEventIndex) || matchEventIndex < 0)) throw new Error("--match-event-index must be a non-negative integer");
 if (matchMapPointer !== undefined && (!Number.isInteger(matchMapPointer) || matchMapPointer < 0 || matchMapPointer > 0xffff)) throw new Error("--match-map-pointer must be an integer from 0 through 65535");
 for (const [name, value] of [["--match-map-page", matchMapPage], ["--match-scroll-offset", matchScrollOffset]]) {
   if (value !== undefined && (!Number.isInteger(value) || value < 0 || value > 0xff)) throw new Error(`${name} must be an integer from 0 through 255`);
@@ -167,7 +169,8 @@ for (let frame = 0; frame < frames; frame += 1) {
         && (matchFineY === undefined || candidate.fineY === matchFineY)
         && (matchMapPointer === undefined || candidateRoundState.mapPointer === matchMapPointer)
         && (matchMapPage === undefined || candidateRoundState.mapPage === matchMapPage)
-        && (matchScrollOffset === undefined || candidateRoundState.scrollOffset === matchScrollOffset);
+        && (matchScrollOffset === undefined || candidateRoundState.scrollOffset === matchScrollOffset)
+        && (matchEventIndex === undefined || eventScriptIndexBefore === matchEventIndex);
       if (!matches) continue;
       matchesSeen += 1;
       if (matchesSeen <= skip) continue;
@@ -237,6 +240,7 @@ const trace = {
   ...(matchMapPointer === undefined ? {} : { matchMapPointer }),
   ...(matchMapPage === undefined ? {} : { matchMapPage }),
   ...(matchScrollOffset === undefined ? {} : { matchScrollOffset }),
+  ...(matchEventIndex === undefined ? {} : { matchEventIndex }),
   ...(startFrame === undefined ? {} : { startFrame }),
   targetSlot,
   targetStart,

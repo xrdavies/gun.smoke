@@ -542,9 +542,9 @@ Event `at=2223,x=80,phase=0` (`fineX=210,fineY=133`) is the route captured in
 the shared map-pointer window and throws at frame 116,
 returns along its lower lane, and releases at frame 257.
 The earlier `at=2015` record is skipped by pool pressure. Event
-`at=2543,x=56,phase=0` (`fineX=36,fineY=132`) is a 256-frame single-throw route
-and releases after settling near its left lane; the `at=2207` record is the
-earlier skipped instance.
+`at=2207,x=56,phase=1` is a 212-frame no-throw route in the captured neutral
+slot state. Event `at=2543,x=56,phase=0` (`fineX=36,fineY=132`) is a 256-frame
+single-throw route and releases after settling near its left lane.
 `at=3215,x=208,
 phase=0` entry holds its lane, emits its first Shuriken at frame 116, and
 releases after 284 frames; the runtime binds its fixed-point per-frame trace.

@@ -231,6 +231,21 @@ test("accepts gamepad Start from the title flow", async ({ page }) => {
   await expect(page.locator("#pause-screen")).toBeHidden();
 });
 
+test("returns to Pistol after the final special volley", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/");
+  await page.locator("#start-button").click();
+  await page.locator("#continue-button").click();
+  await page.locator("#briefing-button").click();
+  await page.evaluate(() => (window as unknown as { __setGunSmokeWeapon: (weapon: string, ammo: number) => void }).__setGunSmokeWeapon("machinegun", 1));
+  await page.keyboard.down("x");
+  await page.clock.runFor(120);
+  await page.keyboard.up("x");
+  await expect(page.locator("#weapon-label")).toContainText("PISTOL");
+  const playerBullets = await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; hp: number }> }).__getGunSmokeUnits().filter((unit) => unit.kind === "bullet" && unit.hp > 0).length);
+  expect(playerBullets).toBe(2);
+});
+
 test("continues the current Round after Game Over", async ({ page }) => {
   await page.goto("/");
   await page.locator("#start-button").click();

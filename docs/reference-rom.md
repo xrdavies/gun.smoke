@@ -1134,6 +1134,10 @@ Machine Gun and code `4` as Magnum. Code `3` is the armed Smart Bomb state:
 `$EE1C-$EE29` selects the Pistol/Rifle firing template, `$EECF-$EED7` skips
 special-ammo consumption, and `$CAE2-$CAEC` selects the lethal-hit bomb branch
 only for that code before `$F294-$F2BB` clears it back to Pistol/Rifle. Shotgun
+After a special shot, `$EEFD-$EF11` immediately changes `$88` back to the
+Pistol/Rifle code when the three stock digits reach zero; runtime performs the
+same switch after creating the final volley rather than waiting for another
+trigger.
 fire creates five dispatch `0x01` projectiles: a single-side shot uses NES velocity
 pairs from `(0,-12)` through `(12,0)`, while A+B uses the symmetric
 `(-8,-8)..(8,-8)` fan. Magnum shots use dispatch `0x37-$0x3a` for 34 frames and

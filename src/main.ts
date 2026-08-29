@@ -817,6 +817,12 @@ class GunSmokeGame {
     } else if (this.weapon === "magnum") {
       for (const [x, y, offset] of pistolVelocities(left, right)) this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE, weapon.damage, weaponBulletLifetime("magnum"), offset * NES_WORLD_X_SCALE, true);
     }
+    if (this.weapon !== "pistol" && this.ammo === 0) {
+      this.ownedWeapons.delete(this.weapon);
+      this.weapon = "pistol";
+      this.inventoryWeaponIndex = 0;
+      this.showMessage("OUT OF AMMO");
+    }
     this.fireClock = weapon.interval;
     this.beep(740, 0.025);
   }
@@ -2923,6 +2929,13 @@ let game: GunSmokeGame | undefined;
 let referenceGame: ReferenceRomGame | undefined;
 if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeInvulnerable", { value: (duration: number) => { if (game) game.invulnerable = duration; } });
 if (import.meta.env.DEV) Object.defineProperty(window, "__getGunSmokeUnits", { value: () => game?.units.map((unit) => ({ kind: unit.kind, itemType: unit.itemType, projectileType: unit.projectileType, bossProjectile: unit.bossProjectile, romPool: unit.romPool, romSlot: unit.romSlot, romEntityCode: unit.romEntityCode, hp: unit.hp })) ?? [] });
+if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeWeapon", { value: (weapon: WeaponName, ammo: number) => {
+  if (!game || weapon === "pistol" || !Number.isInteger(ammo) || ammo < 1) return;
+  game.weaponAmmo[weapon] = ammo;
+  game.ownedWeapons.add(weapon);
+  game.weapon = weapon;
+  (game as unknown as { updateHud(): void }).updateHud();
+} });
 if (import.meta.env.DEV) Object.defineProperty(window, "__breakGunSmokeBarrel", { value: (entityCode: number) => {
   const target = game?.units.find((unit) => unit.kind === "barrel" && unit.romEntityCode === entityCode && unit.hp > 0);
   if (game && target) (game as unknown as { defeatTarget(target: Unit): void }).defeatTarget(target);

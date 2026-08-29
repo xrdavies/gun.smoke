@@ -286,6 +286,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(roundCollisionAtNes(4, 0, 4, 48)).toBe(true);
     expect(roundCollisionAtNes(4, 0, 48, 48)).toBe(true);
     expect(roundCollisionAtNes(1, 0, 0, 0)).toBe(false);
+    expect(roundCollisionScrollNes((3919 + 2 / 3 + 759 / 3) * NES_WORLD_Y_SCALE)).toBe(4173);
     const round5ActorMaskScroll = (1903 + 2 / 3 + 1026 / 3) * NES_WORLD_Y_SCALE;
     expect(roundCollisionAtNes(5, round5ActorMaskScroll, 159, 84)).toBe(false);
     expect(roundActorCollisionAtNes(5, round5ActorMaskScroll, 159, 84)).toBe(true);

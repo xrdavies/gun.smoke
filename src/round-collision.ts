@@ -34,7 +34,7 @@ const INITIAL_STORAGE_ROW = 8;
 const COLLISION_SCROLL_PHASE_NES = 1 / 3;
 
 export function roundCollisionScrollNes(scroll: number): number {
-  return Math.floor(scroll * NES_VIEW_HEIGHT / WORLD_HEIGHT + COLLISION_SCROLL_PHASE_NES);
+  return Math.floor(scroll * NES_VIEW_HEIGHT / WORLD_HEIGHT + COLLISION_SCROLL_PHASE_NES + 1e-9);
 }
 
 export function roundCollisionBlocks(round: number, scroll: number, x: number, y: number): boolean {

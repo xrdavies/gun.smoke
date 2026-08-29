@@ -1154,6 +1154,10 @@ automatic scroll.
 The collision lookup also preserves the PPU page rule: when `$5C == 0`,
 `$C6C4` adds an extra 8-byte map-row offset; the runtime collision helper has
 been checked against the original lookup for 28,800 sampled screen cells.
+World-to-NES scroll conversion applies a small floating-point boundary
+tolerance before flooring, so exact event phases such as Round 6 frame 759 map
+to the ROM's next collision row instead of `4172.999999...` staying one row
+behind.
 The additional boulder, tree, and grave rectangles used by the web renderer
 are decorative overlays only; their coordinates are not used for movement
 collision because they are not decoded ROM collision data.

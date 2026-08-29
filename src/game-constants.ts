@@ -480,10 +480,10 @@ export const RIFLEMAN_ATTACK_STATE_FRAME = 122;
 export const RIFLEMAN_ATTACK_TO_FIRST_SHOT_FRAMES = Math.round(RIFLEMAN_FIRST_SHOT_DELAY * NES_FRAME_RATE) - RIFLEMAN_ATTACK_STATE_FRAME;
 export const RIFLEMAN_SHOT_INTERVAL = 16 / NES_FRAME_RATE;
 export const RIFLEMAN_SHOTS_PER_VOLLEY = 3;
-export const RIFLEMAN_LIFETIME = 364 / NES_FRAME_RATE;
-export const RIFLEMAN_PATH_NES = [[0, 0], [121, 121], [211, 151], [363, 0]] as const;
+export const RIFLEMAN_LIFETIME = 308 / NES_FRAME_RATE;
+export const RIFLEMAN_PATH_NES = [[0, 0], [93, 93], [94, 93], [95, 93], [183, 123], [184, 123], [307, 0]] as const;
 export const RIFLEMAN_SIDE_SHOT_FRAMES = [96] as const;
-export const RIFLEMAN_SIDE_LIFETIME = 259 / NES_FRAME_RATE;
+export const RIFLEMAN_SIDE_LIFETIME = 258 / NES_FRAME_RATE;
 export const RIFLEMAN_SIDE_PATH_NES = [[0, 0, 0], [80, 65, 0], [169, 65, 30], [180, 58, 30], [240, 8, 30], [258, -7, 30]] as const;
 
 export function riflemanCanAttack(actorY: number, playerY: number): boolean {
@@ -510,14 +510,11 @@ export function riflemanShotHeading(aimHeading: number, shotIndex: number): numb
 }
 
 export function riflemanPosition(age: number): readonly [number, number] {
-  const frame = Math.max(0, age * NES_FRAME_RATE);
-  const nextIndex = RIFLEMAN_PATH_NES.findIndex(([at]) => at >= frame);
-  if (nextIndex < 0) return [0, RIFLEMAN_PATH_NES.at(-1)![1]];
-  if (nextIndex === 0) return [0, 0];
-  const previous = RIFLEMAN_PATH_NES[nextIndex - 1]!;
-  const next = RIFLEMAN_PATH_NES[nextIndex]!;
-  const amount = (frame - previous[0]) / (next[0] - previous[0]);
-  return [0, previous[1] + (next[1] - previous[1]) * amount];
+  const frame = Math.max(0, Math.floor(age * NES_FRAME_RATE + 1e-6));
+  if (frame <= 93) return [0, frame];
+  if (frame <= 95) return [0, 93];
+  if (frame <= 183) return [0, 93 + Math.floor((frame - 93) / 3)];
+  return [0, Math.max(0, 123 - (frame - 184))];
 }
 
 export function riflemanSidePosition(age: number, fromLeft: boolean): readonly [number, number] {

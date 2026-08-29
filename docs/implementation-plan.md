@@ -101,7 +101,7 @@ recalculating the aim at the first shot; their first shot is scheduled 16 NES
 frames after that transition, for a three-shot fan. Side-entry and generic
 fallback paths remain separate.
 Side-entry Riflemen now use the traced `y=32..62` path and three-shot cadence
-at frame 96 before their frame-259 release.
+at frame 96 before their frame-258 release.
 
 ## Delivery Stages
 

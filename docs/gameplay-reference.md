@@ -486,6 +486,8 @@ instead of its former integer-only fixed trace, preserving all 581 coarse and
 subpixel samples through its top-edge release.
 The flagged right-side `at=4255,x=248,y=64,code=7,phase=1` event likewise uses
 the state machine for all 384 coarse/fine samples through its left-edge release.
+Round 3 `at=1071,x=4,y=64,code=8,phase=0` also replaces its integer fixed trace
+with the state machine, preserving all 379 coarse/fine samples through release.
 Round 3 `at=1119,x=4,y=96,code=8,phase=1` instead uses the shared state
 machine and matches all 282 controlled frames through its bottom-edge release.
 Round 3 `at=687,x=4,y=64,code=7,phase=0` also uses the shared state machine for

@@ -103,6 +103,9 @@ frames after that transition, for a five-shot sequence. Side-entry and generic
 fallback paths remain separate.
 Side-entry Riflemen now use the traced `y=32..62` path, frame-80 aim lock and
 five-shot 96/112/128/144/160 cadence before their frame-258 release.
+Shotgunners now use the traced directional entry paths: top entries move toward
+the road center with their 20-frame hold and two volleys, while side entries
+preserve the 113-frame fan, correction holds, and frame-230 release.
 
 ## Delivery Stages
 

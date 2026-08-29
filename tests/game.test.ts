@@ -1076,6 +1076,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankUsesDynamicState(7, 80, 4, 1, 2527, false)).toBe(true);
     expect(gunmanFlankUsesDynamicState(7, 80, 3, 0, 4239, false)).toBe(true);
     expect(gunmanFlankUsesDynamicState(7, 48, 3, 1, 4831, true)).toBe(true);
+    expect(gunmanFlankUsesDynamicState(7, 80, 3, 1, 4863, true)).toBe(true);
     expect(gunmanFlankUsesDynamicState(8, 96, 3, 1, 1119, false)).toBe(true);
     expect(gunmanFlankUsesDynamicState(8, 48, 3, 1, 3775, false)).toBe(true);
     expect(gunmanFlankUsesDynamicState(8, 96, 3, 0, 3823, false)).toBe(true);
@@ -1204,6 +1205,16 @@ describe("Gun.Smoke vertical slice", () => {
     const wrappingRound3ReleaseScroll = (4831 + 2 / 3 + 582 / 3) * NES_WORLD_Y_SCALE;
     advanceGunmanFlankMovement(wrappingRound3Code7, 582, 152, 215, (x, y) => roundActorCollisionAtNes(3, wrappingRound3ReleaseScroll, x, y));
     expect(wrappingRound3Code7.dead).toBe(true);
+
+    const gateRound3Code7 = createGunmanFlankMovementState(7, 248, 80, true, 85, 178);
+    for (let frame = 1; frame <= 380; frame += 1) {
+      const scroll = (4863 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(gateRound3Code7, frame, 152, 215, (x, y) => roundActorCollisionAtNes(3, scroll, x, y));
+    }
+    expect(gateRound3Code7).toMatchObject({ frame: 380, mode: "orbit", heading: 27, timer: 3, x: 74 / 256, y: 97 + 41 / 256, dead: false });
+    const gateRound3ReleaseScroll = (4863 + 2 / 3 + 381 / 3) * NES_WORLD_Y_SCALE;
+    advanceGunmanFlankMovement(gateRound3Code7, 381, 152, 215, (x, y) => roundActorCollisionAtNes(3, gateRound3ReleaseScroll, x, y));
+    expect(gateRound3Code7.dead).toBe(true);
 
     const entry = createGunmanFlankMovementState(7, 4, 32, false);
     const seededEntry = createGunmanFlankMovementState(7, 4, 32, false, 60, 86);

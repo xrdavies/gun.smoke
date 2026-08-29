@@ -367,6 +367,8 @@ state-machine samples through release. Its high event flag affects its drop,
 not the Gunman movement routine.
 The late `at=4831,x=248,y=48,code=7,phase=1` branch matches all 582 controlled
 state-machine samples across the map wrap and releases at `Y=253`.
+The same-frame Boss-gate record `at=4863,x=248,y=80,code=7,phase=1` matches all
+381 controlled state-machine samples through its left-edge release.
 Round 6's naturally allocated `at=2207,x=4,y=96,code=8,phase=1` branch matches
 the shared state machine for all 648 controlled coarse/fine samples and its
 left-edge release. The comparison uses Billy's post-scroll coordinate read by

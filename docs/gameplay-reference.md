@@ -492,6 +492,8 @@ machine for all 301 controlled frames; its flag remains a drop concern and does
 not change movement.
 The late `at=4831,x=248,y=48,code=7,phase=1` event matches 582 controlled
 state-machine frames across the map wrap and releases at the bottom edge.
+The same-frame Boss-gate event `at=4863,x=248,y=80,code=7,phase=1` matches 381
+controlled state-machine frames through its left-edge release.
 The Round 6 right-side code-7 `y=64` event does not reuse the left-only trace;
 it runs the shared player- and terrain-driven Gunman state machine.
 Round 6 `at=2207,x=4,y=96,code=8,phase=1` also uses that state machine and

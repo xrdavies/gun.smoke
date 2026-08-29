@@ -596,6 +596,9 @@ after its mirrored return.
 The `at=3647,x=136/176/216,phase=1` group emits at frames 116 and 153, but
 uses three separate fixed-point routes that release after 364, 335, and 261
 frames respectively.
+The later `at=3743,x=120,phase=1` route emits once at frame 116 and releases
+after 228 frames; `at=3759,x=152,phase=0` also emits once at frame 116 and
+releases after 198 frames.
 `at=3215,x=208,
 phase=0` entry holds its lane, emits its first Shuriken at frame 116, and
 releases after 284 frames; the runtime binds its fixed-point per-frame trace.

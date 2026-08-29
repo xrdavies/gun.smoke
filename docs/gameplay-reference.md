@@ -244,7 +244,9 @@ Ordinary Ninjas hold their entry lane through a short pause, descend to the
 combat line, then make a brief player-relative diagonal retreat after their
 frame-103 Shuriken and release within the measured 303-frame route cap. Round 4
 events `at=47,x=152,phase=0` and `at=63,x=184,phase=1` use their measured
-244-frame second movement and release traces. The later
+244-frame second movement and release traces. Event `at=351,x=208,phase=1`
+holds its lane, fires at frame 116, and releases after 284 frames using a
+fixed-point trace. The later
 `at=383,x=184,phase=1` and `at=751/1583/3535,x=184,phase=0` events follow
 separate 205/202/202/241-frame no-throw routes. Events
 `at=815/1071/1199/3727,x=184,phase=0` and `at=1727,x=184,phase=1`

@@ -497,7 +497,10 @@ frame 83. After the throw it moves diagonally for about 15 frames toward a
 player-relative offset before holding position; clean routes release between
 281 and 302 frames. Round 4 events `at=47,x=152,phase=0` and
 `at=63,x=184,phase=1` have complete 244-frame coordinate traces, including
-their second post-throw movement and release transitions. Event
+their second post-throw movement and release transitions. The `at=351,x=208,
+phase=1` entry holds its lane, emits its first Shuriken at frame 116, and
+releases after 284 frames; the runtime binds its fixed-point per-frame trace.
+Event
 `at=383,x=184,phase=1` and `at=751/1583/3535,x=184,phase=0` take random
 no-throw branches and release after 205/202/202/241 frames. Events
 `at=815/1071/1199/3727,x=184,phase=0` and `at=1727,x=184,phase=1`

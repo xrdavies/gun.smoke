@@ -371,6 +371,8 @@ the route is scoped to the captured player path and is not generalized to all
 Round 5 code-7 entries.
 The `at=1711,x=4,y=64,code=7,phase=0` event has a separate 285-frame fixed-point
 trace and releases at the bottom edge.
+The following `at=1759,x=4,y=64,code=7,phase=1` event matches the shared state
+machine for 312 frames and releases at the bottom edge.
 Seeding the model with one natural at1375 actor's retained `$0500/$0520` slot
 fractions reproduces all 1,955 captured X/Y and movement-state samples through
 its top-edge release. Runtime assigns each ROM enemy actor one of the seven

@@ -40,6 +40,7 @@ state machine instead of the available left-only trace, and the verified Round
 Round 5 `at=1135` now uses its separate 1,107-frame fixed-point trace through
 the observed slot-reuse boundary.
 Round 5 `at=1711` now uses its separate 285-frame fixed-point trace.
+Round 5 `at=1759` now uses the shared state machine through its 312-frame route.
 
 ## Delivery Stages
 

@@ -580,8 +580,8 @@ lifetime. The controlled unhurt trace attempts attacks at frames
 to a 125-frame interval. The runtime preserves these measured 5/3 fan geometries
 and lifetimes. The five-shot branch accepts aim
 sectors 8 through 24 (inclusive), as enforced by the ROM's `$C7E6` check. The
-runtime uses compressed X/Y keyframes from the unhurt Boss trace through
-combat frame 3,600; interpolation preserves the long recorded route while the
+runtime uses complete integer X/Y samples from the unhurt Boss trace through
+combat frame 3,457; the discrete samples preserve the long recorded route while the
 separate attack scheduler remains subject to aim and random gates. After that
 window, the runtime uses the ROM's 48-frame action counter, `AE=(AE+AC)&0xff`
 movement decisions, discrete `24/48/72/96`-frame segments, short action holds,

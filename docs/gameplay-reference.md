@@ -196,7 +196,8 @@ teleports naturally during its route and after each lost health bar. The runtime
 hides the Boss for the measured 90-frame teleport delay, then restarts its entry
 smoke window and attack clock from the newly selected lane. Devil Hawk fireballs use the ROM's
 discrete directional velocity table and their measured 45/36-frame lifetimes;
-its recorded X/Y movement route is replayed through combat frame 3,600, then
+its recorded X/Y movement route is replayed through all 3,458 available combat
+frames, then
 uses the ROM's random movement/action state and boundary correction for the
 continued encounter. Long-tail fire is emitted from those action states:
 the hold branch produces a three-shot fan, while the high-position vertical

@@ -506,6 +506,7 @@ export function advanceNinja(state: NinjaState, targetFrame: number, playerX: nu
       state.nextMode = "attack";
     } else {
       state.heading = 0x40 | nesAimHeading(state.x * NES_WORLD_X_SCALE, state.y * NES_WORLD_Y_SCALE, playerX * NES_WORLD_X_SCALE, playerY * NES_WORLD_Y_SCALE);
+      state.remaining = 16;
       state.nextMode = "roam";
     }
     state.randomThreshold = 0x40;
@@ -556,13 +557,17 @@ export function advanceNinja(state: NinjaState, targetFrame: number, playerX: nu
       continue;
     }
     moveEncodedHeading(state, state.heading);
+    state.remaining -= 1;
     const [probeX, probeY] = nesActorCollisionProbeOffset(state.heading);
     if (outsideScreen()) state.dead = true;
     else if (blocked(Math.floor(state.x) + probeX, Math.floor(state.y) + probeY)) {
       state.mode = "hold";
-      state.nextMode = "attack";
+      state.nextMode = "decide";
       state.wait = NINJA_ACTION_DELAY_FRAMES;
-      state.remaining = 16;
+    } else if (state.remaining === 0) {
+      state.mode = "hold";
+      state.nextMode = "decide";
+      state.wait = NINJA_ACTION_DELAY_FRAMES;
     }
   }
   return { shots, dead: state.dead };

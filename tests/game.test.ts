@@ -13,7 +13,7 @@ import { addScore, MAX_SCORE } from "../src/game-constants";
 import { PLAYER_ENTRY_X, PLAYER_ENTRY_X_NES, PLAYER_ENTRY_Y, PLAYER_ENTRY_Y_NES, PLAYER_MAX_X_NES, PLAYER_MAX_Y_NES, PLAYER_MIN_X_NES, PLAYER_MIN_Y_NES } from "../src/game-constants";
 import { HORSE_SPEED_MULTIPLIER, playerCollisionFallbackY, playerMovementVelocity } from "../src/game-constants";
 import { NINJA_ACTIVATION_DISTANCE_NES, NINJA_LIFETIME, ninjaCanThrow } from "../src/game-constants";
-import { NINJA_ATTACK_MOVE_DURATION, NINJA_ENTRY_PATH_NES, ninjaAttackPosition, ninjaOpeningY, ninjaTraceLifetime, ninjaTracePosition, ninjaTraceThrowFrame } from "../src/game-constants";
+import { NINJA_ATTACK_MOVE_DURATION, NINJA_ENTRY_PATH_NES, ninjaAttackPosition, ninjaOpeningY, ninjaTraceLifetime, ninjaTracePosition, ninjaTraceThrowFrame, ninjaTraceThrowFrames } from "../src/game-constants";
 import { ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y } from "../src/game-constants";
 import { BOMBER_ENTRY_DURATION, BOMBER_ENTRY_END_Y, BOMBER_ENTRY_END_Y_NES, bomberOpeningY } from "../src/game-constants";
 import { contactSourceShouldClear, DYNAMITE_AIM_FACTOR, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_VERTICAL_PATH_NES, dynamiteVerticalOffset } from "../src/game-constants";
@@ -526,6 +526,9 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ninjaTracePosition(257 / NES_FRAME_RATE, 216, 0, 4, 1, 767, 51 / 256, 66 / 256)).toEqual([(172 + 87 / 256) * NES_WORLD_X_SCALE, (207 + 226 / 256) * NES_WORLD_Y_SCALE]);
     expect(ninjaTracePosition(103 / NES_FRAME_RATE, 184, 0, 4, 0)).toBeUndefined();
     expect([ninjaTraceThrowFrame(4, 47), ninjaTraceThrowFrame(4, 63), ninjaTraceThrowFrame(4, 351), ninjaTraceThrowFrame(4, 399), ninjaTraceThrowFrame(4, 735, 239 / 256, 81 / 256), ninjaTraceThrowFrame(4, 767, 51 / 256, 66 / 256), ninjaTraceThrowFrame(4, 943), ninjaTraceThrowFrame(4, 1103), ninjaTraceThrowFrame(4, 1711), ninjaTraceThrowFrame(4, 3215), ninjaTraceThrowFrame(4, 3407), ninjaTraceThrowFrame(4, 383), ninjaTraceThrowFrame(4, 751), ninjaTraceThrowFrame(4, 815), ninjaTraceThrowFrame(4, 1071), ninjaTraceThrowFrame(4, 1199), ninjaTraceThrowFrame(4, 1583), ninjaTraceThrowFrame(4, 1727), ninjaTraceThrowFrame(4, 3535), ninjaTraceThrowFrame(4, 3727), ninjaTraceThrowFrame(3, 47)]).toEqual([103, 103, 103, false, false, 116, false, 116, 116, 116, 116, false, false, 116, 116, 116, false, 116, false, 116, undefined]);
+    expect(ninjaTraceThrowFrames(4, 735, 161 / 256, 5 / 256)).toEqual([116, 153, 190, 227]);
+    expect(ninjaTraceThrowFrames(4, 1071)).toEqual([116, 153]);
+    expect(ninjaTraceThrowFrames(4, 1711)).toEqual([116, 153]);
     expect(NINJA_LIFETIME).toBeCloseTo(303 / NES_FRAME_RATE, 9);
   });
 

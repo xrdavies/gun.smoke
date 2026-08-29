@@ -503,7 +503,10 @@ their second post-throw movement and release transitions. The early
 `at=735,x=152,phase=1` entry has a 202-frame no-throw route in the captured
 slot state (`fineX=239,fineY=81`); because the ROM can reuse this event with a
 different random state, the runtime binds the trace only to those initial
-fractions and keeps other instances on the generic routine. The captured
+fractions and keeps other instances on the generic routine. A second capture
+with `fineX=161,fineY=5` observes throws at frames 116/153/190/227 through its
+frame-260 capture limit; runtime schedules those throws without treating that
+limit as a release. The captured
 `at=767,x=216,phase=1` route (`fineX=51,fineY=66`) throws at frame 116 and
 releases at frame 258 under the same state-qualified binding rule.
 `at=3215,x=208,
@@ -519,10 +522,11 @@ Event `at=1103,x=160,phase=0` emits its first Shuriken at frame 116 and
 releases after 260 frames using a separate fixed-point route.
 Event `at=1711,x=160,phase=0` emits Shuriken at frames 116 and 153, then
 releases after 284 frames on its own fixed-point route.
-Events `at=815/1071/1199/3727,x=184,phase=0` and
+Events `at=815/1199/3727,x=184,phase=0` and
 `at=1727,x=184,phase=1`
 reach the activation range later, throw at frame 116, and release after
-258/279/257/228/257 frames. Runtime binds those routes and throw frames to their event indexes
+258/257/228/257 frames. Event `at=1071` throws at frames 116 and 153 and
+releases after 279 frames. Runtime binds those routes and throw frames to their event indexes
 and retains the 303-frame cap for other Ninja entries. ROM-tagged Ninja, Hatchet, Spear, and Firebreather
 shots use the same second-tier 32-direction table as Gunmen; side Firebreathers
 mask the selected heading to an even sector before allocation.

@@ -26,7 +26,7 @@ import { advanceInvulnerability, BLUE_YASHICHI_DURATION, BOSS_BAR_RECOVERY_DURAT
 import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, PLAYER_ENTRY_X, PLAYER_ENTRY_Y, PLAYER_MAX_X_NES, PLAYER_MAX_Y_NES, PLAYER_MIN_X_NES, PLAYER_MIN_Y_NES, pistolBulletSpeedFactor, pistolVelocities, playerCollisionFallbackY, playerMovementVelocity, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
 import { addScore } from "./game-constants";
-import { ninjaCanThrow, ninjaTraceLifetime, ninjaTracePosition, ninjaTraceThrowFrame } from "./game-constants";
+import { ninjaCanThrow, ninjaTraceLifetime, ninjaTracePosition, ninjaTraceThrowFrames } from "./game-constants";
 import { FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeAimAllowsLaunch, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, FATMAN_JOE_MOVEMENT_SPEED, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, fatmanJoeCombatX, fatmanJoeCombatY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "./game-constants";
 import { advanceDevilHawkMovement, advanceWingateMovement, createDevilHawkMovementState, createWingateMovementState, DEVIL_HAWK_RANDOM_HANDOFF_ACTION_COUNTER, DEVIL_HAWK_RANDOM_HANDOFF_FINE_X, DEVIL_HAWK_RANDOM_HANDOFF_FINE_Y, DEVIL_HAWK_RANDOM_HANDOFF_GAIT, DEVIL_HAWK_RANDOM_HANDOFF_HEADING, DEVIL_HAWK_RANDOM_HANDOFF_SEGMENT_FRAMES, WINGATE_BULLET_LIFETIME, wingateCanFire, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, type DevilHawkMovementState, type WingateMovementState } from "./game-constants";
 import { WINGATE_ENDING_INPUT_DELAY, WINGATE_FINAL_DEFEAT_ANIMATION_DURATION, WINGATE_FINAL_ENDING_DELAY } from "./game-constants";
@@ -1495,11 +1495,14 @@ class GunSmokeGame {
           unit.x += (unit.vx + Math.sin(unit.age * 6 + unit.phase) * 90) * delta;
           unit.y += unit.vy * 1.8 * delta;
         }
-        const tracedThrowFrame = unit.romBehavior === 6 ? ninjaTraceThrowFrame(this.stage, unit.romEventAt, unit.romSpawnFineX, unit.romSpawnFineY) : undefined;
-        const throwAt = typeof tracedThrowFrame === "number" ? tracedThrowFrame / NES_FRAME_RATE : NINJA_FIRST_SHOT_DELAY;
-        const canThrow = tracedThrowFrame === false ? false : tracedThrowFrame !== undefined || ninjaCanThrow(unit.y, this.player.y);
-        if (!unit.fired && unit.age >= throwAt && (tracedThrowFrame === false || canThrow)) {
+        const tracedThrowFrames = unit.romBehavior === 6 ? ninjaTraceThrowFrames(this.stage, unit.romEventAt, unit.romSpawnFineX, unit.romSpawnFineY) : undefined;
+        const tracedThrowFrame = Array.isArray(tracedThrowFrames) ? tracedThrowFrames[unit.volleysFired] : undefined;
+        const throwAt = tracedThrowFrame === undefined ? NINJA_FIRST_SHOT_DELAY : tracedThrowFrame / NES_FRAME_RATE;
+        const canThrow = tracedThrowFrames === false ? false : tracedThrowFrames !== undefined || ninjaCanThrow(unit.y, this.player.y);
+        const shouldThrow = tracedThrowFrames === false ? false : tracedThrowFrames === undefined ? !unit.fired && unit.age >= throwAt && canThrow : tracedThrowFrame !== undefined && unit.age >= throwAt;
+        if (shouldThrow) {
           unit.fired = true;
+          unit.volleysFired += 1;
           if (canThrow) {
             const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
             const projectile = this.spawnEnemyProjectile(unit.x, unit.y);

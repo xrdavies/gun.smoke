@@ -1193,20 +1193,27 @@ export function ninjaTraceLifetime(originX: number, originY: number, stage: numb
   return trace ? trace.length / NES_FRAME_RATE : undefined;
 }
 
-export function ninjaTraceThrowFrame(stage: number, eventAt?: number, fineX = Number.NaN, fineY = Number.NaN): number | false | undefined {
+export function ninjaTraceThrowFrames(stage: number, eventAt?: number, fineX = Number.NaN, fineY = Number.NaN): readonly number[] | false | undefined {
   if (stage !== 4) return undefined;
   if (eventAt === 735 && Math.round(fineX * 256) === 239 && Math.round(fineY * 256) === 81) return false;
-  if (eventAt === 767 && Math.round(fineX * 256) === 51 && Math.round(fineY * 256) === 66) return 116;
-  if (eventAt === 351) return 103;
+  if (eventAt === 735 && Math.round(fineX * 256) === 161 && Math.round(fineY * 256) === 5) return [116, 153, 190, 227];
+  if (eventAt === 767 && Math.round(fineX * 256) === 51 && Math.round(fineY * 256) === 66) return [116];
+  if (eventAt === 351) return [103];
   if (eventAt === 399) return false;
   if (eventAt === 943) return false;
-  if (eventAt === 1103) return 116;
-  if (eventAt === 1711) return 116;
-  if (eventAt === 3215 || eventAt === 3407) return 116;
-  if (eventAt === 47 || eventAt === 63) return 103;
+  if (eventAt === 1103) return [116];
+  if (eventAt === 1711) return [116, 153];
+  if (eventAt === 3215 || eventAt === 3407) return [116];
+  if (eventAt === 47 || eventAt === 63) return [103];
   if (eventAt === 383 || eventAt === 751 || eventAt === 1583 || eventAt === 3535) return false;
-  if (eventAt === 815 || eventAt === 1071 || eventAt === 1199 || eventAt === 1727 || eventAt === 3727) return 116;
+  if (eventAt === 1071) return [116, 153];
+  if (eventAt === 815 || eventAt === 1199 || eventAt === 1727 || eventAt === 3727) return [116];
   return undefined;
+}
+
+export function ninjaTraceThrowFrame(stage: number, eventAt?: number, fineX = Number.NaN, fineY = Number.NaN): number | false | undefined {
+  const frames = ninjaTraceThrowFrames(stage, eventAt, fineX, fineY);
+  return frames === false ? false : frames?.[0];
 }
 const GUNMAN_FLANK_STAGE2_CODE7_AT2671_OFFSETS_NES = GUNMAN_FLANK_STAGE2_CODE7_AT2671_TRACE_ABSOLUTE_NES.map(([x, y]) => [248 - x, y - 64] as const);
 const GUNMAN_FLANK_STAGE3_CODE8_PHASE0_TRACE_ABSOLUTE_NES = decodeGunmanAbsoluteCoordinateSamples("BUEGQQZBB0IIQglCCkMLQwtDDEQNRA5ED0UQRRBFEUYSRhNGFEcVRxVHFkgXSBhIGUkZSRpJG0ocSh1KHkseSx9LIEwhTCJMI00jTSRNJE4kTiROJE8kTyRPJFAkUCRQJFEkUSRRJFIkUiRSJFMkUyRTJFQkVCRUJFUkVSRVJFYkViRWJFckVyRXJFgkWCRYJFkkWSRZJFokWiRaJFskWyRbJFwkXCRcJF0kXSRdJF4kXiReJF8kXyRfJGAkYCRgJGEkYSRhJGIkYiRiJGMkYyRjJGQkZCRkJGUkZSRlJGYkZiRmJGckZyRnJGgkaCRoJGkkaSRpJGokaiRqJGskayRrJGwkbCRsJG0kbSRtJG4kbiRuJG8kbyRvJHAkcCRwJHEkcSRxJHIkciRyJHMkcyVyJ3AobyltKmwsay1qLmkwaDFnM2c0ZjVmNmU3ZThlOGU5ZTplO2U8ZT1lPWY+Zj9mQGdBZ0FnQ2lEakVrR2xIbUlvSnBLckxzTXVOdk94UHpQfFF+UYBSglKFU4hTi1OOU5FTlFOXU5lUmlSbVJ1VnlWeVqBWoFefV6BYn1ieWZ9anlqdW55cnVydXZ1enV+dX51gnWGdYp1jnWOdZJ5lnmaeZ59nn2ifaaBqoGugbKJsom2ibqNvo3CkcKVxpXKlc6Z0pnWndah2qHeoeKl5qnmqeqt7q3yrfa19rX6tf66AroGugrCCsIOwhLGFsYayhrOHs4izibSKtYq1i7aMto22jrePuI+4kLmRuZK5k7uTu5S7lbyWvJe9l76Yvpm+mr+bv5zAnMGdwZ7Bn8Kgw6DDocSixKPEpMakxqXGpsenx6jHqcmpyarJq8qsyq3LrcyuzK/MsM2xzrHOss+zz7TPtdC20bbRt9K40rnSutS61LvUvNW91b7Wvte/18DXwdjC2MLZw9rE28XbxtzG3cfeyN/I4MngyeLK48vjy+XM5sznzejN6c7qzuzO7c/uz/DP8dDy0PPQ9ND10PfQ+ND50Ps=");

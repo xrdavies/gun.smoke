@@ -250,7 +250,9 @@ fires at frame 103 and releases after 255 frames, while
 `at=735,x=152,phase=1` has a 202-frame no-throw route for the captured slot
 fractions `fineX=239,fineY=81`; the same event can take a different random
 branch and is therefore left on the generic state path when those fractions do
-not match. Event `at=767,x=216,phase=1` similarly binds its captured
+not match. The observed `fineX=161,fineY=5` branch throws at frames
+116/153/190/227; only those verified throws are scheduled because that capture
+ends before natural release. Event `at=767,x=216,phase=1` similarly binds its captured
 `fineX=51,fineY=66` state to a frame-116 throw and 258-frame release route.
 `at=3215,x=208,phase=0`
 holds its lane, fires at frame 116, and releases after 284 frames using a
@@ -262,8 +264,9 @@ uses a 201-frame no-throw route. Event `at=1103,x=160,phase=0` fires at frame
 116 and follows a 260-frame fixed-point route. Events
 `at=1711,x=160,phase=0` fires at frames 116 and 153 and releases after 284
 frames using a separate fixed-point route. Events
-`at=815/1071/1199/3727,x=184,phase=0` and `at=1727,x=184,phase=1`
-delay their Shuriken until frame 116 and follow separate
+`at=815/1199/3727,x=184,phase=0` and `at=1727,x=184,phase=1`
+delay their Shuriken until frame 116, while `at=1071` throws at frames 116 and
+153. They follow separate
 258/279/257/228/257-frame routes;
 other entries retain the parameterized route.
 Gunmen use the same quantized table at the faster second tier. Their first

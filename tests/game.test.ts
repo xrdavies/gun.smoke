@@ -740,6 +740,9 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankLifetime(7, 64, 2, 0, false, 1167)).toBeCloseTo(299 / NES_FRAME_RATE, 9);
     expect(gunmanFlankPosition(7, 200 / NES_FRAME_RATE, 64, 2, 0, false, 1167)).toEqual([136, 116]);
     expect(gunmanFlankPosition(7, 298 / NES_FRAME_RATE, 64, 2, 0, false, 1167)).toEqual([191, 187]);
+    expect(gunmanFlankLifetime(7, 48, 2, 0, true, 1231)).toBeCloseTo(522 / NES_FRAME_RATE, 9);
+    expect(gunmanFlankPosition(7, 64 / NES_FRAME_RATE, 48, 2, 0, true, 1231)).toEqual([46, 35]);
+    expect(gunmanFlankPosition(7, 521 / NES_FRAME_RATE, 48, 2, 0, true, 1231)).toEqual([108, -48]);
     expect(gunmanFlankLifetime(8, 32, 2, 0, false, 623)).toBeCloseTo(569 / NES_FRAME_RATE, 9);
     expect(gunmanFlankPosition(8, 300 / NES_FRAME_RATE, 32, 2, 0, false, 623)).toEqual([127, 114]);
     expect(gunmanFlankPosition(8, 568 / NES_FRAME_RATE, 32, 2, 0, false, 623)).toEqual([120, -32]);

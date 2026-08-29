@@ -295,6 +295,8 @@ Event `at=2639,x=40,phase=0` in the captured neutral slot state throws at
 frame 116 and releases after 258 frames from its rightward return lane.
 Event `at=2751,x=24,phase=1` in the captured neutral slot state throws at
 frame 116 and releases after 224 frames through its lower screen boundary.
+Event `at=2767,x=80,phase=0` (the Ninja record in the four-record group)
+with `fineX=44,fineY=0` throws at 116/153/190 and releases after 332 frames.
 `at=3215,x=208,phase=0`
 holds its lane, fires at frame 116, and releases after 284 frames using a
 fixed-point trace. Event `at=3407,x=224,phase=0` uses the same frame-116 throw gate from its own

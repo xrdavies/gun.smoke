@@ -53,6 +53,38 @@ for (const [name, value] of [["--match-map-page", matchMapPage], ["--match-scrol
 if (startFrame !== undefined && (!Number.isInteger(startFrame) || startFrame < 0 || startFrame >= frames)) throw new Error("--start-frame must be within --frames");
 
 const romBytes = fs.readFileSync(filename);
+const trainerBytes = romBytes[6] & 0x04 ? 512 : 0;
+const prg = romBytes.subarray(16 + trainerBytes, 16 + trainerBytes + (romBytes[4] ?? 0) * 0x4000);
+const fixedBank = prg.subarray(prg.length - 0x4000);
+const fixedByte = (address) => fixedBank[address - 0xc000];
+const positionCount = 0xfb71 - 0xfb09;
+const positionY = Array.from({ length: positionCount }, (_, index) => fixedByte(0xfb09 + index));
+const positionX = Array.from({ length: positionCount }, (_, index) => fixedByte(0xfb71 + index));
+const initializerDispatch = (entityCode) => {
+  const initializerCode = entityCode < 0x20 ? entityCode : entityCode >= 0x2c ? 0x39 : 0x31;
+  const pointer = fixedByte(0xde83 + initializerCode * 2) | (fixedByte(0xde84 + initializerCode * 2) << 8);
+  return fixedByte(pointer + 2);
+};
+const scriptRecord = (roundIndex, index) => {
+  const offset = roundIndex * 0x4000 + 0x0c00 + index * 3;
+  const positionByte = prg[offset + 1] ?? 0;
+  const positionIndex = positionByte & 0x7f;
+  const typeByte = prg[offset + 2] ?? 0;
+  return { index, pool: typeByte & 0x20 ? "object" : "enemy", dispatch: initializerDispatch(typeByte & 0x3f), x: positionX[positionIndex], y: positionY[positionIndex] };
+};
+const axisDistance = (left, right) => {
+  const difference = Math.abs(left - right);
+  return Math.min(difference, 256 - difference);
+};
+const matchingEventIndexes = (roundIndex, before, after, candidate) => {
+  if (before === undefined || after === undefined || after < before) return before === undefined ? [] : [before];
+  const records = Array.from({ length: after - before }, (_, offset) => scriptRecord(roundIndex, before + offset))
+    .filter((record) => record.pool === "enemy" && record.dispatch === candidate.dispatch);
+  if (records.length === 0) return [];
+  const scores = records.map((record) => axisDistance(candidate.x, record.x) + axisDistance(candidate.y, record.y));
+  const best = Math.min(...scores);
+  return records.filter((_, index) => scores[index] === best).map((record) => record.index);
+};
 const nes = new NES({ onFrame: () => {}, onAudioSample: () => {} });
 nes.loadROM(romBytes.toString("binary"));
 if (stateFile) nes.fromJSON(JSON.parse(fs.readFileSync(stateFile, "utf8")));
@@ -104,6 +136,7 @@ const eventScriptIndex = () => {
 
 let targetSlot;
 let targetStart;
+let targetEventScriptIndexes = [];
 const entityFrames = [];
 const projectileFrames = [];
 const allowedDispatches = new Set([dispatch - 2, dispatch - 1, dispatch, dispatch + 1, ...followDispatches]);
@@ -156,10 +189,12 @@ for (let frame = 0; frame < frames; frame += 1) {
       }
       const candidate = entity(slot);
       const candidateRoundState = roundState();
+      const eventScriptIndexes = matchingEventIndexes(candidateRoundState.roundIndex, eventScriptIndexBefore, candidateRoundState.eventScriptIndex, candidate);
+      const eventScriptIndex = eventScriptIndexes.length === 1 ? eventScriptIndexes[0] : undefined;
       const baseMatch = !advancing && candidate.dispatch === dispatch && (variant === undefined || candidate.variant === variant);
       if (!baseMatch || matchingSlots.has(slot)) continue;
       matchingSlots.add(slot);
-      candidates.push({ frame, ...candidate, playerBefore, player: { x: memory[0x74], y: memory[0x71] }, eventScriptPointerBefore, eventScriptIndexBefore, roundState: candidateRoundState });
+      candidates.push({ frame, ...candidate, playerBefore, player: { x: memory[0x74], y: memory[0x71] }, eventScriptPointerBefore, eventScriptIndexBefore, eventScriptIndex, eventScriptIndexes, roundState: candidateRoundState });
       if (listCandidates) continue;
       const matches = (matchState === undefined || candidate.state === matchState)
         && (matchHeading === undefined || candidate.heading === matchHeading)
@@ -170,12 +205,13 @@ for (let frame = 0; frame < frames; frame += 1) {
         && (matchMapPointer === undefined || candidateRoundState.mapPointer === matchMapPointer)
         && (matchMapPage === undefined || candidateRoundState.mapPage === matchMapPage)
         && (matchScrollOffset === undefined || candidateRoundState.scrollOffset === matchScrollOffset)
-        && (matchEventIndex === undefined || eventScriptIndexBefore === matchEventIndex);
+        && (matchEventIndex === undefined || eventScriptIndexes.includes(matchEventIndex));
       if (!matches) continue;
       matchesSeen += 1;
       if (matchesSeen <= skip) continue;
       targetSlot = slot;
       targetStart = frame;
+      targetEventScriptIndexes = eventScriptIndexes;
       for (let other = 16; other < 23; other += 1) if (other !== slot) memory[0x400 + other] = 0;
       for (let projectile = 24; projectile < 32; projectile += 1) memory[0x400 + projectile] = 0;
       break;
@@ -205,7 +241,7 @@ for (let frame = 0; frame < frames; frame += 1) {
   if (relativeFrame >= traceFrames) break;
 }
 
-if (listCandidates) {
+  if (listCandidates) {
   const result = {
     source: filename,
     sourceSha256: crypto.createHash("sha256").update(romBytes).digest("hex"),
@@ -244,6 +280,8 @@ const trace = {
   ...(startFrame === undefined ? {} : { startFrame }),
   targetSlot,
   targetStart,
+  targetEventScriptIndex: targetEventScriptIndexes.length === 1 ? targetEventScriptIndexes[0] : undefined,
+  targetEventScriptIndexes,
   player: { x: playerX, y: playerY },
   termination,
   entityFrames,

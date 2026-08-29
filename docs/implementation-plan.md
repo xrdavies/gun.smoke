@@ -49,6 +49,8 @@ Round 5 `at=2735` also uses the shared state machine through its complete
 283-frame route.
 Round 6 `at=2207` now replaces its generic code-8 coordinate path with the
 shared state machine verified across all 648 controlled frames.
+Round 6 `at=2783` likewise replaces its generic code-9 path with the shared
+state machine verified across all 960 controlled frames.
 
 ## Delivery Stages
 

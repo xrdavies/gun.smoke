@@ -1055,10 +1055,10 @@ describe("Gun.Smoke vertical slice", () => {
     expect(fatmanJoeOpeningY(FATMAN_JOE_ENTRY_DURATION)).toBe(252);
     expect(fatmanJoeOpeningY(FATMAN_JOE_ENTRY_DURATION * 2)).toBe(252);
     expect(fatmanJoeCombatY(FATMAN_JOE_ENTRY_DURATION)).toBe(252);
-    expect(fatmanJoeCombatY(FATMAN_JOE_ENTRY_DURATION + 50 / NES_FRAME_RATE)).toBe(317.25);
-    expect(fatmanJoeCombatY(FATMAN_JOE_ENTRY_DURATION + 450 / NES_FRAME_RATE)).toBe(189.5625);
-    expect(fatmanJoeCombatX(FATMAN_JOE_ENTRY_DURATION + 288 / NES_FRAME_RATE)).toBe(217.5);
-    expect(fatmanJoeCombatX(FATMAN_JOE_ENTRY_DURATION + 512 / NES_FRAME_RATE)).toBe(476.25);
+    expect(fatmanJoeCombatY(FATMAN_JOE_ENTRY_DURATION + 50 / NES_FRAME_RATE)).toBe(142 * NES_WORLD_Y_SCALE);
+    expect(fatmanJoeCombatY(FATMAN_JOE_ENTRY_DURATION + 450 / NES_FRAME_RATE)).toBe(75 * NES_WORLD_Y_SCALE);
+    expect(fatmanJoeCombatX(FATMAN_JOE_ENTRY_DURATION + 288 / NES_FRAME_RATE)).toBe(118 * NES_WORLD_X_SCALE);
+    expect(fatmanJoeCombatX(FATMAN_JOE_ENTRY_DURATION + 512 / NES_FRAME_RATE)).toBe(115 * NES_WORLD_X_SCALE);
     expect(fatmanJoeCombatX(FATMAN_JOE_ENTRY_DURATION + 352 / NES_FRAME_RATE, 64 * NES_WORLD_X_SCALE)).toBe(155);
     expect(fatmanJoeCombatX(FATMAN_JOE_ENTRY_DURATION + 3418 / NES_FRAME_RATE)).toBe(68 * NES_WORLD_X_SCALE);
     expect(fatmanJoeCombatY(FATMAN_JOE_ENTRY_DURATION + 3418 / NES_FRAME_RATE)).toBe(46 * NES_WORLD_Y_SCALE);

@@ -645,7 +645,7 @@ lasts 122 frames (`b8=40` followed by `b8=32`). Low nibbles `0..1`, or a Boss
 screen Y above 72, select the long route; `2..7` select the short route. The
 runtime fires the route's follow-up shell at the end of that measured window,
 then restarts the 76-frame decision clock. The runtime replays the controlled
-attack trace's multi-hop X/Y profile through combat frame 3,600, follows sparse
+attack trace's multi-hop X/Y profile for all 3,431 combat frames, follows sparse
 samples through frame 12,000, then holds the final sampled position in the ROM's
 post-route wait state; the attack random gate and follow-up timing use the
 decoded ROM state.

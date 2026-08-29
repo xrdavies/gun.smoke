@@ -209,8 +209,8 @@ Fatman Joe begins attack decisions after his measured entrance. A successful
 low-nibble attack gate and downward-sector check launches one aimed shell; after 31 frames it stops and
 splits into five stationary mines at four-frame intervals. The mines use the
 measured symmetric offsets and last about 29 NES frames. His multi-hop X/Y
-profile follows the controlled Boss trace through combat frame 3,600, uses
-sparse measured samples through frame 12,000, then holds the final sample. The runtime
+profile follows all 3,431 controlled combat frames, then uses sparse measured
+samples through frame 12,000, then holds the final sample. The runtime
 pauses the 76-frame attack counter during the measured 53-frame short or
 122-frame long movement action, fires the follow-up shell at action end, and
 then resumes the counter; its attack random gate and follow-up timing use the

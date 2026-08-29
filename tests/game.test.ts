@@ -1145,6 +1145,9 @@ describe("Gun.Smoke vertical slice", () => {
     const realMovement = createWingateMovementState(192, 1);
     advanceWingateMovement(realMovement, 186, () => 0);
     expect([Math.floor(realMovement.x), Math.floor(realMovement.y)]).toEqual([164, 50]);
+    const exactMovement = createWingateMovementState(152, 0, true);
+    advanceWingateMovement(exactMovement, 3600, () => 0);
+    expect([Math.floor(exactMovement.x), Math.floor(exactMovement.y)]).toEqual([127, 50]);
     expect(WINGATE_ENTRY_X_NES).toEqual([64, 104, 152, 192]);
     expect(WINGATE_ENTRY_X_LANES).toEqual([240, 390, 570, 720]);
     expect(WINGATE_ENTRY_Y_NES).toBe(0);

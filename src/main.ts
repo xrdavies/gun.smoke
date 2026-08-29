@@ -621,7 +621,7 @@ class GunSmokeGame {
         const boss = this.spawnUnit("boss", entryX, this.scroll + WINGATE_SECOND_ENTRY_Y, bossTotalHitPoints(MAX_STAGE, 1));
         boss.bossEntryX = boss.x;
         boss.bossEntryY = WINGATE_SECOND_ENTRY_Y;
-        boss.wingateState = createWingateMovementState(boss.x / NES_WORLD_X_SCALE, this.wingatePhase);
+        boss.wingateState = createWingateMovementState(boss.x / NES_WORLD_X_SCALE, this.wingatePhase, true);
         this.bossSpawned = true;
         this.showMessage("THE REAL WINGATE");
       }
@@ -1262,7 +1262,7 @@ class GunSmokeGame {
       boss.bossEntryX = boss.x;
       boss.bossEntryY = boss.y - this.scroll;
       if (isBanditBill || isCutter) boss.vx = 0;
-      if (isFirstWingate) boss.wingateState = createWingateMovementState(boss.x / NES_WORLD_X_SCALE, this.wingatePhase);
+      if (isFirstWingate) boss.wingateState = createWingateMovementState(boss.x / NES_WORLD_X_SCALE, this.wingatePhase, true);
       if (isFatmanJoe) boss.vx = (boss.phase < Math.PI ? 1 : -1) * FATMAN_JOE_MOVEMENT_SPEED;
       if (isNinjaBoss) boss.invulnerableUntil = NINJA_BOSS_ENTRY_INVULNERABILITY;
       if (isNinjaBoss) boss.bossNextTeleportAt = ninjaBossNextTeleportAt();

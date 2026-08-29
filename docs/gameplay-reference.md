@@ -429,6 +429,8 @@ pause that cadence. They fire only when Billy is in
 the downward aiming sector and the ROM's mutating low-two-bit gate passes.
 Their bullets use quantized directional aim in the ROM's `12..20` downward
 sector and a 64-frame lifetime rather than fixed-size simultaneous volleys.
+The first (decoy) encounter also replays all 3,601 captured integer movement
+frames before handing control back to the decoded gait state.
 
 Each Round begins with a Wanted briefing for its named Boss. Later-Round
 briefings pause the engine loop until the player rides out, matching the

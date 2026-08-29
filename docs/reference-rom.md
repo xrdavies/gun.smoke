@@ -533,6 +533,8 @@ Event `at=1887,x=96,phase=1` (`fineX=88,fineY=246`) throws at
 116/153/190/248/285 and releases after a 436-frame random branch route.
 At `at=1919` only the earlier `x=64` record allocates; its
 `fineX=251,fineY=236` route throws at 116/153/190/357 and releases at frame 366.
+Event `at=2015,x=80,phase=1` (`fineX=210,fineY=133`) throws at frame 116,
+returns along its lower lane, and releases at frame 257.
 `at=3215,x=208,
 phase=0` entry holds its lane, emits its first Shuriken at frame 116, and
 releases after 284 frames; the runtime binds its fixed-point per-frame trace.

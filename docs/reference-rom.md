@@ -1031,6 +1031,9 @@ full trace is captured.
 `--match-map-pointer`, `--match-map-page`, and `--match-scroll-offset` apply
 those fields as trace-selection filters; this remains stable when a Round loop
 reuses the same entity coordinate with different slot fractions.
+`--pool=object` switches candidate and isolation scans from the seven ordinary
+enemy slots to object slots `2..7`; event-index attribution then filters for the
+same object pool. The default remains `--pool=enemy`.
 With `--list-candidates --isolate-candidates`, the tool clears ordinary enemy
 slots before each frame and records every dispatch activation, which is useful
 for enumerating side-entry signatures under the ROM's seven-slot limit.

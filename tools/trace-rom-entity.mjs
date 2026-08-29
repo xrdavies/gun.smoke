@@ -30,6 +30,9 @@ const matchMapPage = option("match-map-page") === undefined ? undefined : number
 const matchScrollOffset = option("match-scroll-offset") === undefined ? undefined : numberOption("match-scroll-offset", 0);
 const matchEventIndex = option("match-event-index") === undefined ? undefined : numberOption("match-event-index", 0);
 const startFrame = option("start-frame") === undefined ? undefined : numberOption("start-frame", 0);
+const pool = option("pool") ?? "enemy";
+const slotStart = pool === "object" ? 2 : 16;
+const slotEnd = pool === "object" ? 8 : 23;
 const output = option("out") ?? ".rom-traces/entity.json";
 
 if (!fs.existsSync(filename)) {
@@ -40,6 +43,7 @@ if (stateFile && !fs.existsSync(stateFile)) throw new Error(`State file not foun
 if (!Number.isInteger(dispatch)) throw new Error("--dispatch is required and accepts decimal or 0x-prefixed values");
 if (followDispatches.some((value) => !Number.isInteger(value))) throw new Error("--follow must contain comma-separated decimal or 0x-prefixed dispatches");
 if (!Number.isInteger(skip) || skip < 0) throw new Error("--skip must be a non-negative integer");
+if (pool !== "enemy" && pool !== "object") throw new Error("--pool must be enemy or object");
 if (round !== undefined && (!Number.isInteger(round) || round < 1 || round > 6)) throw new Error("--round must be an integer from 1 through 6");
 if (!Number.isInteger(frames) || frames <= 0 || !Number.isInteger(traceFrames) || traceFrames <= 0) throw new Error("--frames and --trace-frames must be positive integers");
 for (const [name, value] of [["--match-state", matchState], ["--match-heading", matchHeading], ["--match-x", matchX], ["--match-y", matchY], ["--match-fine-x", matchFineX], ["--match-fine-y", matchFineY]]) {
@@ -79,7 +83,7 @@ const axisDistance = (left, right) => {
 const matchingEventIndexes = (roundIndex, before, after, candidate) => {
   if (before === undefined || after === undefined || after < before) return before === undefined ? [] : [before];
   const records = Array.from({ length: after - before }, (_, offset) => scriptRecord(roundIndex, before + offset))
-    .filter((record) => record.pool === "enemy" && record.dispatch === candidate.dispatch);
+    .filter((record) => record.pool === pool && record.dispatch === candidate.dispatch);
   if (records.length === 0) return [];
   const scores = records.map((record) => axisDistance(candidate.x, record.x) + axisDistance(candidate.y, record.y));
   const best = Math.min(...scores);
@@ -169,20 +173,20 @@ for (let frame = 0; frame < frames; frame += 1) {
   if (targetSlot !== undefined) {
     if (playerX !== undefined) memory[0x74] = playerX;
     if (playerY !== undefined) memory[0x71] = playerY;
-    for (let slot = 16; slot < 23; slot += 1) if (slot !== targetSlot) memory[0x400 + slot] = 0;
+    for (let slot = slotStart; slot < slotEnd; slot += 1) if (slot !== targetSlot) memory[0x400 + slot] = 0;
   }
   if (targetSlot === undefined && startFrame !== undefined && frame === startFrame) {
-    for (let slot = 16; slot < 23; slot += 1) memory[0x400 + slot] = 0;
+    for (let slot = slotStart; slot < slotEnd; slot += 1) memory[0x400 + slot] = 0;
     matchingSlots.clear();
   }
-  if (isolateCandidates && targetSlot === undefined) for (let slot = 16; slot < 23; slot += 1) memory[0x400 + slot] = 0;
+  if (isolateCandidates && targetSlot === undefined) for (let slot = slotStart; slot < slotEnd; slot += 1) memory[0x400 + slot] = 0;
   const eventScriptPointerBefore = (memory[0x43] ?? 0) | ((memory[0x44] ?? 0) << 8);
   const eventScriptIndexBefore = eventScriptPointerBefore >= 0x8c00 ? Math.floor((eventScriptPointerBefore - 0x8c00) / 3) : undefined;
   const playerBefore = { x: memory[0x74], y: memory[0x71] };
   nes.frame();
 
   if (targetSlot === undefined && (startFrame === undefined || frame >= startFrame)) {
-    for (let slot = 16; slot < 23; slot += 1) {
+    for (let slot = slotStart; slot < slotEnd; slot += 1) {
       if (!active(slot)) {
         matchingSlots.delete(slot);
         continue;
@@ -212,7 +216,7 @@ for (let frame = 0; frame < frames; frame += 1) {
       targetSlot = slot;
       targetStart = frame;
       targetEventScriptIndexes = eventScriptIndexes;
-      for (let other = 16; other < 23; other += 1) if (other !== slot) memory[0x400 + other] = 0;
+      for (let other = slotStart; other < slotEnd; other += 1) if (other !== slot) memory[0x400 + other] = 0;
       for (let projectile = 24; projectile < 32; projectile += 1) memory[0x400 + projectile] = 0;
       break;
     }
@@ -247,6 +251,7 @@ for (let frame = 0; frame < frames; frame += 1) {
     sourceSha256: crypto.createHash("sha256").update(romBytes).digest("hex"),
     frameRate: 60.098,
     dispatch,
+    pool,
     ...(round === undefined ? {} : { round }),
     candidates,
   };
@@ -263,6 +268,7 @@ const trace = {
   sourceSha256: crypto.createHash("sha256").update(romBytes).digest("hex"),
   frameRate: 60.098,
   dispatch,
+  pool,
   followDispatches,
   skip,
   ...(round === undefined ? {} : { round }),

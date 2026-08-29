@@ -37,7 +37,7 @@ body { margin: 0; min-width: 320px; min-height: 100vh; background: #080d18; }
   justify-items: center;
   gap: 12px;
   text-align: center;
-  background: radial-gradient(circle at 50% 42%, rgba(44, 55, 77, .35), rgba(8, 13, 24, .96) 68%);
+  background: rgba(8, 13, 24, .96);
 }
 
 #intro-screen h2 { margin: 0; color: #efbd58; font-size: clamp(30px, 7vw, 64px); }

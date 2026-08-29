@@ -365,6 +365,8 @@ Round 1's `at=703,x=248,y=32,code=7,phase=1` event follows a separate
 Round 1's `at=1071,x=4,y=32,code=8,phase=0` event uses a 519-frame route:
 it holds the left edge through frame 246, changes into its diagonal exit state,
 and releases at `Y=252` without firing.
+Round 1's `at=1263,x=4,y=64,code=8,phase=0` event follows a separate 411-frame
+no-shot route and releases at `Y=252`.
 Two complete Round 2 `y=32`
 side traces are now used when their entry coordinate matches in Round 2: code 8
 follows the 569-frame left-edge trace and code 9 follows the 963-frame right-edge

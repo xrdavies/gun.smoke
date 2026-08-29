@@ -98,6 +98,11 @@ breakable-container variants. Decoded shop and `0x07` objects descend at the
 measured one NES pixel every three frames. The shared scrolling-actor update
 releases shops, containers, props, and converted pickups when screen Y reaches
 `252` (`$FC`); runtime uses that same boundary for slot cleanup.
+The entity tracer also records the fixed-bank event script pointer `$43/$44`
+and the corresponding `$8C00` record index before and after each emulated
+frame. Candidate captures therefore identify the actual scheduler record even
+when a map pointer is shared by multiple events or an older actor is still
+active.
 Round 4's 44 `$B5BF` records all select the enemy pool. Isolated contact
 verification identifies them as falling rock hazards. A locked lifecycle trace
 follows dispatch `0x6C/0x6D` for 96 frames from NES `(4,48)` through a curved

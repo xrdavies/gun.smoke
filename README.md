@@ -63,6 +63,8 @@ npm run trace:rom:entity -- --dispatch=0x57 --follow=0x59,0x5b,0x5e --trace-fram
 # Add --match-state/--match-heading/--match-x/--match-y/--match-fine-x/--match-fine-y and map-state filters to select an initial slot signature.
 # Add --list-candidates --isolate-candidates to enumerate every dispatch entry,
 # or --start-frame=<frame> to replay a selected absolute entry frame.
+# Candidate and trace records include the $8c00 event script pointer/index
+# captured before each frame for direct scheduler attribution.
 npm run trace:rom:scenes -- --frames=12000 --every=60
 npm run trace:rom:scenes -- --frames=600 --every=60 --pulse-fire
 npm run extract:rom-assets

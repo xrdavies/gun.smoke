@@ -92,7 +92,13 @@ const roundState = () => ({
   mapPage: nes.cpu.mem[0x5c],
   scrollOffset: nes.cpu.mem[0x5d],
   scrollStep: nes.cpu.mem[0x62],
+  eventScriptPointer: (nes.cpu.mem[0x43] ?? 0) | ((nes.cpu.mem[0x44] ?? 0) << 8),
+  eventScriptIndex: eventScriptIndex(),
 });
+const eventScriptIndex = () => {
+  const pointer = (nes.cpu.mem[0x43] ?? 0) | ((nes.cpu.mem[0x44] ?? 0) << 8);
+  return pointer >= 0x8c00 ? Math.floor((pointer - 0x8c00) / 3) : undefined;
+};
 
 let targetSlot;
 let targetStart;
@@ -135,6 +141,8 @@ for (let frame = 0; frame < frames; frame += 1) {
     matchingSlots.clear();
   }
   if (isolateCandidates && targetSlot === undefined) for (let slot = 16; slot < 23; slot += 1) memory[0x400 + slot] = 0;
+  const eventScriptPointerBefore = (memory[0x43] ?? 0) | ((memory[0x44] ?? 0) << 8);
+  const eventScriptIndexBefore = eventScriptPointerBefore >= 0x8c00 ? Math.floor((eventScriptPointerBefore - 0x8c00) / 3) : undefined;
   const playerBefore = { x: memory[0x74], y: memory[0x71] };
   nes.frame();
 
@@ -149,7 +157,7 @@ for (let frame = 0; frame < frames; frame += 1) {
       const baseMatch = !advancing && candidate.dispatch === dispatch && (variant === undefined || candidate.variant === variant);
       if (!baseMatch || matchingSlots.has(slot)) continue;
       matchingSlots.add(slot);
-      candidates.push({ frame, ...candidate, playerBefore, player: { x: memory[0x74], y: memory[0x71] }, roundState: candidateRoundState });
+      candidates.push({ frame, ...candidate, playerBefore, player: { x: memory[0x74], y: memory[0x71] }, eventScriptPointerBefore, eventScriptIndexBefore, roundState: candidateRoundState });
       if (listCandidates) continue;
       const matches = (matchState === undefined || candidate.state === matchState)
         && (matchHeading === undefined || candidate.heading === matchHeading)
@@ -184,6 +192,8 @@ for (let frame = 0; frame < frames; frame += 1) {
     player: { x: memory[0x74], y: memory[0x71] },
     random: { ac: memory[0xac], ad: memory[0xad], ae: memory[0xae], af: memory[0xaf] },
     zeroPage: { b0: memory[0xb0], b4: memory[0xb4], b5: memory[0xb5], ba: memory[0xba], bc: memory[0xbc] },
+    eventScriptPointerBefore,
+    eventScriptIndexBefore,
     roundState: roundState(),
   });
   for (let slot = 24; slot < 32; slot += 1) {

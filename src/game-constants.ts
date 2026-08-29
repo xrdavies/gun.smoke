@@ -1271,6 +1271,9 @@ const NINJA_STAGE4_AT1711_TRACE_SAMPLES_NES = NINJA_STAGE4_AT1711_FIXED_TRACE_NE
 
 function ninjaTraceSamples(originX: number, originY: number, stage: number, phase: number, eventAt?: number, fineX = Number.NaN, fineY = Number.NaN): readonly (readonly [number, number])[] | undefined {
   if (stage !== 4 || Math.round(originY) !== 0) return undefined;
+  if (eventAt === 2015 || eventAt === 2207) return undefined;
+  if (phase === 0 && Math.round(originX) === 80 && eventAt === 2223 && Math.round(fineX * 256) === 210 && Math.round(fineY * 256) === 133) return NINJA_STAGE4_AT2015_TRACE_SAMPLES_NES;
+  if (phase === 0 && Math.round(originX) === 56 && eventAt === 2543 && Math.round(fineX * 256) === 36 && Math.round(fineY * 256) === 132) return NINJA_STAGE4_AT2207_TRACE_SAMPLES_NES;
   if (phase === 1 && Math.round(originX) === 152 && eventAt === 735 && Math.round(fineX * 256) === 239 && Math.round(fineY * 256) === 81) return NINJA_STAGE4_AT735_TRACE_SAMPLES_NES;
   if (phase === 1 && Math.round(originX) === 152 && eventAt === 735 && Math.round(fineX * 256) === 161 && Math.round(fineY * 256) === 5) return NINJA_STAGE4_AT735_FINE161_TRACE_SAMPLES_NES;
   if (phase === 1 && Math.round(originX) === 216 && eventAt === 767 && Math.round(fineX * 256) === 51 && Math.round(fineY * 256) === 66) return NINJA_STAGE4_AT767_TRACE_SAMPLES_NES;
@@ -1310,8 +1313,11 @@ function ninjaTraceSamples(originX: number, originY: number, stage: number, phas
 
 export function ninjaTracePosition(age: number, originX: number, originY: number, stage: number, phase = 0, eventAt?: number, fineX = Number.NaN, fineY = Number.NaN): readonly [number, number] | undefined {
   const frame = Math.max(0, Math.round(age * NES_FRAME_RATE));
+  if (eventAt === 2015 || eventAt === 2207) return undefined;
   const fixed = stage === 4 && Math.round(originY) === 0
-    ? phase === 1 && Math.round(originX) === 152 && eventAt === 735 && Math.round(fineX * 256) === 239 && Math.round(fineY * 256) === 81 ? NINJA_STAGE4_AT735_FIXED_TRACE_NES[frame]
+    ? phase === 0 && Math.round(originX) === 80 && eventAt === 2223 && Math.round(fineX * 256) === 210 && Math.round(fineY * 256) === 133 ? NINJA_STAGE4_AT2015_FIXED_TRACE_NES[frame]
+      : phase === 0 && Math.round(originX) === 56 && eventAt === 2543 && Math.round(fineX * 256) === 36 && Math.round(fineY * 256) === 132 ? NINJA_STAGE4_AT2207_FIXED_TRACE_NES[frame]
+        : phase === 1 && Math.round(originX) === 152 && eventAt === 735 && Math.round(fineX * 256) === 239 && Math.round(fineY * 256) === 81 ? NINJA_STAGE4_AT735_FIXED_TRACE_NES[frame]
       : phase === 1 && Math.round(originX) === 152 && eventAt === 735 && Math.round(fineX * 256) === 161 && Math.round(fineY * 256) === 5 ? NINJA_STAGE4_AT735_FINE161_FIXED_TRACE_NES[frame]
       : phase === 1 && Math.round(originX) === 216 && eventAt === 767 && Math.round(fineX * 256) === 51 && Math.round(fineY * 256) === 66 ? NINJA_STAGE4_AT767_FIXED_TRACE_NES[frame]
         : phase === 1 && Math.round(originX) === 200 && eventAt === 1247 && Math.round(fineX * 256) === 203 && Math.round(fineY * 256) === 212 ? NINJA_STAGE4_AT1247_FIXED_TRACE_NES[frame]
@@ -1347,6 +1353,9 @@ export function ninjaTraceLifetime(originX: number, originY: number, stage: numb
 
 export function ninjaTraceThrowFrames(stage: number, eventAt?: number, fineX = Number.NaN, fineY = Number.NaN): readonly number[] | false | undefined {
   if (stage !== 4) return undefined;
+  if (eventAt === 2015 || eventAt === 2207) return undefined;
+  if (eventAt === 2223 && Math.round(fineX * 256) === 210 && Math.round(fineY * 256) === 133) return [116];
+  if (eventAt === 2543 && Math.round(fineX * 256) === 36 && Math.round(fineY * 256) === 132) return [116];
   if (eventAt === 735 && Math.round(fineX * 256) === 239 && Math.round(fineY * 256) === 81) return false;
   if (eventAt === 735 && Math.round(fineX * 256) === 161 && Math.round(fineY * 256) === 5) return [116, 153, 190, 227];
   if (eventAt === 767 && Math.round(fineX * 256) === 51 && Math.round(fineY * 256) === 66) return [116];

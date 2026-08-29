@@ -266,9 +266,13 @@ its X coordinate remains fixed. Runtime then uses the measured movement-state
 durations and velocities for every later segment instead of interpolating one
 captured random route, and releases the actor when its post-entry path leaves
 the NES screen rather than applying the generic enemy age cap.
-An isolated `$B080` Sniper fires at ages 134, 224, 405, 495 and 585 frames,
-then releases its slot at age 732. The routine's 90-frame base cooldown is
-visible directly; the longer middle gap is a missed discrete aiming window.
+An isolated `$B080` Sniper trace fires at ages 134, 224, 405, 495 and 585
+frames, then releases its slot at age 732. Those ages are one seeded route, not
+a universal schedule: the routine stores one of six lane headings
+`4/8/12/20/24/28`, adjusts one lane toward Billy every 61 animation frames,
+and decrements an 8-bit cooldown only while screen Y is below 224. A zero
+cooldown resets to 90 and attempts a shot through the current lane's three-sector
+aim gate, so a missed gate or lane adjustment shifts later firing windows.
 Its ordinary `0x30` bullet is allocated at the Sniper's exact actor coordinate,
 with no projectile spawn offset.
 Its ROM Y coordinate advances with the camera at the measured scroll rate while
@@ -277,7 +281,8 @@ plus one equal screen-space delta, and releases Snipers at the observed NES
 screen boundary `Y=252`.
 Shooting does not change the actor dispatch, collision byte, animation, or
 active state. The 90 value is only the next-shot countdown; the actor remains
-visible and collidable throughout it.
+visible and collidable throughout it. Runtime now executes this lane/cooldown
+state instead of indexing a fixed list of ages.
 Their dispatch `0x2f` bullets use the ROM's quantized 32-direction speed table
 at the first speed tier rather than continuous-angle velocity.
 The opposite-side entity code `2` keeps the same lifetime but hits every middle

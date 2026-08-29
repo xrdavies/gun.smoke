@@ -83,6 +83,8 @@ Round 3 `at=1071` replaces its integer code-8 y=64 trace with the shared state
 machine across all 379 coarse/fine samples.
 Sniper shots no longer create a false 90-frame hidden/invulnerable window; ROM
 evidence shows that 90 is only the firing cooldown.
+The Sniper lane/cooldown state machine now replaces fixed shot-frame tables,
+including the 61-frame lane adjustment and screen-Y cooldown stop.
 Round 3 `at=3775` also uses the shared state machine through its complete
 426-frame route.
 Round 3 `at=3823` independently uses the shared state machine through its

@@ -389,6 +389,9 @@ export function shotgunnerSidePosition(age: number, fromLeft: boolean): readonly
 export const SNIPER_SHOT_FRAMES = [134, 224, 405, 495, 585] as const;
 export const SNIPER_CODE2_SHOT_FRAMES = [134, 224, 314, 404, 495, 585] as const;
 export const SNIPER_COOLDOWN = 90 / NES_FRAME_RATE;
+const SNIPER_COOLDOWN_FRAMES = 90;
+const SNIPER_LANE_HEADINGS = [4, 8, 12, 20, 24, 28] as const;
+const SNIPER_COOLDOWN_STOP_Y_NES = 224;
 export const SNIPER_LIFETIME = 732 / NES_FRAME_RATE;
 const SNIPER_BULLET_VELOCITIES_NES = [[0, -1], [0.15625, -0.97265625], [0.3125, -0.92578125], [0.45703125, -0.828125], [0.578125, -0.703125], [0.6796875, -0.5625], [0.76171875, -0.390625], [0.8125, -0.1875], [0.828125, 0], [0.8125, 0.1875], [0.76171875, 0.390625], [0.6796875, 0.5625], [0.578125, 0.703125], [0.45703125, 0.828125], [0.3125, 0.92578125], [0.15625, 0.97265625], [0, 1], [-0.15625, 0.97265625], [-0.3125, 0.92578125], [-0.45703125, 0.828125], [-0.578125, 0.703125], [-0.6796875, 0.5625], [-0.76171875, 0.390625], [-0.8125, 0.1875], [-0.828125, 0], [-0.8125, -0.1875], [-0.76171875, -0.390625], [-0.6796875, -0.5625], [-0.578125, -0.703125], [-0.45703125, -0.828125], [-0.3125, -0.92578125], [-0.15625, -0.97265625]] as const;
 const PLAYER_INPUT_HEADINGS = [[28, 0, 4], [24, undefined, 8], [20, 16, 12]] as const;
@@ -412,6 +415,31 @@ export function playerCollisionFallbackY(currentY: number, candidateY: number, s
 export function sniperProjectileVelocity(originX: number, originY: number, targetX: number, targetY: number): readonly [number, number] {
   const [x, y] = SNIPER_BULLET_VELOCITIES_NES[nesAimHeading(originX, originY, targetX, targetY)] ?? SNIPER_BULLET_VELOCITIES_NES[0];
   return [x * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE];
+}
+
+export type SniperFiringState = { lane: number; cooldown: number };
+
+export function createSniperFiringState(entityCode: 1 | 2, cooldown: number): SniperFiringState {
+  return { lane: entityCode === 2 ? 4 : 1, cooldown: cooldown & 0xff };
+}
+
+export function advanceSniperFiring(state: SniperFiringState, frame: number, screenY: number, aimHeading: number): boolean {
+  if (screenY >= SNIPER_COOLDOWN_STOP_Y_NES) return false;
+  if ((frame - 1) % 61 === 0) {
+    const laneHeading = SNIPER_LANE_HEADINGS[state.lane] ?? SNIPER_LANE_HEADINGS[0];
+    if (state.lane > 0 && aimHeading <= laneHeading - 1) {
+      state.lane -= 1;
+      return false;
+    }
+    if (state.lane < SNIPER_LANE_HEADINGS.length - 1 && laneHeading !== 28 && aimHeading > laneHeading + 2) {
+      state.lane += 1;
+      return false;
+    }
+  }
+  state.cooldown = (state.cooldown - 1) & 0xff;
+  if (state.cooldown !== 0) return false;
+  state.cooldown = SNIPER_COOLDOWN_FRAMES;
+  return gunmanCanFire(SNIPER_LANE_HEADINGS[state.lane] ?? SNIPER_LANE_HEADINGS[0], aimHeading);
 }
 
 export function gunmanProjectileVelocity(originX: number, originY: number, targetX: number, targetY: number): readonly [number, number] {

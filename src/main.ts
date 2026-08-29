@@ -16,7 +16,7 @@ import "./style.css";
 import type { ButtonKey } from "jsnes";
 import { AMMO_GAIN, backstabberAmbushY, banditBillOpeningY, BACKSTABBER_AMBUSH_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, bomberCanThrow, bomberMovementDecision, bomberMovementDuration, bomberMovementUsesRandom, bomberMovementVelocity, BOMBER_THROW_DURATION, BOSS_DEFEAT_ANIMATION_DURATION, bossReward, bossSpriteVisible, canSpawnPlayerBullet, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, DEVIL_HAWK_RANDOM_ROUTE_START_FRAME, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, contactSourceShouldClear, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_LIFETIME, dynamiteVerticalOffset, EMPTY_BARREL_EXPLOSION_LIFETIME, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X_LANES, FATMAN_JOE_ENTRY_Y, fallingRockOnScreen, fallingRockPosition, fatmanJoeOpeningY, HORSE_HIT_INVULNERABILITY, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_LANES, NINJA_FIRST_SHOT_DELAY, ninjaBossEntryLaneIndex, PLAYER_DEATH_ANIMATION_DURATION, PLAYER_DEATH_RECOVERY_DURATION, playerDeathPhase, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_IMPACT_LIFETIME, ROCK_LIFETIME, ROAD_WIDTHS, ROM_OBJECT_DROP_SPEED, romObjectScreenY, romPickupScreenY, ROM_SCREEN_RELEASE_Y_NES, romActorScreenYReleased, ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_SIDE_LIFETIME, SHOTGUNNER_SIDE_SHOT_FRAME, SHOTGUNNER_VOLLEY_INTERVAL, shotgunnerPosition, shotgunnerSidePosition, shouldLoopStage, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_CODE2_SHOT_FRAMES, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_X_LANES, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type ItemType, type ShopType, type WeaponName } from "./game-constants";
 import { advanceBackstabberRaid, createBackstabberRaidState, type BackstabberRaidState } from "./game-constants";
-import { advanceGunmanFlankMovement, createGunmanFlankMovementState, GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, gunmanCanFire, GUNMAN_FLANK_INITIAL_STATE_FRAMES, gunmanFlankFirstOpportunityFrame, gunmanFlankLifetime, gunmanFlankMovementFacingHeading, gunmanFlankUsesDynamicState, GUNMAN_LIFETIME, GUNMAN_TOP_LIFETIMES_FRAMES, gunmanFirstOpportunityFrame, gunmanFlankPosition, gunmanTopBranch, gunmanTopHeading, gunmanTopPosition, gunmanProjectileVelocity, GUNMAN_SHOT_OPPORTUNITY_INTERVAL, mediumProjectileHeadingVelocity, mediumProjectileVelocity, type GunmanFlankMovementState } from "./game-constants";
+import { advanceGunmanFlankMovement, advanceSniperFiring, createGunmanFlankMovementState, createSniperFiringState, GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, gunmanCanFire, GUNMAN_FLANK_INITIAL_STATE_FRAMES, gunmanFlankFirstOpportunityFrame, gunmanFlankLifetime, gunmanFlankMovementFacingHeading, gunmanFlankUsesDynamicState, GUNMAN_LIFETIME, GUNMAN_TOP_LIFETIMES_FRAMES, gunmanFirstOpportunityFrame, gunmanFlankPosition, gunmanTopBranch, gunmanTopHeading, gunmanTopPosition, gunmanProjectileVelocity, GUNMAN_SHOT_OPPORTUNITY_INTERVAL, mediumProjectileHeadingVelocity, mediumProjectileVelocity, type GunmanFlankMovementState, type SniperFiringState } from "./game-constants";
 import { BOMBER_ENTRY_DURATION, bomberOpeningY } from "./game-constants";
 import { advanceFirebreather, advanceHatchet, advanceSpear, createFirebreatherState, createHatchetState, createSpearState, FIREBREATHER_LIFETIME, FIREBREATHER_PROJECTILE_OFFSET_NES, nesActorCollisionProbeOffset, SPEAR_LIFETIME, SPEAR_PROJECTILE_OFFSET_NES, type FirebreatherState, type HatchetState, type SpearState } from "./game-constants";
 import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanCanAttack, riflemanPosition, riflemanShotHeading, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition, sniperProjectileVelocity } from "./game-constants";
@@ -118,6 +118,7 @@ interface Unit {
   gunmanBottomRoute?: "near" | "far";
   gunmanTopBranch?: "center" | "left" | "right";
   gunmanFlankState?: GunmanFlankMovementState;
+  sniperFiringState?: SniperFiringState;
   backstabberRaidState?: BackstabberRaidState;
   romSlot?: number;
   riflemanAimHeading?: number;
@@ -984,6 +985,7 @@ class GunSmokeGame {
     enemy.romFineY = enemy.romSpawnFineY;
     enemy.x += enemy.romSpawnFineX * NES_WORLD_X_SCALE;
     enemy.y += enemy.romSpawnFineY * NES_WORLD_Y_SCALE;
+    if (event.behavior === 0 && (event.entityCode === 1 || event.entityCode === 2)) enemy.sniperFiringState = createSniperFiringState(event.entityCode, romRandomSeed ?? 0);
     if (event.behavior === 3) {
       enemy.backstabberRaidState = createBackstabberRaidState(event.x, event.y, this.player.x / NES_WORLD_X_SCALE, (this.player.y - this.scroll) / NES_WORLD_Y_SCALE, (enemy.romSpawnFineX ?? 0) * 256, (enemy.romSpawnFineY ?? 0) * 256);
     }
@@ -1356,7 +1358,7 @@ class GunSmokeGame {
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: frameDuration },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romEventAt: undefined, romRandomSeed: undefined, romPhase: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, romFineX: undefined, romFineY: undefined, romSpawnFineX: undefined, romSpawnFineY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, gunmanFlankState: undefined, backstabberRaidState: undefined, romSlot: undefined, riflemanAimHeading: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, banditState: undefined, cutterState: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined, rockPhase: undefined,
+      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romEventAt: undefined, romRandomSeed: undefined, romPhase: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, romFineX: undefined, romFineY: undefined, romSpawnFineX: undefined, romSpawnFineY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, gunmanFlankState: undefined, sniperFiringState: undefined, backstabberRaidState: undefined, romSlot: undefined, riflemanAimHeading: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, banditState: undefined, cutterState: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined, rockPhase: undefined,
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" || sceneObject ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
@@ -1591,10 +1593,10 @@ class GunSmokeGame {
           }
         }
       } else if (unit.enemyType === "sniper") {
-        const sniperShotFrames = unit.romEntityCode === 2 ? SNIPER_CODE2_SHOT_FRAMES : SNIPER_SHOT_FRAMES;
-        const nextShotFrame = unit.romBehavior === 0 ? sniperShotFrames[unit.volleysFired] : undefined;
-        const shouldFire = unit.romBehavior === 0
-          ? nextShotFrame !== undefined && unit.age >= nextShotFrame / NES_FRAME_RATE
+        const frame = Math.max(1, Math.round(unit.age * NES_FRAME_RATE));
+        const aimHeading = nesAimHeading(unit.x, unit.y, this.player.x, this.player.y);
+        const shouldFire = unit.romBehavior === 0 && unit.sniperFiringState
+          ? advanceSniperFiring(unit.sniperFiringState, frame, (unit.y - this.scroll) / NES_WORLD_Y_SCALE, aimHeading)
           : !unit.fired && unit.age > 0.8;
         if (shouldFire) {
           unit.fired = true;

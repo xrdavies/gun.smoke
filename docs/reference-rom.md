@@ -511,6 +511,8 @@ releases at frame 258 under the same state-qualified binding rule.
 The `at=1247,x=200,phase=1` route (`fineX=203,fineY=212`) throws at frames
 116/153/190/227/264 and releases at frame 266 immediately after the final
 attack crosses the 8-bit screen boundary.
+The `at=1279,x=168,phase=1` route (`fineX=184,fineY=212`) throws at frames
+116/153, returns to its authored lane, and releases at frame 311.
 `at=3215,x=208,
 phase=0` entry holds its lane, emits its first Shuriken at frame 116, and
 releases after 284 frames; the runtime binds its fixed-point per-frame trace.

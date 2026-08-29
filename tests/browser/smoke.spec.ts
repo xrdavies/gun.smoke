@@ -99,6 +99,25 @@ test("runs ROM event streams in every round", async ({ page }) => {
   expect(pageErrors).toEqual([]);
 });
 
+test("keeps Snipers exposed during their firing cooldown", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/");
+  await page.locator("#start-button").click();
+  await page.locator("#continue-button").click();
+  await page.locator("#briefing-button").click();
+  await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
+
+  let sniper: { age: number; visible: boolean; invulnerableUntil: number; volleysFired: number } | undefined;
+  for (let elapsed = 0; elapsed < 18_000 && sniper === undefined; elapsed += 100) {
+    await page.clock.runFor(100);
+    sniper = await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ enemyType?: string; age: number; visible: boolean; invulnerableUntil: number; volleysFired: number }> }).__getGunSmokeUnits().find((unit) => unit.enemyType === "sniper" && unit.volleysFired > 0));
+  }
+
+  expect(sniper).toBeDefined();
+  expect(sniper?.visible).toBe(true);
+  expect(sniper!.invulnerableUntil).toBeLessThanOrEqual(sniper!.age);
+});
+
 test("creates each Boss from its wanted gate", async ({ page }) => {
   const pageErrors: Error[] = [];
   page.on("pageerror", (error) => pageErrors.push(error));

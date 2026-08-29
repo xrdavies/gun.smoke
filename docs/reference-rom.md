@@ -275,8 +275,9 @@ Its ROM Y coordinate advances with the camera at the measured scroll rate while
 the X lane stays fixed. Runtime world Y therefore advances by the camera delta
 plus one equal screen-space delta, and releases Snipers at the observed NES
 screen boundary `Y=252`.
-Each shot enters a cover dispatch for 90 NES frames, disabling collision until
-the actor returns to its firing state.
+Shooting does not change the actor dispatch, collision byte, animation, or
+active state. The 90 value is only the next-shot countdown; the actor remains
+visible and collidable throughout it.
 Their dispatch `0x2f` bullets use the ROM's quantized 32-direction speed table
 at the first speed tier rather than continuous-angle velocity.
 The opposite-side entity code `2` keeps the same lifetime but hits every middle

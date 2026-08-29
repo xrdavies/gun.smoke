@@ -81,6 +81,8 @@ Round 3's flagged right-side `at=4255` event also replaces its integer trace
 with the shared state machine across all 384 coarse/fine samples.
 Round 3 `at=1071` replaces its integer code-8 y=64 trace with the shared state
 machine across all 379 coarse/fine samples.
+Sniper shots no longer create a false 90-frame hidden/invulnerable window; ROM
+evidence shows that 90 is only the firing cooldown.
 Round 3 `at=3775` also uses the shared state machine through its complete
 426-frame route.
 Round 3 `at=3823` independently uses the shared state machine through its

@@ -598,8 +598,8 @@ from either edge, descends from screen `y=32` to `y=62`, fires one three-shot
 fan at frame 96, and returns to its edge before releasing at frame 259.
 Top-entry Shotgunners move toward the road center and fire two measured
 three-shot fans; entity code `4`
-instead enters from either side, fires one fan at frame 114, and returns to its
-edge before releasing at frame 232.
+instead enters from either side, fires one fan at frame 113, and returns to its
+edge before releasing at frame 230.
 Hatchet Throwers descend to NES `y=40`, pause 20 frames, and patrol the authored
 collision map. A blocked path starts a 34-frame curved turn; after crossing NES
 `x=40/216`, a new aim-sector `15..17` check becomes eligible. A successful check

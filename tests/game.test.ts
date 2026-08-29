@@ -417,11 +417,11 @@ describe("Gun.Smoke vertical slice", () => {
     expect(shotgunnerPosition(80 / NES_FRAME_RATE, true)).toEqual([5.4375, 77.015625]);
     expect(shotgunnerPosition(108 / NES_FRAME_RATE)).toEqual([-18.34375, 82.28125]);
     expect(shotgunnerPosition(224 / NES_FRAME_RATE)).toEqual([-33.375, 3]);
-    expect(SHOTGUNNER_SIDE_SHOT_FRAME).toBe(114);
-    expect(SHOTGUNNER_SIDE_LIFETIME).toBeCloseTo(232 / NES_FRAME_RATE, 9);
-    expect(SHOTGUNNER_SIDE_PATH_NES).toEqual([[0, 0, 0], [60, 49, 0], [80, 64, -2], [100, 72, -19], [114, 72, -22], [140, 66, -36], [160, 52, -40], [220, 2, -40], [231, -7, -40]]);
-    expect(shotgunnerSidePosition(114 / NES_FRAME_RATE, false)).toEqual([-72, -22]);
-    expect(shotgunnerSidePosition(114 / NES_FRAME_RATE, true)).toEqual([72, -22]);
+    expect(SHOTGUNNER_SIDE_SHOT_FRAME).toBe(113);
+    expect(SHOTGUNNER_SIDE_LIFETIME).toBeCloseTo(230 / NES_FRAME_RATE, 9);
+    expect(SHOTGUNNER_SIDE_PATH_NES).toEqual([[0, 0, 0], [69, 57, 0], [70, 57, 0], [98, 72, -18], [102, 72, -22], [122, 72, -22], [123, 72, -22], [151, 57, -41], [155, 54, -41], [229, -7, -41]]);
+    expect(shotgunnerSidePosition(114 / NES_FRAME_RATE, false)).toEqual([-72.171875, -22.28125]);
+    expect(shotgunnerSidePosition(114 / NES_FRAME_RATE, true)).toEqual([72.171875, -22.28125]);
   });
 
   it("matches the traced Sniper firing windows", () => {

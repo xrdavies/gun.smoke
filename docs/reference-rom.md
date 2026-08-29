@@ -431,7 +431,7 @@ the `$E192` conversion table then maps them to Bullet (`0x29`) and Money
 test; unflagged ROM enemies produce no random drop.
 After a lethal hit, the original enemy slot remains active in dispatch `0x41`
 for five frames before release; a flagged drop is allocated in a separate enemy
-slot during that death animation. The web runtime keeps the defeated enemy
+slot during that death animation, with its own fine coordinates. The web runtime keeps the defeated enemy
 non-colliding for the same five-frame window so pool pressure and slot reuse
 match the ROM. Its measured screen-Y offsets are `0/-4/-7/-10/-12` NES pixels.
 Barrel contents use the same `$CD70-$CD91` allocator, so both

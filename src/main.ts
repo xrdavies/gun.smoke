@@ -897,8 +897,7 @@ class GunSmokeGame {
   private spawnRomEnemyEvent(event: RomEnemyEvent): void {
     const active = this.units.filter((unit) => unit.romPool === event.pool && unit.romEntityCode !== undefined && unit.hp > 0).length;
     if (!canSpawnRomPool(event.pool, active)) return;
-    const usedSlots = new Set(this.units.filter((unit) => unit.romPool === "enemy" && unit.romSlot !== undefined && unit.hp > 0).map((unit) => unit.romSlot));
-    const romSlot = event.pool === "enemy" ? Array.from({ length: 7 }, (_, slot) => slot).find((slot) => !usedSlots.has(slot)) : undefined;
+    const romSlot = event.pool === "enemy" ? this.allocateRomEnemySlot() : undefined;
     if (event.pool === "enemy" && romSlot === undefined) return;
     const romRandomSeed = event.entityCode < 0x20 ? this.nextRomSpawnSeedByte() : undefined;
     if (ROM_FALLING_ROCK_BEHAVIORS.includes(event.behavior as 5)) {
@@ -1352,9 +1351,21 @@ class GunSmokeGame {
   private spawnRomDrop(kind: "ammo" | "item" | "moneyBag", x: number, y: number, entityCode: number, itemType?: ItemType): void {
     const active = this.units.filter((unit) => unit.romPool === "enemy" && unit.romEntityCode !== undefined && unit.hp > 0).length;
     if (!canSpawnRomPool("enemy", active)) return;
+    const romSlot = this.allocateRomEnemySlot();
+    if (romSlot === undefined) return;
     const drop = this.spawnUnit(kind, x, y, 1, undefined, itemType);
     drop.romPool = "enemy";
     drop.romEntityCode = entityCode;
+    drop.romSlot = romSlot;
+    const screenX = x / NES_WORLD_X_SCALE;
+    const screenY = (y - this.scroll) / NES_WORLD_Y_SCALE;
+    this.romEnemyFineX[romSlot] = Math.floor((screenX - Math.floor(screenX)) * 256) & 0xff;
+    this.romEnemyFineY[romSlot] = Math.floor((screenY - Math.floor(screenY)) * 256) & 0xff;
+  }
+
+  private allocateRomEnemySlot(): number | undefined {
+    const usedSlots = new Set(this.units.filter((unit) => unit.romPool === "enemy" && unit.romSlot !== undefined && unit.hp > 0).map((unit) => unit.romSlot));
+    return Array.from({ length: 7 }, (_, slot) => slot).find((slot) => !usedSlots.has(slot));
   }
 
   private updateUnit(unit: Unit, delta: number, scrollDelta = 0): void {

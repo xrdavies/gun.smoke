@@ -93,6 +93,7 @@ for (let frame = 0; frame < frames; frame += 1) {
       if (slot !== 14 && !lowBossSlot && !playerProjectile && !banditBillShot) nes.cpu.mem[0x400 + slot] = 0;
     }
   }
+  const playerBefore = { x: memory[0x74], y: memory[0x71] };
   nes.frame();
 
   const boss = activeEntity(14);
@@ -115,6 +116,8 @@ for (let frame = 0; frame < frames; frame += 1) {
       roundIndex: memory[0x41],
       pc: `$${nes.cpu.REG_PC.toString(16).padStart(4, "0")}`,
       ...boss,
+      playerBefore,
+      player: { x: memory[0x74], y: memory[0x71] },
       fields: {
         animation: memory[0x440 + 14],
         collision: memory[0x460 + 14],
@@ -154,7 +157,15 @@ for (let frame = 0; frame < frames; frame += 1) {
       projectileEvents.push({ frame: relativeFrame, slot, ...projectile });
       previousProjectiles.set(slot, signature);
     }
-    if (clearField) projectileFrames.push({ frame: relativeFrame, slot, ...projectile });
+    if (clearField) projectileFrames.push({
+      frame: relativeFrame,
+      slot,
+      ...projectile,
+      fields: {
+        heading: memory[0x4a0 + slot], substate: memory[0x4c0 + slot], timer: memory[0x4e0 + slot],
+        fineY: memory[0x500 + slot], fineX: memory[0x520 + slot], health: memory[0x540 + slot], flags: memory[0x560 + slot],
+      },
+    });
   }
   if (relativeFrame >= bossFramesLimit) break;
 }

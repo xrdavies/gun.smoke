@@ -694,7 +694,10 @@ shared integer direction quantizer, flies for 31 frames, and becomes a
 stationary split controller. Beginning four frames later, it emits five `0x3f`
 mines at 4-frame intervals with relative offsets
 `(-16,+4),(-10,+12),(0,+16),(+10,+12),(+16,+4)`. Each mine remains for about
-29 frames and the controller releases at age 61. Runtime preserves this full
+29 frames and the controller releases at age 61. In one controlled trace Billy
+stood at `(104,216)`, so the mine created at `(104,219)` contacted him and was
+cleared inside the same frame; its absence from the frame-end slot list is not
+a four-mine split variant. Runtime preserves this full
 shell-to-mine chain. During the random action branch, the ROM's `$B6` decision
 counter stops while the short route lasts 53 frames (`b8=16`) or the long route
 lasts 122 frames (`b8=40` followed by `b8=32`). Low nibbles `0..1`, or a Boss
@@ -814,6 +817,8 @@ the six low Boss-weapon slots, whose dispatch values can be outside the ordinary
 projectile range; for example Devil Hawk's five `0xA2` fireballs appear there.
 `--record` captures every Boss frame without injecting fire input or Boss damage,
 including the CPU PC and complete Boss parallel-array fields;
+Boss samples retain frame-start `playerBefore` and frame-end `player` coordinates,
+and controlled projectile frames include their movement/timer/fraction fields;
 `--attack` remains the controlled player-fire variant.
 `--follow-y` keeps Billy 64 NES pixels below the Boss during `--attack`, which
 allows repeatable hit-point traces for large vertical routes such as Fatman

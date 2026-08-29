@@ -489,6 +489,8 @@ Its later phase-0 `at=1711,x=4,y=64,code=7` counterpart independently matches
 311 controlled state-machine frames through release.
 The second-loop `at=319,x=4,y=48,code=7,phase=1` event matches 501 controlled
 state-machine frames through its right-edge release.
+The `at=959,x=4,y=80,code=7,phase=1` event matches 302 controlled state-machine
+frames through its bottom-edge release.
 Round 3 `at=3775,x=4,y=48,code=8,phase=1` matches another 426 controlled
 state-machine frames through its bottom-edge release.
 The phase-0 `at=3823,x=4,y=96,code=8` event independently matches 282

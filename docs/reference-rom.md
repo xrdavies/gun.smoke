@@ -364,6 +364,8 @@ The later phase-0 `at=1711,x=4,y=64,code=7` branch independently matches all
 311 controlled state-machine samples through its `Y=252` release.
 The second-loop `at=319,x=4,y=48,code=7,phase=1` branch matches all 501
 controlled state-machine samples through its right-edge release.
+The `at=959,x=4,y=80,code=7,phase=1` branch matches all 302 controlled
+state-machine samples through its `Y=252` release.
 The later `at=3775,x=4,y=48,code=8,phase=1` branch independently matches all
 426 controlled state-machine samples through its `Y=252` release.
 The phase-0 `at=3823,x=4,y=96,code=8` branch independently matches all 282

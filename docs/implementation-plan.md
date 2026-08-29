@@ -65,6 +65,8 @@ Round 3 `at=1711` independently uses the shared state machine through its
 complete 311-frame phase-0 route.
 Round 3's second-loop `at=319` event uses the shared state machine through its
 complete 501-frame route.
+Round 3 `at=959` also uses the shared state machine through its complete
+302-frame route.
 Round 3 `at=3775` also uses the shared state machine through its complete
 426-frame route.
 Round 3 `at=3823` independently uses the shared state machine through its

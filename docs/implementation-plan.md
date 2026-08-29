@@ -45,6 +45,8 @@ Actor terrain probes now preserve `$C8F8`'s `0xC0` definition mask separately
 from the player's bit-6 mask, including Round 5's actor-only blocking cells.
 Collision scroll discretization also preserves exact event-row boundaries
 despite binary floating-point conversion.
+Gunman movement now releases on upward screen-Y underflow before scroll drift,
+matching the ROM's top-edge slot cleanup.
 That mask lets Round 5 `at=1903` use the shared Gunman state machine with exact
 coarse/fine parity through all 1,488 frames and its natural release.
 Round 5 `at=1999` now uses the shared state machine through its 393-frame
@@ -53,6 +55,8 @@ Round 5 `at=2735` also uses the shared state machine through its complete
 283-frame route.
 Round 6 `at=2207` now replaces its generic code-8 coordinate path with the
 shared state machine verified across all 648 controlled frames.
+Round 6 `at=159` replaces its 447-frame integer trace with the exact 450-frame
+state-machine route and preserved slot fractions.
 Round 6 `at=2783` likewise replaces its generic code-9 path with the shared
 state machine verified across all 960 controlled frames.
 Round 6 `at=3919` preserves its event-specific allocation-frame X and then

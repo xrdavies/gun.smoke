@@ -515,6 +515,9 @@ The Round 6 right-side code-7 `y=64` event does not reuse the left-only trace;
 it runs the shared player- and terrain-driven Gunman state machine.
 Round 6 `at=2207,x=4,y=96,code=8,phase=1` also uses that state machine and
 matches all 648 controlled fixed-point frames through its left-edge release.
+The opening `at=159,x=4,y=32,code=8,phase=1` event replaces its former
+447-frame integer trace with a 450-frame exact state-machine route through the
+top edge.
 Its `at=2783,x=248,y=32,code=9,phase=1` counterpart matches all 960 controlled
 frames through its bottom-edge release.
 The later `at=3919,x=248,y=32,code=9,phase=0` event holds its allocation-frame

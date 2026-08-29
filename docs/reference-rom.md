@@ -392,6 +392,9 @@ Round 6's naturally allocated `at=2207,x=4,y=96,code=8,phase=1` branch matches
 the shared state machine for all 648 controlled coarse/fine samples and its
 left-edge release. The comparison uses Billy's post-scroll coordinate read by
 the enemy routine on each frame.
+Round 6's opening `at=159,x=4,y=32,code=8,phase=1` branch matches the state
+machine for all 450 coarse/fine samples and releases through the top edge. The
+former 447-frame integer trace truncated three frames and lost slot fractions.
 Round 6's naturally allocated `at=2783,x=248,y=32,code=9,phase=1` branch also
 matches all 960 controlled state-machine samples through its `Y=252` release.
 The later `at=3919,x=248,y=32,code=9,phase=0` branch keeps `x=248` on its
@@ -1199,6 +1202,9 @@ World-to-NES scroll conversion applies a small floating-point boundary
 tolerance before flooring, so exact event phases such as Round 6 frame 759 map
 to the ROM's next collision row instead of `4172.999999...` staying one row
 behind.
+Gunman screen-Y underflow is handled before the three-frame scroll compensation
+can bring a negative coordinate back into view; this preserves the ROM's
+immediate top-edge release on the Round 6 `at=159` route.
 The additional boulder, tree, and grave rectangles used by the web renderer
 are decorative overlays only; their coordinates are not used for movement
 collision because they are not decoded ROM collision data.

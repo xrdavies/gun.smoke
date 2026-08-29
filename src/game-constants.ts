@@ -1042,7 +1042,7 @@ export function gunmanFlankUsesDynamicState(entityCode: 7 | 8 | 9, originY: numb
   if (stage === 4 && entityCode === 7 && [1503, 1695, 1727, 1743, 2527].includes(eventAt ?? -1)) return true;
   if (stage === 3 && entityCode === 7 && [255, 319, 687, 959, 1647, 1711, 4239, 4255, 4831, 4863].includes(eventAt ?? -1)) return true;
   if (stage === 3 && entityCode === 8 && [1071, 1119, 3775, 3823].includes(eventAt ?? -1)) return true;
-  if (stage === 6 && entityCode === 8 && eventAt === 2207) return true;
+  if (stage === 6 && entityCode === 8 && (eventAt === 159 || eventAt === 2207)) return true;
   if (stage === 6 && entityCode === 9 && (eventAt === 2783 || eventAt === 3919)) return true;
   if (stage === 6 && entityCode === 7 && eventAt === 4543) return true;
   if (stage === 6 && entityCode === 7 && Math.round(originY) === 64 && fromRight) return true;
@@ -1147,7 +1147,7 @@ export function advanceGunmanFlankMovement(
       }
     }
 
-    if (state.mode !== "lunge" && state.frame % 3 === 0) state.y += 1;
+    if (state.y >= 0 && state.mode !== "lunge" && state.frame % 3 === 0) state.y += 1;
     if (outsideScreen()) state.dead = true;
   }
 }

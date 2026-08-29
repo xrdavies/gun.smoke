@@ -373,8 +373,9 @@ the actor exits through the upper edge.
 Two complete Round 2 `y=32`
 side traces are now used when their entry coordinate matches in Round 2: the
 code-8 `at=623` entry follows the 569-frame left-edge trace and code 9 follows
-the 963-frame right-edge trace. The at351 code-7 phase-1 entry uses a separate
-shorter measured route. The at207 code-8 `y=64` trace follows 371 measured frames,
+the 963-frame right-edge trace. The at351 code-7 phase-1 entry follows its
+separate 312-frame route and exits through the bottom edge. The at207 code-8 `y=64`
+trace follows 371 measured frames,
 and a code 9 trace
 at `y=64` follows 360 measured frames. Round 3's code 7 `y=64`, phase-1
 entries use separate left/right traces of 581/384 frames; its code 8 left

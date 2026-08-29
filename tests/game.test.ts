@@ -952,6 +952,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(DEVIL_HAWK_JUMP_PERIOD).toBe(121);
     expect([DEVIL_HAWK_RANDOM_HANDOFF_FINE_X, DEVIL_HAWK_RANDOM_HANDOFF_FINE_Y, DEVIL_HAWK_RANDOM_HANDOFF_HEADING, DEVIL_HAWK_RANDOM_HANDOFF_SEGMENT_FRAMES, DEVIL_HAWK_RANDOM_HANDOFF_GAIT, DEVIL_HAWK_RANDOM_HANDOFF_ACTION_COUNTER]).toEqual([220, 206, 0x44, 71, 0x84, 14]);
     expect(devilHawkCombatY(DEVIL_HAWK_ENTRY_DURATION)).toBe(216);
+    expect([0, 7, 8, 11, 12].map((frame) => devilHawkOpeningY(frame / NES_FRAME_RATE) / NES_WORLD_Y_SCALE)).toEqual([0, 0, 2, 8, 8]);
     expect(devilHawkCombatY(DEVIL_HAWK_FIRST_VOLLEY_DELAY)).toBe(162);
     expect(devilHawkCombatY(DEVIL_HAWK_ENTRY_DURATION + 52 / NES_FRAME_RATE)).toBe(108);
     expect(devilHawkCombatX(DEVIL_HAWK_ENTRY_DURATION)).toBe(780);

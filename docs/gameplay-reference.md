@@ -183,7 +183,8 @@ stop. Boss reinforcements can still drop money or ammunition when defeated,
 but the locked arena does not create extra ambient barrels or loose pickups.
 
 Devil Hawk enters from the top on one of the ROM's NES X lanes
-(`x=88/128/168/208`) before using a long jump arc and firing a measured five-shot
+(`x=88/128/168/208`) and follows the captured 143-frame stepped descent before
+using a long jump arc and firing a measured five-shot
 or player-sector three-shot fireball fan. Its five-shot branch accepts aim
 sectors `8..24`; an out-of-sector check can skip the projectile but still ends
 the opening attack's invulnerability. The Ninja enters from one of four measured NES coordinate

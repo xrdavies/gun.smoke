@@ -1467,8 +1467,11 @@ export function devilHawkProjectileVelocity(heading: number): readonly [number, 
   return [velocity[0] * NES_FRAME_RATE * NES_WORLD_X_SCALE, velocity[1] * NES_FRAME_RATE * NES_WORLD_Y_SCALE];
 }
 
+const DEVIL_HAWK_OPENING_TRACE_NES = decodeCoordinateRuns("CNAAAdACAdAEAdAGCdAIAdAKAdAMAdAOCdAQAdASAdAUAdAWCdAYAdAaAdAcAdAeCdAgAdAiAdAkAdAmCdAoAdAqAdAsAdAuCdAwAdAyAdA0AdA2CdA4AdA6AdA8AdA+CNBAAdBCAdBEAdBGCdBIAdBKAdBMAdBOCdBQAdBSAdBUAdBWCdBYAdBaAdBcAdBeAdBg");
+
 export function devilHawkOpeningY(age: number): number {
-  return Math.max(0, Math.min(1, age / DEVIL_HAWK_ENTRY_DURATION)) * DEVIL_HAWK_ENTRY_END_Y;
+  const frame = Math.max(0, Math.min(DEVIL_HAWK_OPENING_TRACE_NES.length - 1, Math.round(age * NES_FRAME_RATE)));
+  return DEVIL_HAWK_OPENING_TRACE_NES[frame]![1] * NES_WORLD_Y_SCALE;
 }
 
 export function devilHawkAttackDelay(age: number): number {

@@ -497,6 +497,10 @@ frames with Billy held at NES `(136,216)`, and the
 `at=1199,x=248,y=32,code=7,phase=0` route matches all 573 frames with Billy at
 NES `(120,215)`. Both comparisons include coarse coordinates, slot fractions
 and terrain probes; they are not visual-only matches.
+The `at=703,x=4,y=32,code=8,phase=1` route likewise matches all 483 frames
+through natural release with Billy at NES `(152,216)`. Its orbit counter uses
+8-bit overflow (`0xff -> 0`) without rotating; only the normal `4 -> 0` wrap
+advances the heading.
 
 Codes 8 and 9 advance from their side until their collision probe opens and
 Billy is within 101 vertical pixels, run a 51-frame mirrored lunge, then join

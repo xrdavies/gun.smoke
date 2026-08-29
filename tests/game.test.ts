@@ -1077,6 +1077,10 @@ describe("Gun.Smoke vertical slice", () => {
     advanceGunmanFlankMovement(entry, 49, entry.x, entry.y, () => false);
     expect(entry).toMatchObject({ mode: "orbit", heading: 0, orbitDirection: 1 });
 
+    const wrappedTimer = { ...entry, x: 100, y: 100, heading: 7, timer: 255 };
+    advanceGunmanFlankMovement(wrappedTimer, wrappedTimer.frame + 1, 200, 200, () => false);
+    expect(wrappedTimer).toMatchObject({ mode: "orbit", heading: 7, timer: 0 });
+
     const orbit = { ...entry, x: 100, y: 100, heading: 15, timer: 4, orbitPassedDown: false };
     advanceGunmanFlankMovement(orbit, orbit.frame + 1, 200, 200, () => false);
     expect(orbit).toMatchObject({ mode: "orbit", heading: 16, orbitPassedDown: true });

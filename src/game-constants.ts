@@ -1123,8 +1123,10 @@ export function advanceGunmanFlankMovement(
           state.mode = "orbit";
         }
       } else if (state.mode === "orbit") {
-        state.timer = (state.timer + 1) % 5;
-        if (far && state.timer === 0) {
+        state.timer = (state.timer + 1) & 0xff;
+        const rotate = state.timer === 5;
+        if (rotate) state.timer = 0;
+        if (far && rotate) {
           state.heading = (state.heading + state.orbitDirection + 32) & 31;
           if (state.heading === 16) state.orbitPassedDown = true;
           if (state.heading === 0 && state.orbitPassedDown) {

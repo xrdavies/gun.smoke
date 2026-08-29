@@ -343,6 +343,11 @@ camera Y step. Its heading table uses the timer value before decrement; timer 0
 therefore performs the final speed-3 movement, becomes 255, and hands off to
 tracking on the next frame. Runtime uses this state machine for Round 2 side
 entries without a complete verified trace.
+The natural Round 2 `at=703,x=4,y=32,code=8,phase=1` route verifies the orbit
+counter boundary: entering the orbit with timer `0xff` wraps to zero without a
+turn, while the later `4 -> 0` wrap advances the heading. With that 8-bit
+behavior preserved, all 483 coarse/fine coordinate samples match through the
+ROM's natural release at `Y=253` for Billy held at `(152,216)`.
 Seeding the model with one natural at1375 actor's retained `$0500/$0520` slot
 fractions reproduces all 1,955 captured X/Y and movement-state samples through
 its top-edge release. Runtime assigns each ROM enemy actor one of the seven

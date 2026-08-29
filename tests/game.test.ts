@@ -182,7 +182,7 @@ describe("Gun.Smoke vertical slice", () => {
 
   it("caps the traced player projectile pool at six slots", () => {
     expect(PLAYER_BULLET_CAPACITY).toBe(6);
-    expect([5, 6].map(canSpawnPlayerBullet)).toEqual([true, false]);
+    expect([canSpawnPlayerBullet(5), canSpawnPlayerBullet(6), canSpawnPlayerBullet(4, 2), canSpawnPlayerBullet(5, 2), canSpawnPlayerBullet(1, 5), canSpawnPlayerBullet(2, 5)]).toEqual([true, false, true, false, true, false]);
   });
 
   it("reserves the traced eight-slot enemy projectile pool atomically", () => {

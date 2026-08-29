@@ -798,6 +798,12 @@ class GunSmokeGame {
       weapon = WEAPONS.pistol;
       this.showMessage("OUT OF AMMO");
     }
+    const activeBullets = this.units.filter((unit) => unit.kind === "bullet" && unit.hp > 0).length;
+    const requestedBullets = this.weapon === "shotgun" ? 5 : 2;
+    if (!canSpawnPlayerBullet(activeBullets, requestedBullets)) {
+      this.fireClock = weapon.interval;
+      return;
+    }
     if (this.weapon !== "pistol") this.ammo = Math.max(0, this.ammo - 1);
     if (this.weapon === "pistol") {
       const speedFactor = pistolBulletSpeedFactor(this.powerups.rifle);

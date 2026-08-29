@@ -128,6 +128,8 @@ its full three-point damage to each target without depending on which weapon is
 selected after the shot was fired. Pistol, Shotgun, and Magnum require
 fresh button presses; only Machine Gun repeats while fire is held. Their traced
 minimum trigger intervals are 4, 12, 5, and 4 NES frames respectively.
+When the six player projectile slots cannot fit the complete two- or five-shot
+template, the trigger creates no partial volley and consumes no special ammo.
 
 The runtime now exercises the engine's animation binding for player/enemy/Boss
 sprites, WebGPU `Renderer2D` batches, `AudioManager` buses, `ActionMap` keyboard

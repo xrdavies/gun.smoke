@@ -210,8 +210,8 @@ export const WORLD_DIAGONAL_BULLET_Y = NES_DIAGONAL_BULLET_Y * NES_WORLD_Y_SCALE
 export const PISTOL_BULLET_LIFETIME = 15 / NES_FRAME_RATE;
 export const RIFLE_BULLET_SPEED_MULTIPLIER = 4 / 3;
 
-export function canSpawnPlayerBullet(active: number): boolean {
-  return active < PLAYER_BULLET_CAPACITY;
+export function canSpawnPlayerBullet(active: number, requested = 1): boolean {
+  return active + requested <= PLAYER_BULLET_CAPACITY;
 }
 
 export function canSpawnEnemyProjectile(active: number, requested = 1): boolean {

@@ -1120,10 +1120,12 @@ applies a non-stacking `4 / 3` speed multiplier to Pistol shots rather than
 extending their lifetime.
 Straight A+B fire occupies both player projectile slots at X offsets `-8/+8`;
 the runtime emits two parallel bullets. A single A or B press also emits two
-diagonal bullets from the corresponding side, one per gun barrel. The allocator scans six player
-projectile slots at `$0408-$040d`; the runtime applies the same shared cap to
-all four weapons and allows a multi-projectile shot to fill only the remaining
-slots.
+diagonal bullets from the corresponding side, one per gun barrel. The allocator
+scans six player projectile slots at `$0408-$040d`. `$EE40-$EE56` collects every
+slot required by the selected firing template before activating any of them;
+if the full two- or five-slot set is unavailable, it jumps past both allocation
+and the special-ammo decrement at `$EECF`. Runtime applies the same
+all-or-nothing rule.
 
 The weapon selector table at `$F1DD` stores codes `5/2/4/3/0` in `$88`. A fresh
 game uses code `0` for Pistol; `$B821-$B825` changes that to code `1` when Rifle

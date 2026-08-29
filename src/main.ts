@@ -2913,7 +2913,7 @@ class ReferenceRomGame {
 let game: GunSmokeGame | undefined;
 let referenceGame: ReferenceRomGame | undefined;
 if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeInvulnerable", { value: (duration: number) => { if (game) game.invulnerable = duration; } });
-if (import.meta.env.DEV) Object.defineProperty(window, "__getGunSmokeUnits", { value: () => game?.units.map((unit) => ({ kind: unit.kind, itemType: unit.itemType, romPool: unit.romPool, romSlot: unit.romSlot, romEntityCode: unit.romEntityCode, hp: unit.hp })) ?? [] });
+if (import.meta.env.DEV) Object.defineProperty(window, "__getGunSmokeUnits", { value: () => game?.units.map((unit) => ({ kind: unit.kind, itemType: unit.itemType, projectileType: unit.projectileType, bossProjectile: unit.bossProjectile, romPool: unit.romPool, romSlot: unit.romSlot, romEntityCode: unit.romEntityCode, hp: unit.hp })) ?? [] });
 if (import.meta.env.DEV) Object.defineProperty(window, "__breakGunSmokeBarrel", { value: (entityCode: number) => {
   const target = game?.units.find((unit) => unit.kind === "barrel" && unit.romEntityCode === entityCode && unit.hp > 0);
   if (game && target) (game as unknown as { defeatTarget(target: Unit): void }).defeatTarget(target);
@@ -2923,6 +2923,8 @@ if (import.meta.env.DEV) Object.defineProperty(window, "__forceGunSmokeBoss", { 
   if (!game) return;
   game.hasWanted = true;
   game.scroll = ROUND_BOSS_TRIGGERS[game.stage - 1] ?? ROUND_BOSS_TRIGGERS[0]!;
+  game.player.y = game.scroll + PLAYER_ENTRY_Y;
+  game.player.sprite.position = { x: game.player.x, y: game.player.y };
   (game as unknown as { updateSpawns(): void }).updateSpawns();
 } });
 if (import.meta.env.DEV) Object.defineProperty(window, "__defeatGunSmokeBoss", { value: () => {

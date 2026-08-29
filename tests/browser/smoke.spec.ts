@@ -13,6 +13,18 @@ async function runPistolWithClock(page: Page, duration: number, keys: readonly s
   }
 }
 
+async function waitForBossProjectile(page: Page, types: readonly string[], duration: number): Promise<boolean> {
+  for (let elapsed = 0; elapsed < duration; elapsed += 150) {
+    await page.clock.runFor(150);
+    const found = await page.evaluate((wanted) => {
+      const units = (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; projectileType?: string; hp: number }> }).__getGunSmokeUnits();
+      return units.some((unit) => unit.kind === "enemyBullet" && unit.hp > 0 && unit.projectileType !== undefined && wanted.includes(unit.projectileType));
+    }, types);
+    if (found) return true;
+  }
+  return false;
+}
+
 test("starts the WebGPU stage and renders gameplay", async ({ page }) => {
   const pageErrors: Error[] = [];
   page.on("pageerror", (error) => pageErrors.push(error));
@@ -101,6 +113,33 @@ test("creates each Boss from its wanted gate", async ({ page }) => {
     await page.waitForTimeout(50);
     await expect(page.locator("#boss-label")).toContainText(boss);
   }
+  expect(pageErrors).toEqual([]);
+});
+
+test("runs the distinct Boss projectile chains", async ({ page }) => {
+  const pageErrors: Error[] = [];
+  page.on("pageerror", (error) => pageErrors.push(error));
+  await page.clock.install();
+  await page.goto("/");
+  await page.locator("#start-button").click();
+  await page.locator("#continue-button").click();
+  await page.locator("#briefing-button").click();
+  await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
+
+  for (const [stage, projectile, duration] of [[2, "boomerang", 7_000], [3, "fireball", 4_000]] as const) {
+    await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), stage);
+    await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
+    expect(await waitForBossProjectile(page, [projectile], duration)).toBe(true);
+  }
+
+  await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), 4);
+  await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
+  expect(await waitForBossProjectile(page, ["ninjaSmoke"], 3_500)).toBe(true);
+  expect(await waitForBossProjectile(page, ["shuriken"], 1_500)).toBe(true);
+
+  await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), 5);
+  await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
+  expect(await waitForBossProjectile(page, ["grenadeShell", "grenade"], 20_000)).toBe(true);
   expect(pageErrors).toEqual([]);
 });
 

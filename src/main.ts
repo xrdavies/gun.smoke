@@ -1833,8 +1833,8 @@ class GunSmokeGame {
             const [offsetX, offsetY] = gunmanFlankPosition(flankGunman, unit.age, originY, this.stage, unit.romPhase ?? 0, fromRight, unit.romEventAt);
             const hasRightTrace = this.stage === 3 && Math.round(originY) === 64 && (unit.romPhase ?? 0) === 1 || this.stage === 6 && Math.round(originY) === 32;
             const mirror = flankGunman === 7 && fromRight && !hasRightTrace ? -1 : 1;
-            unit.x = (unit.romOriginX ?? unit.x) + (offsetX + (unit.romSpawnFineX ?? 0)) * NES_WORLD_X_SCALE * mirror;
-            unit.y = this.scroll + (unit.romOriginY ?? 0) + (offsetY + (unit.romSpawnFineY ?? 0)) * NES_WORLD_Y_SCALE;
+            unit.x = (unit.romOriginX ?? unit.x) + offsetX * NES_WORLD_X_SCALE * mirror + (unit.romSpawnFineX ?? 0) * NES_WORLD_X_SCALE;
+            unit.y = this.scroll + (unit.romOriginY ?? 0) + offsetY * NES_WORLD_Y_SCALE + (unit.romSpawnFineY ?? 0) * NES_WORLD_Y_SCALE;
           }
         } else if (tracedTopGunman) {
           const [x, y] = gunmanTopPosition(

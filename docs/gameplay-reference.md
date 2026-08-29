@@ -255,7 +255,9 @@ later successful left-route shot at frame 314 and right-route shots at frames
 570/1146. The samples are bound to the captured `x=88,y=0` entry;
 other entry lanes retain the same branch selection with parameterized offsets.
 The left-edge code-7 side route is likewise replayed from a complete 642-frame
-integer trace and mirrored for its right-edge counterpart. Round 2's lone
+integer trace relative to the event origin and mirrored for its right-edge
+counterpart. Round 1's natural `at=687,x=4,y=32` event first fires at frame 58.
+Round 2's lone
 `code=7,x=56,y=0,phase=1` event uses a separate 369-frame top-entry trace and
 fires at its second scheduler opportunity, frame 115. Round 3's lone
 `code=7,x=80,y=0,phase=1` event uses its separate 324-frame top-entry trace and

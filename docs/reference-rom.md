@@ -301,8 +301,10 @@ measured route, and does not apply the top-entry Gunman timing.
 The same routine has distinct side-entry initializers. Entity code `7` enters
 from either edge on a mirrored route, with successful attack windows observed
 at frames 64/410, and releases at frame 642. The left-edge `x=4,y=32` event has a complete 642-frame integer
-coordinate trace; the runtime replays that normalized trace and mirrors it for
-the right-edge initializer. Entity code `8` holds the left edge while scrolling,
+coordinate trace; its first visible sample is one pixel below the event origin.
+The natural Round 1 `at=687` seed fires at frame 58. Runtime replays the trace
+relative to the event origin and mirrors it for the right-edge initializer.
+Entity code `8` holds the left edge while scrolling,
 lunges inward at about frame 247, with a successful frame-309 window in one
 trace, and releases at frame 508. Entity code `9` enters from the right, follows
 a long mirrored loop, with successful windows at frames 399/463 in one trace,

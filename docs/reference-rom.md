@@ -362,6 +362,9 @@ The later `at=3775,x=4,y=48,code=8,phase=1` branch independently matches all
 426 controlled state-machine samples through its `Y=252` release.
 The phase-0 `at=3823,x=4,y=96,code=8` branch independently matches all 282
 controlled state-machine samples and the same release boundary.
+The flagged `at=4239,x=4,y=80,code=7,phase=0` branch matches all 301 controlled
+state-machine samples through release. Its high event flag affects its drop,
+not the Gunman movement routine.
 Round 6's naturally allocated `at=2207,x=4,y=96,code=8,phase=1` branch matches
 the shared state machine for all 648 controlled coarse/fine samples and its
 left-edge release. The comparison uses Billy's post-scroll coordinate read by

@@ -380,6 +380,8 @@ The `at=1903,x=4,y=32,code=7,phase=0` event matches the same state machine for
 1,488 frames. Its frame-1026 collision probe lands on a Round 5 bit-7 terrain
 cell, returns it from orbit to tracking, and is required for exact coarse/fine
 parity through the final `Y=252` release.
+The later naturally allocated `at=2735,x=4,y=64,code=7,phase=0` event matches
+all 283 state-machine frames and its final `Y=252` release.
 Seeding the model with one natural at1375 actor's retained `$0500/$0520` slot
 fractions reproduces all 1,955 captured X/Y and movement-state samples through
 its top-edge release. Runtime assigns each ROM enemy actor one of the seven

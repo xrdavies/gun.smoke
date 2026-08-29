@@ -1037,7 +1037,8 @@ export type GunmanFlankMovementState = {
   dead: boolean;
 };
 
-export function gunmanFlankUsesDynamicState(entityCode: 7 | 8 | 9, originY: number, stage: number, phase: number, eventAt?: number): boolean {
+export function gunmanFlankUsesDynamicState(entityCode: 7 | 8 | 9, originY: number, stage: number, phase: number, eventAt?: number, fromRight = false): boolean {
+  if (stage === 6 && entityCode === 7 && Math.round(originY) === 64 && fromRight) return true;
   if (stage !== 2 || entityCode === 7 && Math.round(originY) === 0 && phase === 1) return false;
   if (entityCode === 7) return ![351, 399, 1135, 1167, 1231, 1407, 1903, 1967, 2671].includes(eventAt ?? -1);
   if (entityCode === 8) return ![207, 623, 655, 1599].includes(eventAt ?? -1);

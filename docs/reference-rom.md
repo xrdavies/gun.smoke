@@ -454,7 +454,8 @@ code 7 left/right entries at `y=32` and a left entry at `y=64` for 342/453/918
 frames respectively, plus true code 8 left `y=32` phase-0/phase-1 entries for
 578/447 frames and a code 9 right `y=48`, phase-1 entry for 776 frames.
 Those route samples remain scoped to Round 6 and their matching entry
-coordinates.
+coordinates. The right-side code-7 `at=2463,x=248,y=64` record therefore uses
+the decoded state machine rather than offsetting the left-only `y=64` sample.
 On defeat, `$CD4E-$CDAA` converts an event's `0x80` flag into dispatch `0x4e`.
 If `$90/$94/$98/$9c` show no special-gun ammunition, it increments that to `0x4f`;
 the `$E192` conversion table then maps them to Bullet (`0x29`) and Money

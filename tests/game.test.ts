@@ -1065,6 +1065,8 @@ describe("Gun.Smoke vertical slice", () => {
   it("advances untraced flank Gunmen through the ROM movement states", () => {
     expect(gunmanFlankUsesDynamicState(8, 32, 2, 1, 703)).toBe(true);
     expect(gunmanFlankUsesDynamicState(8, 32, 2, 0, 655)).toBe(false);
+    expect(gunmanFlankUsesDynamicState(7, 64, 6, 1, 2463, false)).toBe(false);
+    expect(gunmanFlankUsesDynamicState(7, 64, 6, 1, 2463, true)).toBe(true);
 
     const entry = createGunmanFlankMovementState(7, 4, 32, false);
     const seededEntry = createGunmanFlankMovementState(7, 4, 32, false, 60, 86);

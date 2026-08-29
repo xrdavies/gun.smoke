@@ -481,6 +481,8 @@ entry uses a separate shorter trace and exits through the bottom edge. It uses
 trace. Round 6 also has controlled code 7 traces for left/right `y=32` and left
 `y=64` entries (342/453/918 frames), plus 578/447-frame code 8 left `y=32`
 phase-0/phase-1 traces and a 776-frame code 9 right `y=48`, phase-1 trace.
+The Round 6 right-side code-7 `y=64` event does not reuse the left-only trace;
+it runs the shared player- and terrain-driven Gunman state machine.
 Other rounds,
 phases and entry heights use the generic routes until their slot-state traces
 are captured.

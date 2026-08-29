@@ -836,6 +836,8 @@ describe("Gun.Smoke vertical slice", () => {
     advanceGunmanFlankMovement(side, 52, 120, 215, () => false);
     expect(side).toMatchObject({ mode: "lunge", timer: 0 });
     advanceGunmanFlankMovement(side, 53, 120, 215, () => false);
+    expect(side).toMatchObject({ mode: "lunge", timer: 255 });
+    advanceGunmanFlankMovement(side, 54, 120, 215, () => false);
     expect(side).toMatchObject({ mode: "chase", heading: 16 });
 
     const release = createGunmanFlankMovementState(7, 255, 32, false);

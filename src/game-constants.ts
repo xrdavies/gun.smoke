@@ -929,13 +929,13 @@ export function advanceGunmanFlankMovement(
         state.timer = GUNMAN_FLANK_LUNGE_FRAMES;
       }
     } else if (state.mode === "lunge") {
-      if (state.timer === 0) {
+      if (state.timer >= 0x80) {
         state.mode = "chase";
         state.heading = 16;
         move();
       } else {
-        state.timer -= 1;
         let heading: number = GUNMAN_FLANK_LUNGE_HEADINGS[state.timer >> 2] ?? 0x44;
+        state.timer = (state.timer - 1) & 0xff;
         if (state.fromRight) heading = (heading & 0xe0) | ((32 - (heading & 31)) & 31);
         move(heading);
       }
@@ -969,7 +969,7 @@ export function advanceGunmanFlankMovement(
       }
     }
 
-    if (state.frame % 3 === 0) state.y += 1;
+    if (state.mode !== "lunge" && state.frame % 3 === 0) state.y += 1;
     if (outsideScreen()) state.dead = true;
   }
 }

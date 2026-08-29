@@ -325,8 +325,11 @@ to heading 0. Terrain contact
 reverses its heading and returns it to tracking. Codes 8 and 9 advance from a
 side while the forward terrain probe is blocked, wait until Billy is within 101
 vertical pixels, execute a 51-frame mirrored lunge, and then enter the shared
-tracking state. Runtime uses this state machine for Round 2 side entries without
-a complete verified trace.
+tracking state. The lunge dispatch does not apply the ordinary three-frame
+camera Y step. Its heading table uses the timer value before decrement; timer 0
+therefore performs the final speed-3 movement, becomes 255, and hands off to
+tracking on the next frame. Runtime uses this state machine for Round 2 side
+entries without a complete verified trace.
 Round 2's single `code=7,x=56,y=0,phase=1` event is a distinct top-edge
 initializer. Its first scheduler wrap at frame 51 misses the facing gate, the
 second succeeds at frame 115, dispatch changes to `0x59` at frame 260, and the

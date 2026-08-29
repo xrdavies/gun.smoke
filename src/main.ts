@@ -1708,7 +1708,7 @@ class GunSmokeGame {
           unit.x = (unit.romOriginX ?? unit.x) + (offsetX + (unit.romSpawnFineX ?? 0)) * NES_WORLD_X_SCALE;
           unit.y = this.scroll + (unit.romOriginY ?? 0) + (offsetY + (unit.romSpawnFineY ?? 0)) * NES_WORLD_Y_SCALE;
         } else if (tracedSpread) {
-          const [offsetX, offsetY] = shotgunnerPosition(unit.age);
+          const [offsetX, offsetY] = shotgunnerPosition(unit.age, (unit.romOriginX ?? unit.x) / NES_WORLD_X_SCALE < 128);
           unit.x = (unit.romOriginX ?? unit.x) + (offsetX + (unit.romSpawnFineX ?? 0)) * NES_WORLD_X_SCALE;
           unit.y = this.scroll + (unit.romOriginY ?? 0) + (offsetY + (unit.romSpawnFineY ?? 0)) * NES_WORLD_Y_SCALE;
         } else {

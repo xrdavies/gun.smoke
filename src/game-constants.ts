@@ -350,26 +350,33 @@ export const SHOTGUNNER_FIRST_VOLLEY_DELAY = 108 / NES_FRAME_RATE;
 export const SHOTGUNNER_VOLLEY_INTERVAL = 51 / NES_FRAME_RATE;
 export const SHOTGUNNER_LIFETIME = 228 / NES_FRAME_RATE;
 export const SHOTGUNNER_FAN_NES = [[-1, 8], [0, 8], [1, 8]] as const;
-export const SHOTGUNNER_PATH_NES = [[0, 0, 0], [64, 0, 64], [80, -6, 77], [100, -18, 83], [108, -18, 83], [120, -20, 82], [140, -32, 70], [152, -34, 60], [164, -34, 60], [168, -34, 59], [224, -34, 3]] as const;
+export const SHOTGUNNER_PATH_NES = [[0, 0, 0], [64, 0, 64], [80, -5, 77], [98, -18, 82], [118, -18, 82], [119, -19, 82], [146, -33, 64], [150, -33, 60], [167, -33, 60], [227, -33, 0]] as const;
 export const SHOTGUNNER_SIDE_SHOT_FRAME = 114;
 export const SHOTGUNNER_SIDE_LIFETIME = 232 / NES_FRAME_RATE;
 export const SHOTGUNNER_SIDE_PATH_NES = [[0, 0, 0], [60, 49, 0], [80, 64, -2], [100, 72, -19], [114, 72, -22], [140, 66, -36], [160, 52, -40], [220, 2, -40], [231, -7, -40]] as const;
 
-export function shotgunnerPosition(age: number): readonly [number, number] {
-  const frame = Math.max(0, age * NES_FRAME_RATE);
-  const nextIndex = SHOTGUNNER_PATH_NES.findIndex(([at]) => at >= frame);
-  if (nextIndex < 0) {
-    const last = SHOTGUNNER_PATH_NES.at(-1)!;
-    return [last[1], last[2]];
+export function shotgunnerPosition(age: number, fromLeft = false): readonly [number, number] {
+  const frame = Math.max(0, Math.floor(age * NES_FRAME_RATE + 1e-6));
+  let x = 0;
+  let y = Math.min(frame, 64);
+  // The ROM holds at each state boundary before changing heading or gait.
+  for (let step = 66; step <= Math.min(frame, 97); step += 1) {
+    const heading = step <= 93
+      ? (fromLeft ? 15 : 17) + (fromLeft ? -1 : 1) * Math.floor((step - 66) / 4)
+      : fromLeft ? 8 : 24;
+    const velocity = SNIPER_BULLET_VELOCITIES_NES[heading]!;
+    x += velocity[0];
+    y += velocity[1];
   }
-  if (nextIndex === 0) return [0, 0];
-  const previous = SHOTGUNNER_PATH_NES[nextIndex - 1]!;
-  const next = SHOTGUNNER_PATH_NES[nextIndex]!;
-  const amount = (frame - previous[0]) / (next[0] - previous[0]);
-  return [
-    previous[1] + (next[1] - previous[1]) * amount,
-    previous[2] + (next[2] - previous[2]) * amount,
-  ];
+  for (let step = 119; step <= Math.min(frame, 146); step += 1) {
+    const heading = (fromLeft ? 7 : 25) + (fromLeft ? -1 : 1) * Math.floor((step - 119) / 4);
+    const velocity = SNIPER_BULLET_VELOCITIES_NES[heading]!;
+    x += velocity[0];
+    y += velocity[1];
+  }
+  for (let step = 147; step <= Math.min(frame, 150); step += 1) y -= 1;
+  for (let step = 168; step <= frame; step += 1) y -= 1;
+  return [x, y];
 }
 
 export function shotgunnerSidePosition(age: number, fromLeft: boolean): readonly [number, number] {

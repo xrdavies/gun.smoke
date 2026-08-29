@@ -411,10 +411,12 @@ describe("Gun.Smoke vertical slice", () => {
     expect(SHOTGUNNER_FIRST_VOLLEY_DELAY).toBeCloseTo(108 / 60.098, 9);
     expect(SHOTGUNNER_VOLLEY_INTERVAL).toBeCloseTo(51 / 60.098, 9);
     expect(SHOTGUNNER_LIFETIME).toBeCloseTo(228 / 60.098, 9);
-    expect(SHOTGUNNER_PATH_NES).toEqual([[0, 0, 0], [64, 0, 64], [80, -6, 77], [100, -18, 83], [108, -18, 83], [120, -20, 82], [140, -32, 70], [152, -34, 60], [164, -34, 60], [168, -34, 59], [224, -34, 3]]);
-    expect(shotgunnerPosition(80 / NES_FRAME_RATE)).toEqual([-6, 77]);
-    expect(shotgunnerPosition(108 / NES_FRAME_RATE)).toEqual([-18, 83]);
-    expect(shotgunnerPosition(224 / NES_FRAME_RATE)).toEqual([-34, 3]);
+    expect(SHOTGUNNER_PATH_NES).toEqual([[0, 0, 0], [64, 0, 64], [80, -5, 77], [98, -18, 82], [118, -18, 82], [119, -19, 82], [146, -33, 64], [150, -33, 60], [167, -33, 60], [227, -33, 0]]);
+    expect(shotgunnerPosition(65 / NES_FRAME_RATE)).toEqual([0, 64]);
+    expect(shotgunnerPosition(80 / NES_FRAME_RATE)).toEqual([-5.4375, 77.015625]);
+    expect(shotgunnerPosition(80 / NES_FRAME_RATE, true)).toEqual([5.4375, 77.015625]);
+    expect(shotgunnerPosition(108 / NES_FRAME_RATE)).toEqual([-18.34375, 82.28125]);
+    expect(shotgunnerPosition(224 / NES_FRAME_RATE)).toEqual([-33.375, 3]);
     expect(SHOTGUNNER_SIDE_SHOT_FRAME).toBe(114);
     expect(SHOTGUNNER_SIDE_LIFETIME).toBeCloseTo(232 / NES_FRAME_RATE, 9);
     expect(SHOTGUNNER_SIDE_PATH_NES).toEqual([[0, 0, 0], [60, 49, 0], [80, 64, -2], [100, 72, -19], [114, 72, -22], [140, 66, -36], [160, 52, -40], [220, 2, -40], [231, -7, -40]]);

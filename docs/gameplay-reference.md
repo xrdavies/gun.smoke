@@ -596,7 +596,8 @@ start and centered on the selected left, center, or right sector,
 and retreat toward the top of the playfield. Entity code `15` instead enters
 from either edge, descends from screen `y=32` to `y=62`, fires one three-shot
 fan at frame 96, and returns to its edge before releasing at frame 259.
-Top-entry Shotgunners fire two measured three-shot fans; entity code `4`
+Top-entry Shotgunners move toward the road center and fire two measured
+three-shot fans; entity code `4`
 instead enters from either side, fires one fan at frame 114, and returns to its
 edge before releasing at frame 232.
 Hatchet Throwers descend to NES `y=40`, pause 20 frames, and patrol the authored

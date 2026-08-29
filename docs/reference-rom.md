@@ -360,6 +360,8 @@ The naturally allocated `at=1727,x=248,y=96,code=7,phase=1` branch independently
 matches the same state machine for all 345 samples and the right-boundary release.
 The left-side `at=2527,x=4,y=80,code=7,phase=1` branch matches 630 samples and
 its top-edge release under the same state machine.
+The left-side `at=1743,x=4,y=48,code=7,phase=0` branch matches 360 samples and
+its bottom-edge release under the same state machine.
 Seeding the model with one natural at1375 actor's retained `$0500/$0520` slot
 fractions reproduces all 1,955 captured X/Y and movement-state samples through
 its top-edge release. Runtime assigns each ROM enemy actor one of the seven

@@ -489,6 +489,8 @@ Its `at=1727,x=248,y=96,code=7,phase=1` counterpart matches all 345 frames
 through the same boundary.
 The left-side `at=2527,x=4,y=80,code=7,phase=1` route matches 630 frames
 through its top-edge release.
+The left-side `at=1743,x=4,y=48,code=7,phase=0` route matches 360 frames
+through its bottom-edge release.
 Other rounds,
 phases and entry heights use the generic routes until their slot-state traces
 are captured.

@@ -27,6 +27,12 @@ input; ROM bytes, extracted artwork, and Capcom source are not distributed.
 | Boss routines | Mostly complete | Measured entrances, attacks, health bars and traced routes are implemented; sparse tails continue from ROM-shaped state |
 | Original visual/audio assets | Intentional baseline | Procedural textures and Web Audio are used instead of redistributed commercial assets |
 
+Recent evidence-backed parity passes closed the full Round 4 Ninja script set,
+enemy/object slot attribution, discrete Backstabber and scripted-object descent,
+all-or-nothing player volleys and final-ammo weapon fallback, Bandit/Fatman
+entry vulnerability, and browser coverage for every distinct Boss projectile
+chain and pool owner.
+
 ## Delivery Stages
 
 ### Stage 1: Runtime foundation

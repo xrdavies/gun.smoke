@@ -485,6 +485,8 @@ Round 3 `at=1119,x=4,y=96,code=8,phase=1` instead uses the shared state
 machine and matches all 282 controlled frames through its bottom-edge release.
 Round 3 `at=3775,x=4,y=48,code=8,phase=1` matches another 426 controlled
 state-machine frames through its bottom-edge release.
+The phase-0 `at=3823,x=4,y=96,code=8` event independently matches 282
+controlled frames through the same release boundary.
 The Round 6 right-side code-7 `y=64` event does not reuse the left-only trace;
 it runs the shared player- and terrain-driven Gunman state machine.
 Round 6 `at=2207,x=4,y=96,code=8,phase=1` also uses that state machine and

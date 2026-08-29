@@ -355,6 +355,10 @@ The mirrored `at=1839,x=248,y=32,code=9,phase=0` branch also matches all 873
 coarse/fine samples and its `Y=252` release when captured with the other enemy
 slots isolated. A normal crowded pass may fail to allocate this script record;
 the ROM does not defer it after the seven-slot pool check.
+Round 6's naturally allocated `at=2207,x=4,y=96,code=8,phase=1` branch matches
+the shared state machine for all 648 controlled coarse/fine samples and its
+left-edge release. The comparison uses Billy's post-scroll coordinate read by
+the enemy routine on each frame.
 Round 4's naturally allocated `at=1503,x=248,y=80,code=7,phase=1` branch
 matches the shared state machine for all 356 coarse/fine samples and releases
 through the right boundary; it no longer inherits the unrelated 642-frame

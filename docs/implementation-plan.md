@@ -47,6 +47,8 @@ That mask lets Round 5 `at=1903` use the shared Gunman state machine with exact
 coarse/fine parity through all 1,488 frames and its natural release.
 Round 5 `at=2735` also uses the shared state machine through its complete
 283-frame route.
+Round 6 `at=2207` now replaces its generic code-8 coordinate path with the
+shared state machine verified across all 648 controlled frames.
 
 ## Delivery Stages
 

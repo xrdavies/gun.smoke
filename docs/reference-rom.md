@@ -663,9 +663,8 @@ The initializer leaves slot 14's coordinate low bytes intact; the controlled
 decoy/real snapshots retain X/Y fractions `252/157` and `66/189`, respectively.
 Runtime seeds those measured fractions because they can change a correction
 aim sector at an integer boundary.
-For the first decoy, the runtime additionally replays the complete 3,601-frame
-X/Y trace captured from the ROM; the real encounter retains the parameterized
-movement state pending its separate trace integration.
+The runtime replays a complete 3,601-frame X/Y trace for each encounter, with
+the decoy and real traces selected by their phase-specific initializer.
 The first encounter clears both ordinary and low-slot projectile actors before
 entering a 264-frame empty interval. The real Wingate
 then reuses dispatch `0xa3`, variant `0x65` and the same 151-frame vertical

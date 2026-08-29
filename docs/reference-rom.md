@@ -551,6 +551,8 @@ Event `at=2607,x=80,phase=0` in the captured neutral slot state throws at
 frame 116 and releases after 258 frames from its return lane.
 Event `at=2623,x=112,phase=1` in the captured neutral slot state throws at
 116/153, follows its return branch, and releases after 313 frames.
+Event `at=2639,x=40,phase=0` in the captured neutral slot state throws at
+frame 116 and releases after 258 frames from its rightward return lane.
 `at=3215,x=208,
 phase=0` entry holds its lane, emits its first Shuriken at frame 116, and
 releases after 284 frames; the runtime binds its fixed-point per-frame trace.

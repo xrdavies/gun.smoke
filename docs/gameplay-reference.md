@@ -274,6 +274,8 @@ Event `at=1743,x=144,phase=0` with `fineX=88,fineY=46` follows another
 The `at=1775` record is skipped by pool pressure. Event
 `at=1855,x=112,phase=1` with `fineX=204,fineY=205` throws at frame 116 and
 releases after 224 frames through the same screen boundary.
+Event `at=1887,x=96,phase=1` with `fineX=88,fineY=246` throws at
+116/153/190/248/285 and releases after a 436-frame random branch route.
 `at=3215,x=208,phase=0`
 holds its lane, fires at frame 116, and releases after 284 frames using a
 fixed-point trace. Event `at=3407,x=224,phase=0` uses the same frame-116 throw gate from its own

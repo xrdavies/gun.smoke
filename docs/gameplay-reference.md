@@ -525,6 +525,8 @@ NES frame.
 The Round 5 `at=1135,x=4,y=48,code=7,phase=0` event is bound to its 1,107-frame
 fixed-point trace, including the delayed transition into its orbit state; it
 then releases when the slot is reused at the ROM boundary.
+The `at=1711,x=4,y=64,code=7,phase=0` event uses a separate 285-frame trace
+through its bottom-edge release.
 The `$B46E` side-raid Backstabber uses the same fixed-point movement primitives:
 it captures Billy's heading at spawn, combines first-tier pursuit with a
 four-frame second-tier arc, pauses in its 30-frame cover dispatch, and repeats

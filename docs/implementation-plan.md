@@ -39,6 +39,7 @@ state machine instead of the available left-only trace, and the verified Round
 4 `at=1503/1695/1727/1743/2527` routes use their measured 356/360/345/360/630-frame state-machine paths.
 Round 5 `at=1135` now uses its separate 1,107-frame fixed-point trace through
 the observed slot-reuse boundary.
+Round 5 `at=1711` now uses its separate 285-frame fixed-point trace.
 
 ## Delivery Stages
 

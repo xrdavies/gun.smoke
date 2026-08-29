@@ -352,6 +352,10 @@ The mirrored `at=1839,x=248,y=32,code=9,phase=0` branch also matches all 873
 coarse/fine samples and its `Y=252` release when captured with the other enemy
 slots isolated. A normal crowded pass may fail to allocate this script record;
 the ROM does not defer it after the seven-slot pool check.
+Round 4's naturally allocated `at=1503,x=248,y=80,code=7,phase=1` branch
+matches the shared state machine for all 356 coarse/fine samples and releases
+through the right boundary; it no longer inherits the unrelated 642-frame
+left-edge coordinate trace.
 Seeding the model with one natural at1375 actor's retained `$0500/$0520` slot
 fractions reproduces all 1,955 captured X/Y and movement-state samples through
 its top-edge release. Runtime assigns each ROM enemy actor one of the seven

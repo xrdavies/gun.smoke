@@ -35,7 +35,8 @@ descent, and browser coverage for every distinct Boss projectile chain and pool
 owner. A further Round 2 Gunman pass fixed the shared 8-bit orbit-counter wrap
 and now matches the full 483-frame code-8 and 873-frame mirrored code-9 routes
 through natural release. Round 6 right-side code-7 `y=64` now uses that shared
-state machine instead of the available left-only trace.
+state machine instead of the available left-only trace, and the verified Round
+4 `at=1503` route uses its measured 356-frame state-machine path.
 
 ## Delivery Stages
 

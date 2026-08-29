@@ -844,7 +844,7 @@ export type BackstabberRaidState = {
   dead: boolean;
 };
 
-export function createBackstabberRaidState(x: number, y: number, playerX: number, playerY: number): BackstabberRaidState {
+export function createBackstabberRaidState(x: number, y: number, playerX: number, playerY: number, fineX = 0, fineY = 0): BackstabberRaidState {
   return {
     frame: 0,
     mode: "move",
@@ -854,8 +854,8 @@ export function createBackstabberRaidState(x: number, y: number, playerX: number
     heading: nesAimHeading(x * NES_WORLD_X_SCALE, y * NES_WORLD_Y_SCALE, playerX * NES_WORLD_X_SCALE, playerY * NES_WORLD_Y_SCALE),
     arcHeading: 0x40,
     increasingArc: x < 128,
-    x,
-    y,
+    x: x + fineX / 256,
+    y: y + fineY / 256,
     dead: false,
   };
 }
@@ -934,7 +934,7 @@ export function gunmanFlankUsesDynamicState(entityCode: 7 | 8 | 9, originY: numb
   return ![911, 975, 1807].includes(eventAt ?? -1);
 }
 
-export function createGunmanFlankMovementState(entityCode: 7 | 8 | 9, x: number, y: number, fromRight: boolean): GunmanFlankMovementState {
+export function createGunmanFlankMovementState(entityCode: 7 | 8 | 9, x: number, y: number, fromRight: boolean, fineX = 0, fineY = 0): GunmanFlankMovementState {
   return {
     frame: 0,
     mode: entityCode === 7 ? "entry" : "side",
@@ -943,8 +943,8 @@ export function createGunmanFlankMovementState(entityCode: 7 | 8 | 9, x: number,
     orbitDirection: 1,
     orbitPassedDown: false,
     fromRight,
-    x: x + (entityCode === 7 ? 0 : fromRight ? -1 : 1),
-    y: y + 1,
+    x: x + (entityCode === 7 ? 0 : fromRight ? -1 : 1) + fineX / 256,
+    y: y + 1 + fineY / 256,
     dead: false,
   };
 }

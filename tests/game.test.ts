@@ -613,6 +613,9 @@ describe("Gun.Smoke vertical slice", () => {
   it("advances the side-raid Backstabber state", () => {
     const state = createBackstabberRaidState(4, 64, 120, 215);
     expect(state).toMatchObject({ mode: "move", segment: 1, remaining: 64, heading: 13, arcHeading: 0x40, increasingArc: true });
+    const seeded = createBackstabberRaidState(4, 64, 120, 215, 60, 86);
+    expect(seeded.x).toBeCloseTo(4 + 60 / 256, 9);
+    expect(seeded.y).toBeCloseTo(64 + 86 / 256, 9);
     advanceBackstabberRaid(state, 4);
     expect(state).toMatchObject({ mode: "move", remaining: 60, arcHeading: 0x41 });
     advanceBackstabberRaid(state, 64);
@@ -814,6 +817,9 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankUsesDynamicState(8, 32, 2, 0, 655)).toBe(false);
 
     const entry = createGunmanFlankMovementState(7, 4, 32, false);
+    const seededEntry = createGunmanFlankMovementState(7, 4, 32, false, 60, 86);
+    expect(seededEntry.x).toBeCloseTo(4 + 60 / 256, 9);
+    expect(seededEntry.y).toBeCloseTo(33 + 86 / 256, 9);
     advanceGunmanFlankMovement(entry, 48, 120, 215, () => false);
     expect(entry).toMatchObject({ frame: 48, mode: "chase", heading: 8, dead: false });
     expect(entry.x).toBeCloseTo(42.921875, 9);

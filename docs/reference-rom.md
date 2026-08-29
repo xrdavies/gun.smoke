@@ -333,9 +333,9 @@ tracking on the next frame. Runtime uses this state machine for Round 2 side
 entries without a complete verified trace.
 Seeding the model with one natural at1375 actor's retained `$0500/$0520` slot
 fractions reproduces all 1,955 captured X/Y and movement-state samples through
-its top-edge release. Runtime currently starts untraced web actors with neutral
-subpixels; preserving fine bytes across every shared enemy slot remains the
-required step for the same per-pixel parity under arbitrary pool histories.
+its top-edge release. Runtime assigns each ROM enemy actor one of the seven
+shared slots and persists its fine X/Y bytes, so later dynamic Gunman and
+Backstabber spawns inherit the same subpixel state across pool reuse.
 Round 2's single `code=7,x=56,y=0,phase=1` event is a distinct top-edge
 initializer. Its first scheduler wrap at frame 51 misses the facing gate, the
 second succeeds at frame 115, dispatch changes to `0x59` at frame 260, and the

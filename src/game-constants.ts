@@ -476,6 +476,12 @@ export function riflemanCanAttack(actorY: number, playerY: number): boolean {
   return actorNesY >= 0x30 && Math.abs(playerNesY - actorNesY) < 0x60;
 }
 
+export function riflemanAttackHeadingAtStart(frame: number, actorX: number, actorY: number, playerX: number, playerY: number): number | undefined {
+  return frame >= RIFLEMAN_ATTACK_STATE_FRAME && riflemanCanAttack(actorY, playerY)
+    ? nesAimHeading(actorX, actorY, playerX, playerY)
+    : undefined;
+}
+
 const RIFLEMAN_SHOT_HEADINGS = [[20, 22, 20, 18, 20], [16, 18, 16, 14, 16], [12, 14, 12, 10, 12]] as const;
 
 export function riflemanShotHeading(aimHeading: number, shotIndex: number): number {

@@ -4,7 +4,7 @@ import { AMMO_GAIN, advanceSniperFiring, backstabberAmbushY, BACKSTABBER_AMBUSH_
 import { advanceBackstabberRaid, createBackstabberRaidState } from "../src/game-constants";
 import { romPickupScreenY } from "../src/game-constants";
 import { advanceGunmanFlankMovement, createGunmanFlankMovementState, GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, GUNMAN_BOTTOM_NEAR_DISTANCE_NES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, gunmanCanFire, GUNMAN_ENTRY_PATH_NES, GUNMAN_FLANK_INITIAL_STATE_FRAMES, gunmanFlankFirstOpportunityFrame, gunmanFlankLifetime, gunmanFlankMovementFacingHeading, GUNMAN_FLANK_LIFETIMES, GUNMAN_FLANK_SHOT_FRAMES, gunmanFlankUsesDynamicState, GUNMAN_LIFETIME, GUNMAN_TOP_LIFETIMES_FRAMES, gunmanFirstOpportunityFrame, gunmanFlankPosition, gunmanOpeningY, gunmanTopBranch, gunmanTopHeading, gunmanTopPosition, gunmanProjectileVelocity, GUNMAN_SHOT_OPPORTUNITY_INTERVAL } from "../src/game-constants";
-import { RIFLEMAN_LIFETIME, RIFLEMAN_PATH_NES, riflemanCanAttack, riflemanPosition, riflemanShotHeading, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_PATH_NES, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition, mediumProjectileHeadingVelocity, mediumProjectileVelocity } from "../src/game-constants";
+import { RIFLEMAN_LIFETIME, RIFLEMAN_PATH_NES, riflemanAttackHeadingAtStart, riflemanCanAttack, riflemanPosition, riflemanShotHeading, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_PATH_NES, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition, mediumProjectileHeadingVelocity, mediumProjectileVelocity } from "../src/game-constants";
 import { bossSpriteVisible, ninjaBossEntryLaneIndex, NINJA_BOSS_TELEPORT_DELAY } from "../src/game-constants";
 import { hasWeaponStock } from "../src/game-constants";
 import { ENEMY_DEFEAT_ANIMATION_DURATION } from "../src/game-constants";
@@ -454,6 +454,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect([20, 16, 12].map((aim) => Array.from({ length: 5 }, (_, shot) => riflemanShotHeading(aim, shot)))).toEqual([[20, 22, 20, 18, 20], [16, 18, 16, 14, 16], [12, 14, 12, 10, 12]]);
     expect(mediumProjectileHeadingVelocity(16)).toEqual([0, 2 * NES_FRAME_RATE * NES_WORLD_Y_SCALE]);
     expect([riflemanCanAttack(48 * NES_WORLD_Y_SCALE, 143 * NES_WORLD_Y_SCALE), riflemanCanAttack(48 * NES_WORLD_Y_SCALE, 144 * NES_WORLD_Y_SCALE), riflemanCanAttack(47 * NES_WORLD_Y_SCALE, 47 * NES_WORLD_Y_SCALE)]).toEqual([true, false, false]);
+    expect(riflemanAttackHeadingAtStart(121, 128 * NES_WORLD_X_SCALE, 48 * NES_WORLD_Y_SCALE, 128 * NES_WORLD_X_SCALE, 96 * NES_WORLD_Y_SCALE)).toBeUndefined();
+    expect(riflemanAttackHeadingAtStart(122, 128 * NES_WORLD_X_SCALE, 48 * NES_WORLD_Y_SCALE, 128 * NES_WORLD_X_SCALE, 96 * NES_WORLD_Y_SCALE)).toBe(16);
     expect(RIFLEMAN_SIDE_SHOT_FRAMES).toEqual([97, 113, 129]);
     expect(RIFLEMAN_SIDE_LIFETIME).toBeCloseTo(259 / NES_FRAME_RATE, 9);
     expect(RIFLEMAN_SIDE_PATH_NES).toEqual([[0, 0, 0], [80, 65, 0], [169, 65, 0], [180, 58, 0], [240, 8, 0], [258, -7, 0]]);

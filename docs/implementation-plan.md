@@ -95,6 +95,9 @@ Round 3 `at=4831` also uses the shared state machine through its complete
 582-frame map-wrap route.
 Round 3's same-frame Boss-gate `at=4863` record uses the shared state machine
 through its complete 381-frame route.
+Top-entry Riflemen now capture their five-shot fan at the ROM attack-state
+transition (frame 122), rather than recalculating the aim at the first shot;
+side-entry and generic fallback paths remain separate.
 
 ## Delivery Stages
 

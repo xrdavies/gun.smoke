@@ -84,11 +84,13 @@ const axisDistance = (left, right) => {
 const matchingEventIndexes = (roundIndex, before, after, candidate) => {
   if (before === undefined || after === undefined || after < before) return before === undefined ? [] : [before];
   const records = Array.from({ length: after - before }, (_, offset) => scriptRecord(roundIndex, before + offset))
-    .filter((record) => record.pool === pool && record.dispatch === candidate.dispatch);
+    .filter((record) => record.pool === pool);
   if (records.length === 0) return [];
   const scores = records.map((record) => axisDistance(candidate.x, record.x) + axisDistance(candidate.y, record.y));
   const best = Math.min(...scores);
-  return records.filter((_, index) => scores[index] === best).map((record) => record.index);
+  const nearest = records.filter((_, index) => scores[index] === best);
+  const matchingDispatch = nearest.filter((record) => record.dispatch === candidate.dispatch);
+  return (matchingDispatch.length > 0 ? matchingDispatch : nearest).map((record) => record.index);
 };
 const nes = new NES({ onFrame: () => {}, onAudioSample: () => {} });
 nes.loadROM(romBytes.toString("binary"));

@@ -890,7 +890,7 @@ and correction branches can be replayed without exposing ROM code.
 `--match-x`, `--match-y`, `--match-fine-x`, and `--match-fine-y` filters. They are applied to the first candidate
 slot after the dispatch/variant match, allowing a side-entry signature to be
 selected without relying on a global `--skip` count.
-Candidate listings include the Round map pointer/page/fine-scroll state, so
+Candidate listings include the current Round index plus map pointer/page/fine-scroll state, so
 same-coordinate initializers can be attributed to their `$8C00` event before a
 full trace is captured.
 `--match-map-pointer`, `--match-map-page`, and `--match-scroll-offset` apply

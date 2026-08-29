@@ -86,6 +86,8 @@ const entity = (slot) => {
 };
 const active = (slot) => Boolean(nes.cpu.mem[0x400 + slot] & 0x80);
 const roundState = () => ({
+  roundIndex: nes.cpu.mem[0x41],
+  roundNumber: (nes.cpu.mem[0x41] ?? 0) + 1,
   mapPointer: (nes.cpu.mem[0x5a] ?? 0) | ((nes.cpu.mem[0x5b] ?? 0) << 8),
   mapPage: nes.cpu.mem[0x5c],
   scrollOffset: nes.cpu.mem[0x5d],

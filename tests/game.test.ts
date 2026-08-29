@@ -526,6 +526,9 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ninjaTraceLifetime(216, 0, 4, 1, 3647, 127 / 256, 242 / 256)).toBeCloseTo(261 / NES_FRAME_RATE, 9);
     expect(ninjaTraceLifetime(120, 0, 4, 1, 3743, 169 / 256, 185 / 256)).toBeCloseTo(228 / NES_FRAME_RATE, 9);
     expect(ninjaTraceLifetime(152, 0, 4, 0, 3759, 37 / 256, 54 / 256)).toBeCloseTo(198 / NES_FRAME_RATE, 9);
+    expect(ninjaTraceLifetime(104, 0, 4, 0, 1519, 162 / 256, 48 / 256)).toBeCloseTo(224 / NES_FRAME_RATE, 9);
+    expect(ninjaTraceLifetime(56, 0, 4, 0, 2031, 95 / 256, 146 / 256)).toBeCloseTo(266 / NES_FRAME_RATE, 9);
+    expect(ninjaTraceLifetime(104, 0, 4, 1, 2239, 193 / 256, 236 / 256)).toBeCloseTo(228 / NES_FRAME_RATE, 9);
     expect(ninjaTraceLifetime(184, 0, 4, 0)).toBeUndefined();
     expect(ninjaTracePosition(103 / NES_FRAME_RATE, 152, 0, 4, 0, 47)).toEqual([151 * NES_WORLD_X_SCALE, 123 * NES_WORLD_Y_SCALE]);
     expect(ninjaTracePosition(139 / NES_FRAME_RATE, 152, 0, 4, 0, 47)).toEqual([123 * NES_WORLD_X_SCALE, 90 * NES_WORLD_Y_SCALE]);
@@ -615,6 +618,10 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ninjaTracePosition(0, 120, 0, 4, 1, 3743, 169 / 256, 185 / 256)).toEqual([(120 + 169 / 256) * NES_WORLD_X_SCALE, (2 + 185 / 256) * NES_WORLD_Y_SCALE]);
     expect(ninjaTracePosition(227 / NES_FRAME_RATE, 120, 0, 4, 1, 3743, 169 / 256, 185 / 256)).toEqual([(103 + 69 / 256) * NES_WORLD_X_SCALE, (255 + 187 / 256) * NES_WORLD_Y_SCALE]);
     expect(ninjaTracePosition(197 / NES_FRAME_RATE, 152, 0, 4, 0, 3759, 37 / 256, 54 / 256)).toEqual([(108 + 153 / 256) * NES_WORLD_X_SCALE, (203 + 228 / 256) * NES_WORLD_Y_SCALE]);
+    expect(ninjaTracePosition(0, 104, 0, 4, 0, 1519, 162 / 256, 48 / 256)).toEqual([(104 + 162 / 256) * NES_WORLD_X_SCALE, (2 + 48 / 256) * NES_WORLD_Y_SCALE]);
+    expect(ninjaTracePosition(223 / NES_FRAME_RATE, 104, 0, 4, 0, 1519, 162 / 256, 48 / 256)).toEqual([(156 + 78 / 256) * NES_WORLD_X_SCALE, (254 + 114 / 256) * NES_WORLD_Y_SCALE]);
+    expect(ninjaTracePosition(265 / NES_FRAME_RATE, 56, 0, 4, 0, 2031, 95 / 256, 146 / 256)).toEqual([(118 + 207 / 256) * NES_WORLD_X_SCALE, (1 + 234 / 256) * NES_WORLD_Y_SCALE]);
+    expect(ninjaTracePosition(227 / NES_FRAME_RATE, 104, 0, 4, 1, 2239, 193 / 256, 236 / 256)).toEqual([(87 + 93 / 256) * NES_WORLD_X_SCALE, (255 + 238 / 256) * NES_WORLD_Y_SCALE]);
     expect(ninjaTracePosition(103 / NES_FRAME_RATE, 184, 0, 4, 0)).toBeUndefined();
     expect([ninjaTraceThrowFrame(4, 47), ninjaTraceThrowFrame(4, 63), ninjaTraceThrowFrame(4, 351), ninjaTraceThrowFrame(4, 399), ninjaTraceThrowFrame(4, 735, 239 / 256, 81 / 256), ninjaTraceThrowFrame(4, 767, 51 / 256, 66 / 256), ninjaTraceThrowFrame(4, 943), ninjaTraceThrowFrame(4, 1103), ninjaTraceThrowFrame(4, 1711), ninjaTraceThrowFrame(4, 3215), ninjaTraceThrowFrame(4, 3407), ninjaTraceThrowFrame(4, 383), ninjaTraceThrowFrame(4, 751), ninjaTraceThrowFrame(4, 815), ninjaTraceThrowFrame(4, 1071), ninjaTraceThrowFrame(4, 1199), ninjaTraceThrowFrame(4, 1583), ninjaTraceThrowFrame(4, 1727), ninjaTraceThrowFrame(4, 3535, 135 / 256, 35 / 256), ninjaTraceThrowFrame(4, 3727), ninjaTraceThrowFrame(3, 47)]).toEqual([103, 103, 103, false, false, 116, false, 116, 116, 116, 116, false, false, 116, 116, 116, false, 116, false, 116, undefined]);
     expect(ninjaTraceThrowFrames(4, 3535, 176 / 256, 0)).toEqual([117]);
@@ -661,6 +668,9 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ninjaTraceThrowFrames(4, 3647, 127 / 256, 242 / 256)).toEqual([116, 153]);
     expect(ninjaTraceThrowFrames(4, 3743, 169 / 256, 185 / 256)).toEqual([116]);
     expect(ninjaTraceThrowFrames(4, 3759, 37 / 256, 54 / 256)).toEqual([116]);
+    expect(ninjaTraceThrowFrames(4, 1519, 162 / 256, 48 / 256)).toEqual([116]);
+    expect(ninjaTraceThrowFrames(4, 2031, 95 / 256, 146 / 256)).toEqual([116, 153]);
+    expect(ninjaTraceThrowFrames(4, 2239, 193 / 256, 236 / 256)).toEqual([116]);
     expect(ninjaTraceThrowFrames(4, 3407, 240 / 256, 0)).toEqual([116]);
     expect(ninjaTraceThrowFrames(4, 3519, 176 / 256, 0)).toBe(false);
     expect(ninjaTraceThrowFrames(4, 3519, 44 / 256, 0)).toBe(false);

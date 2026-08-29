@@ -599,6 +599,9 @@ frames respectively.
 The later `at=3743,x=120,phase=1` route emits once at frame 116 and releases
 after 228 frames; `at=3759,x=152,phase=0` also emits once at frame 116 and
 releases after 198 frames.
+Additional captured branches are `at=1519,x=104,phase=0` (one emission at
+116, 224 frames), `at=2031,x=56,phase=0` (emissions at 116/153, 266 frames),
+and `at=2239,x=104,phase=1` (one emission at 116, 228 frames).
 `at=3215,x=208,
 phase=0` entry holds its lane, emits its first Shuriken at frame 116, and
 releases after 284 frames; the runtime binds its fixed-point per-frame trace.

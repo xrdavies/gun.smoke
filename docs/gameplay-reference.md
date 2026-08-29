@@ -342,6 +342,9 @@ frames respectively.
 The later `at=3743,x=120,phase=1` route fires once at frame 116 and releases
 after 228 frames; `at=3759,x=152,phase=0` also fires once at frame 116 and
 releases after 198 frames.
+Additional captured branches are `at=1519,x=104,phase=0` (one throw at 116,
+224 frames), `at=2031,x=56,phase=0` (throws at 116/153, 266 frames), and
+`at=2239,x=104,phase=1` (one throw at 116, 228 frames).
 `at=3215,x=208,phase=0`
 holds its lane, fires at frame 116, and releases after 284 frames using a
 fixed-point trace. Event `at=3407,x=224,phase=0` uses the same frame-116 throw gate from its own

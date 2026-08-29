@@ -128,26 +128,31 @@ test("runs the distinct Boss projectile chains", async ({ page }) => {
 
   await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), 1);
   await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
-  expect(await waitForBossProjectile(page, ["bullet"], 3_000, false)).toBe(true);
+  await page.evaluate(() => (window as unknown as { __fireGunSmokeBoss: () => void }).__fireGunSmokeBoss());
+  expect(await waitForBossProjectile(page, ["bullet"], 300, false)).toBe(true);
 
-  for (const [stage, projectile, duration] of [[2, "boomerang", 7_000], [3, "fireball", 4_000]] as const) {
+  for (const [stage, projectile] of [[2, "boomerang"], [3, "fireball"]] as const) {
     await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), stage);
     await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
-    expect(await waitForBossProjectile(page, [projectile], duration)).toBe(true);
+    await page.evaluate(() => (window as unknown as { __fireGunSmokeBoss: () => void }).__fireGunSmokeBoss());
+    expect(await waitForBossProjectile(page, [projectile], 300)).toBe(true);
   }
 
   await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), 4);
   await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
-  expect(await waitForBossProjectile(page, ["ninjaSmoke"], 3_500)).toBe(true);
+  await page.evaluate(() => (window as unknown as { __fireGunSmokeBoss: () => void }).__fireGunSmokeBoss());
+  expect(await waitForBossProjectile(page, ["ninjaSmoke"], 300)).toBe(true);
   expect(await waitForBossProjectile(page, ["shuriken"], 1_500)).toBe(true);
 
   await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), 5);
   await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
-  expect(await waitForBossProjectile(page, ["grenadeShell", "grenade"], 20_000)).toBe(true);
+  await page.evaluate(() => (window as unknown as { __fireGunSmokeBoss: (randomByte: number) => void }).__fireGunSmokeBoss(8));
+  expect(await waitForBossProjectile(page, ["grenadeShell", "grenade"], 300)).toBe(true);
 
   await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), 6);
   await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
-  expect(await waitForBossProjectile(page, ["bullet"], 20_000, true)).toBe(true);
+  await page.evaluate(() => (window as unknown as { __fireGunSmokeBoss: (randomByte: number) => void }).__fireGunSmokeBoss(1));
+  expect(await waitForBossProjectile(page, ["bullet"], 300, true)).toBe(true);
   expect(pageErrors).toEqual([]);
 });
 

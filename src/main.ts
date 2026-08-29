@@ -2930,6 +2930,12 @@ if (import.meta.env.DEV) Object.defineProperty(window, "__forceGunSmokeBoss", { 
   game.player.sprite.position = { x: game.player.x, y: game.player.y };
   (game as unknown as { updateSpawns(): void }).updateSpawns();
 } });
+if (import.meta.env.DEV) Object.defineProperty(window, "__fireGunSmokeBoss", { value: (randomByte?: number) => {
+  const boss = game?.units.find((unit) => unit.kind === "boss" && unit.hp > 0 && !unit.exploding);
+  if (!game || !boss) return;
+  if (randomByte !== undefined) game.randomState = [randomByte & 0xff, 0, 0, 0];
+  (game as unknown as { fireBoss(target: Unit): void }).fireBoss(boss);
+} });
 if (import.meta.env.DEV) Object.defineProperty(window, "__defeatGunSmokeBoss", { value: () => {
   const boss = game?.units.find((unit) => unit.kind === "boss" && unit.hp > 0 && !unit.exploding);
   if (game && boss) (game as unknown as { defeatTarget(target: unknown): void }).defeatTarget(boss);

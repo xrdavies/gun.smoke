@@ -300,7 +300,7 @@ exits through the bottom edge without firing.
 Event `at=1775,x=248,y=32,code=9,phase=0` uses a distinct 696-frame route;
 its first traced projectile begins at frame 367 before the actor exits upward.
 Complete scoped side traces are selected for matching entries: Round 2 uses
-569 frames for code 8 at `y=32`, 371 for code 8 at `y=64`, 963 for code 9 at
+569 frames for code 8 at `y=32` (including the phase-1 trace), 371 for code 8 at `y=64`, 963 for code 9 at
 `y=32`, and 360 for code 9 at `y=64`; Round 3 uses 581/384-frame code 7
 `y=64`, phase-1 left/right traces and a 379-frame code 8 `y=64`, phase-0
 trace. Round 6 also has controlled code 7 traces for left/right `y=32` and left

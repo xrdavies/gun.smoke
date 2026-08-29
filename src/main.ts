@@ -2866,6 +2866,11 @@ class ReferenceRomGame {
 let game: GunSmokeGame | undefined;
 let referenceGame: ReferenceRomGame | undefined;
 if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeInvulnerable", { value: (duration: number) => { if (game) game.invulnerable = duration; } });
+if (import.meta.env.DEV) Object.defineProperty(window, "__getGunSmokeUnits", { value: () => game?.units.map((unit) => ({ kind: unit.kind, itemType: unit.itemType, romPool: unit.romPool, romSlot: unit.romSlot, romEntityCode: unit.romEntityCode, hp: unit.hp })) ?? [] });
+if (import.meta.env.DEV) Object.defineProperty(window, "__breakGunSmokeBarrel", { value: (entityCode: number) => {
+  const target = game?.units.find((unit) => unit.kind === "barrel" && unit.romEntityCode === entityCode && unit.hp > 0);
+  if (game && target) (game as unknown as { defeatTarget(target: Unit): void }).defeatTarget(target);
+} });
 if (import.meta.env.DEV) Object.defineProperty(window, "__showGunSmokeGameOver", { value: () => { if (game) (game as unknown as { finish(won: boolean): void }).finish(false); } });
 if (import.meta.env.DEV) Object.defineProperty(window, "__forceGunSmokeBoss", { value: () => {
   if (!game) return;

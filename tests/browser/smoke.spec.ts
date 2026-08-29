@@ -239,6 +239,22 @@ test("reaches the first ROM weapon shop", async ({ page }) => {
   await expect(page.locator('[data-shop-item="horse"]')).toBeHidden();
 });
 
+test("keeps ROM barrel pickups in the object pool", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/");
+  await page.locator("#start-button").click();
+  await page.locator("#continue-button").click();
+  await page.locator("#briefing-button").click();
+  await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), 1);
+  await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
+  await page.clock.runFor(5_000);
+  const before = await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; itemType?: string; romPool?: string; romEntityCode?: number }> }).__getGunSmokeUnits());
+  expect(before).toContainEqual(expect.objectContaining({ kind: "barrel", romEntityCode: 33, romPool: "object" }));
+  await page.evaluate(() => (window as unknown as { __breakGunSmokeBarrel: (entityCode: number) => void }).__breakGunSmokeBarrel(33));
+  const after = await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; itemType?: string; romPool?: string; romEntityCode?: number }> }).__getGunSmokeUnits());
+  expect(after).toContainEqual(expect.objectContaining({ kind: "item", itemType: "boots", romPool: "object", romEntityCode: 33 }));
+});
+
 test("runs a locally supplied reference ROM through the engine", async ({ page }) => {
   const romPath = path.resolve(process.cwd(), "Gun.Smoke.ZH.NES");
   test.skip(!fs.existsSync(romPath), "Reference ROM is intentionally not present in clean clones");

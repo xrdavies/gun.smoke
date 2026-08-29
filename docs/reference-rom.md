@@ -362,6 +362,8 @@ Round 3's `at=687,x=4,y=64,code=7,phase=0` branch independently matches all 330
 controlled state-machine samples and must not reuse the phase-1 y=64 trace.
 The later phase-0 `at=1711,x=4,y=64,code=7` branch independently matches all
 311 controlled state-machine samples through its `Y=252` release.
+The second-loop `at=319,x=4,y=48,code=7,phase=1` branch matches all 501
+controlled state-machine samples through its right-edge release.
 The later `at=3775,x=4,y=48,code=8,phase=1` branch independently matches all
 426 controlled state-machine samples through its `Y=252` release.
 The phase-0 `at=3823,x=4,y=96,code=8` branch independently matches all 282

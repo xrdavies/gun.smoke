@@ -63,6 +63,8 @@ Round 3 `at=687` replaces its generic phase-0 code-7 path with the shared state
 machine verified across all 330 controlled frames.
 Round 3 `at=1711` independently uses the shared state machine through its
 complete 311-frame phase-0 route.
+Round 3's second-loop `at=319` event uses the shared state machine through its
+complete 501-frame route.
 Round 3 `at=3775` also uses the shared state machine through its complete
 426-frame route.
 Round 3 `at=3823` independently uses the shared state machine through its

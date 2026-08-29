@@ -271,6 +271,9 @@ The following `at=1567` pair likewise allocates only `x=152`; its
 `fineX=81,fineY=204` route throws at frame 116 and releases after 228 frames.
 Event `at=1743,x=144,phase=0` with `fineX=88,fineY=46` follows another
 228-frame single-throw route and releases through the 8-bit Y boundary.
+The `at=1775` record is skipped by pool pressure. Event
+`at=1855,x=112,phase=1` with `fineX=204,fineY=205` throws at frame 116 and
+releases after 224 frames through the same screen boundary.
 `at=3215,x=208,phase=0`
 holds its lane, fires at frame 116, and releases after 284 frames using a
 fixed-point trace. Event `at=3407,x=224,phase=0` uses the same frame-116 throw gate from its own

@@ -526,6 +526,9 @@ The following `at=1567` pair also allocates only its earlier `x=152` record;
 that `fineX=81,fineY=204` route throws at frame 116 and releases at frame 228.
 Event `at=1743,x=144,phase=0` (`fineX=88,fineY=46`) follows another
 228-frame single-throw route and releases through the 8-bit Y boundary.
+The `at=1775` record is skipped by pool pressure. Event
+`at=1855,x=112,phase=1` (`fineX=204,fineY=205`) throws at frame 116 and
+releases after 224 frames through the same screen boundary.
 `at=3215,x=208,
 phase=0` entry holds its lane, emits its first Shuriken at frame 116, and
 releases after 284 frames; the runtime binds its fixed-point per-frame trace.

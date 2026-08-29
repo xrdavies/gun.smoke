@@ -318,10 +318,11 @@ entries wait for the actor to reach the same `Y=16` threshold before counting;
 side entries begin counting immediately. `$04E0` remains a reused slot field.
 The movement routine itself branches on actor state. Code 7 starts with a
 48-frame entry, then turns one heading step per frame toward Billy while either
-axis is at least 56 pixels away. Inside that square it chooses a clockwise or
-counter-clockwise side heading; after leaving the square it adjusts one heading
-step every five frames and enters roaming after passing heading 16 and returning
-to heading 0. Terrain contact
+axis is at least 56 pixels away. Inside that square it chooses one of two side
+states. The negative state increments its heading every five frames after
+leaving the square; the positive state's decrement immediately falls through to
+an increment and therefore holds its heading. The rotating state enters roaming
+after passing heading 16 and returning to heading 0. Terrain contact
 reverses its heading and returns it to tracking. Codes 8 and 9 advance from a
 side while the forward terrain probe is blocked, wait until Billy is within 101
 vertical pixels, execute a 51-frame mirrored lunge, and then enter the shared
@@ -330,6 +331,11 @@ camera Y step. Its heading table uses the timer value before decrement; timer 0
 therefore performs the final speed-3 movement, becomes 255, and hands off to
 tracking on the next frame. Runtime uses this state machine for Round 2 side
 entries without a complete verified trace.
+Seeding the model with one natural at1375 actor's retained `$0500/$0520` slot
+fractions reproduces all 1,955 captured X/Y and movement-state samples through
+its top-edge release. Runtime currently starts untraced web actors with neutral
+subpixels; preserving fine bytes across every shared enemy slot remains the
+required step for the same per-pixel parity under arbitrary pool histories.
 Round 2's single `code=7,x=56,y=0,phase=1` event is a distinct top-edge
 initializer. Its first scheduler wrap at frame 51 misses the facing gate, the
 second succeeds at frame 115, dispatch changes to `0x59` at frame 260, and the

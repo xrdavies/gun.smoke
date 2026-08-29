@@ -823,11 +823,24 @@ describe("Gun.Smoke vertical slice", () => {
     advanceGunmanFlankMovement(orbit, orbit.frame + 1, 200, 200, () => false);
     expect(orbit).toMatchObject({ mode: "roam", heading: 0 });
 
+    const holdingOrbit = { ...orbit, mode: "orbit" as const, heading: 1, timer: 4, orbitDirection: 0 as const };
+    advanceGunmanFlankMovement(holdingOrbit, holdingOrbit.frame + 1, 200, 200, () => false);
+    expect(holdingOrbit).toMatchObject({ mode: "orbit", heading: 1 });
+
     const bounce = { ...entry, mode: "roam" as const, x: 100, y: 100, heading: 8, timer: 2, orbitPassedDown: true };
     advanceGunmanFlankMovement(bounce, bounce.frame + 1, 200, 200, () => true);
     expect(bounce).toMatchObject({ mode: "chase", heading: 8, timer: 2, orbitPassedDown: true });
     advanceGunmanFlankMovement(bounce, bounce.frame + 1, bounce.x, bounce.y, () => false);
     expect(bounce).toMatchObject({ mode: "orbit", heading: 0, timer: 2, orbitPassedDown: true });
+
+    const oppositeAim = { ...entry, mode: "chase" as const, frame: 1, x: 211, y: 75, heading: 2 };
+    advanceGunmanFlankMovement(oppositeAim, 2, 152, 215, () => false);
+    expect(oppositeAim.heading).toBe(3);
+
+    const boundaryProbe = { ...entry, mode: "roam" as const, frame: 1, x: 12.2, y: 146.9, heading: 26 };
+    let probe: readonly [number, number] | undefined;
+    advanceGunmanFlankMovement(boundaryProbe, 2, 152, 215, (x, y) => (probe = [x, y], false));
+    expect(probe).toEqual([255, 140]);
 
     const side = createGunmanFlankMovementState(8, 4, 115, false);
     expect(gunmanFlankMovementFacingHeading(side)).toBe(16);

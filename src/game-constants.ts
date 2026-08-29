@@ -856,13 +856,13 @@ const GUNMAN_FLANK_NEAR_DISTANCE_NES = 56;
 const GUNMAN_FLANK_SIDE_TRIGGER_DISTANCE_NES = 101;
 const GUNMAN_FLANK_LUNGE_HEADINGS = [0x90, 0x8f, 0x4e, 0x4d, 0x4c, 0x4b, 0x0a, 0x09, 0x08, 0x07, 0x46, 0x45, 0x44] as const;
 
-// ponytail: floats preserve the state transitions; add byte-accurate fractions when remaining per-pixel parity requires them.
+// ponytail: web actors start with neutral subpixels; persist per-slot fine bytes when remaining parity requires it.
 export type GunmanFlankMovementState = {
   frame: number;
   mode: "entry" | "side" | "lunge" | "chase" | "orbit" | "roam";
   timer: number;
   heading: number;
-  orbitDirection: -1 | 1;
+  orbitDirection: 0 | 1;
   orbitPassedDown: boolean;
   fromRight: boolean;
   x: number;
@@ -905,10 +905,13 @@ export function advanceGunmanFlankMovement(
 ): void {
   const move = (heading = state.heading): void => moveEncodedHeading(state, heading & 0xdf);
   const outsideScreen = (): boolean => state.x < 0 || state.x >= 256 || state.y < 0 || state.y >= ROM_SCREEN_RELEASE_Y_NES;
+  const probeBlocked = (heading: number, xOffset = 0): boolean => {
+    const [probeX, probeY] = nesActorCollisionProbeOffset(heading);
+    return blocked((Math.floor(state.x) + xOffset + probeX + 256) & 0xff, (Math.floor(state.y) + probeY + 256) & 0xff);
+  };
   const moveAndBounce = (): void => {
     move();
-    const [probeX, probeY] = nesActorCollisionProbeOffset(state.heading);
-    if (!blocked(state.x + probeX, state.y + probeY)) return;
+    if (!probeBlocked(state.heading)) return;
     state.mode = "chase";
     move((state.heading + 16) & 31);
   };
@@ -921,9 +924,7 @@ export function advanceGunmanFlankMovement(
       if (state.timer === 0) state.mode = "chase";
       else move();
     } else if (state.mode === "side") {
-      const [probeX, probeY] = nesActorCollisionProbeOffset(state.heading);
-      const sideProbeX = state.x + (state.fromRight ? -16 : 16) + probeX;
-      if (blocked(sideProbeX, state.y + probeY)) move();
+      if (probeBlocked(state.heading, state.fromRight ? -16 : 16)) move();
       else if (Math.abs(playerY - Math.floor(state.y)) < GUNMAN_FLANK_SIDE_TRIGGER_DISTANCE_NES) {
         state.mode = "lunge";
         state.timer = GUNMAN_FLANK_LUNGE_FRAMES;
@@ -946,12 +947,12 @@ export function advanceGunmanFlankMovement(
       if (state.mode === "chase") {
         if (far) {
           const target = nesAimHeading(actorX * NES_WORLD_X_SCALE, actorY * NES_WORLD_Y_SCALE, playerX * NES_WORLD_X_SCALE, playerY * NES_WORLD_Y_SCALE);
-          const difference = (target - state.heading + 48) % 32 - 16;
+          const difference = (target - state.heading + 47) % 32 - 15;
           if (difference !== 0) state.heading = (state.heading + Math.sign(difference) + 32) & 31;
           moveAndBounce();
         } else {
-          state.orbitDirection = state.heading < 16 ? 1 : -1;
-          state.heading = (state.heading - state.orbitDirection * 8 + 32) & 31;
+          state.orbitDirection = state.heading < 16 ? 1 : 0;
+          state.heading = (state.heading + (state.orbitDirection ? -8 : 8) + 32) & 31;
           state.mode = "orbit";
         }
       } else if (state.mode === "orbit") {

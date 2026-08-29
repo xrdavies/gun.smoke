@@ -341,9 +341,10 @@ phases and entry heights use the generic routes until their slot-state traces
 are captured.
 Round 2 side Gunmen without a verified complete event trace use the Gunman
 movement states rather than a shared coordinate path. Code 7 enters for 48
-frames, tracks Billy while either axis is at least 56 NES pixels away, turns
-sideways while close, then rotates every five frames after leaving that range
-until it enters a roaming segment. Terrain collision returns it to tracking.
+frames, tracks Billy while either axis is at least 56 NES pixels away, then
+selects a side state while close. One side state rotates every five frames after
+leaving that range until roaming; the other preserves its heading. Terrain
+collision returns it to tracking.
 Codes 8 and 9 advance from their side until their collision probe opens and
 Billy is within 101 vertical pixels, run a 51-frame mirrored lunge, then join
 the same tracking states. Terrain probes and screen exits are evaluated each

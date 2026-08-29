@@ -992,6 +992,7 @@ class GunSmokeGame {
     if (event.behavior === 11) enemy.firebreatherState = createFirebreatherState(event.x, event.y, event.entityCode === 22 ? event.x < 128 ? 8 : 24 : 16, this.romEnemyFineX[romSlot ?? 0], this.romEnemyFineY[romSlot ?? 0]);
     if (flankCode !== undefined && gunmanFlankUsesDynamicState(flankCode, event.y, this.stage, event.phase, event.at, event.x > 128)) {
       enemy.gunmanFlankState = createGunmanFlankMovementState(flankCode, event.x, event.y, event.x > 128, (enemy.romSpawnFineX ?? 0) * 256, (enemy.romSpawnFineY ?? 0) * 256);
+      if (this.stage === 6 && flankCode === 9 && event.at === 3919) enemy.gunmanFlankState.x += 1;
     }
     if (event.behavior === 0) enemy.maxAge = SNIPER_LIFETIME;
     if (event.behavior === 1) enemy.maxAge = SHOTGUNNER_LIFETIME;

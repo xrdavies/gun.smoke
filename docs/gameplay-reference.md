@@ -487,6 +487,9 @@ Round 6 `at=2207,x=4,y=96,code=8,phase=1` also uses that state machine and
 matches all 648 controlled fixed-point frames through its left-edge release.
 Its `at=2783,x=248,y=32,code=9,phase=1` counterpart matches all 960 controlled
 frames through its bottom-edge release.
+The later `at=3919,x=248,y=32,code=9,phase=0` event holds its allocation-frame
+X coordinate instead of taking the usual immediate side step, then uses the
+same state machine for all 1,419 controlled frames through release.
 Round 4's `at=1503,x=248,y=80,code=7,phase=1` event uses the same state machine
 and matches all 356 fixed-point frames through its right-boundary release.
 Its `at=1727,x=248,y=96,code=7,phase=1` counterpart matches all 345 frames

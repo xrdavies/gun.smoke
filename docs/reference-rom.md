@@ -361,6 +361,10 @@ left-edge release. The comparison uses Billy's post-scroll coordinate read by
 the enemy routine on each frame.
 Round 6's naturally allocated `at=2783,x=248,y=32,code=9,phase=1` branch also
 matches all 960 controlled state-machine samples through its `Y=252` release.
+The later `at=3919,x=248,y=32,code=9,phase=0` branch keeps `x=248` on its
+allocation frame rather than applying the usual immediate side step. After
+that one-pixel initializer difference, all 1,419 controlled state-machine
+samples match through its `Y=252` release.
 Round 4's naturally allocated `at=1503,x=248,y=80,code=7,phase=1` branch
 matches the shared state machine for all 356 coarse/fine samples and releases
 through the right boundary; it no longer inherits the unrelated 642-frame

@@ -850,6 +850,133 @@ const GUNMAN_BOTTOM_PATHS_NES = {
 export const GUNMAN_FLANK_SHOT_FRAMES = { 7: [64, 410], 8: [309], 9: [399, 463] } as const;
 export const GUNMAN_FLANK_LIFETIMES = { 7: 642 / NES_FRAME_RATE, 8: 508 / NES_FRAME_RATE, 9: 826 / NES_FRAME_RATE } as const;
 export const GUNMAN_FLANK_INITIAL_STATE_FRAMES = 250;
+const GUNMAN_FLANK_ENTRY_FRAMES = 48;
+const GUNMAN_FLANK_LUNGE_FRAMES = 51;
+const GUNMAN_FLANK_NEAR_DISTANCE_NES = 56;
+const GUNMAN_FLANK_SIDE_TRIGGER_DISTANCE_NES = 101;
+const GUNMAN_FLANK_LUNGE_HEADINGS = [0x90, 0x8f, 0x4e, 0x4d, 0x4c, 0x4b, 0x0a, 0x09, 0x08, 0x07, 0x46, 0x45, 0x44] as const;
+
+// ponytail: floats preserve the state transitions; add byte-accurate fractions when remaining per-pixel parity requires them.
+export type GunmanFlankMovementState = {
+  frame: number;
+  mode: "entry" | "side" | "lunge" | "chase" | "orbit" | "roam";
+  timer: number;
+  heading: number;
+  orbitDirection: -1 | 1;
+  orbitPassedDown: boolean;
+  fromRight: boolean;
+  x: number;
+  y: number;
+  dead: boolean;
+};
+
+export function gunmanFlankUsesDynamicState(entityCode: 7 | 8 | 9, originY: number, stage: number, phase: number, eventAt?: number): boolean {
+  if (stage !== 2 || entityCode === 7 && Math.round(originY) === 0 && phase === 1) return false;
+  if (entityCode === 7) return ![351, 399, 1135, 1167, 1231, 1407, 1903, 1967, 2671].includes(eventAt ?? -1);
+  if (entityCode === 8) return ![207, 623, 655, 1599].includes(eventAt ?? -1);
+  return ![911, 975, 1807].includes(eventAt ?? -1);
+}
+
+export function createGunmanFlankMovementState(entityCode: 7 | 8 | 9, x: number, y: number, fromRight: boolean): GunmanFlankMovementState {
+  return {
+    frame: 0,
+    mode: entityCode === 7 ? "entry" : "side",
+    timer: entityCode === 7 ? GUNMAN_FLANK_ENTRY_FRAMES : 0,
+    heading: fromRight ? 24 : 8,
+    orbitDirection: 1,
+    orbitPassedDown: false,
+    fromRight,
+    x: x + (entityCode === 7 ? 0 : fromRight ? -1 : 1),
+    y: y + 1,
+    dead: false,
+  };
+}
+
+export function gunmanFlankMovementFacingHeading(state: GunmanFlankMovementState): number {
+  return state.mode === "side" ? 16 : state.heading & 31;
+}
+
+export function advanceGunmanFlankMovement(
+  state: GunmanFlankMovementState,
+  targetFrame: number,
+  playerX: number,
+  playerY: number,
+  blocked: (probeX: number, probeY: number) => boolean,
+): void {
+  const move = (heading = state.heading): void => moveEncodedHeading(state, heading & 0xdf);
+  const outsideScreen = (): boolean => state.x < 0 || state.x >= 256 || state.y < 0 || state.y >= ROM_SCREEN_RELEASE_Y_NES;
+  const moveAndBounce = (): void => {
+    move();
+    const [probeX, probeY] = nesActorCollisionProbeOffset(state.heading);
+    if (!blocked(state.x + probeX, state.y + probeY)) return;
+    state.mode = "chase";
+    state.heading = (state.heading + 16) & 31;
+    move();
+  };
+
+  while (state.frame < targetFrame && !state.dead) {
+    state.frame += 1;
+    state.y += NES_SCROLL_SPEED / NES_FRAME_RATE;
+
+    if (state.mode === "entry") {
+      state.timer -= 1;
+      if (state.timer === 0) state.mode = "chase";
+      else move();
+    } else if (state.mode === "side") {
+      const [probeX, probeY] = nesActorCollisionProbeOffset(state.heading);
+      const sideProbeX = state.x + (state.fromRight ? -16 : 16) + probeX;
+      if (blocked(sideProbeX, state.y + probeY)) move();
+      else if (Math.abs(playerY - state.y) < GUNMAN_FLANK_SIDE_TRIGGER_DISTANCE_NES) {
+        state.mode = "lunge";
+        state.timer = GUNMAN_FLANK_LUNGE_FRAMES;
+      }
+    } else if (state.mode === "lunge") {
+      if (state.timer === 0) {
+        state.mode = "chase";
+        state.heading = 16;
+        move();
+      } else {
+        state.timer -= 1;
+        let heading: number = GUNMAN_FLANK_LUNGE_HEADINGS[state.timer >> 2] ?? 0x44;
+        if (state.fromRight) heading = (heading & 0xe0) | ((32 - (heading & 31)) & 31);
+        move(heading);
+      }
+    } else {
+      const far = Math.abs(playerY - state.y) >= GUNMAN_FLANK_NEAR_DISTANCE_NES || Math.abs(playerX - state.x) >= GUNMAN_FLANK_NEAR_DISTANCE_NES;
+      if (state.mode === "chase") {
+        if (far) {
+          const target = nesAimHeading(state.x * NES_WORLD_X_SCALE, state.y * NES_WORLD_Y_SCALE, playerX * NES_WORLD_X_SCALE, playerY * NES_WORLD_Y_SCALE);
+          const difference = (target - state.heading + 48) % 32 - 16;
+          if (difference !== 0) state.heading = (state.heading + Math.sign(difference) + 32) & 31;
+          moveAndBounce();
+        } else {
+          state.orbitDirection = state.heading < 16 ? 1 : -1;
+          state.heading = (state.heading - state.orbitDirection * 8 + 32) & 31;
+          state.mode = "orbit";
+          state.timer = 0;
+          state.orbitPassedDown = false;
+        }
+      } else if (state.mode === "orbit") {
+        state.timer = (state.timer + 1) % 5;
+        if (!far && state.timer === 0) {
+          state.heading = (state.heading + state.orbitDirection + 32) & 31;
+          if (state.heading === 16) state.orbitPassedDown = true;
+          if (state.heading === 0 && state.orbitPassedDown) {
+            state.mode = "roam";
+            if (outsideScreen()) state.dead = true;
+            continue;
+          }
+        }
+        moveAndBounce();
+      } else {
+        moveAndBounce();
+      }
+    }
+
+    if (outsideScreen()) state.dead = true;
+  }
+}
+
 const GUNMAN_FLANK_PATHS_NES = {
   7: [[0, 0, 0], [48, 38, 16], [64, 46, 31], [120, 75, 95], [126, 78, 101], [160, 104, 103], [200, 137, 116], [234, 165, 128], [270, 195, 141], [310, 209, 186], [338, 192, 212], [370, 170, 211], [410, 158, 186], [442, 148, 168], [460, 149, 162], [480, 158, 165], [540, 158, 185], [600, 158, 205], [641, 158, 218]],
   8: [[0, 0, 0], [247, 0, 82], [250, 3, 77], [260, 16, 68], [270, 25, 68], [280, 35, 76], [290, 44, 92], [300, 47, 120], [309, 51, 128], [324, 61, 142], [338, 67, 135], [370, 84, 122], [420, 123, 149], [460, 153, 178], [500, 182, 209], [507, 184, 217]],

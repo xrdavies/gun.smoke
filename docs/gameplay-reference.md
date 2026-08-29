@@ -339,6 +339,14 @@ phase-0/phase-1 traces and a 776-frame code 9 right `y=48`, phase-1 trace.
 Other rounds,
 phases and entry heights use the generic routes until their slot-state traces
 are captured.
+Round 2 side Gunmen without a verified complete event trace use the Gunman
+movement states rather than a shared coordinate path. Code 7 enters for 48
+frames, tracks Billy while either axis is at least 56 NES pixels away, circles
+him while close, then roams until terrain collision returns it to tracking.
+Codes 8 and 9 advance from their side until their collision probe opens and
+Billy is within 101 vertical pixels, run a 51-frame mirrored lunge, then join
+the same tracking states. Terrain probes and screen exits are evaluated each
+NES frame.
 Riflemen advance,
 enter their attack state at 122 NES frames once they are at least 48 NES pixels
 downscreen and within 96 NES Y pixels of Billy, then fire five shots at

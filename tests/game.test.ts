@@ -8,7 +8,7 @@ import { RIFLEMAN_ATTACK_TO_FIRST_SHOT_FRAMES, RIFLEMAN_LIFETIME, RIFLEMAN_PATH_
 import { bossSpriteVisible, ninjaBossEntryLaneIndex, NINJA_BOSS_TELEPORT_DELAY } from "../src/game-constants";
 import { hasWeaponStock } from "../src/game-constants";
 import { ENEMY_DEFEAT_ANIMATION_DURATION } from "../src/game-constants";
-import { WINGATE_ENDING_INPUT_DELAY, WINGATE_FINAL_DEFEAT_ANIMATION_DURATION, WINGATE_FINAL_ENDING_DELAY } from "../src/game-constants";
+import { WINGATE_ENDING_INPUT_DELAY, WINGATE_ENTRY_INVULNERABILITY, WINGATE_FINAL_DEFEAT_ANIMATION_DURATION, WINGATE_FINAL_ENDING_DELAY } from "../src/game-constants";
 import { ENEMY_DEFEAT_Y_OFFSETS_NES } from "../src/game-constants";
 import { addScore, MAX_SCORE } from "../src/game-constants";
 import { PLAYER_ENTRY_X, PLAYER_ENTRY_X_NES, PLAYER_ENTRY_Y, PLAYER_ENTRY_Y_NES, PLAYER_MAX_X_NES, PLAYER_MAX_Y_NES, PLAYER_MIN_X_NES, PLAYER_MIN_Y_NES } from "../src/game-constants";
@@ -1827,6 +1827,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(WINGATE_ENTRY_Y).toBe(0);
     expect(WINGATE_SECOND_ENTRY_Y_NES).toBe(0);
     expect(WINGATE_SECOND_ENTRY_Y).toBe(0);
+    expect(WINGATE_ENTRY_INVULNERABILITY).toBeCloseTo(185 / NES_FRAME_RATE, 9);
     expect(WINGATE_SECOND_SPAWN_DELAY).toBeCloseTo(264 / NES_FRAME_RATE, 9);
     expect(WINGATE_FINAL_DEFEAT_ANIMATION_DURATION).toBeCloseTo(9 / NES_FRAME_RATE, 9);
     expect(WINGATE_FINAL_ENDING_DELAY).toBeCloseTo(761 / NES_FRAME_RATE, 9);

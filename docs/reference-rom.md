@@ -994,7 +994,9 @@ encounters select NES `x=64/104/152/192` at `y=0`, hold that lane and reach
 approximately `y=98` after 151 frames. Movement uses a repeating four-active,
 eight-idle gait. Crossing the NES arena bounds (`x=32..223`, `y=40..97`) starts
 a 16-frame reversed-heading arc followed by a second 16-frame arc aimed toward
-`(128,64)`; the opening correction completes at frame 185. Normal movement
+`(128,64)`; the opening correction completes at frame 185. Controlled Magnum
+fire cannot damage either encounter before that transition, so runtime keeps
+both Wingate entries invulnerable through the same frame. Normal movement
 updates `AE=(AE+AF)&0xff`: its low nibble selects one of 16 encoded headings and
 its low two bits select a `24/48/72/96`-frame segment. The runtime executes this
 state directly, including stationary headings and repeated boundary correction,

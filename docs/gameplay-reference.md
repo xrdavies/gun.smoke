@@ -730,6 +730,7 @@ Round 6 bounty.
 Both encounters begin attack checks on their movement gait; correction arcs
 pause that cadence. They fire only when Billy is in
 the downward aiming sector and the ROM's mutating low-two-bit gate passes.
+Both are invulnerable through their frame-185 opening correction.
 Their bullets use quantized directional aim in the ROM's `12..20` downward
 sector and a 64-frame lifetime rather than fixed-size simultaneous volleys.
 Both encounters replay their respective 3,601 captured integer movement frames

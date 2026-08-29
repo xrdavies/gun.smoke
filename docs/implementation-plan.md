@@ -106,6 +106,8 @@ five-shot 96/112/128/144/160 cadence before their frame-258 release.
 Shotgunners now use the traced directional entry paths: top entries move toward
 the road center with their 20-frame hold and two volleys, while side entries
 preserve the 113-frame fan, correction holds, and frame-230 release.
+Both Wingate encounters now preserve the measured frame-185 entry
+invulnerability instead of accepting damage from their top-edge spawn.
 
 ## Delivery Stages
 

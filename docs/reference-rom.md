@@ -358,6 +358,8 @@ the ROM does not defer it after the seven-slot pool check.
 Round 3's naturally allocated `at=1119,x=4,y=96,code=8,phase=1` branch matches
 the shared state machine for all 282 controlled coarse/fine samples through its
 `Y=252` release.
+Round 3's `at=687,x=4,y=64,code=7,phase=0` branch independently matches all 330
+controlled state-machine samples and must not reuse the phase-1 y=64 trace.
 The later `at=3775,x=4,y=48,code=8,phase=1` branch independently matches all
 426 controlled state-machine samples through its `Y=252` release.
 The phase-0 `at=3823,x=4,y=96,code=8` branch independently matches all 282

@@ -508,7 +508,8 @@ the 26-frame throw animation, and emits dispatch `0x32` from the actor coordinat
 Three fixed-player traces released at frames 620, 651 and 713 and produced zero,
 one and three Hatchets respectively; the earlier four-route maximum of 1,042
 frames remains a safety cap, not a fixed lifetime or attack interval. The web
-runtime now drives the same collision, turn, lock, aim and exit states against
+runtime keeps the actor alive until the state machine reaches its screen exit,
+not until that safety cap; it drives the same collision, turn, lock, aim and exit states against
 the decoded Round collision map. Deterministic replays match all four observed
 throw frames and the 713/651-frame releases; the no-throw route releases one
 frame later because the web actor does not inherit the ROM slot's stale X

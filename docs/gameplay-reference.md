@@ -315,6 +315,8 @@ Event `at=1407,x=4,y=32,code=7,phase=1` uses a 774-frame route and exits through
 the bottom edge.
 Event `at=1599,x=4,y=32,code=8,phase=1` uses a 917-frame route and exits through
 the left edge.
+Event `at=1807,x=248,y=32,code=9,phase=0` uses a 981-frame route and exits through
+the bottom edge.
 Complete scoped side traces are selected for matching entries: Round 2 uses
 569 frames for the code-8 `at=623` entry at `y=32`. The at351 code-7 phase-1
 entry uses a separate shorter trace and exits through the bottom edge. It uses

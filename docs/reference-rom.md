@@ -384,6 +384,7 @@ The at1167 code-7 phase-0 entry follows a 299-frame route to the bottom edge.
 The at1231 code-7 phase-0 right entry follows a 522-frame route to the top edge.
 The at1407 code-7 phase-1 entry follows a 774-frame route to the bottom edge.
 The at1599 code-8 phase-1 entry follows a 917-frame route to the left edge.
+The at1807 code-9 phase-0 entry follows a 981-frame route to the bottom edge.
 and a code 9 trace
 at `y=64` follows 360 measured frames. Round 3's code 7 `y=64`, phase-1
 entries use separate left/right traces of 581/384 frames; its code 8 left

@@ -1054,6 +1054,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(FATMAN_JOE_ENTRY_END_Y_NES).toBe(112);
     expect(FATMAN_JOE_ENTRY_END_Y).toBe(252);
     expect(fatmanJoeOpeningY(0)).toBe(0);
+    expect([0, 7, 8, 11, 12].map((frame) => fatmanJoeOpeningY(frame / NES_FRAME_RATE) / NES_WORLD_Y_SCALE)).toEqual([0, 0, 2, 8, 8]);
     expect(fatmanJoeOpeningY(FATMAN_JOE_ENTRY_DURATION / 2)).toBe(126);
     expect(fatmanJoeOpeningY(FATMAN_JOE_ENTRY_DURATION)).toBe(252);
     expect(fatmanJoeOpeningY(FATMAN_JOE_ENTRY_DURATION * 2)).toBe(252);

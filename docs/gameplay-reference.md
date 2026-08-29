@@ -190,7 +190,8 @@ sectors `8..24`; an out-of-sector check can skip the projectile but still ends
 the opening attack's invulnerability. The Ninja enters from one of four measured NES coordinate
 pairs (`112,64`, `192,64`, `120,144`, or `176,128`) with an initial
 smoke/invulnerability window,
-Fatman Joe enters from NES `x=64/104/152/192` at the top edge before using short hops and
+Fatman Joe enters from NES `x=64/104/152/192` at the top edge with the captured
+170-frame stepped descent before using short hops and
 stationary grenade traps across the Round 5 road, while Wingate's two encounters use top-edge NES
 lanes `x=64/104/152/192`, four-active/eight-idle movement, random `24..96`-frame
 direction segments and two-part boundary-correction arcs; the Ninja enters a smoke/invulnerability phase and

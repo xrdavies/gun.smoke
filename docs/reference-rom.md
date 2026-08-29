@@ -627,7 +627,7 @@ cross, multi-height combat profile, opening timing and interval. Entry and
 teleport smoke artwork remains procedural.
 Round 5's gate identifies Fatman Joe as dispatch `0x80`, variant `0x51`. His
 initializer selects NES `x=64/104/152/192` at `y=0` and keeps that lane for the
-first 170 frames and reaches about `y=112`. A 2,400-frame Boss trace spans NES
+first 170 frames, following the captured stepped descent to `y=112`. A 2,400-frame Boss trace spans NES
 `x=88..152`, beyond the runtime's former 54-pixel-wide center clamp; the web
  Boss now uses the full Round 5 road bounds. His attack decision starts at
 frame 170 after the entry routine reaches its first 76-frame counter boundary,

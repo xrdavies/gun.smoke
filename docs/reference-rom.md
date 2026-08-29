@@ -589,7 +589,8 @@ Event `at=3407,x=120,phase=0` with the neutral fraction throws at frame 116
 and releases after 271 frames; its `x=224` partner retains its separate route.
 The first Ninja in the `at=3519` group (`x=152,phase=1`) takes a 225-frame
 no-throw route in the neutral slot state; the other same-frame Ninja is checked
-separately.
+separately. The `x=216` partner takes a 255-frame no-throw route and releases
+after its mirrored return.
 `at=3215,x=208,
 phase=0` entry holds its lane, emits its first Shuriken at frame 116, and
 releases after 284 frames; the runtime binds its fixed-point per-frame trace.

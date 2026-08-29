@@ -335,6 +335,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROUND_ROM_OBJECT_EVENTS.flatMap((stream) => stream.filter((event) => event.semantic === "supplyShop")).every((event) => (event.flags & 0x40) !== 0)).toBe(true);
     expect(ROUND_ROM_OBJECT_EVENTS.map((stream) => stream.filter((event) => event.semantic === "weaponShop").length)).toEqual([1, 1, 2, 1, 1, 2]);
     expect(ROUND_ROM_OBJECT_EVENTS.flat().every((event) => event.pool === "enemy" || event.pool === "object")).toBe(true);
+    expect(ROUND_ROM_OBJECT_EVENTS.flat().filter((event) => event.semantic === "sceneObject").every((event) => event.pool === "object")).toBe(true);
+    expect(ROUND_ROM_OBJECT_EVENTS.flat().filter((event) => event.semantic !== "sceneObject").every((event) => event.pool === "enemy")).toBe(true);
     for (const stream of [...ROUND_ROM_ENEMY_EVENTS, ...ROUND_ROM_OBJECT_EVENTS]) {
       expect(stream.every((event, index) => index === 0 || event.at > stream[index - 1]!.at || (event.at === stream[index - 1]!.at && event.order > stream[index - 1]!.order))).toBe(true);
     }

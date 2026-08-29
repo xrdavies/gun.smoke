@@ -481,10 +481,11 @@ same enemy pool with five hit points and can be damaged by every player weapon.
 
 After a lethal shot, the enemy remains non-colliding for the ROM's five-frame
 defeat animation while its slot is still occupied; any flagged drop is allocated
-as a separate enemy-pool pickup with its own slot and fine coordinates. This preserves the original short-lived slot
-pressure before the actor is released. Barrel contents use that same seven-slot
-pickup pool rather than becoming capacity-free runtime objects. If all seven
-ordinary enemy slots are occupied, the ROM drops are skipped.
+as a separate enemy-pool pickup with its own slot and fine coordinates. This
+preserves the original short-lived slot pressure before the actor is released.
+Barrel contents remain in the six-slot object pool rather than becoming
+capacity-free runtime objects; enemy drops are skipped when all seven ordinary
+enemy slots are occupied.
 
 After the second Wingate encounter, a nine-frame defeat state and 752-frame
 non-colliding controller delay lead into the separate ending and credits state

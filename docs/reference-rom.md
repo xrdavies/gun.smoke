@@ -440,14 +440,12 @@ for five frames before release; a flagged drop is allocated in a separate enemy
 slot during that death animation, with its own fine coordinates. The web runtime keeps the defeated enemy
 non-colliding for the same five-frame window so pool pressure and slot reuse
 match the ROM. Its measured screen-Y offsets are `0/-4/-7/-10/-12` NES pixels.
-Barrel contents use the same `$CD70-$CD91` allocator, so both
-barrel pickups and enemy drops continue to count against the seven-slot enemy
-pool until collected or released. Their screen Y advances at one NES pixel
-every three frames; world movement also includes the camera scroll, so runtime
-uses the same doubled world speed as decoded barrels.
-When all seven ordinary enemy slots are occupied, the allocator skips the
-conversion; the runtime applies the same capacity check before creating either
-kind of ROM-tagged drop.
+Barrel contents use the low-slot object allocator, while enemy drops use the
+seven ordinary enemy slots. The decoded object records occupy six object slots;
+their screen Y advances at one NES pixel every three frames, and world movement
+also includes the camera scroll, so runtime uses the same doubled world speed as
+decoded barrels. Shops are the only decoded object records marked as using the
+ordinary pool.
 The same defeat path calls `$E297`, which maps the initial dispatch through
 `$E335` and the BCD increment table at `$E2E9`; the resulting ordinary enemy
 score values are 100 (Gunman/Sniper/Bomber/Firebreather), 200

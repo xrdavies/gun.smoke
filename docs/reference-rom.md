@@ -95,7 +95,11 @@ The generated `ROUND_ROM_OBJECT_EVENTS` stream retains no-behavior object
 records. The runtime consumes dispatch `30/31` weapon and supply-shop triggers,
 renders dispatch `0x08` scene props, and preserves dispatch `0x07`
 breakable-container variants. Decoded shop and `0x07` objects descend at the
-measured one NES pixel every three frames. The shared scrolling-actor update
+measured one NES pixel every three frames. An object-pool trace of Round 1
+script index 1 stays at `y=1` for relative frames 0 through 2, reaches `y=251`
+on frame 752, and writes the release coordinate `y=252` on frame 753. Runtime
+rebuilds scripted object screen Y from that discrete step sequence instead of
+integrating its average speed. The shared scrolling-actor update
 releases shops, containers, props, and converted pickups when screen Y reaches
 `252` (`$FC`); runtime uses that same boundary for slot cleanup.
 The entity tracer also records the fixed-bank event script pointer `$43/$44`

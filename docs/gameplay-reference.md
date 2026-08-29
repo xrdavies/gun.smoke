@@ -629,6 +629,8 @@ preserves the original short-lived slot pressure before the actor is released.
 Barrel contents remain in the six-slot object pool rather than becoming
 capacity-free runtime objects; enemy drops are skipped when all seven ordinary
 enemy slots are occupied.
+Scripted barrels, shops and scene props begin at screen `y=1`, advance one NES
+pixel every three frames, and release when the next step reaches `y=252`.
 
 After the second Wingate encounter, a nine-frame defeat state and 752-frame
 non-colliding controller delay lead into the separate ending and credits state

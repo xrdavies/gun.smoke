@@ -179,6 +179,11 @@ export const ROM_OBJECT_DROP_SPEED = WORLD_SCROLL_SPEED * 2;
 export const ROM_SCREEN_RELEASE_Y_NES = 252;
 export const ROM_PROJECTILE_SCREEN_SIZE_NES = 256;
 
+export function romObjectScreenY(age: number, originY = 0): number {
+  const frame = Math.max(0, Math.round(age * NES_FRAME_RATE) - 1);
+  return originY + (1 + Math.floor(frame / 3)) * NES_WORLD_Y_SCALE;
+}
+
 export function romActorScreenYReleased(screenY: number): boolean {
   return Math.round(screenY) >= ROM_SCREEN_RELEASE_Y_NES;
 }

@@ -14,7 +14,7 @@ import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import { advanceRomRandom, mixRomRandomDifference, mixRomRandomFirstSum, mixRomRandomSecondSum, mixRomRandomSecondThirdSum, mixRomRandomSpawn, mixRomRandomSum, mixRomRandomThirdFirstSum, ROM_RANDOM_SEED } from "./game-constants";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, backstabberAmbushY, banditBillOpeningY, BACKSTABBER_AMBUSH_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, bomberCanThrow, bomberMovementDecision, bomberMovementDuration, bomberMovementUsesRandom, bomberMovementVelocity, BOMBER_THROW_DURATION, BOSS_DEFEAT_ANIMATION_DURATION, bossReward, bossSpriteVisible, canSpawnPlayerBullet, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, DEVIL_HAWK_RANDOM_ROUTE_START_FRAME, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, contactSourceShouldClear, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_LIFETIME, dynamiteVerticalOffset, EMPTY_BARREL_EXPLOSION_LIFETIME, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X_LANES, FATMAN_JOE_ENTRY_Y, fallingRockOnScreen, fallingRockPosition, fatmanJoeOpeningY, HORSE_HIT_INVULNERABILITY, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_LANES, NINJA_FIRST_SHOT_DELAY, ninjaBossEntryLaneIndex, PLAYER_DEATH_ANIMATION_DURATION, PLAYER_DEATH_RECOVERY_DURATION, playerDeathPhase, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_IMPACT_LIFETIME, ROCK_LIFETIME, ROAD_WIDTHS, ROM_OBJECT_DROP_SPEED, ROM_SCREEN_RELEASE_Y_NES, romActorScreenYReleased, ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_SIDE_LIFETIME, SHOTGUNNER_SIDE_SHOT_FRAME, SHOTGUNNER_VOLLEY_INTERVAL, shotgunnerPosition, shotgunnerSidePosition, shouldLoopStage, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_CODE2_SHOT_FRAMES, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_X_LANES, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type ItemType, type ShopType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, backstabberAmbushY, banditBillOpeningY, BACKSTABBER_AMBUSH_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, bomberCanThrow, bomberMovementDecision, bomberMovementDuration, bomberMovementUsesRandom, bomberMovementVelocity, BOMBER_THROW_DURATION, BOSS_DEFEAT_ANIMATION_DURATION, bossReward, bossSpriteVisible, canSpawnPlayerBullet, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, DEVIL_HAWK_RANDOM_ROUTE_START_FRAME, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, contactSourceShouldClear, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_LIFETIME, dynamiteVerticalOffset, EMPTY_BARREL_EXPLOSION_LIFETIME, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X_LANES, FATMAN_JOE_ENTRY_Y, fallingRockOnScreen, fallingRockPosition, fatmanJoeOpeningY, HORSE_HIT_INVULNERABILITY, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_LANES, NINJA_FIRST_SHOT_DELAY, ninjaBossEntryLaneIndex, PLAYER_DEATH_ANIMATION_DURATION, PLAYER_DEATH_RECOVERY_DURATION, playerDeathPhase, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_IMPACT_LIFETIME, ROCK_LIFETIME, ROAD_WIDTHS, ROM_OBJECT_DROP_SPEED, romObjectScreenY, ROM_SCREEN_RELEASE_Y_NES, romActorScreenYReleased, ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_SIDE_LIFETIME, SHOTGUNNER_SIDE_SHOT_FRAME, SHOTGUNNER_VOLLEY_INTERVAL, shotgunnerPosition, shotgunnerSidePosition, shouldLoopStage, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_CODE2_SHOT_FRAMES, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_X_LANES, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type ItemType, type ShopType, type WeaponName } from "./game-constants";
 import { advanceBackstabberRaid, createBackstabberRaidState, type BackstabberRaidState } from "./game-constants";
 import { advanceGunmanFlankMovement, createGunmanFlankMovementState, GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, gunmanCanFire, GUNMAN_FLANK_INITIAL_STATE_FRAMES, gunmanFlankFirstOpportunityFrame, gunmanFlankLifetime, gunmanFlankMovementFacingHeading, gunmanFlankUsesDynamicState, GUNMAN_LIFETIME, GUNMAN_TOP_LIFETIMES_FRAMES, gunmanFirstOpportunityFrame, gunmanFlankPosition, gunmanTopBranch, gunmanTopHeading, gunmanTopPosition, gunmanProjectileVelocity, GUNMAN_SHOT_OPPORTUNITY_INTERVAL, mediumProjectileHeadingVelocity, mediumProjectileVelocity, type GunmanFlankMovementState } from "./game-constants";
 import { BOMBER_ENTRY_DURATION, bomberOpeningY } from "./game-constants";
@@ -895,6 +895,7 @@ class GunSmokeGame {
       keeper.romFlags = event.flags;
       keeper.romPool = event.pool;
       keeper.romSlot = romSlot;
+      keeper.romOriginY = romObjectWorldY(event);
       return;
     }
     if (event.semantic === "sceneObject" && ROM_SCENE_PROP_DISPATCH_TYPES.includes(event.dispatchType as 8)) {
@@ -903,6 +904,7 @@ class GunSmokeGame {
       prop.romRandomSeed = romRandomSeed;
       prop.romFlags = event.flags;
       prop.romPool = event.pool;
+      prop.romOriginY = romObjectWorldY(event);
       prop.vy = ROM_OBJECT_DROP_SPEED;
       prop.sprite.color = [0.58 + ((event.entityCode - 44) % 3) * 0.08, 0.68, 0.78, 1];
       return;
@@ -915,6 +917,7 @@ class GunSmokeGame {
     container.romRandomSeed = romRandomSeed;
     container.romFlags = event.flags;
     container.romPool = event.pool;
+    container.romOriginY = romObjectWorldY(event);
   }
 
   private spawnRomEnemyEvent(event: RomEnemyEvent): void {
@@ -2022,10 +2025,12 @@ class GunSmokeGame {
       for (const fullFan of devilFireFans) this.fireBoss(unit, unit.age, fullFan);
       unit.sprite.visible = bossSpriteVisible(this.stage, unit.age, unit.invulnerableUntil, ninjaTeleporting);
     } else if (unit.kind === "shopkeeper" || unit.kind === "sceneObject") {
-      if (unit.vy !== 0) unit.y += scrollDelta * 2;
+      if (unit.romOriginY !== undefined) unit.y = this.scroll + romObjectScreenY(unit.age, unit.romOriginY);
+      else if (unit.vy !== 0) unit.y += scrollDelta * 2;
       if ((unit.y - this.scroll) / NES_WORLD_Y_SCALE >= ROM_SCREEN_RELEASE_Y_NES) unit.hp = 0;
     } else if (unit.kind === "barrel") {
-      if (!unit.exploding) unit.y += scrollDelta * 2;
+      if (!unit.exploding && unit.romOriginY !== undefined) unit.y = this.scroll + romObjectScreenY(unit.age, unit.romOriginY);
+      else if (!unit.exploding) unit.y += scrollDelta * 2;
       if (!unit.exploding && (unit.y - this.scroll) / NES_WORLD_Y_SCALE >= ROM_SCREEN_RELEASE_Y_NES) unit.hp = 0;
       if (unit.exploding) {
         const start = unit.maxAge - EMPTY_BARREL_EXPLOSION_LIFETIME;

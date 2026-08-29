@@ -1591,17 +1591,21 @@ class GunSmokeGame {
         if (!sideRifleman && !tracedRifleman && unit.nextFireAt === 0) unit.nextFireAt = RIFLEMAN_FIRST_SHOT_DELAY;
         const sideShotFrame = sideRifleman ? RIFLEMAN_SIDE_SHOT_FRAMES[unit.volleysFired] : undefined;
         const nextRiflemanShot = sideRifleman ? sideShotFrame === undefined ? undefined : sideShotFrame / NES_FRAME_RATE : unit.nextFireAt;
-        const canRiflemanFire = sideRifleman || !tracedRifleman
-          ? riflemanCanAttack(unit.y - this.scroll, this.player.y - this.scroll)
-          : unit.riflemanAttackStarted === true && unit.riflemanAimHeading !== undefined;
+        const canRiflemanFire = sideRifleman
+          ? true
+          : !tracedRifleman
+            ? riflemanCanAttack(unit.y - this.scroll, this.player.y - this.scroll)
+            : unit.riflemanAttackStarted === true && unit.riflemanAimHeading !== undefined;
         if (nextRiflemanShot !== undefined && unit.age >= nextRiflemanShot && unit.volleysFired < (sideRifleman ? RIFLEMAN_SIDE_SHOT_FRAMES.length : RIFLEMAN_SHOTS_PER_VOLLEY) && canRiflemanFire) {
           unit.riflemanAimHeading ??= nesAimHeading(unit.x, unit.y, this.player.x, this.player.y);
           if (!sideRifleman) unit.nextFireAt += RIFLEMAN_SHOT_INTERVAL;
           const shotIndex = unit.volleysFired;
           unit.volleysFired += 1;
-          const projectile = this.spawnEnemyProjectile(unit.x, tracedRifleman ? unit.y : unit.y + 12);
-          if (projectile) {
-            const heading = riflemanShotHeading(unit.riflemanAimHeading, shotIndex);
+          const projectileCount = sideRifleman ? 3 : 1;
+          for (let index = 0; index < projectileCount; index += 1) {
+            const projectile = this.spawnEnemyProjectile(unit.x, tracedRifleman ? unit.y : unit.y + 12);
+            if (!projectile) break;
+            const heading = riflemanShotHeading(unit.riflemanAimHeading, sideRifleman ? index : shotIndex);
             [projectile.vx, projectile.vy] = mediumProjectileHeadingVelocity(heading);
           }
         }

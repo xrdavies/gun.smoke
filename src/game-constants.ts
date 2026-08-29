@@ -464,12 +464,12 @@ export const RIFLEMAN_FIRST_SHOT_DELAY = 138 / NES_FRAME_RATE;
 export const RIFLEMAN_ATTACK_STATE_FRAME = 122;
 export const RIFLEMAN_ATTACK_TO_FIRST_SHOT_FRAMES = Math.round(RIFLEMAN_FIRST_SHOT_DELAY * NES_FRAME_RATE) - RIFLEMAN_ATTACK_STATE_FRAME;
 export const RIFLEMAN_SHOT_INTERVAL = 16 / NES_FRAME_RATE;
-export const RIFLEMAN_SHOTS_PER_VOLLEY = 5;
+export const RIFLEMAN_SHOTS_PER_VOLLEY = 3;
 export const RIFLEMAN_LIFETIME = 364 / NES_FRAME_RATE;
 export const RIFLEMAN_PATH_NES = [[0, 0], [121, 121], [211, 151], [363, 0]] as const;
-export const RIFLEMAN_SIDE_SHOT_FRAMES = [97, 113, 129] as const;
+export const RIFLEMAN_SIDE_SHOT_FRAMES = [96] as const;
 export const RIFLEMAN_SIDE_LIFETIME = 259 / NES_FRAME_RATE;
-export const RIFLEMAN_SIDE_PATH_NES = [[0, 0, 0], [80, 65, 0], [169, 65, 0], [180, 58, 0], [240, 8, 0], [258, -7, 0]] as const;
+export const RIFLEMAN_SIDE_PATH_NES = [[0, 0, 0], [80, 65, 0], [169, 65, 30], [180, 58, 30], [240, 8, 30], [258, -7, 30]] as const;
 
 export function riflemanCanAttack(actorY: number, playerY: number): boolean {
   const actorNesY = Math.round(actorY / NES_WORLD_Y_SCALE);
@@ -506,18 +506,13 @@ export function riflemanPosition(age: number): readonly [number, number] {
 }
 
 export function riflemanSidePosition(age: number, fromLeft: boolean): readonly [number, number] {
-  const frame = Math.max(0, age * NES_FRAME_RATE);
-  const nextIndex = RIFLEMAN_SIDE_PATH_NES.findIndex(([at]) => at >= frame);
+  const frame = Math.max(0, Math.floor(age * NES_FRAME_RATE + 1e-6));
   const direction = fromLeft ? 1 : -1;
-  if (nextIndex < 0) {
-    const last = RIFLEMAN_SIDE_PATH_NES.at(-1)!;
-    return [last[1] * direction, last[2]];
-  }
-  if (nextIndex === 0) return [0, 0];
-  const previous = RIFLEMAN_SIDE_PATH_NES[nextIndex - 1]!;
-  const next = RIFLEMAN_SIDE_PATH_NES[nextIndex]!;
-  const amount = (frame - previous[0]) / (next[0] - previous[0]);
-  return [(previous[1] + (next[1] - previous[1]) * amount) * direction, previous[2] + (next[2] - previous[2]) * amount];
+  const inwardFrames = Math.min(frame, 79);
+  const retreatFrames = Math.max(0, frame - 170);
+  const x = (inwardFrames - retreatFrames) * (53 / 64);
+  const y = frame < 80 ? 0 : Math.min(30, Math.floor((frame - 78) / 3));
+  return [x * direction, y];
 }
 export const NINJA_FIRST_SHOT_DELAY = 103 / NES_FRAME_RATE;
 export const NINJA_PROJECTILE_SPEED = 300;

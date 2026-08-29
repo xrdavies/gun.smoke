@@ -445,24 +445,26 @@ describe("Gun.Smoke vertical slice", () => {
     expect(RIFLEMAN_ATTACK_STATE_FRAME).toBe(122);
     expect(RIFLEMAN_FIRST_SHOT_DELAY).toBeCloseTo(138 / NES_FRAME_RATE, 9);
     expect(RIFLEMAN_SHOT_INTERVAL).toBeCloseTo(16 / NES_FRAME_RATE, 9);
-    expect(RIFLEMAN_SHOTS_PER_VOLLEY).toBe(5);
+    expect(RIFLEMAN_SHOTS_PER_VOLLEY).toBe(3);
     expect(RIFLEMAN_LIFETIME).toBeCloseTo(364 / NES_FRAME_RATE, 9);
     expect(RIFLEMAN_PATH_NES).toEqual([[0, 0], [121, 121], [211, 151], [363, 0]]);
     expect(riflemanPosition(121 / NES_FRAME_RATE)).toEqual([0, 121]);
     expect(riflemanPosition(211 / NES_FRAME_RATE)).toEqual([0, 151]);
     expect(riflemanPosition(363 / NES_FRAME_RATE)).toEqual([0, 0]);
-    expect([20, 16, 12].map((aim) => Array.from({ length: 5 }, (_, shot) => riflemanShotHeading(aim, shot)))).toEqual([[20, 22, 20, 18, 20], [16, 18, 16, 14, 16], [12, 14, 12, 10, 12]]);
+    expect([20, 16, 12].map((aim) => Array.from({ length: 3 }, (_, shot) => riflemanShotHeading(aim, shot)))).toEqual([[20, 22, 20], [16, 18, 16], [12, 14, 12]]);
     expect(mediumProjectileHeadingVelocity(16)).toEqual([0, 2 * NES_FRAME_RATE * NES_WORLD_Y_SCALE]);
     expect([riflemanCanAttack(48 * NES_WORLD_Y_SCALE, 143 * NES_WORLD_Y_SCALE), riflemanCanAttack(48 * NES_WORLD_Y_SCALE, 144 * NES_WORLD_Y_SCALE), riflemanCanAttack(47 * NES_WORLD_Y_SCALE, 47 * NES_WORLD_Y_SCALE)]).toEqual([true, false, false]);
     expect(riflemanAttackHeadingAtStart(128 * NES_WORLD_X_SCALE, 47 * NES_WORLD_Y_SCALE, 128 * NES_WORLD_X_SCALE, 96 * NES_WORLD_Y_SCALE)).toBeUndefined();
     expect(riflemanAttackHeadingAtStart(128 * NES_WORLD_X_SCALE, 48 * NES_WORLD_Y_SCALE, 128 * NES_WORLD_X_SCALE, 96 * NES_WORLD_Y_SCALE)).toBe(16);
     expect(RIFLEMAN_ATTACK_TO_FIRST_SHOT_FRAMES).toBe(16);
     expect([riflemanFirstShotFrame(94), riflemanFirstShotFrame(122)]).toEqual([110, 138]);
-    expect(RIFLEMAN_SIDE_SHOT_FRAMES).toEqual([97, 113, 129]);
+    expect(RIFLEMAN_SIDE_SHOT_FRAMES).toEqual([96]);
     expect(RIFLEMAN_SIDE_LIFETIME).toBeCloseTo(259 / NES_FRAME_RATE, 9);
-    expect(RIFLEMAN_SIDE_PATH_NES).toEqual([[0, 0, 0], [80, 65, 0], [169, 65, 0], [180, 58, 0], [240, 8, 0], [258, -7, 0]]);
-    expect(riflemanSidePosition(80 / NES_FRAME_RATE, false)).toEqual([-65, 0]);
-    expect(riflemanSidePosition(80 / NES_FRAME_RATE, true)).toEqual([65, 0]);
+    expect(RIFLEMAN_SIDE_PATH_NES).toEqual([[0, 0, 0], [80, 65, 0], [169, 65, 30], [180, 58, 30], [240, 8, 30], [258, -7, 30]]);
+    expect(riflemanSidePosition(80 / NES_FRAME_RATE, false)).toEqual([-65.421875, 0]);
+    expect(riflemanSidePosition(169 / NES_FRAME_RATE, false)).toEqual([-65.421875, 30]);
+    expect(riflemanSidePosition(180 / NES_FRAME_RATE, false)).toEqual([-57.140625, 30]);
+    expect(riflemanSidePosition(80 / NES_FRAME_RATE, true)).toEqual([65.421875, 0]);
   });
 
   it("matches the traced Ninja shot timing", () => {

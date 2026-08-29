@@ -280,6 +280,8 @@ At `at=1919` only the earlier `x=64` record allocates; its
 `fineX=251,fineY=236` route throws at 116/153/190/357 and releases at frame 366.
 Event `at=2015,x=80,phase=1` with `fineX=210,fineY=133` throws at frame 116,
 returns along its lower lane, and releases after 257 frames.
+Event `at=2207,x=56,phase=1` with `fineX=36,fineY=132` is a 256-frame
+single-throw route and releases after settling near its left lane.
 `at=3215,x=208,phase=0`
 holds its lane, fires at frame 116, and releases after 284 frames using a
 fixed-point trace. Event `at=3407,x=224,phase=0` uses the same frame-116 throw gate from its own

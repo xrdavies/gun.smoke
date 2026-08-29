@@ -23,6 +23,11 @@ const matchState = option("match-state") === undefined ? undefined : numberOptio
 const matchHeading = option("match-heading") === undefined ? undefined : numberOption("match-heading", 0);
 const matchX = option("match-x") === undefined ? undefined : numberOption("match-x", 0);
 const matchY = option("match-y") === undefined ? undefined : numberOption("match-y", 0);
+const matchFineX = option("match-fine-x") === undefined ? undefined : numberOption("match-fine-x", 0);
+const matchFineY = option("match-fine-y") === undefined ? undefined : numberOption("match-fine-y", 0);
+const matchMapPointer = option("match-map-pointer") === undefined ? undefined : numberOption("match-map-pointer", 0);
+const matchMapPage = option("match-map-page") === undefined ? undefined : numberOption("match-map-page", 0);
+const matchScrollOffset = option("match-scroll-offset") === undefined ? undefined : numberOption("match-scroll-offset", 0);
 const startFrame = option("start-frame") === undefined ? undefined : numberOption("start-frame", 0);
 const output = option("out") ?? ".rom-traces/entity.json";
 
@@ -36,7 +41,11 @@ if (followDispatches.some((value) => !Number.isInteger(value))) throw new Error(
 if (!Number.isInteger(skip) || skip < 0) throw new Error("--skip must be a non-negative integer");
 if (round !== undefined && (!Number.isInteger(round) || round < 1 || round > 6)) throw new Error("--round must be an integer from 1 through 6");
 if (!Number.isInteger(frames) || frames <= 0 || !Number.isInteger(traceFrames) || traceFrames <= 0) throw new Error("--frames and --trace-frames must be positive integers");
-for (const [name, value] of [["--match-state", matchState], ["--match-heading", matchHeading], ["--match-x", matchX], ["--match-y", matchY]]) {
+for (const [name, value] of [["--match-state", matchState], ["--match-heading", matchHeading], ["--match-x", matchX], ["--match-y", matchY], ["--match-fine-x", matchFineX], ["--match-fine-y", matchFineY]]) {
+  if (value !== undefined && (!Number.isInteger(value) || value < 0 || value > 0xff)) throw new Error(`${name} must be an integer from 0 through 255`);
+}
+if (matchMapPointer !== undefined && (!Number.isInteger(matchMapPointer) || matchMapPointer < 0 || matchMapPointer > 0xffff)) throw new Error("--match-map-pointer must be an integer from 0 through 65535");
+for (const [name, value] of [["--match-map-page", matchMapPage], ["--match-scroll-offset", matchScrollOffset]]) {
   if (value !== undefined && (!Number.isInteger(value) || value < 0 || value > 0xff)) throw new Error(`${name} must be an integer from 0 through 255`);
 }
 if (startFrame !== undefined && (!Number.isInteger(startFrame) || startFrame < 0 || startFrame >= frames)) throw new Error("--start-frame must be within --frames");
@@ -76,6 +85,12 @@ const entity = (slot) => {
   };
 };
 const active = (slot) => Boolean(nes.cpu.mem[0x400 + slot] & 0x80);
+const roundState = () => ({
+  mapPointer: (nes.cpu.mem[0x5a] ?? 0) | ((nes.cpu.mem[0x5b] ?? 0) << 8),
+  mapPage: nes.cpu.mem[0x5c],
+  scrollOffset: nes.cpu.mem[0x5d],
+  scrollStep: nes.cpu.mem[0x62],
+});
 
 let targetSlot;
 let targetStart;
@@ -128,15 +143,21 @@ for (let frame = 0; frame < frames; frame += 1) {
         continue;
       }
       const candidate = entity(slot);
+      const candidateRoundState = roundState();
       const baseMatch = !advancing && candidate.dispatch === dispatch && (variant === undefined || candidate.variant === variant);
       if (!baseMatch || matchingSlots.has(slot)) continue;
       matchingSlots.add(slot);
-      candidates.push({ frame, ...candidate, playerBefore, player: { x: memory[0x74], y: memory[0x71] } });
+      candidates.push({ frame, ...candidate, playerBefore, player: { x: memory[0x74], y: memory[0x71] }, roundState: candidateRoundState });
       if (listCandidates) continue;
       const matches = (matchState === undefined || candidate.state === matchState)
         && (matchHeading === undefined || candidate.heading === matchHeading)
         && (matchX === undefined || candidate.x === matchX)
-        && (matchY === undefined || candidate.y === matchY);
+        && (matchY === undefined || candidate.y === matchY)
+        && (matchFineX === undefined || candidate.fineX === matchFineX)
+        && (matchFineY === undefined || candidate.fineY === matchFineY)
+        && (matchMapPointer === undefined || candidateRoundState.mapPointer === matchMapPointer)
+        && (matchMapPage === undefined || candidateRoundState.mapPage === matchMapPage)
+        && (matchScrollOffset === undefined || candidateRoundState.scrollOffset === matchScrollOffset);
       if (!matches) continue;
       matchesSeen += 1;
       if (matchesSeen <= skip) continue;
@@ -161,12 +182,7 @@ for (let frame = 0; frame < frames; frame += 1) {
     player: { x: memory[0x74], y: memory[0x71] },
     random: { ac: memory[0xac], ad: memory[0xad], ae: memory[0xae], af: memory[0xaf] },
     zeroPage: { b0: memory[0xb0], b4: memory[0xb4], b5: memory[0xb5], ba: memory[0xba], bc: memory[0xbc] },
-    roundState: {
-      mapPointer: (memory[0x5a] ?? 0) | ((memory[0x5b] ?? 0) << 8),
-      mapPage: memory[0x5c],
-      scrollOffset: memory[0x5d],
-      scrollStep: memory[0x62],
-    },
+    roundState: roundState(),
   });
   for (let slot = 24; slot < 32; slot += 1) {
     if (active(slot)) projectileFrames.push({ frame: relativeFrame, ...entity(slot) });
@@ -204,6 +220,11 @@ const trace = {
   ...(matchHeading === undefined ? {} : { matchHeading }),
   ...(matchX === undefined ? {} : { matchX }),
   ...(matchY === undefined ? {} : { matchY }),
+  ...(matchFineX === undefined ? {} : { matchFineX }),
+  ...(matchFineY === undefined ? {} : { matchFineY }),
+  ...(matchMapPointer === undefined ? {} : { matchMapPointer }),
+  ...(matchMapPage === undefined ? {} : { matchMapPage }),
+  ...(matchScrollOffset === undefined ? {} : { matchScrollOffset }),
   ...(startFrame === undefined ? {} : { startFrame }),
   targetSlot,
   targetStart,

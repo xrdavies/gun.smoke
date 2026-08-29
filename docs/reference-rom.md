@@ -883,9 +883,15 @@ on every frame. Entity frames retain the shared `$B0/$B4/$B5/$BA/$BC` state;
 Boss frames additionally retain `$B1` and `$B6-$B9`, so random movement, attack
 and correction branches can be replayed without exposing ROM code.
 `trace:rom:entity` accepts optional `--match-state`, `--match-heading`,
-`--match-x`, and `--match-y` filters. They are applied to the first candidate
+`--match-x`, `--match-y`, `--match-fine-x`, and `--match-fine-y` filters. They are applied to the first candidate
 slot after the dispatch/variant match, allowing a side-entry signature to be
 selected without relying on a global `--skip` count.
+Candidate listings include the Round map pointer/page/fine-scroll state, so
+same-coordinate initializers can be attributed to their `$8C00` event before a
+full trace is captured.
+`--match-map-pointer`, `--match-map-page`, and `--match-scroll-offset` apply
+those fields as trace-selection filters; this remains stable when a Round loop
+reuses the same entity coordinate with different slot fractions.
 With `--list-candidates --isolate-candidates`, the tool clears ordinary enemy
 slots before each frame and records every dispatch activation, which is useful
 for enumerating side-entry signatures under the ROM's seven-slot limit.

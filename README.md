@@ -60,7 +60,7 @@ npm run trace:rom:entity -- --dispatch=0x57 --trace-frames=600
 npm run trace:rom:entity -- --round=3 --dispatch=0x65 --trace-frames=1200
 npm run trace:rom:entity -- --round=3 --dispatch=0x6b --skip=1 --trace-frames=900
 npm run trace:rom:entity -- --dispatch=0x57 --follow=0x59,0x5b,0x5e --trace-frames=650
-# Add --match-state/--match-heading/--match-x/--match-y to select an initial slot signature.
+# Add --match-state/--match-heading/--match-x/--match-y/--match-fine-x/--match-fine-y and map-state filters to select an initial slot signature.
 # Add --list-candidates --isolate-candidates to enumerate every dispatch entry,
 # or --start-frame=<frame> to replay a selected absolute entry frame.
 npm run trace:rom:scenes -- --frames=12000 --every=60

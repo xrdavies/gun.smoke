@@ -108,6 +108,8 @@ interface Unit {
   romPool?: "enemy" | "object";
   romOriginX?: number;
   romOriginY?: number;
+  romFineX?: number;
+  romFineY?: number;
   targetX?: number;
   targetY?: number;
   gunmanBottomRoute?: "near" | "far";
@@ -916,6 +918,10 @@ class GunSmokeGame {
       rock.romSlot = romSlot;
       rock.romOriginX = rock.x;
       rock.romOriginY = romEventWorldY(event);
+      rock.romFineX = (this.romEnemyFineX[romSlot ?? 0] ?? 0) / 256;
+      rock.romFineY = (this.romEnemyFineY[romSlot ?? 0] ?? 0) / 256;
+      rock.x += rock.romFineX * NES_WORLD_X_SCALE;
+      rock.y += rock.romFineY * NES_WORLD_Y_SCALE;
       rock.rockNextBoundary = 24;
       rock.rockPhase = event.phase;
       rock.hp = romEntityHitPoints(event.entityCode);
@@ -951,11 +957,15 @@ class GunSmokeGame {
     enemy.romSlot = romSlot;
     enemy.romOriginX = enemy.x;
     enemy.romOriginY = romEventWorldY(event);
+    enemy.romFineX = (this.romEnemyFineX[romSlot ?? 0] ?? 0) / 256;
+    enemy.romFineY = (this.romEnemyFineY[romSlot ?? 0] ?? 0) / 256;
+    enemy.x += enemy.romFineX * NES_WORLD_X_SCALE;
+    enemy.y += enemy.romFineY * NES_WORLD_Y_SCALE;
     if (event.behavior === 3) {
-      enemy.backstabberRaidState = createBackstabberRaidState(event.x, event.y, this.player.x / NES_WORLD_X_SCALE, (this.player.y - this.scroll) / NES_WORLD_Y_SCALE, this.romEnemyFineX[romSlot ?? 0], this.romEnemyFineY[romSlot ?? 0]);
+      enemy.backstabberRaidState = createBackstabberRaidState(event.x, event.y, this.player.x / NES_WORLD_X_SCALE, (this.player.y - this.scroll) / NES_WORLD_Y_SCALE, (enemy.romFineX ?? 0) * 256, (enemy.romFineY ?? 0) * 256);
     }
     if (flankCode !== undefined && gunmanFlankUsesDynamicState(flankCode, event.y, this.stage, event.phase, event.at)) {
-      enemy.gunmanFlankState = createGunmanFlankMovementState(flankCode, event.x, event.y, event.x > 128, this.romEnemyFineX[romSlot ?? 0], this.romEnemyFineY[romSlot ?? 0]);
+      enemy.gunmanFlankState = createGunmanFlankMovementState(flankCode, event.x, event.y, event.x > 128, (enemy.romFineX ?? 0) * 256, (enemy.romFineY ?? 0) * 256);
     }
     if (event.behavior === 0) enemy.maxAge = SNIPER_LIFETIME;
     if (event.behavior === 1) enemy.maxAge = SHOTGUNNER_LIFETIME;
@@ -1314,7 +1324,7 @@ class GunSmokeGame {
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: frameDuration },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romEventAt: undefined, romRandomSeed: undefined, romPhase: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, gunmanFlankState: undefined, backstabberRaidState: undefined, romSlot: undefined, riflemanAimHeading: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, banditState: undefined, cutterState: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined, rockPhase: undefined,
+      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romEventAt: undefined, romRandomSeed: undefined, romPhase: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, romFineX: undefined, romFineY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, gunmanFlankState: undefined, backstabberRaidState: undefined, romSlot: undefined, riflemanAimHeading: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, banditState: undefined, cutterState: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined, rockPhase: undefined,
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" || sceneObject ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
@@ -1378,8 +1388,10 @@ class GunSmokeGame {
     if (unit.romSlot === undefined) return;
     const screenX = unit.x / NES_WORLD_X_SCALE;
     const screenY = (unit.y - this.scroll) / NES_WORLD_Y_SCALE;
-    this.romEnemyFineX[unit.romSlot] = Math.floor((screenX - Math.floor(screenX)) * 256) & 0xff;
-    this.romEnemyFineY[unit.romSlot] = Math.floor((screenY - Math.floor(screenY)) * 256) & 0xff;
+    unit.romFineX = screenX - Math.floor(screenX);
+    unit.romFineY = screenY - Math.floor(screenY);
+    this.romEnemyFineX[unit.romSlot] = Math.floor(unit.romFineX * 256) & 0xff;
+    this.romEnemyFineY[unit.romSlot] = Math.floor(unit.romFineY * 256) & 0xff;
   }
 
   private updateUnit(unit: Unit, delta: number, scrollDelta = 0): void {
@@ -1411,8 +1423,8 @@ class GunSmokeGame {
         unit.sprite.visible = Math.floor((unit.maxAge - unit.age) * NES_FRAME_RATE) % 2 === 0;
       } else {
         const [offsetX, offsetY] = fallingRockPosition(unit.age, (unit.romOriginX ?? unit.x) < 480, unit.rockPhase);
-        unit.x = (unit.romOriginX ?? unit.x) + offsetX * NES_WORLD_X_SCALE;
-        unit.y = this.scroll + (unit.romOriginY ?? 0) + offsetY * NES_WORLD_Y_SCALE;
+        unit.x = (unit.romOriginX ?? unit.x) + (offsetX + (unit.romFineX ?? 0)) * NES_WORLD_X_SCALE;
+        unit.y = this.scroll + (unit.romOriginY ?? 0) + (offsetY + (unit.romFineY ?? 0)) * NES_WORLD_Y_SCALE;
         const boundary = unit.rockNextBoundary ?? 24;
         const screenY = (unit.y - this.scroll) / NES_WORLD_Y_SCALE;
         if (!fallingRockOnScreen(screenY)) {
@@ -1425,8 +1437,8 @@ class GunSmokeGame {
           const probeHeading = fromLeft ? 14 : 16;
           const [probeX, probeY] = nesActorCollisionProbeOffset(probeHeading);
           const [previousOffsetX, previousOffsetY] = fallingRockPosition((boundary - 1) / NES_FRAME_RATE, fromLeft, unit.rockPhase);
-          const screenX = (unit.romOriginX ?? unit.x) / NES_WORLD_X_SCALE + previousOffsetX + probeX;
-          const screenY = (unit.romOriginY ?? unit.y - this.scroll) / NES_WORLD_Y_SCALE + previousOffsetY + probeY;
+          const screenX = (unit.romOriginX ?? unit.x) / NES_WORLD_X_SCALE + (unit.romFineX ?? 0) + previousOffsetX + probeX;
+          const screenY = (unit.romOriginY ?? unit.y - this.scroll) / NES_WORLD_Y_SCALE + (unit.romFineY ?? 0) + previousOffsetY + probeY;
           if (boundary >= ROCK_IMPACT_DELAY * NES_FRAME_RATE || !roundCollisionAtNes(this.stage, this.scroll, screenX, screenY)) {
             unit.exploding = true;
             unit.targetY = unit.y;
@@ -1465,8 +1477,8 @@ class GunSmokeGame {
             unit.x = tracedPosition[0];
             unit.y = this.scroll + tracedPosition[1];
           } else if (unit.age < NINJA_FIRST_SHOT_DELAY) {
-            unit.x = originX;
-            unit.y = this.scroll + originY + ninjaOpeningY(unit.age);
+            unit.x = originX + (unit.romFineX ?? 0) * NES_WORLD_X_SCALE;
+            unit.y = this.scroll + originY + ninjaOpeningY(unit.age) + (unit.romFineY ?? 0) * NES_WORLD_Y_SCALE;
           } else {
             unit.targetX ??= this.player.x + (this.player.x < originX ? -12 : 12) * NES_WORLD_X_SCALE;
             const attackY = ninjaOpeningY(NINJA_FIRST_SHOT_DELAY);
@@ -1498,12 +1510,12 @@ class GunSmokeGame {
         const sideRifleman = tracedRifleman && unit.romEntityCode === 15;
         if (sideRifleman) {
           const [offsetX, offsetY] = riflemanSidePosition(unit.age, (unit.romOriginX ?? unit.x) < 480);
-          unit.x = (unit.romOriginX ?? unit.x) + offsetX * NES_WORLD_X_SCALE;
-          unit.y = this.scroll + (unit.romOriginY ?? 0) + offsetY * NES_WORLD_Y_SCALE;
+          unit.x = (unit.romOriginX ?? unit.x) + (offsetX + (unit.romFineX ?? 0)) * NES_WORLD_X_SCALE;
+          unit.y = this.scroll + (unit.romOriginY ?? 0) + (offsetY + (unit.romFineY ?? 0)) * NES_WORLD_Y_SCALE;
         } else if (tracedRifleman) {
           const [, y] = riflemanPosition(unit.age);
-          unit.x = unit.romOriginX ?? unit.x;
-          unit.y = this.scroll + (unit.romOriginY ?? 0) + y * NES_WORLD_Y_SCALE;
+          unit.x = (unit.romOriginX ?? unit.x) + (unit.romFineX ?? 0) * NES_WORLD_X_SCALE;
+          unit.y = this.scroll + (unit.romOriginY ?? 0) + (y + (unit.romFineY ?? 0)) * NES_WORLD_Y_SCALE;
         } else {
           unit.x += unit.vx * delta;
           unit.y += (unit.age * NES_FRAME_RATE < RIFLEMAN_ATTACK_STATE_FRAME ? unit.vy : -unit.vy * 0.75) * delta;
@@ -1570,8 +1582,8 @@ class GunSmokeGame {
         };
         if (tracedBomber && unit.bomberState === "entry") {
           if (unit.age <= BOMBER_ENTRY_DURATION) {
-            unit.x = unit.romOriginX ?? unit.x;
-            unit.y = this.scroll + (unit.romOriginY ?? 0) + bomberOpeningY(unit.age);
+            unit.x = (unit.romOriginX ?? unit.x) + (unit.romFineX ?? 0) * NES_WORLD_X_SCALE;
+            unit.y = this.scroll + (unit.romOriginY ?? 0) + bomberOpeningY(unit.age) + (unit.romFineY ?? 0) * NES_WORLD_Y_SCALE;
           } else {
             unit.y += NES_FRAME_RATE * NES_WORLD_Y_SCALE * delta;
           }
@@ -1620,12 +1632,12 @@ class GunSmokeGame {
         const sideShotgunner = tracedSpread && unit.romEntityCode === 4;
         if (sideShotgunner) {
           const [offsetX, offsetY] = shotgunnerSidePosition(unit.age, (unit.romOriginX ?? unit.x) < 480);
-          unit.x = (unit.romOriginX ?? unit.x) + offsetX * NES_WORLD_X_SCALE;
-          unit.y = this.scroll + (unit.romOriginY ?? 0) + offsetY * NES_WORLD_Y_SCALE;
+          unit.x = (unit.romOriginX ?? unit.x) + (offsetX + (unit.romFineX ?? 0)) * NES_WORLD_X_SCALE;
+          unit.y = this.scroll + (unit.romOriginY ?? 0) + (offsetY + (unit.romFineY ?? 0)) * NES_WORLD_Y_SCALE;
         } else if (tracedSpread) {
           const [offsetX, offsetY] = shotgunnerPosition(unit.age);
-          unit.x = (unit.romOriginX ?? unit.x) + offsetX * NES_WORLD_X_SCALE;
-          unit.y = this.scroll + (unit.romOriginY ?? 0) + offsetY * NES_WORLD_Y_SCALE;
+          unit.x = (unit.romOriginX ?? unit.x) + (offsetX + (unit.romFineX ?? 0)) * NES_WORLD_X_SCALE;
+          unit.y = this.scroll + (unit.romOriginY ?? 0) + (offsetY + (unit.romFineY ?? 0)) * NES_WORLD_Y_SCALE;
         } else {
           unit.x += unit.vx * delta;
           unit.y += unit.vy * 0.65 * delta;
@@ -1795,8 +1807,8 @@ class GunSmokeGame {
         }
         if (bottomGunmanFromLeft !== undefined && bottomGunmanRoute !== undefined) {
           const [offsetX, offsetY] = gunmanBottomPosition(bottomGunmanRoute, bottomGunmanFromLeft, unit.age);
-          unit.x = (unit.romOriginX ?? unit.x) + offsetX * NES_WORLD_X_SCALE;
-          unit.y = this.scroll + (unit.romOriginY ?? 0) + offsetY * NES_WORLD_Y_SCALE;
+          unit.x = (unit.romOriginX ?? unit.x) + (offsetX + (unit.romFineX ?? 0)) * NES_WORLD_X_SCALE;
+          unit.y = this.scroll + (unit.romOriginY ?? 0) + (offsetY + (unit.romFineY ?? 0)) * NES_WORLD_Y_SCALE;
         } else if (flankGunman !== undefined) {
           if (unit.gunmanFlankState) {
             advanceGunmanFlankMovement(
@@ -1815,8 +1827,8 @@ class GunSmokeGame {
             const [offsetX, offsetY] = gunmanFlankPosition(flankGunman, unit.age, originY, this.stage, unit.romPhase ?? 0, fromRight, unit.romEventAt);
             const hasRightTrace = this.stage === 3 && Math.round(originY) === 64 && (unit.romPhase ?? 0) === 1 || this.stage === 6 && Math.round(originY) === 32;
             const mirror = flankGunman === 7 && fromRight && !hasRightTrace ? -1 : 1;
-            unit.x = (unit.romOriginX ?? unit.x) + offsetX * NES_WORLD_X_SCALE * mirror;
-            unit.y = this.scroll + (unit.romOriginY ?? 0) + offsetY * NES_WORLD_Y_SCALE;
+            unit.x = (unit.romOriginX ?? unit.x) + (offsetX + (unit.romFineX ?? 0)) * NES_WORLD_X_SCALE * mirror;
+            unit.y = this.scroll + (unit.romOriginY ?? 0) + (offsetY + (unit.romFineY ?? 0)) * NES_WORLD_Y_SCALE;
           }
         } else if (tracedTopGunman) {
           const [x, y] = gunmanTopPosition(
@@ -1825,8 +1837,8 @@ class GunSmokeGame {
             (unit.romOriginX ?? unit.x) / NES_WORLD_X_SCALE,
             (unit.romOriginY ?? 0) / NES_WORLD_Y_SCALE,
           );
-          unit.x = x;
-          unit.y = this.scroll + y;
+          unit.x = x + (unit.romFineX ?? 0) * NES_WORLD_X_SCALE;
+          unit.y = this.scroll + y + (unit.romFineY ?? 0) * NES_WORLD_Y_SCALE;
         } else {
           unit.x += unit.vx * delta;
           unit.y += unit.vy * delta;

@@ -336,6 +336,10 @@ fractions reproduces all 1,955 captured X/Y and movement-state samples through
 its top-edge release. Runtime assigns each ROM enemy actor one of the seven
 shared slots and persists its fine X/Y bytes, so later dynamic Gunman and
 Backstabber spawns inherit the same subpixel state across pool reuse.
+Fixed-route actors use the same slot fractions: Snipers, Shotgunners, Riflemen,
+Bombers, ordinary Ninja fallbacks, Gunman routes and falling rocks retain their
+spawn fraction and write the updated value back after each frame instead of
+snapping to an integer coordinate on slot reuse.
 Round 2's single `code=7,x=56,y=0,phase=1` event is a distinct top-edge
 initializer. Its first scheduler wrap at frame 51 misses the facing gate, the
 second succeeds at frame 115, dispatch changes to `0x59` at frame 260, and the

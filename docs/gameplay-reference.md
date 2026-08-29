@@ -445,6 +445,9 @@ capped independently at seven enemy slots and
 six object slots, matching the ROM allocator. The `$B5BF` Round 4 records are
 rendered as falling rock hazards with enemy-pool capacity and player collision,
 rather than being misclassified as ordinary walking enemies.
+ROM enemy actors also retain each slot's fixed-point spawn fraction across
+fixed-route and state-machine updates, so reusing a slot does not snap the
+actor to an integer screen coordinate.
 Behavior and object records at the same trigger are merged by their decoded
 script index, preserving the original spawn order before either pool-capacity
 check is applied.

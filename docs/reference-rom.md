@@ -547,7 +547,8 @@ the four-value initializer table defines NES horizontal entry lanes
 `x=88/112/144/168`; one captured lane reaches about
 `y=136` after 324 frames. That entry first descends to about `y=142`, holds its
 lane through frame 258, then curves 15 pixels left while returning to `y=136`.
-The web runtime selects one measured lane and follows this two-axis opening,
+The web runtime selects one measured lane and follows the captured two-axis
+opening steps,
 then holds the final entry X until its first attack at frame 350 and follows
 all 3,277 recorded combat X/Y frames through frame 3,276, including its
 136-to-40/99 NES vertical profile and later return loops. After the complete

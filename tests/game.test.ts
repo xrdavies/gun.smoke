@@ -835,6 +835,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(CUTTER_ENTRY_END_Y).toBe(306);
     expect(CUTTER_ENTRY_DURATION).toBeCloseTo(324 / NES_FRAME_RATE, 9);
     expect(cutterOpeningY(0)).toBe(0);
+    expect([0, 7, 8, 11].map((frame) => cutterOpeningY(frame / NES_FRAME_RATE) / NES_WORLD_Y_SCALE)).toEqual([0, 0, 2, 8]);
     expect(cutterOpeningY(142 / NES_FRAME_RATE)).toBe(216);
     expect(cutterOpeningY(213 / NES_FRAME_RATE)).toBe(319.5);
     expect(cutterOpeningY(250 / NES_FRAME_RATE)).toBe(265.5);
@@ -843,6 +844,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(cutterOpeningX(308 / NES_FRAME_RATE)).toBe(461.25);
     expect(cutterOpeningX(CUTTER_ENTRY_DURATION)).toBe(483.75);
     expect(cutterOpeningX(CUTTER_ENTRY_DURATION, 168 * NES_WORLD_X_SCALE)).toBe(153 * NES_WORLD_X_SCALE);
+    expect([cutterOpeningX(323 / NES_FRAME_RATE) / NES_WORLD_X_SCALE, cutterOpeningY(323 / NES_FRAME_RATE) / NES_WORLD_Y_SCALE]).toEqual([129, 136]);
     expect(cutterOpeningX(CUTTER_FIRST_ATTACK_DELAY)).toBe(483.75);
     expect(cutterCombatY(CUTTER_ENTRY_DURATION)).toBe(306);
     expect([26, 27, 28, 29, 30, 31, 32].map((frame) => [cutterCombatX(CUTTER_ENTRY_DURATION + frame / NES_FRAME_RATE) / NES_WORLD_X_SCALE, cutterCombatY(CUTTER_ENTRY_DURATION + frame / NES_FRAME_RATE) / NES_WORLD_Y_SCALE])).toEqual([[129, 136], [127, 134], [126, 132], [124, 130], [122, 127], [121, 125], [119, 123]]);

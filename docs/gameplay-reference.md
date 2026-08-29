@@ -163,7 +163,8 @@ Ninja, Hatchet, Spear, and Firebreather shots use the shared discrete second-tie
 direction table; all active formations are driven by decoded ROM event records.
 Cutter enters from the top edge on one of the ROM's NES X lanes
 (`x=88/112/144/168`), descends through a short overshoot, and curves 15 NES pixels
-left to approximately `y=136` after 324 frames, holds that lane until frame 350,
+left to approximately `y=136` after 324 frames, using the captured discrete
+entrance steps. It holds that lane until frame 350,
 then follows its recorded X/Y combat route. The first paired boomerangs launch
 at frame 350 and repeat every 256 frames. All 3,277 measured combat frames are
 replayed directly before the existing sparse route continues through frame 12,000. The runtime then

@@ -647,6 +647,9 @@ terrain probes, and natural screen release instead of imposing the former
 303-frame fallback cap. ROM-tagged Ninja, Hatchet, Spear, and Firebreather
 shots use the same second-tier 32-direction table as Gunmen; side Firebreathers
 mask the selected heading to an even sector before allocation.
+Spear, Hatchet and Firebreather states are created at script allocation from
+the coarse event coordinate plus the slot's captured fine bytes; later slot
+synchronization does not reapply those fractions on their first update.
 An isolated `$B8F4` Hatchet Thrower descends to NES `y=40` in 20 frames, pauses
 for 20 frames, then patrols with the shared second-tier 32-heading movement
 table. Collision probes follow its facing edge; a blocked path starts a 34-frame

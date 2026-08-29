@@ -378,6 +378,9 @@ delay their Shuriken until frame 116, while `at=1071` throws at frames 116 and
 258/279/257/228/257-frame routes. Other entries execute the decoded `$B671`
 state machine: a 20-frame handoff, `AD += AE` action choice, 16-frame movement
 profile, repeated Shuriken checks, terrain probes, and natural screen release.
+Spear, Hatchet and Firebreather states are initialized once from each event's
+coarse coordinate and inherited slot fractions, so their first update does not
+double-apply the subpixel offset.
 Gunmen use the same quantized table at the faster second tier. Their first
 movement-facing check is derived from the spawn-time `$0540` seed (the first
 natural Round 1 seeds yield `58/52/69` frames), then repeats every 64

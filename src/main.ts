@@ -14,7 +14,7 @@ import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import { advanceRomRandom, mixRomRandomDifference, mixRomRandomFirstSum, mixRomRandomSecondSum, mixRomRandomSecondThirdSum, mixRomRandomSpawn, mixRomRandomSum, mixRomRandomThirdFirstSum, ROM_RANDOM_SEED } from "./game-constants";
 import "./style.css";
 import type { ButtonKey } from "jsnes";
-import { AMMO_GAIN, banditBillOpeningY, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, bomberCanThrow, bomberMovementDecision, bomberMovementDuration, bomberMovementUsesRandom, bomberMovementVelocity, BOMBER_THROW_DURATION, BOSS_DEFEAT_ANIMATION_DURATION, bossReward, bossSpriteVisible, canSpawnPlayerBullet, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, DEVIL_HAWK_RANDOM_ROUTE_START_FRAME, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, contactSourceShouldClear, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_LIFETIME, dynamiteVerticalOffset, EMPTY_BARREL_EXPLOSION_LIFETIME, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X_LANES, FATMAN_JOE_ENTRY_Y, fallingRockOnScreen, fallingRockPosition, fatmanJoeOpeningY, HORSE_HIT_INVULNERABILITY, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_LANES, NINJA_FIRST_SHOT_DELAY, NINJA_LIFETIME, ninjaAttackPosition, ninjaBossEntryLaneIndex, ninjaOpeningY, PLAYER_DEATH_ANIMATION_DURATION, PLAYER_DEATH_RECOVERY_DURATION, playerDeathPhase, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_IMPACT_LIFETIME, ROCK_LIFETIME, ROAD_WIDTHS, ROM_OBJECT_DROP_SPEED, ROM_SCREEN_RELEASE_Y_NES, romActorScreenYReleased, ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_SIDE_LIFETIME, SHOTGUNNER_SIDE_SHOT_FRAME, SHOTGUNNER_VOLLEY_INTERVAL, shotgunnerPosition, shotgunnerSidePosition, shouldLoopStage, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_CODE2_SHOT_FRAMES, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_X_LANES, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type ItemType, type ShopType, type WeaponName } from "./game-constants";
+import { AMMO_GAIN, banditBillOpeningY, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DROP_SPEED, BACKSTABBER_AMBUSH_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, bomberCanThrow, bomberMovementDecision, bomberMovementDuration, bomberMovementUsesRandom, bomberMovementVelocity, BOMBER_THROW_DURATION, BOSS_DEFEAT_ANIMATION_DURATION, bossReward, bossSpriteVisible, canSpawnPlayerBullet, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, DEVIL_HAWK_RANDOM_ROUTE_START_FRAME, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, contactSourceShouldClear, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_LIFETIME, dynamiteVerticalOffset, EMPTY_BARREL_EXPLOSION_LIFETIME, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X_LANES, FATMAN_JOE_ENTRY_Y, fallingRockOnScreen, fallingRockPosition, fatmanJoeOpeningY, HORSE_HIT_INVULNERABILITY, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_LANES, NINJA_FIRST_SHOT_DELAY, ninjaBossEntryLaneIndex, PLAYER_DEATH_ANIMATION_DURATION, PLAYER_DEATH_RECOVERY_DURATION, playerDeathPhase, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_IMPACT_LIFETIME, ROCK_LIFETIME, ROAD_WIDTHS, ROM_OBJECT_DROP_SPEED, ROM_SCREEN_RELEASE_Y_NES, romActorScreenYReleased, ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_SIDE_LIFETIME, SHOTGUNNER_SIDE_SHOT_FRAME, SHOTGUNNER_VOLLEY_INTERVAL, shotgunnerPosition, shotgunnerSidePosition, shouldLoopStage, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_CODE2_SHOT_FRAMES, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_X_LANES, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type ItemType, type ShopType, type WeaponName } from "./game-constants";
 import { advanceBackstabberRaid, createBackstabberRaidState, type BackstabberRaidState } from "./game-constants";
 import { advanceGunmanFlankMovement, createGunmanFlankMovementState, GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, gunmanCanFire, GUNMAN_FLANK_INITIAL_STATE_FRAMES, gunmanFlankFirstOpportunityFrame, gunmanFlankLifetime, gunmanFlankMovementFacingHeading, gunmanFlankUsesDynamicState, GUNMAN_LIFETIME, GUNMAN_TOP_LIFETIMES_FRAMES, gunmanFirstOpportunityFrame, gunmanFlankPosition, gunmanTopBranch, gunmanTopHeading, gunmanTopPosition, gunmanProjectileVelocity, GUNMAN_SHOT_OPPORTUNITY_INTERVAL, mediumProjectileHeadingVelocity, mediumProjectileVelocity, type GunmanFlankMovementState } from "./game-constants";
 import { BOMBER_ENTRY_DURATION, bomberOpeningY } from "./game-constants";
@@ -27,6 +27,7 @@ import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, PLAYER_ENTR
 import { storedPowerupPickup } from "./game-constants";
 import { addScore } from "./game-constants";
 import { ninjaCanThrow, ninjaTraceLifetime, ninjaTracePosition, ninjaTraceThrowFrames } from "./game-constants";
+import { advanceNinja, createNinjaState, type NinjaState } from "./game-constants";
 import { FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeAimAllowsLaunch, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_LAUNCH_INVULNERABILITY, FATMAN_JOE_MOVEMENT_SPEED, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, fatmanJoeCombatX, fatmanJoeCombatY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "./game-constants";
 import { advanceDevilHawkMovement, advanceWingateMovement, createDevilHawkMovementState, createWingateMovementState, DEVIL_HAWK_RANDOM_HANDOFF_ACTION_COUNTER, DEVIL_HAWK_RANDOM_HANDOFF_FINE_X, DEVIL_HAWK_RANDOM_HANDOFF_FINE_Y, DEVIL_HAWK_RANDOM_HANDOFF_GAIT, DEVIL_HAWK_RANDOM_HANDOFF_HEADING, DEVIL_HAWK_RANDOM_HANDOFF_SEGMENT_FRAMES, WINGATE_BULLET_LIFETIME, wingateCanFire, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, type DevilHawkMovementState, type WingateMovementState } from "./game-constants";
 import { WINGATE_ENDING_INPUT_DELAY, WINGATE_FINAL_DEFEAT_ANIMATION_DURATION, WINGATE_FINAL_ENDING_DELAY } from "./game-constants";
@@ -120,6 +121,7 @@ interface Unit {
   backstabberRaidState?: BackstabberRaidState;
   romSlot?: number;
   riflemanAimHeading?: number;
+  ninjaState?: NinjaState;
   hatchetState?: HatchetState;
   firebreatherState?: FirebreatherState;
   spearState?: SpearState;
@@ -977,7 +979,11 @@ class GunSmokeGame {
     if (event.behavior === 1) enemy.maxAge = SHOTGUNNER_LIFETIME;
     if (sideShotgunner) enemy.maxAge = SHOTGUNNER_SIDE_LIFETIME;
     if (event.behavior === 2) enemy.maxAge = GUNMAN_LIFETIME;
-    if (event.behavior === 6) enemy.maxAge = ninjaTraceLifetime(event.x, event.y, this.stage, event.phase, event.at, enemy.romSpawnFineX, enemy.romSpawnFineY) ?? NINJA_LIFETIME;
+    if (event.behavior === 6) {
+      const traceLifetime = ninjaTraceLifetime(event.x, event.y, this.stage, event.phase, event.at, enemy.romSpawnFineX, enemy.romSpawnFineY);
+      enemy.maxAge = traceLifetime ?? Number.POSITIVE_INFINITY;
+      if (traceLifetime === undefined) enemy.ninjaState = createNinjaState(event.x, event.y, this.romEnemyFineX[romSlot ?? 0], this.romEnemyFineY[romSlot ?? 0]);
+    }
     if (event.behavior === 2 && event.entityCode === 5) enemy.maxAge = GUNMAN_BOTTOM_LIFETIMES.far;
     if (flankCode !== undefined) enemy.maxAge = enemy.gunmanFlankState ? Number.POSITIVE_INFINITY : gunmanFlankLifetime(flankCode, event.y, this.stage, event.phase, event.x > 128, event.at);
     if (event.behavior === 3) enemy.maxAge = Number.POSITIVE_INFINITY;
@@ -1475,43 +1481,63 @@ class GunSmokeGame {
         }
       } else if (unit.enemyType === "ninja") {
         const tracedNinja = unit.romBehavior === 6;
+        let stateShots: readonly number[] = [];
         if (tracedNinja) {
-          const originX = unit.romOriginX ?? unit.x;
-          const originY = unit.romOriginY ?? unit.y - this.scroll;
-          const tracedPosition = ninjaTracePosition(unit.age, originX / NES_WORLD_X_SCALE, originY / NES_WORLD_Y_SCALE, this.stage, unit.romPhase ?? 0, unit.romEventAt, unit.romSpawnFineX, unit.romSpawnFineY);
-          if (tracedPosition) {
-            unit.x = tracedPosition[0];
-            unit.y = this.scroll + tracedPosition[1];
-          } else if (unit.age < NINJA_FIRST_SHOT_DELAY) {
-            unit.x = originX + (unit.romSpawnFineX ?? 0) * NES_WORLD_X_SCALE;
-            unit.y = this.scroll + originY + ninjaOpeningY(unit.age) + (unit.romSpawnFineY ?? 0) * NES_WORLD_Y_SCALE;
+          if (unit.ninjaState) {
+            const result = advanceNinja(
+              unit.ninjaState,
+              Math.floor(unit.age * NES_FRAME_RATE),
+              this.player.x / NES_WORLD_X_SCALE,
+              (this.player.y - this.scroll) / NES_WORLD_Y_SCALE,
+              (probeX, probeY) => roundCollisionAtNes(this.stage, this.scroll, probeX, probeY),
+              () => this.nextRomRandomSecondThirdSumByte(),
+            );
+            unit.x = unit.ninjaState.x * NES_WORLD_X_SCALE;
+            unit.y = this.scroll + unit.ninjaState.y * NES_WORLD_Y_SCALE;
+            stateShots = result.shots;
+            if (result.dead) unit.hp = 0;
           } else {
-            unit.targetX ??= this.player.x + (this.player.x < originX ? -12 : 12) * NES_WORLD_X_SCALE;
-            const attackY = ninjaOpeningY(NINJA_FIRST_SHOT_DELAY);
-            unit.targetY ??= originY + attackY - 34 * NES_WORLD_Y_SCALE;
-            [unit.x, unit.y] = ninjaAttackPosition(unit.age, originX, this.scroll + originY + attackY, unit.targetX, this.scroll + unit.targetY);
+            const originX = unit.romOriginX ?? unit.x;
+            const originY = unit.romOriginY ?? unit.y - this.scroll;
+            const tracedPosition = ninjaTracePosition(unit.age, originX / NES_WORLD_X_SCALE, originY / NES_WORLD_Y_SCALE, this.stage, unit.romPhase ?? 0, unit.romEventAt, unit.romSpawnFineX, unit.romSpawnFineY);
+            if (tracedPosition) {
+              unit.x = tracedPosition[0];
+              unit.y = this.scroll + tracedPosition[1];
+            }
           }
         } else {
           unit.x += (unit.vx + Math.sin(unit.age * 6 + unit.phase) * 90) * delta;
           unit.y += unit.vy * 1.8 * delta;
         }
-        const tracedThrowFrames = unit.romBehavior === 6 ? ninjaTraceThrowFrames(this.stage, unit.romEventAt, unit.romSpawnFineX, unit.romSpawnFineY) : undefined;
-        const tracedThrowFrame = Array.isArray(tracedThrowFrames) ? tracedThrowFrames[unit.volleysFired] : undefined;
-        const throwAt = tracedThrowFrame === undefined ? NINJA_FIRST_SHOT_DELAY : tracedThrowFrame / NES_FRAME_RATE;
-        const canThrow = tracedThrowFrames === false ? false : tracedThrowFrames !== undefined || ninjaCanThrow(unit.y, this.player.y);
-        const shouldThrow = tracedThrowFrames === false ? false : tracedThrowFrames === undefined ? !unit.fired && unit.age >= throwAt && canThrow : tracedThrowFrame !== undefined && unit.age >= throwAt;
-        if (shouldThrow) {
-          unit.fired = true;
-          unit.volleysFired += 1;
-          if (canThrow) {
+        const spawnShuriken = (heading?: number): void => {
+          const projectile = this.spawnEnemyProjectile(unit.x, unit.y);
+          if (!projectile) return;
+          projectile.projectileType = "shuriken";
+          if (heading !== undefined) [projectile.vx, projectile.vy] = mediumProjectileHeadingVelocity(heading);
+          else if (tracedNinja) [projectile.vx, projectile.vy] = mediumProjectileVelocity(unit.x, unit.y, this.player.x, this.player.y);
+          else {
             const angle = Math.atan2(this.player.y - unit.y, this.player.x - unit.x);
-            const projectile = this.spawnEnemyProjectile(unit.x, unit.y);
-            if (projectile) {
-              projectile.projectileType = "shuriken";
-              [projectile.vx, projectile.vy] = unit.romBehavior === 6 ? mediumProjectileVelocity(unit.x, unit.y, this.player.x, this.player.y) : [Math.cos(angle) * 300, Math.sin(angle) * 300];
-              projectile.radius = 8;
-              projectile.sprite.size = { x: 16, y: 16 };
-            }
+            [projectile.vx, projectile.vy] = [Math.cos(angle) * 300, Math.sin(angle) * 300];
+          }
+          projectile.radius = 8;
+          projectile.sprite.size = { x: 16, y: 16 };
+        };
+        const tracedThrowFrames = unit.romBehavior === 6 ? ninjaTraceThrowFrames(this.stage, unit.romEventAt, unit.romSpawnFineX, unit.romSpawnFineY) : undefined;
+        if (unit.ninjaState && tracedThrowFrames === undefined) {
+          if (stateShots.length > 0) {
+            unit.fired = true;
+            unit.volleysFired += stateShots.length;
+            for (const heading of stateShots) spawnShuriken(heading);
+          }
+        } else {
+          const tracedThrowFrame = Array.isArray(tracedThrowFrames) ? tracedThrowFrames[unit.volleysFired] : undefined;
+          const throwAt = tracedThrowFrame === undefined ? NINJA_FIRST_SHOT_DELAY : tracedThrowFrame / NES_FRAME_RATE;
+          const canThrow = tracedThrowFrames === false ? false : tracedThrowFrames !== undefined || ninjaCanThrow(unit.y, this.player.y);
+          const shouldThrow = tracedThrowFrames === false ? false : tracedThrowFrames === undefined ? !unit.fired && unit.age >= throwAt && canThrow : tracedThrowFrame !== undefined && unit.age >= throwAt;
+          if (shouldThrow) {
+            unit.fired = true;
+            unit.volleysFired += 1;
+            if (canThrow) spawnShuriken();
           }
         }
       } else if (unit.enemyType === "rifleman") {

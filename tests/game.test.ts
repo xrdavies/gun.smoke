@@ -13,7 +13,7 @@ import { addScore, MAX_SCORE } from "../src/game-constants";
 import { PLAYER_ENTRY_X, PLAYER_ENTRY_X_NES, PLAYER_ENTRY_Y, PLAYER_ENTRY_Y_NES, PLAYER_MAX_X_NES, PLAYER_MAX_Y_NES, PLAYER_MIN_X_NES, PLAYER_MIN_Y_NES } from "../src/game-constants";
 import { HORSE_SPEED_MULTIPLIER, playerCollisionFallbackY, playerMovementVelocity } from "../src/game-constants";
 import { NINJA_ACTIVATION_DISTANCE_NES, NINJA_LIFETIME, ninjaCanThrow } from "../src/game-constants";
-import { NINJA_ATTACK_MOVE_DURATION, NINJA_ENTRY_PATH_NES, ninjaAttackPosition, ninjaOpeningY, ninjaTraceLifetime, ninjaTracePosition, ninjaTraceThrowFrame, ninjaTraceThrowFrames } from "../src/game-constants";
+import { advanceNinja, createNinjaState, NINJA_ATTACK_MOVE_DURATION, NINJA_ENTRY_PATH_NES, ninjaAttackPosition, ninjaOpeningY, ninjaTraceLifetime, ninjaTracePosition, ninjaTraceThrowFrame, ninjaTraceThrowFrames } from "../src/game-constants";
 import { ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y } from "../src/game-constants";
 import { BOMBER_ENTRY_DURATION, BOMBER_ENTRY_END_Y, BOMBER_ENTRY_END_Y_NES, bomberOpeningY } from "../src/game-constants";
 import { contactSourceShouldClear, DYNAMITE_AIM_FACTOR, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_VERTICAL_PATH_NES, dynamiteVerticalOffset } from "../src/game-constants";
@@ -530,6 +530,27 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ninjaTraceThrowFrames(4, 1071)).toEqual([116, 153]);
     expect(ninjaTraceThrowFrames(4, 1711)).toEqual([116, 153]);
     expect(NINJA_LIFETIME).toBeCloseTo(303 / NES_FRAME_RATE, 9);
+  });
+
+  it("runs the decoded ordinary Ninja random action state", () => {
+    const attacking = createNinjaState(160, 0, 176, 0);
+    const random = [0xb3, 0];
+    expect(advanceNinja(attacking, 96, 168, 215, () => false, () => random.shift() ?? 0).shots).toEqual([]);
+    expect([attacking.mode, attacking.wait, attacking.heading, attacking.x, attacking.y]).toEqual(["hold", 20, 0x9c, 160 + 176 / 256, 152]);
+    advanceNinja(attacking, 116, 168, 215, () => false, () => random.shift() ?? 0);
+    expect(advanceNinja(attacking, 117, 168, 215, () => false, () => random.shift() ?? 0).shots).toEqual([15]);
+    expect([attacking.x, attacking.y]).toEqual([158 + 244 / 256, 149 + 228 / 256]);
+    advanceNinja(attacking, 132, 168, 215, () => false, () => random.shift() ?? 0);
+    expect([attacking.x, attacking.y]).toEqual([132 + 240 / 256, 118 + 64 / 256]);
+    advanceNinja(attacking, 153, 168, 215, () => false, () => random.shift() ?? 0);
+    expect([attacking.x, attacking.y]).toEqual([131 + 52 / 256, 116 + 36 / 256]);
+    expect(advanceNinja(attacking, 154, 168, 215, () => false, () => random.shift() ?? 0).shots).toEqual([14]);
+
+    const roaming = createNinjaState(152, 0, 239, 81);
+    advanceNinja(roaming, 116, 168, 215, () => false, () => 0xff);
+    expect([roaming.mode, roaming.heading]).toEqual(["roam", 0x4f]);
+    advanceNinja(roaming, 117, 168, 215, () => false, () => 0xff);
+    expect([roaming.x, roaming.y]).toEqual([153 + 63 / 256, 154 + 67 / 256]);
   });
 
   it("keeps the Ninja Boss smoke and teleport timing", () => {

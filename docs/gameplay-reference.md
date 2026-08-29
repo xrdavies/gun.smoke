@@ -267,8 +267,9 @@ frames using a separate fixed-point route. Events
 `at=815/1199/3727,x=184,phase=0` and `at=1727,x=184,phase=1`
 delay their Shuriken until frame 116, while `at=1071` throws at frames 116 and
 153. They follow separate
-258/279/257/228/257-frame routes;
-other entries retain the parameterized route.
+258/279/257/228/257-frame routes. Other entries execute the decoded `$B671`
+state machine: a 20-frame handoff, `AD += AE` action choice, 16-frame movement
+profile, repeated Shuriken checks, terrain probes, and natural screen release.
 Gunmen use the same quantized table at the faster second tier. Their first
 movement-facing check is derived from the spawn-time `$0540` seed (the first
 natural Round 1 seeds yield `58/52/69` frames), then repeats every 64

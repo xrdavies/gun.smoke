@@ -477,6 +477,96 @@ export const NINJA_LIFETIME = 303 / NES_FRAME_RATE;
 export const NINJA_ACTIVATION_DISTANCE_NES = 64;
 export const NINJA_ATTACK_MOVE_DURATION = 15 / NES_FRAME_RATE;
 export const NINJA_ENTRY_PATH_NES = [[0, 0], [16, 32], [36, 32], [83, 126], [103, 126]] as const;
+export const NINJA_ACTION_DELAY_FRAMES = 20;
+const NINJA_ATTACK_HEADINGS = [0xc0, 0x50, 0x50, 0x50, 0x50, 0x10, 0x10, 0xc0, 0xc0, 0xc0, 0x00, 0x00, 0x00, 0x40, 0x40, 0x80, 0xc0] as const;
+
+export type NinjaState = {
+  frame: number;
+  mode: "entry" | "hold" | "seek" | "decide" | "attack" | "roam";
+  nextMode: "seek" | "decide" | "attack" | "roam";
+  wait: number;
+  remaining: number;
+  heading: number;
+  randomThreshold: number;
+  x: number;
+  y: number;
+  dead: boolean;
+};
+
+export function createNinjaState(x: number, y: number, fineX = 0, fineY = 0): NinjaState {
+  return { frame: 0, mode: "entry", nextMode: "seek", wait: 0, remaining: 0, heading: 0x50, randomThreshold: 0xc0, x: x + fineX / 256, y: y + fineY / 256, dead: false };
+}
+
+export function advanceNinja(state: NinjaState, targetFrame: number, playerX: number, playerY: number, blocked: (probeX: number, probeY: number) => boolean, randomByte: () => number): { readonly shots: readonly number[]; readonly dead: boolean } {
+  const shots: number[] = [];
+  const chooseAction = (delayed: boolean): void => {
+    if (randomByte() <= state.randomThreshold) {
+      state.heading = state.x < 128 ? 0x84 : 0x9c;
+      state.remaining = 16;
+      state.nextMode = "attack";
+    } else {
+      state.heading = 0x40 | nesAimHeading(state.x * NES_WORLD_X_SCALE, state.y * NES_WORLD_Y_SCALE, playerX * NES_WORLD_X_SCALE, playerY * NES_WORLD_Y_SCALE);
+      state.nextMode = "roam";
+    }
+    state.randomThreshold = 0x40;
+    state.mode = delayed ? "hold" : state.nextMode;
+    state.wait = delayed ? NINJA_ACTION_DELAY_FRAMES : 0;
+  };
+  const outsideScreen = (): boolean => state.x < 0 || state.x >= 256 || state.y < 0 || state.y >= ROM_SCREEN_RELEASE_Y_NES;
+
+  while (state.frame < targetFrame && !state.dead) {
+    state.frame += 1;
+    if (state.mode === "entry") {
+      state.y += 2;
+      if (state.y >= 32) {
+        state.y = 32 + (state.y - Math.floor(state.y));
+        state.mode = "hold";
+        state.nextMode = "seek";
+        state.wait = NINJA_ACTION_DELAY_FRAMES;
+      }
+      continue;
+    }
+    if (state.mode === "hold") {
+      state.wait -= 1;
+      if (state.wait === 0) state.mode = state.nextMode;
+      continue;
+    }
+    if (state.mode === "seek") {
+      state.y += 2;
+      if (Math.abs(Math.round(playerY) - Math.round(state.y)) < NINJA_ACTIVATION_DISTANCE_NES) chooseAction(true);
+      continue;
+    }
+    if (state.mode === "decide") {
+      moveEncodedHeading(state, state.heading);
+      if (outsideScreen()) state.dead = true;
+      else chooseAction(false);
+      continue;
+    }
+    if (state.mode === "attack") {
+      moveEncodedHeading(state, state.heading);
+      moveEncodedHeading(state, NINJA_ATTACK_HEADINGS[state.remaining] ?? 0xc0);
+      if (state.remaining === 16) shots.push(nesAimHeading(state.x * NES_WORLD_X_SCALE, state.y * NES_WORLD_Y_SCALE, playerX * NES_WORLD_X_SCALE, playerY * NES_WORLD_Y_SCALE));
+      state.remaining -= 1;
+      if (outsideScreen()) state.dead = true;
+      else if (state.remaining === 0) {
+        state.mode = "hold";
+        state.nextMode = "decide";
+        state.wait = NINJA_ACTION_DELAY_FRAMES;
+      }
+      continue;
+    }
+    moveEncodedHeading(state, state.heading);
+    const [probeX, probeY] = nesActorCollisionProbeOffset(state.heading);
+    if (outsideScreen()) state.dead = true;
+    else if (blocked(Math.floor(state.x) + probeX, Math.floor(state.y) + probeY)) {
+      state.mode = "hold";
+      state.nextMode = "attack";
+      state.wait = NINJA_ACTION_DELAY_FRAMES;
+      state.remaining = 16;
+    }
+  }
+  return { shots, dead: state.dead };
+}
 
 export function ninjaOpeningY(age: number): number {
   const frame = Math.max(0, age * NES_FRAME_RATE);

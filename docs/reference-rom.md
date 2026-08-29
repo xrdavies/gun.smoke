@@ -337,7 +337,7 @@ its top-edge release. Runtime assigns each ROM enemy actor one of the seven
 shared slots and persists its fine X/Y bytes, so later dynamic Gunman and
 Backstabber spawns inherit the same subpixel state across pool reuse.
 Fixed-route actors use the same slot fractions: Snipers, Shotgunners, Riflemen,
-Bombers, ordinary Ninja fallbacks, Gunman routes and falling rocks retain their
+Bombers, ordinary Ninja state actors, Gunman routes and falling rocks retain their
 spawn fraction and write the updated value back after each frame instead of
 snapping to an integer coordinate on slot reuse.
 Round 2's single `code=7,x=56,y=0,phase=1` event is a distinct top-edge
@@ -527,7 +527,11 @@ Events `at=815/1199/3727,x=184,phase=0` and
 reach the activation range later, throw at frame 116, and release after
 258/257/228/257 frames. Event `at=1071` throws at frames 116 and 153 and
 releases after 279 frames. Runtime binds those routes and throw frames to their event indexes
-and retains the 303-frame cap for other Ninja entries. ROM-tagged Ninja, Hatchet, Spear, and Firebreather
+while other Ninja entries execute `$B671` directly. The runtime preserves the
+20-frame state delay, initial `0xc0` and later `0x40` thresholds after
+`AD=(AD+AE)&0xff`, the 16-frame composite movement table, repeated attacks,
+terrain probes, and natural screen release instead of imposing the former
+303-frame fallback cap. ROM-tagged Ninja, Hatchet, Spear, and Firebreather
 shots use the same second-tier 32-direction table as Gunmen; side Firebreathers
 mask the selected heading to an even sector before allocation.
 An isolated `$B8F4` Hatchet Thrower descends to NES `y=40` in 20 frames, pauses

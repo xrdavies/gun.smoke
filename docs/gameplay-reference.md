@@ -258,6 +258,8 @@ Event `at=1247,x=200,phase=1` with `fineX=203,fineY=212` throws at frames
 116/153/190/227/264 and releases after 266 frames on its fixed-point route.
 Event `at=1279,x=168,phase=1` with `fineX=184,fineY=212` throws at frames
 116/153, returns to its entry lane, and releases after 311 frames.
+Event `at=1375,x=168,phase=1` with `fineX=61,fineY=154` takes a random movement
+branch between attacks, throws at 116/204/241/278/315, and releases at frame 430.
 `at=3215,x=208,phase=0`
 holds its lane, fires at frame 116, and releases after 284 frames using a
 fixed-point trace. Event `at=3407,x=224,phase=0` uses the same frame-116 throw gate from its own

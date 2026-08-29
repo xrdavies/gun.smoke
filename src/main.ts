@@ -1579,10 +1579,12 @@ class GunSmokeGame {
           unit.x += unit.vx * delta;
           unit.y += (unit.age * NES_FRAME_RATE < RIFLEMAN_ATTACK_STATE_FRAME ? unit.vy : -unit.vy * 0.75) * delta;
         }
-        const riflemanFrame = Math.floor(unit.age * NES_FRAME_RATE);
-        if (tracedRifleman && !sideRifleman && !unit.riflemanAttackStarted && riflemanFrame >= RIFLEMAN_ATTACK_STATE_FRAME) {
-          unit.riflemanAttackStarted = true;
-          unit.riflemanAimHeading = riflemanAttackHeadingAtStart(riflemanFrame, unit.x, unit.y, this.player.x, this.player.y);
+        if (tracedRifleman && !sideRifleman && !unit.riflemanAttackStarted) {
+          const attackHeading = riflemanAttackHeadingAtStart(unit.x, unit.y, this.player.x, this.player.y);
+          if (attackHeading !== undefined) {
+            unit.riflemanAttackStarted = true;
+            unit.riflemanAimHeading = attackHeading;
+          }
         }
         if (!sideRifleman && unit.nextFireAt === 0) unit.nextFireAt = RIFLEMAN_FIRST_SHOT_DELAY;
         const sideShotFrame = sideRifleman ? RIFLEMAN_SIDE_SHOT_FRAMES[unit.volleysFired] : undefined;

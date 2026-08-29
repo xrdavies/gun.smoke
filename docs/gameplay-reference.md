@@ -588,7 +588,7 @@ The `$B82F` ambush variant instead fixes X, begins at screen `y=1`, advances one
 NES pixel every three frames while retaining its slot fraction, reaches `y=178`
 on frame 531, and releases on the following frame without firing.
 Riflemen advance,
-enter their attack state at 122 NES frames once they are at least 48 NES pixels
+enter their attack state on the first frame when they are at least 48 NES pixels
 downscreen and within 96 NES Y pixels of Billy, capture the aim sector at that
 transition, then fire five shots at
 138/154/170/186/202 through one quantized five-heading fan captured at attack

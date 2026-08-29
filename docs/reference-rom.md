@@ -587,9 +587,9 @@ defeat/score path. The runtime therefore keeps rocks in the enemy pool, gives
 them five hit points, and excludes them from the Magnum projectile-clearing
 shortcut.
 An isolated `$B775` Rifleman descends one NES pixel per frame through age 121,
-enters its attack state at age 122 only when its screen Y is at least 48 NES
-pixels and Billy is within 96 NES Y pixels, captures the aim sector at that
-transition, then emits five dispatch `0x30` shots at ages
+enters its attack state on the first frame when its screen Y is at least 48 NES
+pixels and Billy is within 96 NES Y pixels (age 122 in the isolated route),
+captures the aim sector at that transition, then emits five dispatch `0x30` shots at ages
 138, 154, 170, 186 and 202. The integer aim selects one of three five-heading
 fans centered on sectors `12`, `16`, or `20`, captured when the attack state
 starts; each bullet uses the second-tier

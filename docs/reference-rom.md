@@ -571,6 +571,8 @@ Event `at=3103,x=72,phase=1` with the neutral fraction throws at 116/153 and
 releases after 280 frames.
 Event `at=3119,x=56,phase=0` with the neutral fraction throws at frame 116
 and releases after 256 frames.
+The same trigger also allocates `x=120`; its `fineX=176,fineY=0` route throws
+at frame 116 and releases after 271 frames.
 `at=3215,x=208,
 phase=0` entry holds its lane, emits its first Shuriken at frame 116, and
 releases after 284 frames; the runtime binds its fixed-point per-frame trace.

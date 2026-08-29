@@ -559,6 +559,8 @@ Event `at=2767,x=80,phase=0` (the Ninja record in the four-record group)
 with `fineX=44,fineY=0` throws at 116/153/190 and releases after 332 frames.
 Event `at=2815,x=72,phase=1` with the neutral captured slot fraction
 `fineX=240,fineY=0` throws at frame 116 and releases after 258 frames.
+Event `at=2879,x=88,phase=1` with the same neutral fraction is a 201-frame
+no-throw route and releases after descending in place.
 `at=3215,x=208,
 phase=0` entry holds its lane, emits its first Shuriken at frame 116, and
 releases after 284 frames; the runtime binds its fixed-point per-frame trace.

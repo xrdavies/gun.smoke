@@ -507,7 +507,9 @@ The `at=3407,x=224,phase=0` entry follows the same 116-frame first throw gate
 from its own lane and releases after 252 frames; its fixed-point route is also
 bound separately because its post-throw path differs from `at=3215`. Event
 `at=383,x=184,phase=1` and `at=751/1583/3535,x=184,phase=0` take random
-no-throw branches and release after 205/202/202/241 frames. Events
+no-throw branches and release after 205/202/202/241 frames. Event
+`at=943,x=168,phase=0` is another no-throw route and releases after 201 frames.
+Events
 `at=815/1071/1199/3727,x=184,phase=0` and `at=1727,x=184,phase=1`
 reach the activation range later, throw at frame 116, and release after
 258/279/257/228/257 frames. Runtime binds those routes and throw frames to their event indexes

@@ -1837,12 +1837,11 @@ class GunSmokeGame {
         if ((unit.y - this.scroll) / NES_WORLD_Y_SCALE >= ROM_SCREEN_RELEASE_Y_NES) unit.hp = 0;
       }
       if (unit.romSlot !== undefined) {
-        const state = unit.gunmanFlankState ?? unit.backstabberRaidState;
-        if (state) {
-          const slot = unit.romSlot;
-          this.romEnemyFineX[slot] = Math.floor((state.x - Math.floor(state.x)) * 256) & 0xff;
-          this.romEnemyFineY[slot] = Math.floor((state.y - Math.floor(state.y)) * 256) & 0xff;
-        }
+        const slot = unit.romSlot;
+        const screenX = unit.x / NES_WORLD_X_SCALE;
+        const screenY = (unit.y - this.scroll) / NES_WORLD_Y_SCALE;
+        this.romEnemyFineX[slot] = Math.floor((screenX - Math.floor(screenX)) * 256) & 0xff;
+        this.romEnemyFineY[slot] = Math.floor((screenY - Math.floor(screenY)) * 256) & 0xff;
       }
       if (unit.x < 32 || unit.x > 928) unit.vx *= -1;
     } else if (unit.kind === "boss") {

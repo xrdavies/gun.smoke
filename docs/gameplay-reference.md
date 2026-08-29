@@ -564,6 +564,8 @@ machine and matches 312 frames through its bottom-edge release.
 The `at=1903,x=4,y=32,code=7,phase=0` event also uses that state machine. With
 Round 5's actor-only terrain bits applied, all 1,488 fixed-point frames match
 through its bottom-edge release.
+The later-loop `at=1999,x=4,y=112,code=7,phase=0` event matches 393 controlled
+state-machine frames and releases at the right edge.
 The naturally allocated `at=2735,x=4,y=64,code=7,phase=0` event also matches
 the shared state machine for 283 frames through its bottom-edge release.
 The `$B46E` side-raid Backstabber uses the same fixed-point movement primitives:

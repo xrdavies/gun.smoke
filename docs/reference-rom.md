@@ -573,6 +573,8 @@ Event `at=3119,x=56,phase=0` with the neutral fraction throws at frame 116
 and releases after 256 frames.
 The same trigger also allocates `x=120`; its `fineX=176,fineY=0` route throws
 at frame 116 and releases after 271 frames.
+The Round 4 `at=3215,x=160` record is a separate 268-frame single-throw route
+with the neutral slot fraction.
 `at=3215,x=208,
 phase=0` entry holds its lane, emits its first Shuriken at frame 116, and
 releases after 284 frames; the runtime binds its fixed-point per-frame trace.

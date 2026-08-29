@@ -313,6 +313,8 @@ Event `at=3119,x=56,phase=0` with the neutral fraction throws at frame 116
 and releases after 256 frames.
 The same trigger also allocates `x=120`; its `fineX=176,fineY=0` route throws
 at frame 116 and releases after 271 frames.
+The Round 4 `at=3215,x=160` record is a separate 268-frame single-throw route
+with the neutral slot fraction.
 `at=3215,x=208,phase=0`
 holds its lane, fires at frame 116, and releases after 284 frames using a
 fixed-point trace. Event `at=3407,x=224,phase=0` uses the same frame-116 throw gate from its own

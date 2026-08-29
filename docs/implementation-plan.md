@@ -33,7 +33,8 @@ all-or-nothing player volleys and final-ammo weapon fallback, Bandit/Fatman
 entry vulnerability and first-shot timing, same-slot object conversion/pickup
 descent, and browser coverage for every distinct Boss projectile chain and pool
 owner. A further Round 2 Gunman pass fixed the shared 8-bit orbit-counter wrap
-and now matches the full 483-frame code-8 route through natural release.
+and now matches the full 483-frame code-8 and 873-frame mirrored code-9 routes
+through natural release.
 
 ## Delivery Stages
 

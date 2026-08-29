@@ -501,6 +501,10 @@ The `at=703,x=4,y=32,code=8,phase=1` route likewise matches all 483 frames
 through natural release with Billy at NES `(152,216)`. Its orbit counter uses
 8-bit overflow (`0xff -> 0`) without rotating; only the normal `4 -> 0` wrap
 advances the heading.
+An isolated-slot replay of `at=1839,x=248,y=32,code=9,phase=0` also matches all
+873 frames and the final fixed-point `Y=252` release. In an unmodified crowded
+pass this event can be dropped when all seven enemy slots are occupied, which
+the runtime preserves instead of queuing it for a later frame.
 
 Codes 8 and 9 advance from their side until their collision probe opens and
 Billy is within 101 vertical pixels, run a 51-frame mirrored lunge, then join

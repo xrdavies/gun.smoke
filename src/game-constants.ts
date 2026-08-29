@@ -184,6 +184,10 @@ export function romObjectScreenY(age: number, originY = 0): number {
   return originY + (1 + Math.floor(frame / 3)) * NES_WORLD_Y_SCALE;
 }
 
+export function romPickupScreenY(age: number, originY = 0): number {
+  return originY + Math.floor((Math.max(0, Math.round(age * NES_FRAME_RATE)) + 1) / 3) * NES_WORLD_Y_SCALE;
+}
+
 export function romActorScreenYReleased(screenY: number): boolean {
   return Math.round(screenY) >= ROM_SCREEN_RELEASE_Y_NES;
 }

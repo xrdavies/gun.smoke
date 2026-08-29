@@ -630,6 +630,8 @@ preserves the original short-lived slot pressure before the actor is released.
 Barrel contents remain in the six-slot object pool rather than becoming
 capacity-free runtime objects; enemy drops are skipped when all seven ordinary
 enemy slots are occupied.
+Object pickups replace their destroyed barrel's slot and restart the discrete
+three-frame descent phase at the conversion coordinate.
 Scripted barrels, shops and scene props begin at screen `y=1`, advance one NES
 pixel every three frames, and release when the next step reaches `y=252`.
 

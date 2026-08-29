@@ -458,6 +458,9 @@ non-colliding for the same five-frame window so pool pressure and slot reuse
 match the ROM. Its measured screen-Y offsets are `0/-4/-7/-10/-12` NES pixels.
 Barrel contents use the low-slot object allocator, while enemy drops use the
 seven ordinary enemy slots. The decoded object records occupy six object slots;
+When a breakable object is destroyed, its pickup replaces the same object slot
+instead of allocating a second object. The converted actor resets its own
+three-frame descent phase at the conversion coordinate.
 their screen Y advances at one NES pixel every three frames, and world movement
 also includes the camera scroll, so runtime uses the same doubled world speed as
 decoded barrels. Shops are the only decoded object records marked as using the

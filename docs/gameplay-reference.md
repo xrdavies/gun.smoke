@@ -255,6 +255,8 @@ lane and releases after 252 frames with a separate fixed-point route.
 separate 205/202/202/241-frame no-throw routes. Event `at=943,x=168,phase=0`
 uses a 201-frame no-throw route. Event `at=1103,x=160,phase=0` fires at frame
 116 and follows a 260-frame fixed-point route. Events
+`at=1711,x=160,phase=0` fires at frames 116 and 153 and releases after 284
+frames using a separate fixed-point route. Events
 `at=815/1071/1199/3727,x=184,phase=0` and `at=1727,x=184,phase=1`
 delay their Shuriken until frame 116 and follow separate
 258/279/257/228/257-frame routes;

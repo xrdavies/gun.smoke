@@ -511,6 +511,8 @@ no-throw branches and release after 205/202/202/241 frames. Event
 `at=943,x=168,phase=0` is another no-throw route and releases after 201 frames.
 Event `at=1103,x=160,phase=0` emits its first Shuriken at frame 116 and
 releases after 260 frames using a separate fixed-point route.
+Event `at=1711,x=160,phase=0` emits Shuriken at frames 116 and 153, then
+releases after 284 frames on its own fixed-point route.
 Events `at=815/1071/1199/3727,x=184,phase=0` and
 `at=1727,x=184,phase=1`
 reach the activation range later, throw at frame 116, and release after

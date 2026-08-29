@@ -267,6 +267,8 @@ Event `at=1407,x=144,phase=1` with `fineX=100,fineY=182` throws at frames
 Pool pressure skips the `at=1519/1535` records and the later `x=240` half of
 the same-frame `at=1551` pair. The allocated `at=1551,x=128,phase=0` route
 with `fineX=246,fineY=23` throws at 116/153/190 and releases after 383 frames.
+The following `at=1567` pair likewise allocates only `x=152`; its
+`fineX=81,fineY=204` route throws at frame 116 and releases after 228 frames.
 `at=3215,x=208,phase=0`
 holds its lane, fires at frame 116, and releases after 284 frames using a
 fixed-point trace. Event `at=3407,x=224,phase=0` uses the same frame-116 throw gate from its own

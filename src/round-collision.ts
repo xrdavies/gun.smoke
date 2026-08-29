@@ -8,6 +8,10 @@ const encodedRounds = [
   "APAA8AD/AP8A/wD/AP8A/wD/AP8A/gD/AAAAAAAAAAAA4ADQADAAUADAAMAAAAAA/wD/AP8A/wB/AP8AAPAA8EDwAPAA8IDwAPAA8ADwAPAB8ADwA/AD8AvgB/AEAAEAAgABAAAAAAAAwABAAMAA0ADgANAA0ABAAEAAAAAAAAAAAAAAAAAAAAAAAAA/8D/wP/A/8D/wP/Af/D/8APwA/AD8APwA+AD8APAA8AHgAPADAAsADgAFABMAAwADAAcACAAEAAAAAAAAAAAAQAAAACAAEAAAgABAAOAA0AAAAEAAgABQANsAxwDgANADAAMAA0ADEA8ADwAP8A/wD/AP8P/w//D/8P/w/+D/8H8A/wAAwADQAHAAGAAEAAAAAAAAAwABAAD/Av8A/wD/AP8A/wD+AP8AAAAAIAAQAAAAAAAAAAAAAAAAAADAAMAHIgdSB/IH0gdABwAHIAcQBwAHCAPwB/Af8B/wH/Af8B/wH/Af8B/wf/B/8H/wf/B/4H/wPwB/AB8wHxAfAB8ADwAfAAAAAAAAAAAAAAAAAAAAAAAAAwAFgABAAAADAAvADEAGAANAAwAAAAAAAAAAAAAAAAD8APwA/AD8APwA/DD4EPwAAAAAAAAAAAAAAAB/wH9Af4B/QH/Qf8B/AH9AfwB/gH8AfwA/AH8AAPAA8ADwAPAA8ADwAP8A/wD/AP8A/wD/AP4A/wwABAAAAAAAAAAAIADAAMAA0ABAAAAAQAAAAAAAAAAAAAAAABMAAwAPAScAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAEABPAC8APwAfAM8AzwAPAA8A==",
 ] as const;
 
+// Enemy movement at $C8F8 treats either high definition bit as solid. Only
+// Round 5 differs from the player-facing bit-6 mask above.
+const encodedRound5ActorCollision = "wP/A/4DnwG+A/4D/AOyA3wDvAO8ANgA/AAAAMAAAAAAAAAAA//EAAP/x//H/8f/x//H/8cDx//EA8YDxAAAAAADgAOAAwADgAPYANgDeAPYAngAeAOAAwPH/8f/x//H/8f/x/wD88f8A8AD4AAAAAAAAAAAHAAEAHgAfAA8AGwDtAe8B3wD/AW8AfgA/AG8APwA8AA8ADwAAAAEAAP8AAOP/gP/j/+P/4//j/+P/4//jj+P/44/jj+OP448AjACOAAAAAAAAAAAAAAAAAAAAAAAAAAAHAAcAGwAfAA8AGAD/AP8A/wH2AP8BnwFnAG8ABwAHAAAAAAAAgAAAAOAAwAD4APAA/gD8gP8A//H/8f/x//H/8f/x//H/8f/x//H//4////+P/4//j/+P/4//j/+P/4//AP+PPwB/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAAADwAPAAfgB+wP/AfsD/wPPA/MBs";
+
 const decodeRows = (encoded: string): readonly number[] => {
   const bytes = atob(encoded);
   const rows = new Array<number>(bytes.length / 2);
@@ -18,6 +22,7 @@ const decodeRows = (encoded: string): readonly number[] => {
 };
 
 export const ROUND_COLLISION_ROWS: readonly (readonly number[])[] = encodedRounds.map(decodeRows);
+export const ROUND_ACTOR_COLLISION_ROWS: readonly (readonly number[])[] = ROUND_COLLISION_ROWS.map((rows, index) => index === 4 ? decodeRows(encodedRound5ActorCollision) : rows);
 export const ROUND_COLLISION_ROW_COUNTS = ROUND_COLLISION_ROWS.map((rows) => rows.length);
 
 const NES_MAP_WIDTH = 256;
@@ -40,6 +45,12 @@ export function roundCollisionBlocks(round: number, scroll: number, x: number, y
 
 export function roundCollisionAtNes(round: number, scroll: number, screenX: number, screenY: number): boolean {
   const rows = ROUND_COLLISION_ROWS[round - 1];
+  if (!rows) return false;
+  return roundRowsContain(rows, scroll, screenX, screenY);
+}
+
+export function roundActorCollisionAtNes(round: number, scroll: number, screenX: number, screenY: number): boolean {
+  const rows = ROUND_ACTOR_COLLISION_ROWS[round - 1];
   if (!rows) return false;
   return roundRowsContain(rows, scroll, screenX, screenY);
 }

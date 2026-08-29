@@ -55,8 +55,11 @@ eight-byte row and wraps from the per-Round end to the base. Running
 `npm run extract:rom-round-maps` extracts the six cell grids, their five-byte
 cell definitions, and self-generated ID-color/collision previews into the ignored
 `.rom-traces/round-maps/` directory. The previews visualize structure without
-reusing the original tile artwork. Collision is decoded from bit 6 of each
-definition quadrant, matching the player collision test at `$C733-$C77F`.
+reusing the original tile artwork. Player collision is decoded from bit 6 of
+each definition quadrant, matching `$C733-$C77F`; actor movement through
+`$C8F8` treats either high bit (`0xC0`) as solid. The extra bit-7 cells occur
+only in Round 5 and are kept in a separate actor mask so they do not constrain
+Billy.
 The web game renders the same 16-pixel mask through self-generated stage colors,
 so visible geometry and collision share one decoded source without copying tile
 art.

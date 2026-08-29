@@ -39,7 +39,7 @@ import { SHOTGUNNER_PATH_NES, shotgunnerPosition } from "../src/game-constants";
 import { SHOTGUNNER_SIDE_LIFETIME, SHOTGUNNER_SIDE_PATH_NES, SHOTGUNNER_SIDE_SHOT_FRAME, shotgunnerSidePosition } from "../src/game-constants";
 import { hasSpecialAmmoStock, romEnemyDrop, romEnemyScore } from "../src/game-constants";
 import { ROM_PROJECTILE_SCREEN_SIZE_NES, romProjectileOnScreen } from "../src/game-constants";
-import { roundCollisionAtNes, roundCollisionBlocks, roundCollisionScrollNes, roundPlayerRecoveryX, ROUND_COLLISION_ROW_COUNTS } from "../src/round-collision";
+import { roundActorCollisionAtNes, roundCollisionAtNes, roundCollisionBlocks, roundCollisionScrollNes, roundPlayerRecoveryX, ROUND_COLLISION_ROW_COUNTS } from "../src/round-collision";
 import { canSpawnRomPool, compareRomEventOrder, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_ENEMY_SLOT_CAPACITY, ROM_ENTITY_HIT_POINTS, ROM_FALLING_ROCK_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_OBJECT_SLOT_CAPACITY, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_ENEMY_EVENT_COUNTS, ROUND_ROM_OBJECT_EVENTS, ROUND_ROM_OBJECT_EVENT_COUNTS, ROM_BEHAVIOR_ENEMY_TYPES, romEntityHitPoints, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX } from "../src/rom-event-data";
 
 describe("Gun.Smoke vertical slice", () => {
@@ -286,6 +286,9 @@ describe("Gun.Smoke vertical slice", () => {
     expect(roundCollisionAtNes(4, 0, 4, 48)).toBe(true);
     expect(roundCollisionAtNes(4, 0, 48, 48)).toBe(true);
     expect(roundCollisionAtNes(1, 0, 0, 0)).toBe(false);
+    const round5ActorMaskScroll = (1903 + 2 / 3 + 1026 / 3) * NES_WORLD_Y_SCALE;
+    expect(roundCollisionAtNes(5, round5ActorMaskScroll, 159, 84)).toBe(false);
+    expect(roundActorCollisionAtNes(5, round5ActorMaskScroll, 159, 84)).toBe(true);
     const leftWallScroll = 79 / 3 * NES_WORLD_Y_SCALE;
     const rightWallScroll = 64 / 3 * NES_WORLD_Y_SCALE;
     expect(roundCollisionBlocks(1, leftWallScroll, 37 * NES_WORLD_X_SCALE, leftWallScroll + 188 * NES_WORLD_Y_SCALE)).toBe(true);
@@ -785,7 +788,7 @@ describe("Gun.Smoke vertical slice", () => {
       const shots: { frame: number; heading: number }[] = [];
       for (let frame = 1; frame <= 1042; frame += 1) {
         const scroll = (159 + Math.floor(frame / 3)) * NES_WORLD_Y_SCALE;
-        const result = advanceHatchet(state, frame, playerX, 188, (probeX, probeY) => roundCollisionAtNes(3, scroll, probeX, probeY));
+        const result = advanceHatchet(state, frame, playerX, 188, (probeX, probeY) => roundActorCollisionAtNes(3, scroll, probeX, probeY));
         for (const heading of result.shots) shots.push({ frame, heading });
         if (result.dead) return { shots, release: frame };
       }
@@ -806,14 +809,14 @@ describe("Gun.Smoke vertical slice", () => {
     const shots: { frame: number; heading: number }[] = [];
     for (let frame = 1; frame <= 312; frame += 1) {
       const scroll = (1087 + Math.floor(frame / 3)) * NES_WORLD_Y_SCALE;
-      const result = advanceFirebreather(state, frame, 136, 188, (probeX, probeY) => roundCollisionAtNes(3, scroll, probeX, probeY), () => 0);
+      const result = advanceFirebreather(state, frame, 136, 188, (probeX, probeY) => roundActorCollisionAtNes(3, scroll, probeX, probeY), () => 0);
       for (const heading of result.shots) shots.push({ frame, heading });
     }
     expect(shots).toEqual([{ frame: 156, heading: 14 }, { frame: 208, heading: 13 }, { frame: 260, heading: 12 }, { frame: 312, heading: 10 }]);
     const moving = createFirebreatherState(88, 0, 16);
     for (let frame = 1; frame <= 208; frame += 1) {
       const scroll = (1087 + Math.floor(frame / 3)) * NES_WORLD_Y_SCALE;
-      advanceFirebreather(moving, frame, 136, 188, (probeX, probeY) => roundCollisionAtNes(3, scroll, probeX, probeY), () => 5);
+      advanceFirebreather(moving, frame, 136, 188, (probeX, probeY) => roundActorCollisionAtNes(3, scroll, probeX, probeY), () => 5);
     }
     expect({ mode: moving.mode, heading: moving.heading }).toEqual({ mode: "move", heading: 28 });
     expect(createFirebreatherState(248, 64, 24).heading).toBe(24);

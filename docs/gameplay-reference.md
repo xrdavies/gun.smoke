@@ -301,6 +301,8 @@ Event `at=1775,x=248,y=32,code=9,phase=0` uses a distinct 696-frame route;
 its first traced projectile begins at frame 367 before the actor exits upward.
 Event `at=351,x=4,y=32,code=7,phase=1` uses a 312-frame route and exits through
 the bottom edge.
+Event `at=399,x=4,y=32,code=7,phase=0` uses a 618-frame route and exits through
+the top edge.
 Complete scoped side traces are selected for matching entries: Round 2 uses
 569 frames for the code-8 `at=623` entry at `y=32`. The at351 code-7 phase-1
 entry uses a separate shorter trace and exits through the bottom edge. It uses

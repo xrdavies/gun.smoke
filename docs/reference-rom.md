@@ -618,6 +618,10 @@ table. On reaching NES `y=176`, each captures Billy's
 position, turns toward it, then recalculates that return heading once. The
 runtime uses this measured state machine for every volley rather than a fixed
 angular curve.
+The `0x98/0x99` boomerang routines contain no age-based lifetime counter. They
+turn toward fixed outward points, recapture Billy after crossing `Y=176`, and
+continue until contact or the low-slot screen bounds release them; runtime uses
+the same bound instead of a fixed 180-frame cap.
 After clearing only ordinary slots at the next real gate, Round 3 produces
 Devil Hawk as dispatch `0x9a`, variant `0x61`, entering from the top edge
 (`y=0`). Its initializer table defines NES horizontal entry lanes

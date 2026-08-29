@@ -364,6 +364,11 @@ The left-side `at=1743,x=4,y=48,code=7,phase=0` branch matches 360 samples and
 its bottom-edge release under the same state machine.
 The left-side `at=1695,x=4,y=64,code=7,phase=1` branch independently matches
 360 samples and its bottom-edge release.
+Round 5's `at=1135,x=4,y=48,code=7,phase=0` branch follows a separate fixed-point
+trace for 1,107 frames. It remains in tracking after the first close approach,
+enters its orbit dispatch only at frame 456, and ends when the slot is reused;
+the route is scoped to the captured player path and is not generalized to all
+Round 5 code-7 entries.
 Seeding the model with one natural at1375 actor's retained `$0500/$0520` slot
 fractions reproduces all 1,955 captured X/Y and movement-state samples through
 its top-edge release. Runtime assigns each ROM enemy actor one of the seven

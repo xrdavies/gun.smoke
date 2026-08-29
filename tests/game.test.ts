@@ -1072,6 +1072,9 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankUsesDynamicState(7, 80, 4, 1, 2527, false)).toBe(true);
     expect(gunmanFlankUsesDynamicState(7, 64, 6, 1, 2463, false)).toBe(false);
     expect(gunmanFlankUsesDynamicState(7, 64, 6, 1, 2463, true)).toBe(true);
+    expect(gunmanFlankLifetime(7, 48, 5, 0, false, 1135)).toBeCloseTo(1107 / NES_FRAME_RATE, 9);
+    expect(gunmanFlankPosition(7, 0, 48, 5, 0, false, 1135, 24, 221)).toEqual([0, 1]);
+    expect(gunmanFlankPosition(7, 456 / NES_FRAME_RATE, 48, 5, 0, false, 1135, 24, 221)).toEqual([102.0078125, 176.28515625]);
 
     const entry = createGunmanFlankMovementState(7, 4, 32, false);
     const seededEntry = createGunmanFlankMovementState(7, 4, 32, false, 60, 86);

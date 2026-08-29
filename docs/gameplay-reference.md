@@ -522,6 +522,9 @@ Codes 8 and 9 advance from their side until their collision probe opens and
 Billy is within 101 vertical pixels, run a 51-frame mirrored lunge, then join
 the same tracking states. Terrain probes and screen exits are evaluated each
 NES frame.
+The Round 5 `at=1135,x=4,y=48,code=7,phase=0` event is bound to its 1,107-frame
+fixed-point trace, including the delayed transition into its orbit state; it
+then releases when the slot is reused at the ROM boundary.
 The `$B46E` side-raid Backstabber uses the same fixed-point movement primitives:
 it captures Billy's heading at spawn, combines first-tier pursuit with a
 four-frame second-tier arc, pauses in its 30-frame cover dispatch, and repeats

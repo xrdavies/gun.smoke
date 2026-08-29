@@ -1879,7 +1879,7 @@ class GunSmokeGame {
           } else {
             const originY = (unit.romOriginY ?? 0) / NES_WORLD_Y_SCALE;
             const fromRight = (unit.romOriginX ?? unit.x) > 480;
-            const [offsetX, offsetY] = gunmanFlankPosition(flankGunman, unit.age, originY, this.stage, unit.romPhase ?? 0, fromRight, unit.romEventAt);
+            const [offsetX, offsetY] = gunmanFlankPosition(flankGunman, unit.age, originY, this.stage, unit.romPhase ?? 0, fromRight, unit.romEventAt, (unit.romSpawnFineX ?? 0) * 256, (unit.romSpawnFineY ?? 0) * 256);
             const hasRightTrace = this.stage === 3 && Math.round(originY) === 64 && (unit.romPhase ?? 0) === 1 || this.stage === 6 && Math.round(originY) === 32;
             const mirror = flankGunman === 7 && fromRight && !hasRightTrace ? -1 : 1;
             unit.x = (unit.romOriginX ?? unit.x) + offsetX * NES_WORLD_X_SCALE * mirror + (unit.romSpawnFineX ?? 0) * NES_WORLD_X_SCALE;

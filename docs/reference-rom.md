@@ -266,7 +266,8 @@ The same Round 1 traces show the Bomber actor reaching `y=126` at age 125 while
 its X coordinate remains fixed. Runtime then uses the measured movement-state
 durations and velocities for every later segment instead of interpolating one
 captured random route, and releases the actor when its post-entry path leaves
-the NES screen rather than applying the generic enemy age cap.
+the NES screen rather than applying the generic enemy age cap. Movement probes
+use `$C8F8`'s actor `0xC0` terrain mask, including Round 5 bit-7-only cells.
 An isolated `$B080` Sniper trace fires at ages 134, 224, 405, 495 and 585
 frames, then releases its slot at age 732. Those ages are one seeded route, not
 a universal schedule: the routine stores one of six lane headings

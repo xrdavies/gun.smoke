@@ -1670,7 +1670,7 @@ class GunSmokeGame {
         } else if (tracedBomber) {
           const nextX = unit.x + unit.vx * delta;
           const nextY = unit.y + unit.vy * delta;
-          if (this.isPlayerBlocked(nextX, nextY)) {
+          if (roundActorCollisionAtNes(this.stage, this.scroll, nextX / NES_WORLD_X_SCALE, (nextY - this.scroll) / NES_WORLD_Y_SCALE)) {
             unit.bomberDirection = ((unit.bomberDirection ?? 0) + 4) & 7;
             [unit.vx, unit.vy] = bomberMovementVelocity(unit.bomberDirection);
           }

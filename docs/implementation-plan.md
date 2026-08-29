@@ -43,6 +43,7 @@ Round 5 `at=1711` now uses its separate 285-frame fixed-point trace.
 Round 5 `at=1759` now uses the shared state machine through its 312-frame route.
 Actor terrain probes now preserve `$C8F8`'s `0xC0` definition mask separately
 from the player's bit-6 mask, including Round 5's actor-only blocking cells.
+Bomber movement now uses that same actor probe instead of the player's mask.
 Collision scroll discretization also preserves exact event-row boundaries
 despite binary floating-point conversion.
 Gunman movement now releases on upward screen-Y underflow before scroll drift,

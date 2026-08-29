@@ -551,6 +551,12 @@ describe("Gun.Smoke vertical slice", () => {
     expect([roaming.mode, roaming.heading]).toEqual(["roam", 0x4f]);
     advanceNinja(roaming, 117, 168, 215, () => false, () => 0xff);
     expect([roaming.x, roaming.y]).toEqual([153 + 63 / 256, 154 + 67 / 256]);
+
+    const missed = createNinjaState(40, 0);
+    missed.mode = "seek";
+    missed.y = 126;
+    expect(advanceNinja(missed, 200, 168, 48, () => false, () => 0xff).dead).toBe(true);
+    expect(missed.y).toBeGreaterThanOrEqual(ROM_SCREEN_RELEASE_Y_NES);
   });
 
   it("keeps the Ninja Boss smoke and teleport timing", () => {

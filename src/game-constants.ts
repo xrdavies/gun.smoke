@@ -534,7 +534,8 @@ export function advanceNinja(state: NinjaState, targetFrame: number, playerX: nu
     }
     if (state.mode === "seek") {
       state.y += 2;
-      if (Math.abs(Math.round(playerY) - Math.round(state.y)) < NINJA_ACTIVATION_DISTANCE_NES) chooseAction(true);
+      if (outsideScreen()) state.dead = true;
+      else if (Math.abs(Math.round(playerY) - Math.round(state.y)) < NINJA_ACTIVATION_DISTANCE_NES) chooseAction(true);
       continue;
     }
     if (state.mode === "decide") {

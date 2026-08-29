@@ -23,7 +23,7 @@ input; ROM bytes, extracted artwork, and Capcom source are not distributed.
 | Collision and map data | Complete for decoded data | Six ROM collision rings drive movement and generated terrain; visual landmark art remains original |
 | ROM event scheduler | Complete for extracted scripts | Per-round enemy/object streams, map phases, independent seven/six-slot pools and slot fine coordinates |
 | Resources and combat | Complete for modeled rules | Weapons, ammo, score, drops, shops, Smart Bomb, Horse, damage and death state |
-| Ordinary enemy routines | Mostly complete | All core behavior routines are mapped; Ninja and other decoded random paths run typed states, while remaining long-tail branches stay explicit |
+| Ordinary enemy routines | Mostly complete | All core behavior routines are mapped; every Round 4 Ninja script record has a state-qualified trace or decoded-state fallback, while other long-tail random branches stay explicit |
 | Boss routines | Mostly complete | Measured entrances, attacks, health bars and traced routes are implemented; sparse tails continue from ROM-shaped state |
 | Original visual/audio assets | Intentional baseline | Procedural textures and Web Audio are used instead of redistributed commercial assets |
 
@@ -73,7 +73,7 @@ a focused Conventional Commit and push it to `origin/main`.
 
 The remaining parity work is evidence-driven rather than a new subsystem:
 
-1. Capture and bind missing long-tail enemy and Boss traces where they affect
+1. Capture and bind remaining non-Ninja enemy and Boss tails where they affect
    gameplay decisions, release boundaries, or projectile timing.
 2. Replace the remaining visual approximations only when legally usable,
    reproducible source assets or a measured procedural equivalent is available.

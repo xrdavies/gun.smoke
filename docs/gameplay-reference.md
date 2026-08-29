@@ -269,21 +269,29 @@ state-qualified captures when their enemy slots are available; the later
 `x=240` half of the same-frame `at=1551` pair is skipped by pool pressure.
 The allocated `at=1551,x=128,phase=0` route
 with `fineX=246,fineY=23` throws at 116/153/190 and releases after 383 frames.
-The following `at=1567` pair likewise allocates only `x=152`; its
-`fineX=81,fineY=204` route throws at frame 116 and releases after 228 frames.
+An isolated `at=1551,x=240` allocation with `fineX=176,fineY=0` throws at 116
+and releases after 207 frames. The following `at=1567,x=152` route with
+`fineX=81,fineY=204` throws at frame 116 and releases after 228 frames; its
+isolated `x=216,fineX=176,fineY=0` partner releases after 198 frames with the
+same single throw.
 Event `at=1743,x=144,phase=0` with `fineX=88,fineY=46` follows another
 228-frame single-throw route and releases through the 8-bit Y boundary.
-The `at=1775` record is skipped by pool pressure. Event
+The `at=1775` record is skipped by natural pool pressure; its isolated neutral
+slot route throws at frame 116 and releases after 200 frames. Event
 `at=1855,x=112,phase=1` with `fineX=204,fineY=205` throws at frame 116 and
 releases after 224 frames through the same screen boundary.
 Event `at=1887,x=96,phase=1` with `fineX=88,fineY=246` throws at
 116/153/190/248/285 and releases after a 436-frame random branch route.
-At `at=1919` only the earlier `x=64` record allocates; its
+At `at=1919` the natural pool allocates only the earlier `x=64` record; its
 `fineX=251,fineY=236` route throws at 116/153/190/357 and releases at frame 366.
+The isolated `x=112,fineX=176,fineY=0` partner throws at 116 and releases after
+224 frames.
 Event `at=2223,x=80,phase=0` (the record previously captured at the shared
 map-pointer window) with `fineX=210,fineY=133` throws at frame 116,
 returns along its lower lane, and releases after 257 frames.
-The earlier `at=2015` record is skipped by pool pressure. Event
+The earlier `at=2015` record is skipped by natural pool pressure; its isolated
+`x=80,fineX=176,fineY=0` route throws at 116 and releases after 664 frames.
+Event
 `at=2207,x=56,phase=1` is a 212-frame no-throw route in the captured neutral
 slot state. Event `at=2543,x=56,phase=0` with `fineX=36,fineY=132` is a
 256-frame single-throw route and releases after settling near its left lane.
@@ -323,6 +331,8 @@ Event `at=3327,x=56,phase=1` in the neutral captured state throws at frame
 116 and releases after 256 frames.
 The same trigger's `x=96` record uses a 335-frame route with throws at
 116/153/190 and a separate neutral slot fraction.
+Its isolated `x=128,fineX=44,fineY=0` partner throws at 116/153 and releases
+after 332 frames.
 Event `at=3391,x=152,phase=1` with the neutral fraction throws at frame 116
 and releases after 224 frames.
 The same trigger's `x=200` record uses a 237-frame single-throw route with
@@ -350,6 +360,8 @@ allocated `at=2031,x=56,phase=0` route throws at
 116/153 and releases after 266 frames; `at=2239,x=104,phase=1` throws once
 at 116 and releases after 228 frames. The `at=3055,x=56,phase=0` route
 throws at 116/153 and releases after 335 frames.
+The isolated `at=3055,x=88,phase=0` partner throws once at frame 116 and
+releases after 270 frames.
 `at=3215,x=208,phase=0`
 holds its lane, fires at frame 116, and releases after 284 frames using a
 fixed-point trace. Event `at=3407,x=224,phase=0` uses the same frame-116 throw gate from its own

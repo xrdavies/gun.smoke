@@ -43,6 +43,8 @@ Round 5 `at=1711` now uses its separate 285-frame fixed-point trace.
 Round 5 `at=1759` now uses the shared state machine through its 312-frame route.
 Actor terrain probes now preserve `$C8F8`'s `0xC0` definition mask separately
 from the player's bit-6 mask, including Round 5's actor-only blocking cells.
+That mask lets Round 5 `at=1903` use the shared Gunman state machine with exact
+coarse/fine parity through all 1,488 frames and its natural release.
 
 ## Delivery Stages
 

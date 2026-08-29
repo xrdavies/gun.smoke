@@ -376,6 +376,10 @@ The `at=1711,x=4,y=64,code=7,phase=0` event has a separate 285-frame fixed-point
 trace and releases at the bottom edge.
 The following `at=1759,x=4,y=64,code=7,phase=1` event matches the shared state
 machine for 312 frames and releases at the bottom edge.
+The `at=1903,x=4,y=32,code=7,phase=0` event matches the same state machine for
+1,488 frames. Its frame-1026 collision probe lands on a Round 5 bit-7 terrain
+cell, returns it from orbit to tracking, and is required for exact coarse/fine
+parity through the final `Y=252` release.
 Seeding the model with one natural at1375 actor's retained `$0500/$0520` slot
 fractions reproduces all 1,955 captured X/Y and movement-state samples through
 its top-edge release. Runtime assigns each ROM enemy actor one of the seven

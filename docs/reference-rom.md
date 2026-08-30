@@ -483,6 +483,9 @@ The adjacent `at=831,x=160,code=5` bottom entry independently matches 150
 shared-state frames with no successful shot before its `Y=252` release.
 The top `at=863,x=128,code=6` entry independently matches 432 shared-state
 frames, fires at frame 66, and releases through the bottom `Y=252` boundary.
+The top `at=943,x=144,code=6` entry matches the shared state machine through
+frame 488, fires at frames 76 and 268, and enters the observed player-contact
+dispatch on frame 489 instead of reaching a natural screen boundary.
 The final top entries `at=4911/4975/5087/5103` independently match the shared
 state machine for 277/333/330/315 frames and fire at 47/21/13/32 before their
 measured left or bottom releases. `at=5119,x=4,y=48,code=8` keeps NES `x=4`

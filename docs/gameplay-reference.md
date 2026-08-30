@@ -586,6 +586,9 @@ The adjacent `at=831,x=160,code=5` bottom entry follows a shorter 150-frame
 no-shot route and releases at the same `Y=252` screen boundary.
 The top `at=863,x=128,code=6` entry follows a 432-frame shared route, fires at
 frame 66, and releases through the bottom `Y=252` boundary.
+The top `at=943,x=144,code=6` entry follows the shared route through frame 488,
+fires at frames 76 and 268, then reaches the observed player-contact handoff at
+frame 489 rather than a natural screen release.
 The final top-entry set at `at=4911/4975/5087/5103` follows complete shared
 routes of 277/333/330/315 frames, with successful shots at 47/21/13/32 before
 their measured left or bottom releases. The following `at=5119` code-8 side

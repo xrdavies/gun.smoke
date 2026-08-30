@@ -624,7 +624,6 @@ class GunSmokeGame {
       this.activateStart();
     }
     if (this.mode !== "playing") return;
-    this.advanceRandom(delta);
     if (this.deathClock > 0) {
       this.time += delta;
       this.updateDeath(delta);
@@ -636,6 +635,7 @@ class GunSmokeGame {
       return;
     }
     if (this.shopOpen) return;
+    this.advanceRandom(delta);
     this.time += delta;
     if (this.wingateRespawnClock > 0) {
       this.wingateRespawnClock -= delta;
@@ -3057,6 +3057,7 @@ let game: GunSmokeGame | undefined;
 let referenceGame: ReferenceRomGame | undefined;
 if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeInvulnerable", { value: (duration: number) => { if (game) game.invulnerable = duration; } });
 if (import.meta.env.DEV) Object.defineProperty(window, "__getGunSmokeUnits", { value: () => game?.units.map((unit) => ({ kind: unit.kind, enemyType: unit.enemyType, itemType: unit.itemType, projectileType: unit.projectileType, bossProjectile: unit.bossProjectile, romPool: unit.romPool, romSlot: unit.romSlot, romEntityCode: unit.romEntityCode, hp: unit.hp, age: unit.age, x: unit.x, y: unit.y, screenY: (unit.y - (game?.scroll ?? 0)) / NES_WORLD_Y_SCALE, visible: unit.sprite.visible, invulnerableUntil: unit.invulnerableUntil, defeatAnimationDuration: unit.defeatAnimationDuration, volleysFired: unit.volleysFired })) ?? [] });
+if (import.meta.env.DEV) Object.defineProperty(window, "__getGunSmokeState", { value: () => game ? { mode: game.mode, time: game.time, scroll: game.scroll, romFrameCounter: game.romFrameCounter, randomState: [...game.randomState], inventoryOpen: game.inventoryOpen, shopOpen: game.shopOpen } : undefined });
 if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeWeapon", { value: (weapon: WeaponName, ammo: number) => {
   if (!game || weapon === "pistol" || !Number.isInteger(ammo) || ammo < 1) return;
   game.weaponAmmo[weapon] = ammo;

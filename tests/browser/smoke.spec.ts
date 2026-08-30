@@ -63,6 +63,21 @@ test("starts the WebGPU stage and renders gameplay", async ({ page }) => {
   expect(pageErrors).toEqual([]);
 });
 
+test("freezes the ROM clock and randomness while inventory is open", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/");
+  await page.locator("#start-button").click();
+  await page.locator("#continue-button").click();
+  await page.locator("#briefing-button").click();
+  await page.clock.runFor(500);
+  const before = await page.evaluate(() => (window as unknown as { __getGunSmokeState: () => unknown }).__getGunSmokeState());
+  await page.keyboard.press("Shift");
+  await expect(page.locator("#inventory-screen")).toBeVisible();
+  await page.clock.runFor(500);
+  const during = await page.evaluate(() => (window as unknown as { __getGunSmokeState: () => unknown }).__getGunSmokeState());
+  expect(during).toEqual(expect.objectContaining({ time: (before as { time: number }).time, romFrameCounter: (before as { romFrameCounter: number }).romFrameCounter, randomState: (before as { randomState: number[] }).randomState }));
+});
+
 test("renders all six procedural rounds", async ({ page }) => {
   const pageErrors: Error[] = [];
   page.on("pageerror", (error) => pageErrors.push(error));

@@ -593,6 +593,8 @@ reaches the player-contact dispatch at frame 34 before the shared handoff.
 The same-time `at=1231` bottom entries also contact Billy before completing a
 full route: `x=112` reaches dispatch `0x41` at frame 34, while `x=144` reaches
 the shared orbit state through frame 67 and contacts on the next frame.
+The side `at=1375,x=4,y=32,code=8,phase=1` entry follows the shared flank state
+machine for 564 frames, fires at frames 45/109/173/237, and releases upward.
 At `at=1279`, the bottom `x=112` entry contacts at frame 34 without firing;
 the top `x=136` entry follows a complete 1,146-frame route, fires at 19/403/659,
 and releases through the right boundary.

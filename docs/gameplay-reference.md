@@ -141,6 +141,8 @@ player-projectile slot.
 Player shots use the ROM's axis-aligned collision bounds rather than circular
 distance: Pistol/Machine Gun are `(0,4)`, Shotgun `(4,4)`, and Magnum `(0,2)`
 against ordinary enemy `(9,8)` half-sizes and animation-specific Boss bounds.
+Hostile contact is also axis-aligned: Billy contributes 4 NES pixels only on
+the vertical axis, and Horse adds another 8 vertical pixels while equipped.
 When the six player projectile slots cannot fit the complete two- or five-shot
 template, the trigger creates no partial volley and consumes no special ammo.
 Creating the final special-weapon volley immediately returns the equipped

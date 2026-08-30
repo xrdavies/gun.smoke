@@ -3450,6 +3450,10 @@ export function combatHitboxesOverlap(deltaX: number, deltaY: number, leftHalfX:
   return Math.abs(deltaX) < leftHalfX + rightHalfX && Math.abs(deltaY) < leftHalfY + rightHalfY;
 }
 
+export function playerContactHitboxOverlap(deltaX: number, deltaY: number, targetHalfX: number, targetHalfY: number, hasHorse: boolean): boolean {
+  return Math.abs(deltaX) < targetHalfX && Math.abs(deltaY) < targetHalfY + 4 + (hasHorse ? 8 : 0);
+}
+
 export function shouldLoopStage(scroll: number, round: number, hasWanted: boolean): boolean {
   return scroll >= (ROUND_LENGTHS[round - 1] ?? ROUND_LENGTHS[0]!) && !hasWanted;
 }

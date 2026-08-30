@@ -867,6 +867,11 @@ Player-projectile collision at `$CC83-$CCBE` compares each axis separately and
 strictly against the sum of target and projectile half-sizes. Pistol/Machine
 Gun use `(0,4)`, Shotgun `(4,4)`, and Magnum `(0,2)`; runtime uses these
 rectangular bounds rather than a Euclidean radius.
+Player contact at `$CA83-$CAA7` uses a separate bound: absolute X must be less
+than the target animation half-width, while absolute Y must be less than the
+target half-height plus 4 NES pixels. Horse health expands only that vertical
+allowance by another 8 pixels. Runtime applies this rule to enemies, Bosses,
+enemy projectiles and airborne dynamite contact instead of a circular radius.
 The routine updates five score tiles at `$06F2/$06F4/$06F6/$06F8/$06FA`;
 `$06FC` remains the fixed zero ones digit, and overflow clamps those five
 tiles to `9`, yielding a maximum displayed score of `999990`.

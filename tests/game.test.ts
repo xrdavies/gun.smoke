@@ -22,7 +22,7 @@ import { advanceNinja, createNinjaState, NINJA_ATTACK_MOVE_DURATION, NINJA_ENTRY
 import { ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y } from "../src/game-constants";
 import { BOMBER_ENTRY_DURATION, BOMBER_ENTRY_END_Y, BOMBER_ENTRY_END_Y_NES, bomberOpeningY } from "../src/game-constants";
 import { contactSourceShouldClear, DYNAMITE_AIM_FACTOR, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_VERTICAL_PATH_NES, dynamiteVerticalOffset } from "../src/game-constants";
-import { BOSS_COLLISION_HALF_SIZES_NES, combatHitboxesOverlap, CONTAINER_COLLISION_HALF_SIZE_NES, ENEMY_COLLISION_HALF_SIZE_NES, ENEMY_PROJECTILE_COLLISION_HALF_SIZE_NES } from "../src/game-constants";
+import { BOSS_COLLISION_HALF_SIZES_NES, combatHitboxesOverlap, CONTAINER_COLLISION_HALF_SIZE_NES, ENEMY_COLLISION_HALF_SIZE_NES, ENEMY_PROJECTILE_COLLISION_HALF_SIZE_NES, playerContactHitboxOverlap } from "../src/game-constants";
 import { advanceFirebreather, createFirebreatherState, FIREBREATHER_ACTIVATION_DISTANCE_NES, FIREBREATHER_AIM_WAIT_FRAMES, FIREBREATHER_ATTACK_FRAMES, FIREBREATHER_DECISION_INTERVAL_FRAMES, FIREBREATHER_ENTRY_FRAMES, FIREBREATHER_LIFETIME, FIREBREATHER_MOVE_FRAMES, FIREBREATHER_PROJECTILE_OFFSET_NES, FIREBREATHER_READY_WAIT_FRAMES } from "../src/game-constants";
 import { advanceSpear, createSpearState, SPEAR_ATTACK_REMAINING_FRAME, SPEAR_LIFETIME, SPEAR_MOVE_FRAMES, SPEAR_PROJECTILE_OFFSET_NES, SPEAR_SIDE_ENTRY_FRAMES, SPEAR_TOP_ENTRY_FRAMES, SPEAR_WAIT_FRAMES } from "../src/game-constants";
 import { advanceHatchet, createHatchetState, HATCHET_ENTRY_DEPTH_NES, HATCHET_ENTRY_PAUSE_FRAMES, HATCHET_LIFETIME, HATCHET_PATROL_BOUNDS_NES, HATCHET_THROW_FRAMES, HATCHET_TURN_FRAMES, hatchetCanThrow, hatchetTurnHeading, nesActorCollisionProbeOffset } from "../src/game-constants";
@@ -152,6 +152,11 @@ describe("Gun.Smoke vertical slice", () => {
     expect(combatHitboxesOverlap(8.99, 11.99, 0, 4, 9, 8)).toBe(true);
     expect(combatHitboxesOverlap(9, 0, 0, 4, 9, 8)).toBe(false);
     expect(combatHitboxesOverlap(0, 12, 0, 4, 9, 8)).toBe(false);
+    expect(playerContactHitboxOverlap(8.99, 11.99, 9, 8, false)).toBe(true);
+    expect(playerContactHitboxOverlap(9, 0, 9, 8, false)).toBe(false);
+    expect(playerContactHitboxOverlap(0, 12, 9, 8, false)).toBe(false);
+    expect(playerContactHitboxOverlap(0, 19.99, 9, 8, true)).toBe(true);
+    expect(playerContactHitboxOverlap(0, 20, 9, 8, true)).toBe(false);
   });
 
   it("matches the NES integer aim sectors", () => {

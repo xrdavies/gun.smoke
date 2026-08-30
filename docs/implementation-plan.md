@@ -314,6 +314,8 @@ Player projectiles also use their measured visible lifetimes and NES coordinate
 release, preventing offscreen Magnum shots from retaining scarce player slots.
 Player projectile hits now use decoded animation and projectile axis half-sizes
 for ordinary enemies, barrels, rocks, enemy shots and all six Bosses.
+Hostile contact and airborne dynamite defusal now use the separate ROM player
+contact bounds, including Horse's vertical eight-pixel expansion.
 
 ## Delivery Stages
 

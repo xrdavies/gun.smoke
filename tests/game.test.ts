@@ -1562,6 +1562,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanTopUsesDynamicState(6, 4479)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 4511)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 4623)).toBe(true);
+    expect(gunmanTopUsesDynamicState(6, 4639)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 3263)).toBe(false);
     expect(gunmanFlankEventShotFrames(6, 4415)).toEqual([13, 397]);
     expect(gunmanFlankEventShotFrames(6, 4479)).toEqual([29]);
@@ -1569,6 +1570,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankEventShotFrames(6, 4511, 168)).toEqual([13]);
     expect(gunmanFlankEventShotFrames(6, 4623, 88)).toEqual([69]);
     expect(gunmanFlankEventShotFrames(6, 4623, 168)).toEqual([]);
+    expect(gunmanFlankEventShotFrames(6, 4639, 144)).toEqual([13]);
     expect(gunmanFirstOpportunityFrame(43, 0)).toBe(62);
     const state = createGunmanTopMovementState(64, 199, 25);
     for (let frame = 1; frame <= 744; frame += 1) {
@@ -1645,6 +1647,16 @@ describe("Gun.Smoke vertical slice", () => {
       advanceGunmanFlankMovement(offsetSameFrameState, frame, 136, 215, (x, y) => roundActorCollisionAtNes(6, scroll, x, y));
     }
     expect(offsetSameFrameState).toMatchObject({ frame: 505, mode: "orbit", heading: 12, timer: 3, x: 140 + 240 / 256, y: 203 + 246 / 256, dead: false });
+
+    const laterSameFrameTopState = createGunmanTopMovementState(144, 79, 227);
+    for (let frame = 1; frame <= 294; frame += 1) {
+      const scroll = (4639 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(laterSameFrameTopState, frame, 136, 215, (x, y) => roundActorCollisionAtNes(6, scroll, x, y));
+    }
+    expect(laterSameFrameTopState).toMatchObject({ frame: 294, mode: "orbit", heading: 24, timer: 3, x: 187 / 256, y: 218 + 213 / 256, dead: false });
+    const laterSameFrameTopReleaseScroll = (4639 + 2 / 3 + 295 / 3) * NES_WORLD_Y_SCALE;
+    advanceGunmanFlankMovement(laterSameFrameTopState, 295, 136, 215, (x, y) => roundActorCollisionAtNes(6, laterSameFrameTopReleaseScroll, x, y));
+    expect(laterSameFrameTopState.dead).toBe(true);
   });
 
   it("matches the traced Bandit Bill volley timing", () => {

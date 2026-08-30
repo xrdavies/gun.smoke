@@ -1382,6 +1382,25 @@ export function createGunmanBottomMovementState(x: number, fineX = 0, fineY = 0)
   };
 }
 
+export const GUNMAN_BOTTOM_CONTACT_FRAMES = 60;
+export type GunmanBottomContactState = { frame: number; x: number; y: number; originY: number; dead: boolean };
+
+export function createGunmanBottomContactState(x: number, y: number): GunmanBottomContactState {
+  return { frame: 0, x, y, originY: y, dead: false };
+}
+
+export function advanceGunmanBottomContact(state: GunmanBottomContactState, targetFrame: number): void {
+  while (state.frame < targetFrame && !state.dead) {
+    state.frame += 1;
+    if (state.frame >= GUNMAN_BOTTOM_CONTACT_FRAMES) {
+      state.dead = true;
+      break;
+    }
+    const offset = state.frame <= 9 ? [0, -4, -7, -10, -12, -14, -15, -16, -16, -15][state.frame]! : -13 + Math.floor((state.frame - 10) / 3);
+    state.y = state.originY + offset;
+  }
+}
+
 export function gunmanTopUsesDynamicState(stage: number, eventAt?: number): boolean {
   if (stage === 4 && (eventAt === 95 || eventAt === 127 || eventAt === 159 || eventAt === 191 || eventAt === 207 || eventAt === 223 || eventAt === 239 || eventAt === 271 || eventAt === 287 || eventAt === 639 || eventAt === 671 || eventAt === 703 || eventAt === 735 || eventAt === 1055 || eventAt === 1343 || eventAt === 1487 || eventAt === 1519 || eventAt === 2335 || eventAt === 2479 || eventAt === 2511)) return true;
   if (stage === 5 && (eventAt === 31 || eventAt === 47 || eventAt === 207 || eventAt === 559 || eventAt === 575 || eventAt === 623 || eventAt === 639 || eventAt === 879 || eventAt === 1535 || eventAt === 1631 || eventAt === 1647 || eventAt === 1759 || eventAt === 1775 || eventAt === 1887 || eventAt === 1999 || eventAt === 2015 || eventAt === 2095 || eventAt === 2175 || eventAt === 2207 || eventAt === 2287 || eventAt === 2463 || eventAt === 2655 || eventAt === 2671 || eventAt === 2735 || eventAt === 2879 || eventAt === 2895 || eventAt === 2911 || eventAt === 3023)) return true;

@@ -9,6 +9,7 @@ import { createGunmanTopMovementState, gunmanTopUsesDynamicState } from "../src/
 import { RIFLEMAN_ATTACK_TO_FIRST_SHOT_FRAMES, RIFLEMAN_LIFETIME, RIFLEMAN_PATH_NES, riflemanAttackHeadingAtStart, riflemanCanAttack, riflemanFirstShotFrame, riflemanPosition, riflemanShotHeading, RIFLEMAN_SIDE_ATTACK_STATE_FRAME, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_PATH_NES, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition, mediumProjectileHeadingVelocity, mediumProjectileVelocity } from "../src/game-constants";
 import { bossSpriteVisible, ninjaBossEntryLaneIndex, NINJA_BOSS_TELEPORT_DELAY } from "../src/game-constants";
 import { bossIsVulnerable } from "../src/game-constants";
+import { advanceGunmanBottomContact, createGunmanBottomContactState, GUNMAN_BOTTOM_CONTACT_FRAMES } from "../src/game-constants";
 import { hasWeaponStock } from "../src/game-constants";
 import { ENEMY_DEFEAT_ANIMATION_DURATION } from "../src/game-constants";
 import { WINGATE_ENDING_INPUT_DELAY, WINGATE_ENTRY_INVULNERABILITY, WINGATE_FINAL_DEFEAT_ANIMATION_DURATION, WINGATE_FINAL_ENDING_DELAY } from "../src/game-constants";
@@ -2306,6 +2307,17 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanBottomPosition("near", false, 219 / NES_FRAME_RATE)).toEqual([-16, 159]);
     expect(gunmanBottomPosition("far", false, 241 / NES_FRAME_RATE)).toEqual([-41, 139]);
     expect(gunmanBottomPosition("far", true, 478 / NES_FRAME_RATE)).toEqual([-36, 0]);
+  });
+
+  it("matches the bounded Gunman contact retreat", () => {
+    expect(GUNMAN_BOTTOM_CONTACT_FRAMES).toBe(60);
+    const state = createGunmanBottomContactState(136, 227);
+    advanceGunmanBottomContact(state, 10);
+    expect(state).toMatchObject({ frame: 10, x: 136, y: 214, dead: false });
+    advanceGunmanBottomContact(state, 59);
+    expect(state).toMatchObject({ frame: 59, y: 230, dead: false });
+    advanceGunmanBottomContact(state, 60);
+    expect(state.dead).toBe(true);
   });
 
   it("routes the Round 6 bottom Gunman into the shared state machine", () => {

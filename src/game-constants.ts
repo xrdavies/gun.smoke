@@ -1213,6 +1213,7 @@ const GUNMAN_FLANK_EVENT_SHOT_FRAMES: Readonly<Record<string, readonly number[]>
   "6:207": [79, 143, 207],
   "6:2143:4": [64],
   "6:4223:4": [66, 130, 194],
+  "6:1679:4": [92],
   "6:511": [54, 118, 182],
   "6:607": [75, 139],
   "6:1135:4": [64],
@@ -1268,6 +1269,7 @@ export function gunmanFlankUsesDynamicState(entityCode: 7 | 8 | 9, originY: numb
   if (stage === 3 && entityCode === 8 && [1071, 1119, 3775, 3823].includes(eventAt ?? -1)) return true;
   if (stage === 6 && entityCode === 8 && (eventAt === 159 || eventAt === 207 || eventAt === 607 || eventAt === 2143 || eventAt === 2207 || eventAt === 2943 || eventAt === 3023 || eventAt === 3727 || eventAt === 4223 || eventAt === 5119 || eventAt === 1375)) return true;
   if (stage === 6 && entityCode === 9 && (eventAt === 511 || eventAt === 2783 || eventAt === 3919)) return true;
+  if (stage === 6 && entityCode === 7 && eventAt === 1679 && Math.round(originY) === 64 && !fromRight) return true;
   if (stage === 6 && entityCode === 7 && eventAt === 1135 && Math.round(originY) === 32) return true;
   if (stage === 6 && entityCode === 7 && eventAt === 4543) return true;
   if (stage === 6 && entityCode === 7 && Math.round(originY) === 64 && fromRight) return true;

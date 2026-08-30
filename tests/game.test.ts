@@ -1141,6 +1141,10 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankEventShotFrames(4, 1039, 216)).toEqual([64]);
     expect(gunmanTopUsesDynamicState(4, 1055)).toBe(true);
     expect(gunmanFlankEventShotFrames(4, 1055, 136)).toEqual([31]);
+    expect(gunmanBottomUsesDynamicState(4, 1151)).toBe(true);
+    expect(gunmanBottomUsesDynamicState(4, 1167)).toBe(true);
+    expect(gunmanFlankEventShotFrames(4, 1151, 224)).toEqual([103]);
+    expect(gunmanFlankEventShotFrames(4, 1167, 184)).toEqual([]);
     expect(gunmanTopUsesDynamicState(4, 127)).toBe(true);
     expect(gunmanFlankEventShotFrames(4, 127, 120)).toEqual([13, 585]);
     expect(gunmanTopUsesDynamicState(4, 159)).toBe(true);
@@ -1416,6 +1420,20 @@ describe("Gun.Smoke vertical slice", () => {
       advanceGunmanFlankMovement(round4Top1055, frame, 168, 215, (x, y) => roundActorCollisionAtNes(4, scroll, x, y));
     }
     expect(round4Top1055).toMatchObject({ frame: 296, mode: "orbit", heading: 23, timer: 3, x: 229 + 154 / 256, y: 251 + 154 / 256, dead: false });
+
+    const round4Bottom1151 = createGunmanBottomMovementState(224, 0, 93);
+    for (let frame = 49; frame <= 317; frame += 1) {
+      const scroll = (1151 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(round4Bottom1151, frame, 168, 215, (x, y) => roundActorCollisionAtNes(4, scroll, x, y));
+    }
+    expect(round4Bottom1151).toMatchObject({ frame: 317, mode: "orbit", heading: 1, timer: 1, x: 255 + 235 / 256, y: 92 + 38 / 256, dead: false });
+
+    const round4Bottom1167 = createGunmanBottomMovementState(184, 0, 93);
+    for (let frame = 49; frame <= 57; frame += 1) {
+      const scroll = (1167 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(round4Bottom1167, frame, 168, 215, (x, y) => roundActorCollisionAtNes(4, scroll, x, y));
+    }
+    expect(round4Bottom1167).toMatchObject({ frame: 57, mode: "orbit", heading: 24, timer: 3, x: 177 + 96 / 256, y: 221 + 93 / 256, dead: false });
 
     const round4OpeningTopRoutes = [
       { at: 127, state: createGunmanTopMovementState(120, 182, 188), last: 911, mode: "chase" as const, heading: 3, timer: 2, x: 88 + 249 / 256, y: 251 + 132 / 256 },

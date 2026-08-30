@@ -1157,6 +1157,8 @@ holding those launch coordinates for the allocation frame. At frame 379 the
 same slots 2/3 remain active at NES `(189,179)/(69,178)` and change movement
 state; this is the outward turn, not another allocation. The next paired launch
 reinitializes those slots at frame 606, exactly 256 frames after frame 350.
+Runtime releases the previous Boss-pool pair before creating the next two, so
+live returning boomerangs do not accumulate outside fixed slots 2/3.
 Both use a 32-direction steering state: initial
 headings `14/18` turn toward fixed NES points `(224,176)/(32,176)` by one
 heading step every two frames and use the shared third-tier discrete velocity

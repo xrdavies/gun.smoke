@@ -179,7 +179,8 @@ entrance steps. It holds that lane until frame 350,
 then follows its recorded X/Y combat route. The first paired boomerangs launch
 at frame 350. At frame 379 the same two low-slot actors reach their outward
 turn state; no second pair is allocated. The next paired launch is at frame 606,
-so the launch cycle repeats every 256 frames. The available traces cover 14,677
+replacing those fixed slots rather than accumulating four boomerangs, so the
+launch cycle repeats every 256 frames. The available traces cover 14,677
 measured combat frames through frame 14,676; runtime consumes the route through
 the frame-12,000 handoff and then
 continues Cutter with the ROM's random direction segments and four-active/eight-idle

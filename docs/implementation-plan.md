@@ -288,7 +288,8 @@ re-entry delay, producing the frame-625/664 controller and shuriken timing.
 Fatman Joe's moving shell now converts in place to a non-colliding split
 controller before its five timed four-frame mine releases. Cutter now keeps
 frames 350-379 as one paired boomerang volley and schedules the next allocation
-at the measured 256-frame cycle. Wingate defeat
+at the measured 256-frame cycle, replacing the previous fixed-slot pair instead
+of accumulating extra boomerangs. Wingate defeat
 animation duration is stored per encounter so the decoy keeps 30 frames while
 the real encounter keeps its nine-frame ending animation.
 

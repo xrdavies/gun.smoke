@@ -481,6 +481,10 @@ The earlier `at=815,x=176,code=5` bottom entry matches 530 shared-state frames,
 fires at frame 187, and releases through the NES `Y=255` boundary.
 The adjacent `at=831,x=160,code=5` bottom entry independently matches 150
 shared-state frames with no successful shot before its `Y=252` release.
+The later bottom entries preserve their distinct boundaries: `at=1007,x=136`
+matches the shared route through the frame-58 player-contact handoff with no
+successful shot, while `at=1023,x=160` matches 150 frames, fires at frame 65,
+and releases through `Y=252`.
 The top `at=863,x=128,code=6` entry independently matches 432 shared-state
 frames, fires at frame 66, and releases through the bottom `Y=252` boundary.
 The top `at=943,x=144,code=6` entry matches the shared state machine through

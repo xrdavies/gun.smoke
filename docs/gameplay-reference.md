@@ -584,6 +584,10 @@ The earlier `at=815,x=176,code=5` bottom entry follows its shared route for 530
 frames, fires at frame 187, and releases through the NES `Y=255` boundary.
 The adjacent `at=831,x=160,code=5` bottom entry follows a shorter 150-frame
 no-shot route and releases at the same `Y=252` screen boundary.
+The later bottom entries `at=1007,x=136,code=5` and `at=1023,x=160,code=5`
+preserve their shared routes: the former reaches a frame-58 player-contact
+handoff without a successful shot, while the latter fires at frame 65 and
+releases at frame 150 through `Y=252`.
 The top `at=863,x=128,code=6` entry follows a 432-frame shared route, fires at
 frame 66, and releases through the bottom `Y=252` boundary.
 The top `at=943,x=144,code=6` entry follows the shared route through frame 488,

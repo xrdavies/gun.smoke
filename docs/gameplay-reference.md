@@ -129,7 +129,7 @@ A+B emits a symmetric five-way forward fan. Pistol, Machine Gun and Magnum fire
 two gun barrels for every single-side or A+B trigger; Machine Gun rounds use a
 faster measured diagonal/straight velocity set. Magnum bullets use their own
 projectile state, travel at the measured base Pistol speed for 34 NES frames
-with a larger collision body, and can pierce multiple enemies while applying
+with a narrow `(0,2)` NES half-size, and can pierce multiple enemies while applying
 its full three-point damage to each target without depending on which weapon is
 selected after the shot was fired. Pistol, Shotgun, and Magnum require
 fresh button presses; only Machine Gun repeats while fire is held. Their traced
@@ -138,6 +138,9 @@ Pistol, Shotgun and Machine Gun shots remain active for 15, 11 and 12 visible
 frames. Magnum retains its longer internal state but releases as soon as its
 coordinate leaves the NES screen, preventing offscreen bullets from holding a
 player-projectile slot.
+Player shots use the ROM's axis-aligned collision bounds rather than circular
+distance: Pistol/Machine Gun are `(0,4)`, Shotgun `(4,4)`, and Magnum `(0,2)`
+against ordinary enemy `(9,8)` half-sizes and animation-specific Boss bounds.
 When the six player projectile slots cannot fit the complete two- or five-shot
 template, the trigger creates no partial volley and consumes no special ammo.
 Creating the final special-weapon volley immediately returns the equipped

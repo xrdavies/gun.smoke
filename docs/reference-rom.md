@@ -858,6 +858,15 @@ Bombers; 2 for Ninjas and the lower Backstabber form; 3 for Shotgunners,
 Riflemen, Hatchet Throwers, Spear Throwers and Firebreathers; 4 for the raid
 Backstabber; and 6 for breakable barrels. The runtime now uses these generated
 initializer values directly.
+Before collision dispatch, `$C98E-$C999` indexes animation field `$0440`
+through Y/X half-size tables `$DF7B/$DF86`. Ordinary enemies use animation 10
+and half-sizes `(9,8)` NES pixels; barrels and rocks use animation 1 and
+`(10,10)`. Boss animations 4 through 9 map to Bandit/Cutter/Devil/Ninja/Fatman/
+Wingate half-sizes `(9,15)/(12,7)/(9,15)/(9,13)/(12,12)/(12,15)`.
+Player-projectile collision at `$CC83-$CCBE` compares each axis separately and
+strictly against the sum of target and projectile half-sizes. Pistol/Machine
+Gun use `(0,4)`, Shotgun `(4,4)`, and Magnum `(0,2)`; runtime uses these
+rectangular bounds rather than a Euclidean radius.
 The routine updates five score tiles at `$06F2/$06F4/$06F6/$06F8/$06FA`;
 `$06FC` remains the fixed zero ones digit, and overflow clamps those five
 tiles to `9`, yielding a maximum displayed score of `999990`.

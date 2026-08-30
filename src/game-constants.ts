@@ -93,6 +93,10 @@ export function mixRomRandomSpawn(state: RomRandomState): RomRandomState {
   return next;
 }
 export const BOSS_BAR_RECOVERY_DURATION = 8 / NES_FRAME_RATE;
+export const BOSS_COLLISION_HALF_SIZES_NES = [[9, 15], [12, 7], [9, 15], [9, 13], [12, 12], [12, 15]] as const;
+export const ENEMY_COLLISION_HALF_SIZE_NES = [9, 8] as const;
+export const CONTAINER_COLLISION_HALF_SIZE_NES = [10, 10] as const;
+export const ENEMY_PROJECTILE_COLLISION_HALF_SIZE_NES = [6, 6] as const;
 export const MAX_LIVES = 5;
 export const MAX_SCORE = 999_990;
 export const BLUE_YASHICHI_DURATION = 360 / NES_FRAME_RATE;
@@ -3440,6 +3444,10 @@ export function clamp(value: number, minimum: number, maximum: number): number {
 
 export function distance(a: { x: number; y: number }, b: { x: number; y: number }): number {
   return Math.hypot(a.x - b.x, a.y - b.y);
+}
+
+export function combatHitboxesOverlap(deltaX: number, deltaY: number, leftHalfX: number, leftHalfY: number, rightHalfX: number, rightHalfY: number): boolean {
+  return Math.abs(deltaX) < leftHalfX + rightHalfX && Math.abs(deltaY) < leftHalfY + rightHalfY;
 }
 
 export function shouldLoopStage(scroll: number, round: number, hasWanted: boolean): boolean {

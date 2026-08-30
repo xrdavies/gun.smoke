@@ -22,10 +22,10 @@ import { advanceFirebreather, advanceHatchet, advanceSpear, createFirebreatherSt
 import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanAttackHeadingAtStart, riflemanCanAttack, riflemanFirstShotFrame, riflemanPosition, riflemanShotHeading, RIFLEMAN_SIDE_ATTACK_STATE_FRAME, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition, sniperProjectileVelocity } from "./game-constants";
 import { advanceBanditBillMovement, BANDIT_BILL_ATTACK_PAUSE_FRAMES, BANDIT_BILL_DAMAGE_RECOVERY_DURATION, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, BANDIT_BILL_PROJECTILE_OFFSET_NES, BANDIT_BILL_RANDOM_HANDOFF_FINE_X, BANDIT_BILL_RANDOM_HANDOFF_FINE_Y, BANDIT_BILL_RANDOM_ROUTE_START_FRAME, banditBillCombatX, banditBillCombatY, banditBillProjectileVelocity, createBanditBillMovementState, type BanditBillMovementState } from "./game-constants";
 import { banditBillCooldown } from "./game-constants";
-import { advanceInvulnerability, BLUE_YASHICHI_DURATION, BOSS_BAR_RECOVERY_DURATION, bossCurrentBarHitPoints, bossHealthProfile, bossIsVulnerable, bossTotalHitPoints, lifePickup, scoreBossDefeat, shouldClearProjectilesAfterBossDefeat } from "./game-constants";
+import { advanceInvulnerability, BLUE_YASHICHI_DURATION, BOSS_BAR_RECOVERY_DURATION, BOSS_COLLISION_HALF_SIZES_NES, bossCurrentBarHitPoints, bossHealthProfile, bossIsVulnerable, bossTotalHitPoints, CONTAINER_COLLISION_HALF_SIZE_NES, ENEMY_COLLISION_HALF_SIZE_NES, ENEMY_PROJECTILE_COLLISION_HALF_SIZE_NES, lifePickup, scoreBossDefeat, shouldClearProjectilesAfterBossDefeat } from "./game-constants";
 import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, PLAYER_ENTRY_X, PLAYER_ENTRY_Y, PLAYER_MAX_X_NES, PLAYER_MAX_Y_NES, PLAYER_MIN_X_NES, PLAYER_MIN_Y_NES, pistolBulletSpeedFactor, pistolVelocities, playerCollisionFallbackY, playerMovementVelocity, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
-import { addScore } from "./game-constants";
+import { addScore, combatHitboxesOverlap } from "./game-constants";
 import { ninjaCanThrow, ninjaTraceLifetime, ninjaTracePosition, ninjaTraceThrowFrames } from "./game-constants";
 import { advanceNinja, createNinjaState, type NinjaState } from "./game-constants";
 import { FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeAimAllowsLaunch, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, fatmanJoeShellHasSplit, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_MOVEMENT_SPEED, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, fatmanJoeCombatX, fatmanJoeCombatY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "./game-constants";
@@ -89,6 +89,8 @@ interface Unit {
   exploding?: boolean;
   defeatAnimationDuration?: number;
   radius: number;
+  collisionHalfX: number;
+  collisionHalfY: number;
   value: number;
   age: number;
   phase: number;
@@ -820,15 +822,15 @@ class GunSmokeGame {
     if (this.weapon !== "pistol") this.ammo = Math.max(0, this.ammo - 1);
     if (this.weapon === "pistol") {
       const speedFactor = pistolBulletSpeedFactor(this.powerups.rifle);
-      for (const [x, y, offsetX, offsetY] of pistolVelocities(left, right)) this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE * speedFactor, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE * speedFactor, weapon.damage, weaponBulletLifetime("pistol"), offsetX * NES_WORLD_X_SCALE, offsetY * NES_WORLD_Y_SCALE);
+      for (const [x, y, offsetX, offsetY] of pistolVelocities(left, right)) this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE * speedFactor, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE * speedFactor, weapon.damage, weaponBulletLifetime("pistol"), offsetX * NES_WORLD_X_SCALE, offsetY * NES_WORLD_Y_SCALE, 0, 4);
     } else if (this.weapon === "shotgun") {
       for (const [x, y, offsetX, offsetY] of shotgunVelocities(left, right)) {
-        this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE, weapon.damage, weaponBulletLifetime("shotgun"), offsetX * NES_WORLD_X_SCALE, offsetY * NES_WORLD_Y_SCALE);
+        this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE, weapon.damage, weaponBulletLifetime("shotgun"), offsetX * NES_WORLD_X_SCALE, offsetY * NES_WORLD_Y_SCALE, 4, 4);
       }
     } else if (this.weapon === "machinegun") {
-      for (const [x, y, offsetX, offsetY] of machineGunVelocities(left, right)) this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE, weapon.damage, weaponBulletLifetime("machinegun"), offsetX * NES_WORLD_X_SCALE, offsetY * NES_WORLD_Y_SCALE);
+      for (const [x, y, offsetX, offsetY] of machineGunVelocities(left, right)) this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE, weapon.damage, weaponBulletLifetime("machinegun"), offsetX * NES_WORLD_X_SCALE, offsetY * NES_WORLD_Y_SCALE, 0, 4);
     } else if (this.weapon === "magnum") {
-      for (const [x, y, offsetX, offsetY] of pistolVelocities(left, right)) this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE, weapon.damage, weaponBulletLifetime("magnum"), offsetX * NES_WORLD_X_SCALE, offsetY * NES_WORLD_Y_SCALE, true);
+      for (const [x, y, offsetX, offsetY] of pistolVelocities(left, right)) this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE, weapon.damage, weaponBulletLifetime("magnum"), offsetX * NES_WORLD_X_SCALE, offsetY * NES_WORLD_Y_SCALE, 0, 2, true);
     }
     if (this.weapon !== "pistol" && this.ammo === 0) {
       this.ownedWeapons.delete(this.weapon);
@@ -979,6 +981,7 @@ class GunSmokeGame {
       rock.vy = 0;
       rock.maxAge = ROCK_LIFETIME;
       rock.radius = 15;
+      [rock.collisionHalfX, rock.collisionHalfY] = CONTAINER_COLLISION_HALF_SIZE_NES;
       rock.sprite.size = { x: 24, y: 24 };
       rock.sprite.color = [0.55, 0.58, 0.62, 1];
       return;
@@ -1409,6 +1412,8 @@ class GunSmokeGame {
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" || sceneObject ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
+      collisionHalfX: isBoss ? BOSS_COLLISION_HALF_SIZES_NES[this.stage - 1]?.[0] ?? 9 : kind === "enemy" ? ENEMY_COLLISION_HALF_SIZE_NES[0] : kind === "barrel" ? CONTAINER_COLLISION_HALF_SIZE_NES[0] : kind === "enemyBullet" ? ENEMY_PROJECTILE_COLLISION_HALF_SIZE_NES[0] : 0,
+      collisionHalfY: isBoss ? BOSS_COLLISION_HALF_SIZES_NES[this.stage - 1]?.[1] ?? 15 : kind === "enemy" ? ENEMY_COLLISION_HALF_SIZE_NES[1] : kind === "barrel" ? CONTAINER_COLLISION_HALF_SIZE_NES[1] : kind === "enemyBullet" ? ENEMY_PROJECTILE_COLLISION_HALF_SIZE_NES[1] : 0,
       value: isBoss ? bossReward(this.stage, this.wingatePhase) : kind === "moneyBag" ? 200 : kind === "ammo" || kind === "item" || kind === "barrel" ? 0 : 100,
       age: 0, phase: this.nextRandom() * Math.PI * 2, damage: kind === "enemy" && enemyType === "rifleman" ? 0 : 1, fired: false, nextFireAt: 0, shotOpportunityIndex: 0, volleysFired: 0, turnRate: 0, maxAge: isBoss ? unitMaxAge("boss") : sceneObject ? Number.POSITIVE_INFINITY : small ? unitMaxAge("projectile") : isPickup || kind === "barrel" ? unitMaxAge("pickup") : unitMaxAge("enemy"), invulnerableUntil: 0, piercing: false,
     };
@@ -1416,12 +1421,14 @@ class GunSmokeGame {
     return unit;
   }
 
-  private spawnBulletVelocity(vx: number, vy: number, damage: number, lifetime = 0.55, offsetX = 0, offsetY = 0, piercing = false): void {
+  private spawnBulletVelocity(vx: number, vy: number, damage: number, lifetime: number, offsetX: number, offsetY: number, collisionHalfX: number, collisionHalfY: number, piercing = false): void {
     const unit = this.spawnPlayerBullet(this.player.x + offsetX, this.player.y + offsetY);
     if (!unit) return;
     unit.vx = vx;
     unit.vy = vy;
     unit.damage = damage;
+    unit.collisionHalfX = collisionHalfX;
+    unit.collisionHalfY = collisionHalfY;
     unit.maxAge = lifetime + 1 / NES_FRAME_RATE;
     unit.piercing = piercing;
     unit.hitTargets = piercing ? new Set<Unit>() : undefined;
@@ -2259,16 +2266,24 @@ class GunSmokeGame {
   private resolveCollisions(): void {
     const bullets = this.units.filter((unit) => unit.kind === "bullet" && unit.hp > 0);
     const targets = this.units.filter((unit) => (unit.kind === "barrel" || (unit.kind === "enemy" || unit.kind === "boss") && unit.sprite.visible || unit.kind === "enemyBullet" && unit.projectileType === "rock") && !unit.exploding && unit.hp > 0);
+    const overlapsCombatHitbox = (left: Unit, right: Unit): boolean => combatHitboxesOverlap(
+      (left.x - right.x) / NES_WORLD_X_SCALE,
+      (left.y - right.y) / NES_WORLD_Y_SCALE,
+      left.collisionHalfX,
+      left.collisionHalfY,
+      right.collisionHalfX,
+      right.collisionHalfY,
+    );
     for (const bullet of bullets) {
       while (bullet.hp > 0) {
         if (bullet.piercing) {
-          const projectile = this.units.find((candidate) => candidate.kind === "enemyBullet" && candidate.projectileType !== "ninjaSmoke" && candidate.projectileType !== "grenade" && candidate.projectileType !== "grenadeController" && candidate.projectileType !== "rock" && candidate.hp > 0 && distance(bullet, candidate) <= bullet.radius + candidate.radius);
+          const projectile = this.units.find((candidate) => candidate.kind === "enemyBullet" && candidate.projectileType !== "ninjaSmoke" && candidate.projectileType !== "grenade" && candidate.projectileType !== "grenadeController" && candidate.projectileType !== "rock" && candidate.hp > 0 && overlapsCombatHitbox(bullet, candidate));
           if (projectile) {
             projectile.hp = 0;
             continue;
           }
         }
-        const target = targets.find((candidate) => (candidate.kind === "barrel" || candidate.kind === "enemy" || candidate.kind === "boss" || candidate.kind === "enemyBullet" && candidate.projectileType === "rock") && candidate.hp > 0 && !candidate.exploding && !bullet.hitTargets?.has(candidate) && distance(bullet, candidate) <= bullet.radius + candidate.radius);
+        const target = targets.find((candidate) => (candidate.kind === "barrel" || candidate.kind === "enemy" || candidate.kind === "boss" || candidate.kind === "enemyBullet" && candidate.projectileType === "rock") && candidate.hp > 0 && !candidate.exploding && !bullet.hitTargets?.has(candidate) && overlapsCombatHitbox(bullet, candidate));
         if (!target) break;
         if (!this.isBossVulnerable(target)) break;
         if (bullet.piercing) bullet.hitTargets?.add(target);

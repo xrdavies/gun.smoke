@@ -312,6 +312,8 @@ Player weapon templates now preserve their per-barrel NES X/Y muzzle offsets
 and apply their first velocity step without a second same-frame camera carry.
 Player projectiles also use their measured visible lifetimes and NES coordinate
 release, preventing offscreen Magnum shots from retaining scarce player slots.
+Player projectile hits now use decoded animation and projectile axis half-sizes
+for ordinary enemies, barrels, rocks, enemy shots and all six Bosses.
 
 ## Delivery Stages
 

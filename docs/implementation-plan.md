@@ -70,6 +70,8 @@ Round 6 `at=2943` now uses the shared state machine through its complete
 1,350-frame route and event-specific frame-655 attack check.
 Round 6 `at=3023` independently uses that state machine through its complete
 1,215-frame no-shot route and left-edge release.
+Round 6 `at=3055` now hands its bottom-entry code-5 actor to the shared state
+machine after frame 48 and preserves the complete 1,429-frame route.
 Round 3 `at=1119` replaces its generic code-8 path with the shared state
 machine verified across all 282 controlled frames.
 Round 3 `at=687` replaces its generic phase-0 code-7 path with the shared state

@@ -433,6 +433,11 @@ instead of using the shorter shared phase-one coordinate trace.
 The following `at=3023,x=4,y=32,code=8,phase=0` branch independently matches
 the same state machine for all 1,215 fixed-point frames, produces no successful
 shot for Billy at `(136,215)`, and also releases through the left boundary.
+Round 6's `at=3055,x=112,y=0,code=5` bottom entry rises from NES `y=249` to
+`y=218` over 48 frames, then joins the shared chase/orbit states. The remaining
+fixed-point path matches through all 1,429 frames, produces no successful shot
+for Billy at `(136,215)`, and releases through the right boundary; it does not
+use the shorter 318-frame near route.
 Round 4's naturally allocated `at=1503,x=248,y=80,code=7,phase=1` branch
 matches the shared state machine for all 356 coarse/fine samples and releases
 through the right boundary; it no longer inherits the unrelated 642-frame

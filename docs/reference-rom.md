@@ -561,6 +561,11 @@ groups retain independent slot fractions, lifetimes and attack windows. Bottom
 handoff, while `at=1871,x=96` and `at=1983,x=96` reach contact at frame 32 and
 remain explicitly bounded there. The right `at=1679,x=248,y=96,code=7` route
 matches 642 shared flank frames with attacks at 73/393 before `Y=252` release.
+Round 4's opening top-entry Gunmen also match the shared state machine at
+fixed-point precision. The routes at `95/127/159/191/207` retain their
+independent spawn fractions, player-input changes, attack windows and release
+or contact boundaries; the long `at=159,x=216` and `at=191,x=216` paths run
+1,314 and 1,287 frames respectively rather than using the generic top lifetime.
 The earlier `at=815,x=176,code=5` bottom entry matches 530 shared-state frames,
 fires at frame 187, and releases through the NES `Y=255` boundary.
 The adjacent `at=831,x=160,code=5` bottom entry independently matches 150

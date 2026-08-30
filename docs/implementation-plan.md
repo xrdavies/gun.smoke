@@ -187,6 +187,10 @@ through `at=3023`, including the X-qualified `at=1871` pair and all same-time
 top groups at `2095/2735/2895/2911/3023`. The only first-loop records left on
 their entry path are `at=1871,x=96` and `at=1983,x=96`, both of which enter the
 player-contact dispatch at frame 32 before the shared-state handoff.
+Round 5's later first-loop top groups through `at=3023` now use the same
+fixed-point state machine with event/X-qualified shot windows; same-trigger
+groups at `2095/2735/2895/2911/3023` retain independent lifetimes. Round 4
+coverage has started with exact shared-state routes for `at=95/127/159/191/207`.
 Round 3 `at=1119` replaces its generic code-8 path with the shared state
 machine verified across all 282 controlled frames.
 Round 3 `at=687` replaces its generic phase-0 code-7 path with the shared state

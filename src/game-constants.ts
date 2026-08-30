@@ -1145,7 +1145,7 @@ export function createGunmanBottomMovementState(x: number, fineX = 0, fineY = 0)
 }
 
 export function gunmanTopUsesDynamicState(stage: number, eventAt?: number): boolean {
-  return stage === 6 && (eventAt === 3295 || eventAt === 3487 || eventAt === 3551);
+  return stage === 6 && (eventAt === 3295 || eventAt === 3487 || eventAt === 3551 || eventAt === 3711);
 }
 
 export function createGunmanTopMovementState(x: number, fineX = 0, fineY = 0): GunmanFlankMovementState {

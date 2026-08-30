@@ -1161,6 +1161,7 @@ class GunSmokeGame {
           smoke.maxAge = NINJA_BOSS_PREPARE_DURATION + NINJA_BOSS_PREPARE_CONTROLLER_DURATION;
         }
       }
+      boss.volleysFired += 1;
       boss.fired = true;
       this.bossFireClock = NINJA_BOSS_ATTACK_INTERVAL;
       return;

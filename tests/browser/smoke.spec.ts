@@ -174,6 +174,8 @@ test("fires the Ninja Boss opening volley on the traced frame", async ({ page })
   expect(await hasBossShuriken()).toBe(false);
   await page.clock.runFor(200);
   expect(await hasBossShuriken()).toBe(true);
+  expect(await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; volleysFired: number }> }).__getGunSmokeUnits()
+    .find((unit) => unit.kind === "boss")?.volleysFired)).toBeGreaterThan(0);
 });
 
 test("runs the distinct Boss projectile chains", async ({ page }) => {

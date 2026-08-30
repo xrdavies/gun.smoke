@@ -1763,6 +1763,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanTopUsesDynamicState(6, 2687)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 2735)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 2751)).toBe(true);
+    expect(gunmanTopUsesDynamicState(6, 3215)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 3263)).toBe(false);
     expect(gunmanFlankEventShotFrames(6, 4415)).toEqual([13, 397]);
     expect(gunmanFlankEventShotFrames(6, 4479)).toEqual([29]);
@@ -1794,6 +1795,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankEventShotFrames(6, 2687, 136)).toEqual([77]);
     expect(gunmanFlankEventShotFrames(6, 2735, 184)).toEqual([13]);
     expect(gunmanFlankEventShotFrames(6, 2751, 88)).toEqual([40, 104, 168, 232, 296]);
+    expect(gunmanFlankEventShotFrames(6, 3215, 96)).toEqual([16]);
     expect(gunmanFlankEventShotFrames(6, 47, 168)).toEqual([24]);
     expect(gunmanFlankEventShotFrames(6, 63, 184)).toEqual([29]);
     expect(gunmanFlankEventShotFrames(6, 239, 176)).toEqual([36]);
@@ -2002,10 +2004,11 @@ describe("Gun.Smoke vertical slice", () => {
       { state: createGunmanTopMovementState(136, 51, 135), last: 181, heading: 24, timer: 0, x: 86 + 131 / 256, y: 180 + 135 / 256 },
       { state: createGunmanTopMovementState(184, 154, 44), last: 259, heading: 19, timer: 2, x: 63 + 218 / 256, y: 158 + 248 / 256 },
       { state: createGunmanTopMovementState(88, 141, 235), last: 437, heading: 13, timer: 1, x: 140 + 62 / 256, y: 202 + 180 / 256 },
+      { state: createGunmanTopMovementState(96, 64, 127), last: 447, heading: 26, timer: 0, x: 0 + 167 / 256, y: 148 + 61 / 256 },
     ] as const;
     for (const route of extraTopRoutes) {
       for (let frame = 1; frame <= route.last; frame += 1) {
-        const routeAt = route.state === extraTopRoutes[0].state ? 2623 : route.state === extraTopRoutes[1].state ? 2687 : route.state === extraTopRoutes[2].state ? 2735 : 2751;
+        const routeAt = route.state === extraTopRoutes[0].state ? 2623 : route.state === extraTopRoutes[1].state ? 2687 : route.state === extraTopRoutes[2].state ? 2735 : route.state === extraTopRoutes[3].state ? 2751 : 3215;
         const scroll = routeAt + 2 / 3 + frame / 3;
         advanceGunmanFlankMovement(route.state, frame, 136, 215, (x, y) => roundActorCollisionAtNes(6, scroll * NES_WORLD_Y_SCALE, x, y));
       }

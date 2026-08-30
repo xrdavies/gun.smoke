@@ -1261,7 +1261,6 @@ the timer. A successful attack creates
 one moving `0x86` shell at Boss offset `(-8,+6)` NES pixels. A controlled Magnum
 trace keeps Fatman in
 opening state `0x9c` through frame 169, observes the shell and vulnerable
-`0x98` state on frame 170, and lands a hit on frame 172. Runtime therefore
 `0x98` state on frame 170, and lands a hit on frame 172. Runtime protects
 Fatman through the 170-frame entrance and until the first shell is actually
 launched; a failed first aim/random gate does not expose him early. Once the

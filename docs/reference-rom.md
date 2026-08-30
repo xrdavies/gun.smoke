@@ -474,6 +474,9 @@ At `at=4623`, the top `x=88` entry is distinct from the bottom `x=168` entry;
 it matches 324 frames, fires at frame 69, and releases through `Y=252`.
 At `at=4639`, the top `x=144` entry is distinct from the bottom `x=112` entry;
 it matches 295 frames, fires at frame 13, and releases through the left edge.
+The later `at=4751,x=40,code=5` bottom entry matches 414 frames with no
+successful shot before `Y=252`; `at=4783,x=200,code=6` matches 383 top-entry
+frames, fires at frame 22, and releases through the right edge.
 Round 6 `at=4479,x=96,y=0,code=6,phase=1` likewise preserves its fine X/Y
 bytes, matches the shared state machine for 315 frames, fires at frame 29, and
 releases through the bottom boundary.

@@ -572,6 +572,9 @@ it follows a 324-frame shared route, fires at frame 69, and exits at `Y=252`.
 At `at=4639`, the top `x=144` entry is distinct from the bottom `x=112` entry:
 it follows a 295-frame shared route, fires at frame 13, and exits through the
 left boundary.
+The later `at=4751,x=40,code=5` bottom entry follows a 414-frame no-shot route
+to `Y=252`, while `at=4783,x=200,code=6` follows a 383-frame top route, fires at
+frame 22, and exits through the right boundary.
 The following `at=4479,x=96,y=0,code=6,phase=1` entry also preserves its fine
 coordinates, follows the shared route for 315 frames, fires at frame 29, and
 releases at the bottom boundary.

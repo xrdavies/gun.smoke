@@ -1113,6 +1113,10 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanBottomUsesDynamicState(4, 479)).toBe(true);
     expect(gunmanFlankEventShotFrames(4, 479, 192)).toEqual([]);
     expect(gunmanFlankEventShotFrames(4, 479, 224)).toEqual([307, 627]);
+    expect(gunmanTopUsesDynamicState(4, 639)).toBe(true);
+    expect(gunmanBottomUsesDynamicState(4, 639)).toBe(true);
+    expect(gunmanFlankEventShotFrames(4, 639, 184)).toEqual([47]);
+    expect(gunmanFlankEventShotFrames(4, 639, 208)).toEqual([53]);
     expect(gunmanTopUsesDynamicState(4, 127)).toBe(true);
     expect(gunmanFlankEventShotFrames(4, 127, 120)).toEqual([13, 585]);
     expect(gunmanTopUsesDynamicState(4, 159)).toBe(true);
@@ -1310,6 +1314,20 @@ describe("Gun.Smoke vertical slice", () => {
       }
       expect(route.state).toMatchObject({ frame: route.last, mode: "orbit", heading: route.heading, timer: route.timer, x: route.x, y: route.y, dead: false });
     }
+
+    const round4Top639 = createGunmanTopMovementState(184, 182, 188);
+    for (let frame = 1; frame <= 338; frame += 1) {
+      const scroll = (639 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(round4Top639, frame, 168, 215, (x, y) => roundActorCollisionAtNes(4, scroll, x, y));
+    }
+    expect(round4Top639).toMatchObject({ frame: 338, mode: "orbit", heading: 25, timer: 1, x: 0 + 198 / 256, y: 191 + 194 / 256, dead: false });
+
+    const round4Bottom639 = createGunmanBottomMovementState(208, 0, 93);
+    for (let frame = 49; frame <= 149; frame += 1) {
+      const scroll = (639 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(round4Bottom639, frame, 168, 215, (x, y) => roundActorCollisionAtNes(4, scroll, x, y));
+    }
+    expect(round4Bottom639).toMatchObject({ frame: 149, mode: "orbit", heading: 24, timer: 0, x: 125 + 48 / 256, y: 251 + 93 / 256, dead: false });
 
     const round4OpeningTopRoutes = [
       { at: 127, state: createGunmanTopMovementState(120, 182, 188), last: 911, mode: "chase" as const, heading: 3, timer: 2, x: 88 + 249 / 256, y: 251 + 132 / 256 },

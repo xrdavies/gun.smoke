@@ -304,6 +304,8 @@ frames 350-379 as one paired boomerang volley and schedules the next allocation
 at the measured 256-frame cycle, replacing the previous fixed-slot pair instead
 of accumulating extra boomerangs. All Bosses now use their measured nine-frame
 defeat dispatch before entering the non-colliding transition controller.
+The real Wingate now spawns 519 frames after the decoy's lethal transition,
+preserving the 255-frame release path followed by the 264-frame empty interval.
 Boss timer checks now run after the Boss movement update, preserving the ROM's
 current-frame launch coordinate before the newly created projectile advances.
 Regular Boss completion now holds the measured lethal-dispatch interval through

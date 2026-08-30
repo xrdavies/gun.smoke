@@ -439,6 +439,7 @@ test("converts Fatman Joe shells into timed mines", async ({ page }) => {
 });
 
 test("completes the six-round Boss transition chain", async ({ page }) => {
+  test.setTimeout(45_000);
   const pageErrors: Error[] = [];
   page.on("pageerror", (error) => pageErrors.push(error));
   await page.clock.install();
@@ -465,6 +466,8 @@ test("completes the six-round Boss transition chain", async ({ page }) => {
   await page.clock.runFor(100);
   expect(await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; hp: number }> }).__getGunSmokeUnits().find((unit) => unit.kind === "boss")?.hp)).toBe(0);
   await page.clock.runFor(5_000);
+  await expect(page.locator("#boss-label")).not.toContainText("WINGATE II");
+  await page.clock.runFor(4_000);
   await expect(page.locator("#boss-label")).toContainText("WINGATE II");
   await page.evaluate(() => (window as unknown as { __defeatGunSmokeBoss: () => void }).__defeatGunSmokeBoss());
   await page.clock.runFor(5_000);

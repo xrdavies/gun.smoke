@@ -1337,8 +1337,10 @@ Runtime seeds those measured fractions because they can change a correction
 aim sector at an integer boundary.
 The runtime replays a complete 3,601-frame X/Y trace for each encounter, with
 the decoy and real traces selected by their phase-specific initializer.
-The first encounter clears both ordinary and low-slot projectile actors before
-entering a 264-frame empty interval. The real Wingate
+The first encounter clears both ordinary and low-slot projectile actors. Its
+slot releases 255 frames after the lethal transition, followed by a 264-frame
+empty interval. The real Wingate therefore appears 519 frames after the decoy
+is defeated and
 then reuses dispatch `0xa3`, variant `0x65` and the same 151-frame vertical
 opening and the same movement state. `$BA=1` distinguishes this second encounter
 rather than selecting a fixed X lane. The runtime preserves the delay and a
@@ -1363,8 +1365,9 @@ Equivalent controlled traces measure 764 frames for Cutter and 765 frames for
 Devil Hawk, Ninja and Fatman Joe from their lethal dispatch to the following
 Round index. Runtime preserves Cutter's one-frame exception.
 The Wingate decoy also enters `0xa6` for nine frames before its `0xa7`
-controller and measured 264-frame second-encounter delay, so all Boss phases
-share the same visible defeat duration.
+controller, releases at defeat frame 255, and respawns the real encounter at
+frame 519 after the measured 264-frame empty interval. All Boss phases share
+the same visible defeat duration.
 The real Wingate instead enters dispatch `0xa6` for nine frames and then the
 non-colliding `0xa7` controller for 752 frames; it releases and advances the
 Round index 761 frames after the lethal transition. Runtime holds the ending

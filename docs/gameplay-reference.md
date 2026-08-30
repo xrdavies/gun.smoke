@@ -874,8 +874,10 @@ non-colliding controller delay leads into the separate ending and credits state
 instead of treating the win as Game Over. Start/Ride again remains locked for
 the measured 4,125-frame ending sequence while an original chiptune cue plays,
 then returns to the title.
-The first Wingate defeat clears both projectile pools and leaves a measured
-264-frame pause before the real Wingate enters from its lower NES lane; the second encounter alone grants the
+The first Wingate defeat clears both projectile pools, releases its controller
+255 frames after the lethal transition, and then leaves a measured 264-frame
+empty interval. The real Wingate enters 519 frames after the decoy's defeat
+from its lower NES lane; the second encounter alone grants the
 Round 6 bounty.
 Both encounters begin attack checks on their movement gait; correction arcs
 pause that cadence. They fire only when Billy is in

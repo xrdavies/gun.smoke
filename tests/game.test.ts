@@ -3694,7 +3694,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(WINGATE_SECOND_ENTRY_Y_NES).toBe(0);
     expect(WINGATE_SECOND_ENTRY_Y).toBe(0);
     expect(WINGATE_ENTRY_INVULNERABILITY).toBeCloseTo(185 / NES_FRAME_RATE, 9);
-    expect(WINGATE_SECOND_SPAWN_DELAY).toBeCloseTo(264 / NES_FRAME_RATE, 9);
+    expect(WINGATE_SECOND_SPAWN_DELAY).toBeCloseTo(519 / NES_FRAME_RATE, 9);
     expect([1, 2, 3, 4, 5].map((stage) => bossStageClearDelay(stage) * NES_FRAME_RATE)).toEqual([765, 764, 765, 765, 765]);
     expect(WINGATE_FINAL_ENDING_DELAY).toBeCloseTo(761 / NES_FRAME_RATE, 9);
     expect(WINGATE_ENDING_INPUT_DELAY).toBeCloseTo(4_125 / NES_FRAME_RATE, 9);

@@ -1522,6 +1522,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanBottomUsesDynamicState(6, 1279)).toBe(true);
     expect(gunmanBottomUsesDynamicState(6, 1311)).toBe(true);
     expect(gunmanBottomUsesDynamicState(6, 1535)).toBe(true);
+    expect(gunmanBottomUsesDynamicState(6, 2207)).toBe(true);
     expect(gunmanBottomUsesDynamicState(6, 3023)).toBe(false);
     expect(gunmanBottomDynamicPosition(0, 112, 74, 68)).toEqual([(112 + 74 / 256) * NES_WORLD_X_SCALE, (249 + 68 / 256) * NES_WORLD_Y_SCALE]);
     expect(gunmanBottomDynamicPosition(48 / NES_FRAME_RATE, 112, 74, 68)).toEqual([(112 + 74 / 256) * NES_WORLD_X_SCALE, (218 + 68 / 256) * NES_WORLD_Y_SCALE]);
@@ -1565,6 +1566,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankEventShotFrames(6, 1311)).toEqual([]);
     expect(gunmanFlankEventShotFrames(6, 1535, 120)).toEqual([]);
     expect(gunmanFlankEventShotFrames(6, 1535, 184)).toEqual([]);
+    expect(gunmanFlankEventShotFrames(6, 2207, 88)).toEqual([423, 615]);
+    expect(gunmanFlankEventShotFrames(6, 2207, 120)).toEqual([423]);
     expect(gunmanFlankEventShotFrames(6, 4751, 40)).toEqual([]);
     const lateBottomState = createGunmanBottomMovementState(120, 155, 232);
     for (let frame = 49; frame <= 418; frame += 1) {
@@ -1660,6 +1663,23 @@ describe("Gun.Smoke vertical slice", () => {
     const sameTimeLateBottomReleaseScroll = (1535 + 2 / 3 + 390 / 3) * NES_WORLD_Y_SCALE;
     advanceGunmanFlankMovement(sameTimeLateBottom, 390, 120, 215, (x, y) => roundActorCollisionAtNes(6, sameTimeLateBottomReleaseScroll, x, y));
     expect(sameTimeLateBottom.dead).toBe(true);
+
+    const lateBottomRoutes = [
+      { state: createGunmanBottomMovementState(88, 55, 134), last: 940, heading: 0, timer: 0, x: 175 + 253 / 256, y: 0 + 28 / 256, release: 941 },
+      { state: createGunmanBottomMovementState(120, 29, 2), last: 919, heading: 0, timer: 2, x: 175 + 237 / 256, y: 0 + 235 / 256, release: 920 },
+    ] as const;
+    for (const route of lateBottomRoutes) {
+      for (let frame = 49; frame <= route.last; frame += 1) {
+        const scroll = (2207 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+        const playerX = frame >= 219 ? 120 : 136;
+        const playerY = frame >= 216 && frame < 219 ? 216 : 215;
+        advanceGunmanFlankMovement(route.state, frame, playerX, playerY, (x, y) => roundActorCollisionAtNes(6, scroll, x, y));
+      }
+      expect(route.state).toMatchObject({ frame: route.last, mode: "orbit", heading: route.heading, timer: route.timer, x: route.x, y: route.y, dead: false });
+      const releaseScroll = (2207 + 2 / 3 + route.release / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(route.state, route.release, 120, 215, (x, y) => roundActorCollisionAtNes(6, releaseScroll, x, y));
+      expect(route.state.dead).toBe(true);
+    }
 
     const shotBottomState = createGunmanBottomMovementState(160, 8, 184);
     for (let frame = 49; frame <= 149; frame += 1) {

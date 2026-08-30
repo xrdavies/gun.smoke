@@ -1134,7 +1134,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankUsesDynamicState(8, 48, 6, 1, 5119, false)).toBe(true);
     expect(gunmanFlankUsesDynamicState(8, 32, 6, 1, 1375, false)).toBe(true);
     expect(gunmanFlankEventShotFrames(6, 5119)).toEqual([]);
-    expect(gunmanFlankEventShotFrames(6, 1375)).toEqual([45, 109, 173, 237]);
+    expect(gunmanFlankEventShotFrames(6, 1375, 4)).toEqual([45, 109, 173, 237]);
+    expect(gunmanFlankEventShotFrames(6, 1375, 136)).toEqual([]);
     expect(gunmanFlankUsesDynamicState(9, 32, 6, 1, 2783, true)).toBe(true);
     expect(gunmanFlankUsesDynamicState(9, 32, 6, 0, 3919, true)).toBe(true);
     expect(gunmanFlankUsesDynamicState(7, 48, 6, 1, 4543, false)).toBe(true);
@@ -1282,6 +1283,9 @@ describe("Gun.Smoke vertical slice", () => {
     const longRound6Code8ReleaseScroll = (1375 + 2 / 3 + 564 / 3) * NES_WORLD_Y_SCALE;
     advanceGunmanFlankMovement(longRound6Code8, 564, 120, 215, (x, y) => roundActorCollisionAtNes(6, longRound6Code8ReleaseScroll, x, y));
     expect(longRound6Code8.dead).toBe(true);
+
+    expect(gunmanBottomUsesDynamicState(6, 1375)).toBe(true);
+    expect(gunmanBottomDynamicPosition(34 / NES_FRAME_RATE, 136, 110, 136)).toEqual([(136 + 110 / 256) * NES_WORLD_X_SCALE, (226 + 136 / 256) * NES_WORLD_Y_SCALE]);
 
     const round3Code8 = createGunmanFlankMovementState(8, 4, 96, false, 36, 248);
     for (let frame = 1; frame <= 281; frame += 1) {

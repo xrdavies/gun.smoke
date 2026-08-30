@@ -157,6 +157,9 @@ while Cutter and Devil
 Hawk become vulnerable only after their opening attack. Fatman Joe is
 protected during his 170-frame entrance and vulnerable when the first shell launches;
 Cutter's boomerangs also curve in opposite directions.
+Boss timer checks run after the Boss movement step, so each timed volley uses
+the current-frame launch coordinate before its projectile takes the ROM's first
+movement step.
 Ninja remains invulnerable during its opening smoke and every teleport/re-entry
 window; hidden Boss sprites cannot deal contact damage or be damaged by bullets.
 Snipers are likewise non-colliding while inside cover. Bandit Bill and Fatman

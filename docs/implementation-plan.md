@@ -42,9 +42,6 @@ state machine instead of the available left-only trace, and the verified Round
 Horse-protected bottom Gunman contact now owns a measured 60-frame dispatch-
 `0x41` retreat before slot release, so the enemy no longer continues its normal
 route during the Horse protection window.
-The Round 6 `at=1679,x=4,y=64` code-7 route also replays its captured per-frame
-fine X/Y bytes when the entry slot starts at `20/256` X; other fractions keep
-the coarse route fallback.
 Round 5 `at=1135` now uses its separate 1,107-frame fixed-point trace through
 the observed slot-reuse boundary.
 Round 5 `at=1711` now uses its separate 285-frame fixed-point trace.

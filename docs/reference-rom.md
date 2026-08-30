@@ -1443,6 +1443,9 @@ same object pool. The default remains `--pool=enemy`.
 pulses. It is used to record lethal dispatch transitions without conflating
 them with a later slot reuse; `--follow=<dispatch>` can keep tracing the
 converted actor in that same slot.
+`--horse` sets the ROM Horse-health byte (`$77=3`) only until the target slot is
+selected, allowing an isolated comparison of Horse-protected contact behavior.
+The flag affects research traces only and is never read by the shipped game.
 With `--list-candidates --isolate-candidates`, the tool clears ordinary enemy
 slots before each frame and records every dispatch activation, which is useful
 for enumerating side-entry signatures under the ROM's seven-slot limit.

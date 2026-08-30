@@ -7,6 +7,7 @@ const args = process.argv.slice(2);
 const listCandidates = args.includes("--list-candidates");
 const isolateCandidates = args.includes("--isolate-candidates");
 const attack = args.includes("--attack");
+const horse = args.includes("--horse");
 const option = (name) => args.find((argument) => argument.startsWith(`--${name}=`))?.split("=")[1];
 const numberOption = (name, fallback) => Number.parseInt(option(name) ?? String(fallback), 0);
 const filename = args.find((argument) => !argument.startsWith("--")) ?? "Gun.Smoke.ZH.NES";
@@ -155,6 +156,7 @@ let termination;
 for (let frame = 0; frame < frames; frame += 1) {
   const memory = nes.cpu.mem;
   memory[0x7c] = 255;
+  if (horse && targetSlot === undefined) memory[0x77] = 3;
   const currentRound = (memory[0x41] ?? 0) + 1;
   const advancing = round !== undefined && currentRound < round;
   if (advancing) {
@@ -231,6 +233,7 @@ for (let frame = 0; frame < frames; frame += 1) {
       if (matchesSeen <= skip) continue;
       targetSlot = slot;
       targetStart = frame;
+      if (horse) memory[0x77] = 3;
       targetEventScriptIndexes = eventScriptIndexes;
       for (let other = slotStart; other < slotEnd; other += 1) if (other !== slot) memory[0x400 + other] = 0;
       for (let projectile = 24; projectile < 32; projectile += 1) memory[0x400 + projectile] = 0;
@@ -270,6 +273,7 @@ for (let frame = 0; frame < frames; frame += 1) {
     dispatch,
     pool,
     attack,
+    horse,
     ...(round === undefined ? {} : { round }),
     candidates,
   };
@@ -288,6 +292,7 @@ const trace = {
   dispatch,
   pool,
   attack,
+  horse,
   followDispatches,
   skip,
   ...(round === undefined ? {} : { round }),

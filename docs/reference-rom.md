@@ -459,6 +459,10 @@ than following the earlier 549-frame top-route recording.
 Round 6 `at=3711,x=136,y=0,code=6` matches another complete shared-state route:
 its seed fires once at frame 66, and the actor releases through the left edge
 at frame 287.
+Round 6 `at=3727,x=4,y=32,code=8,phase=0` matches the shared state machine for
+1,005 fixed-point frames. Its six successful shots occur at
+68/132/196/719/847/911; the 11-frame state pause between the third and fourth
+opportunities is preserved, and the actor releases through the right boundary.
 Round 4's naturally allocated `at=1503,x=248,y=80,code=7,phase=1` branch
 matches the shared state machine for all 356 coarse/fine samples and releases
 through the right boundary; it no longer inherits the unrelated 642-frame

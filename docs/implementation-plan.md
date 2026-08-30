@@ -82,6 +82,8 @@ Round 6 `at=3551` independently uses that state machine through its complete
 524-frame route and five measured attack checks.
 Round 6 `at=3711` also uses the shared top-entry state machine through its
 complete 287-frame left-boundary route.
+Round 6 `at=3727` now uses the shared flank state machine through its complete
+1,005-frame route and explicit paused attack opportunities.
 Round 3 `at=1119` replaces its generic code-8 path with the shared state
 machine verified across all 282 controlled frames.
 Round 3 `at=687` replaces its generic phase-0 code-7 path with the shared state

@@ -66,6 +66,9 @@ hazards active, then grants 60 NES frames of protection. Horse health resets
 when advancing to the next Round. The ROM stores five mutable score digits plus a fixed zero
 ones digit, so the score caps at 999,990. Extra lives come from the Life pickup
 and are capped at five.
+When Horse collides with a bottom-entry Gunman, that Gunman enters a measured
+60-frame retreat state before its slot is released; this is separate from the
+Horse's protection timer and does not create a projectile or drop.
 
 An unshielded hit freezes scrolling and actors for a 152-frame death
 animation, then deducts the life and clears ordinary enemies/projectiles. Billy

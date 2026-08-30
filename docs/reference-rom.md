@@ -569,6 +569,12 @@ or contact boundaries; the long `at=159,x=216` and `at=191,x=216` paths run
 The following `at=223,x=216`, `at=239,x=152`, `at=271,x=168`, and
 `at=287,x=216` entries independently match 783/436/675/624 controlled frames
 with attacks at 13/269, 13/205, 43 and 75 before their measured releases.
+Round 4 bottom entries at `1791,x=80` and `1823,x=80` match the shared
+state machine through 350 frames, with single attack windows at 64 and 60,
+then release on the following upward screen-Y boundary. The long
+`at=1855,x=48` route matches through frame 1300, including the four captured
+player movement windows, and emits at frames 485/933/1253 before continuing
+in the same fixed-point roam state.
 The earlier `at=815,x=176,code=5` bottom entry matches 530 shared-state frames,
 fires at frame 187, and releases through the NES `Y=255` boundary.
 The adjacent `at=831,x=160,code=5` bottom entry independently matches 150

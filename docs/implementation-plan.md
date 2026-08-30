@@ -194,6 +194,10 @@ coverage has started with exact shared-state routes for `at=95/127/159/191/207`.
 Round 4 opening coverage now extends through `at=223/239/271/287`; each route
 retains the ROM's slot fraction, player-input sequence, attack frames and
 release/contact boundary rather than sharing the generic top lifetime.
+Round 4 bottom coverage now includes `at=1791,x=80`, `at=1823,x=80`, and the
+long `at=1855,x=48` route. The first two match 350 frames and release at the
+screen boundary with attack frames 64 and 60; the latter matches 1300 frames
+with captured player movement windows and attack frames 485/933/1253.
 Round 3 `at=1119` replaces its generic code-8 path with the shared state
 machine verified across all 282 controlled frames.
 Round 3 `at=687` replaces its generic phase-0 code-7 path with the shared state

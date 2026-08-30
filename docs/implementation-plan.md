@@ -302,9 +302,8 @@ Fatman Joe's moving shell now converts in place to a non-colliding split
 controller before its five timed four-frame mine releases. Cutter now keeps
 frames 350-379 as one paired boomerang volley and schedules the next allocation
 at the measured 256-frame cycle, replacing the previous fixed-slot pair instead
-of accumulating extra boomerangs. Wingate defeat
-animation duration is stored per encounter so the decoy keeps 30 frames while
-the real encounter keeps its nine-frame ending animation.
+of accumulating extra boomerangs. All Bosses now use their measured nine-frame
+defeat dispatch before entering the non-colliding transition controller.
 Boss timer checks now run after the Boss movement update, preserving the ROM's
 current-frame launch coordinate before the newly created projectile advances.
 Regular Boss completion now holds the measured lethal-dispatch interval through

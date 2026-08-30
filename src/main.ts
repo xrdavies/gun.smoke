@@ -30,7 +30,7 @@ import { ninjaCanThrow, ninjaTraceLifetime, ninjaTracePosition, ninjaTraceThrowF
 import { advanceNinja, createNinjaState, type NinjaState } from "./game-constants";
 import { FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeAimAllowsLaunch, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, fatmanJoeShellHasSplit, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_MOVEMENT_SPEED, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, fatmanJoeCombatX, fatmanJoeCombatY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "./game-constants";
 import { advanceDevilHawkMovement, advanceWingateMovement, createDevilHawkMovementState, createWingateMovementState, DEVIL_HAWK_RANDOM_HANDOFF_ACTION_COUNTER, DEVIL_HAWK_RANDOM_HANDOFF_FINE_X, DEVIL_HAWK_RANDOM_HANDOFF_FINE_Y, DEVIL_HAWK_RANDOM_HANDOFF_GAIT, DEVIL_HAWK_RANDOM_HANDOFF_HEADING, DEVIL_HAWK_RANDOM_HANDOFF_SEGMENT_FRAMES, WINGATE_BULLET_LIFETIME, wingateCanFire, WINGATE_ENTRY_INVULNERABILITY, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, type DevilHawkMovementState, type WingateMovementState } from "./game-constants";
-import { bossDefeatAnimationDuration, bossStageClearDelay, WINGATE_ENDING_INPUT_DELAY, WINGATE_FINAL_DEFEAT_ANIMATION_DURATION, WINGATE_FINAL_ENDING_DELAY } from "./game-constants";
+import { bossStageClearDelay, WINGATE_ENDING_INPUT_DELAY, WINGATE_FINAL_ENDING_DELAY } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { advanceCutterMovement, createCutterMovementState, CUTTER_ENTRY_DURATION, CUTTER_RANDOM_HANDOFF_FINE_X, CUTTER_RANDOM_HANDOFF_FINE_Y, CUTTER_RANDOM_HANDOFF_GAIT, CUTTER_RANDOM_HANDOFF_SEGMENT_FRAMES, CUTTER_RANDOM_ROUTE_START_FRAME, cutterBoomerangOnScreen, cutterCombatX, cutterCombatY, cutterOpeningX, cutterOpeningY, type CutterMovementState } from "./game-constants";
 import { DEVIL_HAWK_ENTRY_DURATION, devilHawkAttackDelay, devilHawkFanHeadings, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_FULL_FAN_LIFETIME, DEVIL_HAWK_FULL_FAN_MAX_Y_NES, devilHawkFullFanAt, DEVIL_HAWK_POST_ENTRY_X_HOLD, devilHawkProjectileVelocity, DEVIL_HAWK_SIDE_FAN_LIFETIME, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY, nesAimHeading } from "./game-constants";
@@ -87,7 +87,6 @@ interface Unit {
   vy: number;
   hp: number;
   exploding?: boolean;
-  defeatAnimationDuration?: number;
   radius: number;
   collisionHalfX: number;
   collisionHalfY: number;
@@ -1412,7 +1411,7 @@ class GunSmokeGame {
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: frameDuration },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, defeatAnimationDuration: undefined, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romEventAt: undefined, romRandomSeed: undefined, romPhase: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, romFineX: undefined, romFineY: undefined, romSpawnFineX: undefined, romSpawnFineY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, gunmanFlankState: undefined, gunmanBottomContactState: undefined, gunmanBottomContactStartFrame: undefined, sniperFiringState: undefined, backstabberRaidState: undefined, romSlot: undefined, riflemanAimHeading: undefined, riflemanAttackStarted: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, banditState: undefined, cutterState: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined, rockPhase: undefined,
+      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romEventAt: undefined, romRandomSeed: undefined, romPhase: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, romFineX: undefined, romFineY: undefined, romSpawnFineX: undefined, romSpawnFineY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, gunmanFlankState: undefined, gunmanBottomContactState: undefined, gunmanBottomContactStartFrame: undefined, sniperFiringState: undefined, backstabberRaidState: undefined, romSlot: undefined, riflemanAimHeading: undefined, riflemanAttackStarted: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, banditState: undefined, cutterState: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined, rockPhase: undefined,
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" || sceneObject ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
@@ -1495,7 +1494,7 @@ class GunSmokeGame {
     unit.age += delta;
     unit.animation?.update(delta);
     if (unit.kind === "boss" && unit.exploding) {
-      const defeatDuration = unit.defeatAnimationDuration ?? bossDefeatAnimationDuration(this.stage, this.wingatePhase);
+      const defeatDuration = BOSS_DEFEAT_ANIMATION_DURATION;
       const progress = clamp((unit.age - (unit.maxAge - defeatDuration)) / defeatDuration, 0, 1);
       unit.sprite.visible = unit.age < unit.maxAge && Math.floor(progress * 12) % 2 === 0;
       unit.sprite.size = { x: 110 + progress * 48, y: 68 + progress * 48 };
@@ -2393,10 +2392,9 @@ class GunSmokeGame {
       }
     } else if (target.kind === "boss") {
       const finalWingate = this.stage === MAX_STAGE && this.wingatePhase > 0;
-      const defeatDuration = bossDefeatAnimationDuration(this.stage, this.wingatePhase);
+      const defeatDuration = BOSS_DEFEAT_ANIMATION_DURATION;
       target.hp = 1;
       target.exploding = true;
-      target.defeatAnimationDuration = defeatDuration;
       target.sprite.color = [1, 0.78, 0.3, 1];
       target.sprite.size = { x: 138, y: 92 };
       target.maxAge = target.age + defeatDuration;
@@ -3101,7 +3099,7 @@ class ReferenceRomGame {
 let game: GunSmokeGame | undefined;
 let referenceGame: ReferenceRomGame | undefined;
 if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeInvulnerable", { value: (duration: number) => { if (game) game.invulnerable = duration; } });
-if (import.meta.env.DEV) Object.defineProperty(window, "__getGunSmokeUnits", { value: () => game?.units.map((unit) => ({ kind: unit.kind, enemyType: unit.enemyType, itemType: unit.itemType, projectileType: unit.projectileType, bossProjectile: unit.bossProjectile, romPool: unit.romPool, romSlot: unit.romSlot, romEntityCode: unit.romEntityCode, hp: unit.hp, age: unit.age, x: unit.x, y: unit.y, screenY: (unit.y - (game?.scroll ?? 0)) / NES_WORLD_Y_SCALE, visible: unit.sprite.visible, invulnerableUntil: unit.invulnerableUntil, defeatAnimationDuration: unit.defeatAnimationDuration, volleysFired: unit.volleysFired })) ?? [] });
+if (import.meta.env.DEV) Object.defineProperty(window, "__getGunSmokeUnits", { value: () => game?.units.map((unit) => ({ kind: unit.kind, enemyType: unit.enemyType, itemType: unit.itemType, projectileType: unit.projectileType, bossProjectile: unit.bossProjectile, romPool: unit.romPool, romSlot: unit.romSlot, romEntityCode: unit.romEntityCode, hp: unit.hp, age: unit.age, x: unit.x, y: unit.y, screenY: (unit.y - (game?.scroll ?? 0)) / NES_WORLD_Y_SCALE, visible: unit.sprite.visible, invulnerableUntil: unit.invulnerableUntil, volleysFired: unit.volleysFired })) ?? [] });
 if (import.meta.env.DEV) Object.defineProperty(window, "__getGunSmokeState", { value: () => game ? { mode: game.mode, time: game.time, scroll: game.scroll, romFrameCounter: game.romFrameCounter, randomState: [...game.randomState], inventoryOpen: game.inventoryOpen, shopOpen: game.shopOpen } : undefined });
 if (import.meta.env.DEV) Object.defineProperty(window, "__forceGunSmokeLoop", { value: () => { if (game) { game.hasWanted = false; game.scroll = ROUND_LENGTHS[game.stage - 1] ?? ROUND_LENGTHS[0]!; } } });
 if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeWeapon", { value: (weapon: WeaponName, ammo: number) => {

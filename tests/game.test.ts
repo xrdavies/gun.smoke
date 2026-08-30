@@ -12,7 +12,7 @@ import { bossIsVulnerable } from "../src/game-constants";
 import { advanceGunmanBottomContact, createGunmanBottomContactState, GUNMAN_BOTTOM_CONTACT_FRAMES } from "../src/game-constants";
 import { hasWeaponStock } from "../src/game-constants";
 import { ENEMY_DEFEAT_ANIMATION_DURATION } from "../src/game-constants";
-import { bossStageClearDelay, WINGATE_ENDING_INPUT_DELAY, WINGATE_ENTRY_INVULNERABILITY, WINGATE_FINAL_DEFEAT_ANIMATION_DURATION, WINGATE_FINAL_ENDING_DELAY } from "../src/game-constants";
+import { bossStageClearDelay, WINGATE_ENDING_INPUT_DELAY, WINGATE_ENTRY_INVULNERABILITY, WINGATE_FINAL_ENDING_DELAY } from "../src/game-constants";
 import { ENEMY_DEFEAT_Y_OFFSETS_NES } from "../src/game-constants";
 import { addScore, MAX_SCORE } from "../src/game-constants";
 import { PLAYER_ENTRY_X, PLAYER_ENTRY_X_NES, PLAYER_ENTRY_Y, PLAYER_ENTRY_Y_NES, PLAYER_MAX_X_NES, PLAYER_MAX_Y_NES, PLAYER_MIN_X_NES, PLAYER_MIN_Y_NES } from "../src/game-constants";
@@ -30,7 +30,6 @@ import { advanceBanditBillMovement, advanceCutterMovement, BANDIT_BILL_ATTACK_PA
 import { banditBillCooldown } from "../src/game-constants";
 import { advanceInvulnerability, BLUE_YASHICHI_DURATION, MAX_LIVES } from "../src/game-constants";
 import { BOSS_BAR_RECOVERY_DURATION, bossCurrentBarHitPoints, bossHealthProfile, bossTotalHitPoints } from "../src/game-constants";
-import { bossDefeatAnimationDuration } from "../src/game-constants";
 import { RIFLE_BULLET_SPEED_MULTIPLIER } from "../src/game-constants";
 import { BOSS_PROJECTILE_CAPACITY, canSpawnBossProjectile, canSpawnEnemyProjectile, canSpawnPlayerBullet, ENEMY_PROJECTILE_CAPACITY, machineGunVelocities, pistolBulletSpeedFactor, pistolShots, pistolVelocities, PLAYER_BULLET_CAPACITY, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "../src/game-constants";
 import { LIFE_OVERFLOW_SCORE, lifePickup, MAX_POWERUP_STOCK, POWERUP_OVERFLOW_SCORE, storedPowerupPickup } from "../src/game-constants";
@@ -3696,7 +3695,6 @@ describe("Gun.Smoke vertical slice", () => {
     expect(WINGATE_SECOND_ENTRY_Y).toBe(0);
     expect(WINGATE_ENTRY_INVULNERABILITY).toBeCloseTo(185 / NES_FRAME_RATE, 9);
     expect(WINGATE_SECOND_SPAWN_DELAY).toBeCloseTo(264 / NES_FRAME_RATE, 9);
-    expect(WINGATE_FINAL_DEFEAT_ANIMATION_DURATION).toBeCloseTo(9 / NES_FRAME_RATE, 9);
     expect([1, 2, 3, 4, 5].map((stage) => bossStageClearDelay(stage) * NES_FRAME_RATE)).toEqual([765, 764, 765, 765, 765]);
     expect(WINGATE_FINAL_ENDING_DELAY).toBeCloseTo(761 / NES_FRAME_RATE, 9);
     expect(WINGATE_ENDING_INPUT_DELAY).toBeCloseTo(4_125 / NES_FRAME_RATE, 9);
@@ -3715,10 +3713,7 @@ describe("Gun.Smoke vertical slice", () => {
   });
 
   it("awards the Round 6 bounty only after the real Wingate", () => {
-    expect(BOSS_DEFEAT_ANIMATION_DURATION).toBeCloseTo(30 / NES_FRAME_RATE, 9);
-    expect(bossDefeatAnimationDuration(5)).toBe(BOSS_DEFEAT_ANIMATION_DURATION);
-    expect(bossDefeatAnimationDuration(MAX_STAGE, 0)).toBe(BOSS_DEFEAT_ANIMATION_DURATION);
-    expect(bossDefeatAnimationDuration(MAX_STAGE, 1)).toBe(WINGATE_FINAL_DEFEAT_ANIMATION_DURATION);
+    expect(BOSS_DEFEAT_ANIMATION_DURATION).toBeCloseTo(9 / NES_FRAME_RATE, 9);
     expect(bossReward(1)).toBe(10_000);
     expect(bossReward(MAX_STAGE, 0)).toBe(0);
     expect(bossReward(MAX_STAGE, 1)).toBe(30_000);

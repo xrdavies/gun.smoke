@@ -91,7 +91,7 @@ The matching Boss rewards are 10,000, 12,000, 25,000, 20,000, 20,000, and
 30,000 points respectively. Round 6 grants its 30,000 only after the real,
 second Wingate; the decoy encounter does not duplicate the bounty. The reward
 is added to the same capped score balance when the Boss defeat branch completes.
-The defeated Boss remains as a short animated explosion while both projectile
+The defeated Boss remains as a nine-frame animated explosion while both projectile
 pools are cleared and the Round transition delay runs. Regular Boss Rounds
 advance 765 NES frames after the lethal transition, except Cutter's Round 2
 transition, which advances after 764 frames.
@@ -868,8 +868,9 @@ three-frame descent phase at the conversion coordinate.
 Scripted barrels, shops and scene props begin at screen `y=1`, advance one NES
 pixel every three frames, and release when the next step reaches `y=252`.
 
-After the second Wingate encounter, a nine-frame defeat state and 752-frame
-non-colliding controller delay lead into the separate ending and credits state
+Every Boss, including both Wingate encounters, uses the measured nine-frame
+defeat state. After the second Wingate encounter, its 752-frame
+non-colliding controller delay leads into the separate ending and credits state
 instead of treating the win as Game Over. Start/Ride again remains locked for
 the measured 4,125-frame ending sequence while an original chiptune cue plays,
 then returns to the title.

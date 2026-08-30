@@ -369,6 +369,15 @@ test("converts Fatman Joe shells into timed mines", async ({ page }) => {
   await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
   await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
   await page.evaluate(() => (window as unknown as { __fireGunSmokeBoss: (randomByte: number) => void }).__fireGunSmokeBoss(8));
+  const launch = await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; projectileType?: string; bossProjectile?: boolean; hp: number; x: number; y: number }> }).__getGunSmokeUnits()
+    .find((unit) => unit.kind === "enemyBullet" && unit.projectileType === "grenadeShell" && unit.bossProjectile && unit.hp > 0));
+  expect(launch).toBeDefined();
+  await page.clock.runFor(8);
+  const firstFrame = await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; projectileType?: string; bossProjectile?: boolean; hp: number; age: number; x: number; y: number }> }).__getGunSmokeUnits()
+    .find((unit) => unit.kind === "enemyBullet" && unit.projectileType === "grenadeShell" && unit.bossProjectile && unit.hp > 0));
+  expect(firstFrame).toBeDefined();
+  expect(firstFrame!.x).toBeCloseTo(launch!.x, 6);
+  expect(firstFrame!.y).toBeCloseTo(launch!.y, 6);
   const projectiles = () => page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; projectileType?: string; bossProjectile?: boolean; hp: number }> }).__getGunSmokeUnits()
     .filter((unit) => unit.kind === "enemyBullet" && unit.bossProjectile && unit.hp > 0));
   await page.clock.runFor(300);

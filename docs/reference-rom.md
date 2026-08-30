@@ -1271,7 +1271,8 @@ opening state `0x9c` through frame 169, observes the shell and vulnerable
 Fatman through the 170-frame entrance and until the first shell is actually
 launched; a failed first aim/random gate does not expose him early. Once the
 shell launches, no separate 0.75-second invulnerability window is added. The shell uses the
-shared integer direction quantizer, flies for 31 frames, and becomes a
+shared integer direction quantizer, holds its launch offset for the allocation
+frame, then flies for 31 movement frames and becomes a
 stationary, non-colliding split controller that keeps its original low slot.
 Beginning four frames later, it emits five `0x3f`
 mines at 4-frame intervals with relative offsets

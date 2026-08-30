@@ -240,7 +240,9 @@ measured symmetric offsets and last about 29 NES frames. A mine overlapping
 Billy at creation can deal contact damage and disappear in that same frame. His multi-hop X/Y
 profile follows all 12,397 controlled combat frames, then holds the final
 sampled wait-state position. The runtime
-pauses the 76-frame attack counter during the measured 53-frame short or
+keeps the shell's Boss-relative launch offset for its allocation frame before
+starting the 31-frame flight and pauses the 76-frame attack counter during the
+measured 53-frame short or
 122-frame long movement action, fires the follow-up shell at action end, and
 then resumes the counter; its attack random gate and follow-up timing use the
 decoded ROM state. The captured long-tail route is held at its final sampled

@@ -1147,7 +1147,7 @@ class GunSmokeGame {
         if (!projectile) return;
         projectile.projectileType = "grenadeShell";
         [projectile.vx, projectile.vy] = fatmanJoeShellVelocity(boss.x, boss.y, this.player.x, this.player.y);
-        projectile.phase = 0;
+        projectile.phase = -1;
         projectile.volleysFired = 0;
         projectile.maxAge = FATMAN_JOE_SHELL_LIFETIME;
         boss.volleysFired += 1;
@@ -2161,6 +2161,8 @@ class GunSmokeGame {
           this.beep(95, 0.14);
         }
       }
+      const deferShellMotion = unit.kind === "enemyBullet" && unit.projectileType === "grenadeShell" && unit.phase < 0;
+      if (deferShellMotion) unit.phase = 0;
       if (unit.kind === "enemyBullet" && unit.projectileType === "grenadeShell" && fatmanJoeShellHasSplit(unit.age)) {
         unit.targetX ??= unit.x;
         unit.targetY ??= unit.y;
@@ -2235,7 +2237,7 @@ class GunSmokeGame {
         unit.vy = Math.sin(angle) * speed;
       }
       if (unit.kind === "enemyBullet" && (unit.projectileType === "boomerang" || unit.projectileType === "shuriken" || unit.projectileType === "hatchet")) unit.sprite.rotation += delta * 10;
-      if (!boomerangPathDriven && !ninjaSmokePathDriven) {
+      if (!boomerangPathDriven && !ninjaSmokePathDriven && !deferShellMotion) {
         unit.x += unit.vx * delta;
         if (unit.projectileType !== "dynamite") unit.y += unit.vy * delta;
       }

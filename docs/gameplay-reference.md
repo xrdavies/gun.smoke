@@ -590,6 +590,9 @@ handoff without a successful shot, while the latter fires at frame 65 and
 releases at frame 150 through `Y=252`.
 The following `at=1167,x=128,code=5` entry preserves its bottom entrance and
 reaches the player-contact dispatch at frame 34 before the shared handoff.
+The same-time `at=1231` bottom entries also contact Billy before completing a
+full route: `x=112` reaches dispatch `0x41` at frame 34, while `x=144` reaches
+the shared orbit state through frame 67 and contacts on the next frame.
 The top `at=863,x=128,code=6` entry follows a 432-frame shared route, fires at
 frame 66, and releases through the bottom `Y=252` boundary.
 The top `at=943,x=144,code=6` entry follows the shared route through frame 488,

@@ -488,6 +488,10 @@ and releases through `Y=252`.
 The following `at=1167,x=128,code=5` entry preserves its bottom-entry position
 through frame 33 and reaches the player-contact dispatch on frame 34 before the
 shared movement handoff.
+The same-time `at=1231` bottom entries are separate allocations: `x=112`
+reaches player-contact dispatch `0x41` at frame 34, while `x=144` matches the
+shared orbit state through frame 67 and reaches contact on frame 68. Neither
+records a successful shot.
 The top `at=863,x=128,code=6` entry independently matches 432 shared-state
 frames, fires at frame 66, and releases through the bottom `Y=252` boundary.
 The top `at=943,x=144,code=6` entry matches the shared state machine through

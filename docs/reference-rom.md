@@ -367,8 +367,9 @@ vertical pixels, execute a 51-frame mirrored lunge, and then enter the shared
 tracking state. The lunge dispatch does not apply the ordinary three-frame
 camera Y step. Its heading table uses the timer value before decrement; timer 0
 therefore performs the final speed-3 movement, becomes 255, and hands off to
-tracking on the next frame. Runtime uses this state machine for Round 2 side
-entries without a complete verified trace.
+tracking on the next frame. Runtime uses the state machine for all scoped Round
+2 side entries; event-qualified shot windows are applied where complete traces
+exist, while uncaptured entries retain the bounded generic opportunity clock.
 The natural Round 2 `at=703,x=4,y=32,code=8,phase=1` route verifies the orbit
 counter boundary: entering the orbit with timer `0xff` wraps to zero without a
 turn, while the later `4 -> 0` wrap advances the heading. With that 8-bit

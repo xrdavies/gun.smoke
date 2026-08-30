@@ -254,7 +254,10 @@ aim-gated opportunities remain tied to the Boss movement cycle.
 The ROM event stream is data-driven per Round. Its behavior routines map to the
 recognizable roster of gunmen, bombers, snipers, back-stabbers, riflemen,
 ninjas, shotgunners, spear throwers, firebreathers and Hatchet Throwers; only
-some long-tail random branches remain marked as approximations.
+some long-tail random branches remain marked as approximations. Captured
+Gunman routes now use event/X-qualified shot windows across Rounds 2 through 6;
+only entries without an isolated lifecycle trace retain the bounded generic
+opportunity clock.
 Snipers are edge-mounted static shooters that adjust among six discrete lane
 headings toward Billy, keep an 8-bit 90-frame firing cooldown, and do not walk
 with field enemies. The actor remains visible and collidable while that

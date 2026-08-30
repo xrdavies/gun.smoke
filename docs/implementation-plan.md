@@ -112,6 +112,8 @@ Round 6 `at=1375` now uses the shared code-8 flank route through its 564-frame
 upper-boundary release and measured 45/109/173/237 attack opportunities.
 The same-time Round 6 `at=1375` bottom code-5 entry now preserves its frame-58
 player-contact boundary and no-shot behavior.
+Round 6 `at=1535` now preserves both bottom allocations, their frame-34/390
+contact and release boundaries, and no-shot behavior.
 Round 6 `at=1407` now uses its complete top-entry route through the left-boundary
 release and measured frame-55/frame-443 attacks.
 Round 6 `at=1391` now uses its complete 387-frame top-entry route and measured

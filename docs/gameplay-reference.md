@@ -597,6 +597,9 @@ The side `at=1375,x=4,y=32,code=8,phase=1` entry follows the shared flank state
 machine for 564 frames, fires at frames 45/109/173/237, and releases upward.
 The same-time bottom `at=1375,x=136,code=5` entry reaches the player-contact
 dispatch at frame 58 without a successful shot.
+At `at=1535`, the bottom `x=120` entry reaches player contact at frame 34, while
+the same-time `x=184` entry follows 390 frames to the upper boundary; neither
+records a successful shot.
 The top `at=1407,x=104,code=6,phase=1` entry follows the shared route for 763
 frames, fires at frames 55 and 443, and exits at the left boundary.
 The preceding `at=1391,x=120,code=6,phase=0` entry follows a 387-frame top

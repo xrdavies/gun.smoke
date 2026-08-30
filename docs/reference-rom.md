@@ -497,6 +497,9 @@ machine for 564 frames, fires at frames 45/109/173/237, and releases through
 the upper screen boundary.
 The same-time bottom `at=1375,x=136,code=5` entry reaches player-contact
 dispatch `0x41` at frame 58 without a successful shot.
+At `at=1535`, the bottom `x=120` entry reaches player-contact dispatch `0x41`
+at frame 34; the same-time `x=184` entry matches 390 frames and releases through
+the upper boundary. Neither produces a successful shot.
 The top `at=1407,x=104,code=6,phase=1` entry matches the shared state machine
 for 763 frames, fires at frames 55 and 443, and releases through the left edge.
 The preceding `at=1391,x=120,code=6,phase=0` entry matches 387 top-entry frames,

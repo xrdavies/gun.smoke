@@ -563,6 +563,9 @@ state route with shots at 68/132/196/719/847/911 and a right-boundary release.
 The later `at=4415,x=216,y=0,code=6,phase=1` entry preserves its spawned fine
 coordinates, follows the shared top-entry chase/orbit states for 603 frames,
 fires at frames 13 and 397, and releases at the bottom boundary.
+The following `at=4479,x=96,y=0,code=6,phase=1` entry also preserves its fine
+coordinates, follows the shared route for 315 frames, fires at frame 29, and
+releases at the bottom boundary.
 The later `at=4319,x=200,y=0,code=5,phase=1` entry uses the same 48-frame
 bottom entrance as the earlier Round 6 code-5 routes, then follows the shared
 chase/orbit states to complete its 392-frame no-shot route at the NES `Y=255`

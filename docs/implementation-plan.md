@@ -87,6 +87,8 @@ Round 6 `at=3727` now uses the shared flank state machine through its complete
 Round 6 `at=4415` now preserves its spawned fine coordinates, uses the shared
 top-entry chase/orbit state machine through its complete 603-frame route, and
 keeps its measured 13/397 attack opportunities.
+Round 6 `at=4479` likewise uses the shared top-entry route through its complete
+315-frame bottom-boundary path and measured frame-29 attack opportunity.
 Round 6 `at=4319` now uses the shared bottom-entry and chase/orbit state machine
 through its complete 392-frame no-shot route and NES `Y=255` release boundary.
 Round 3 `at=1119` replaces its generic code-8 path with the shared state

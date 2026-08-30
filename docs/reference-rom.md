@@ -92,6 +92,16 @@ NES pixel; runtime retains that phase instead of spawning two frames early.
 At `$FA89-$FA92`, a full selected pool skips the record and `$FAD8` advances
 the script pointer; runtime applies the same one-shot capacity check to shops,
 containers, props and behavior entities instead of retrying or exempting shops.
+Boss arenas use a second entry into the same scheduler. The NMI path at
+`$FF22-$FF5C` checks global frame counter `$22` when its low seven bits equal
+`0x40` or `0x60`, rejects the opportunity when `$AC & 3` is zero, then selects
+one of 16 overlapping records at `$83BF + ($AD & 0x1E)` in the current Round
+bank. Each selected record supplies a position-table index and entity code to
+`$FA78`, so it uses the ordinary seven-slot pool and the same entity initializer
+as the scrolling script. Runtime preserves the six decoded 16-entry tables,
+global 8-bit frame gate, random gate and random table selection; a full pool
+still drops the one-shot opportunity. These records contain no script flag byte,
+so they do not create a scripted money/ammunition drop.
 Each shop retains its original per-Round script ordinal, so a skipped earlier
 shop does not cause a later supply/weapon visit to use the wrong inventory.
 The generated `ROUND_ROM_OBJECT_EVENTS` stream retains no-behavior object

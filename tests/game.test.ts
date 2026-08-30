@@ -40,7 +40,7 @@ import { SHOTGUNNER_SIDE_LIFETIME, SHOTGUNNER_SIDE_PATH_NES, SHOTGUNNER_SIDE_SHO
 import { hasSpecialAmmoStock, romEnemyDrop, romEnemyScore } from "../src/game-constants";
 import { ROM_PROJECTILE_SCREEN_SIZE_NES, romProjectileOnScreen } from "../src/game-constants";
 import { roundActorCollisionAtNes, roundCollisionAtNes, roundCollisionBlocks, roundCollisionScrollNes, roundPlayerRecoveryX, ROUND_COLLISION_ROW_COUNTS } from "../src/round-collision";
-import { canSpawnRomPool, compareRomEventOrder, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_ENEMY_SLOT_CAPACITY, ROM_ENTITY_HIT_POINTS, ROM_FALLING_ROCK_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_OBJECT_SLOT_CAPACITY, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_ENEMY_EVENT_COUNTS, ROUND_ROM_OBJECT_EVENTS, ROUND_ROM_OBJECT_EVENT_COUNTS, ROM_BEHAVIOR_ENEMY_TYPES, romEntityHitPoints, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX } from "../src/rom-event-data";
+import { canSpawnRomPool, compareRomEventOrder, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_ENEMY_SLOT_CAPACITY, ROM_ENTITY_HIT_POINTS, ROM_FALLING_ROCK_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_OBJECT_SLOT_CAPACITY, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_BOSS_REINFORCEMENTS, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_ENEMY_EVENT_COUNTS, ROUND_ROM_OBJECT_EVENTS, ROUND_ROM_OBJECT_EVENT_COUNTS, ROM_BEHAVIOR_ENEMY_TYPES, romEntityHitPoints, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX } from "../src/rom-event-data";
 
 describe("Gun.Smoke vertical slice", () => {
   it("matches the traced player death and respawn phases", () => {
@@ -311,6 +311,10 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROM_BEHAVIOR_ENEMY_TYPES[3]).toBe("backstabber");
     expect(ROM_BEHAVIOR_ENEMY_TYPES[5]).toBeUndefined();
     expect(ROM_BEHAVIOR_ENEMY_TYPES[7]).toBe("rifleman");
+    expect(ROUND_ROM_BOSS_REINFORCEMENTS.map((round) => round.length)).toEqual([16, 16, 16, 16, 16, 16]);
+    expect(ROUND_ROM_BOSS_REINFORCEMENTS[2]![0]).toEqual([96, 0, 10, 19]);
+    expect(ROUND_ROM_BOSS_REINFORCEMENTS[2]![15]).toEqual([4, 64, 2, 8]);
+    expect(ROUND_ROM_BOSS_REINFORCEMENTS[3]!.slice(-2)).toEqual([[4, 80, 5, 12], [4, 32, 5, 12]]);
     expect(ROUND_ROM_ENEMY_EVENTS[3]!.find((event) => event.behavior === 5)?.phase).toBe(1);
     expect(ROUND_ROM_ENEMY_EVENTS[3]!.find((event) => event.behavior === 5 && event.y === 112)?.phase).toBe(0);
     expect(ROM_ENEMY_SLOT_CAPACITY).toBe(7);

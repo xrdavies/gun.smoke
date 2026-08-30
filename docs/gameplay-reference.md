@@ -187,8 +187,11 @@ once before leaving the arena.
 
 The decoded enemy event stream runs until the Wanted gate; once the poster is
 owned and the Boss arena locks, scrolling and regular enemy-event spawning
-stop. Boss reinforcements can still drop money or ammunition when defeated,
-but the locked arena does not create extra ambient barrels or loose pickups.
+stop. The separate Boss scheduler checks two points in each 128-frame cycle,
+applies the ROM random gate, and selects from the current Round's 16-entry
+reinforcement table. Reinforcements share the ordinary seven-slot pool and
+behavior routines, but their compact records contain no scripted drop flag.
+The locked arena does not create extra ambient barrels or loose pickups.
 
 Devil Hawk enters from the top on one of the ROM's NES X lanes
 (`x=88/128/168/208`) and follows the captured 143-frame stepped descent before

@@ -135,6 +135,29 @@ test("creates each Boss from its wanted gate", async ({ page }) => {
   expect(pageErrors).toEqual([]);
 });
 
+test("spawns ROM-table reinforcements during a Boss fight", async ({ page }) => {
+  const pageErrors: Error[] = [];
+  page.on("pageerror", (error) => pageErrors.push(error));
+  await page.clock.install();
+  await page.goto("/");
+  await page.locator("#start-button").click();
+  await page.locator("#continue-button").click();
+  await page.locator("#briefing-button").click();
+  await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
+  await page.evaluate(() => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(3));
+  await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
+
+  let reinforcement = false;
+  for (let elapsed = 0; elapsed < 6_000 && !reinforcement; elapsed += 100) {
+    await page.clock.runFor(100);
+    reinforcement = await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; romPool?: string; romEntityCode?: number }> }).__getGunSmokeUnits()
+      .some((unit) => unit.kind === "enemy" && unit.romPool === "enemy" && unit.romEntityCode !== undefined));
+  }
+
+  expect(reinforcement).toBe(true);
+  expect(pageErrors).toEqual([]);
+});
+
 test("runs the distinct Boss projectile chains", async ({ page }) => {
   const pageErrors: Error[] = [];
   page.on("pageerror", (error) => pageErrors.push(error));

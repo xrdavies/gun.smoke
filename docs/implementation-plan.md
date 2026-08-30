@@ -21,7 +21,7 @@ input; ROM bytes, extracted artwork, and Capcom source are not distributed.
 | Engine integration | Complete | WebGPU renderer, animation bindings, audio buses, input actions, deterministic clock/randomness |
 | Six-round game loop | Complete | Title, intro, briefing, scrolling rounds, shops, wanted gates, bosses, ending and continue flow |
 | Collision and map data | Complete for decoded data | Six ROM collision rings drive movement and generated terrain; visual landmark art remains original |
-| ROM event scheduler | Complete for extracted scripts | Per-round enemy/object streams, map phases, independent seven/six-slot pools and slot fine coordinates |
+| ROM event scheduler | Complete for extracted scripts | Per-round enemy/object streams, Boss reinforcement tables, frame/random gates, map phases, independent seven/six-slot pools and slot fine coordinates |
 | Resources and combat | Complete for modeled rules | Weapons, ammo, score, drops, shops, Smart Bomb, Horse, damage and death state |
 | Ordinary enemy routines | Mostly complete | All core behavior routines are mapped; every Round 4 Ninja script record has a state-qualified trace or decoded-state fallback, while other long-tail random branches stay explicit |
 | Boss routines | Mostly complete | Measured entrances, attacks, health bars and long ROM X/Y traces are implemented for Bandit Bill, Cutter, Devil Hawk and Fatman Joe; remaining tails continue from ROM-shaped state |
@@ -110,6 +110,9 @@ Both Wingate encounters now preserve the measured frame-185 entry
 invulnerability instead of accepting damage from their top-edge spawn.
 Devil Hawk's pre-handoff fire now uses the same trace as his movement, including
 all irregular action delays and five-/three-shot fan choices through frame 3,630.
+Boss fights now keep the ROM's separate reinforcement scheduler: the global
+8-bit frame gate and `$AC/$AD` random selection feed each Round's decoded
+16-entry `$83BF` table into the existing seven-slot enemy initializer.
 
 ## Delivery Stages
 

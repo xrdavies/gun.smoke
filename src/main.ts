@@ -42,7 +42,7 @@ import { ENEMY_DEFEAT_Y_OFFSETS_NES } from "./game-constants";
 import { hasSpecialAmmoStock, hasWeaponStock, romEnemyDrop, romEnemyScore } from "./game-constants";
 import { romProjectileOnScreen } from "./game-constants";
 import { roundActorCollisionAtNes, roundCollisionAtNes, roundCollisionBlocks, roundCollisionScrollNes, roundPlayerRecoveryX, ROUND_COLLISION_ROWS } from "./round-collision";
-import { canSpawnRomPool, compareRomEventOrder, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_FALLING_ROCK_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEntityHitPoints, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
+import { canSpawnRomPool, compareRomEventOrder, ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES, ROM_EMPTY_BARREL_ENTITY_CODES, ROM_FALLING_ROCK_BEHAVIORS, ROM_OBJECT_PICKUPS, ROM_SCENE_PROP_DISPATCH_TYPES, ROUND_ROM_BOSS_REINFORCEMENTS, ROUND_ROM_ENEMY_EVENTS, ROUND_ROM_OBJECT_EVENTS, ROM_BEHAVIOR_ENEMY_TYPES, romEntityHitPoints, romEventWorldAt, romEventWorldX, romEventWorldY, romObjectWorldAt, romObjectWorldX, romObjectWorldY } from "./rom-event-data";
 import type { RomEnemyEvent, RomObjectEvent } from "./rom-event-data";
 
 type GameAction =
@@ -303,6 +303,7 @@ class GunSmokeGame {
   deathClock = 0;
   deathCommitted = false;
   bossSpawned = false;
+  romFrameCounter = 0;
   stageClearClock = 0;
   hasWanted = false;
   romEventCursor = 0;
@@ -858,8 +859,19 @@ class GunSmokeGame {
   }
 
   private updateSpawns(): void {
-    this.spawnRomEvents();
+    if (this.bossSpawned) this.spawnBossReinforcement();
+    else this.spawnRomEvents();
     if (this.scroll >= (ROUND_BOSS_TRIGGERS[this.stage - 1] ?? ROUND_BOSS_TRIGGERS[0]!) && this.hasWanted && !this.bossSpawned && this.wingateRespawnClock <= 0) this.spawnBoss();
+  }
+
+  private spawnBossReinforcement(): void {
+    const counter = this.romFrameCounter & 0x7f;
+    if (counter !== 0x40 && counter !== 0x60) return;
+    if ((this.randomState[0]! & 0x03) === 0) return;
+    const row = ROUND_ROM_BOSS_REINFORCEMENTS[this.stage - 1]?.[(this.randomState[1]! & 0x1e) >> 1];
+    if (!row) return;
+    const [x, y, behavior, entityCode] = row;
+    this.spawnRomEnemyEvent({ at: -1, order: this.romFrameCounter, x, y, behavior, entityCode, flags: 0, phase: 0, pool: "enemy" });
   }
 
   private spawnRomEvents(): void {
@@ -2670,12 +2682,14 @@ class GunSmokeGame {
     this.randomState = [...ROM_RANDOM_SEED];
     this.randomReadIndex = 0;
     this.randomFrameRemainder = 0;
+    this.romFrameCounter = 0;
   }
 
   private advanceRandom(delta: number): void {
     this.randomFrameRemainder += delta * NES_FRAME_RATE;
     while (this.randomFrameRemainder >= 1) {
       this.randomState = advanceRomRandom(this.randomState);
+      this.romFrameCounter = (this.romFrameCounter + 1) & 0xff;
       this.randomFrameRemainder -= 1;
     }
     this.randomReadIndex = 0;

@@ -108,6 +108,8 @@ Round 6 `at=1167` now preserves its bottom-entry route through the measured
 frame-34 player-contact dispatch.
 Round 6 `at=1231` now preserves both same-time bottom allocations and their
 frame-34/frame-68 player-contact boundaries with no successful shots.
+Round 6 `at=1279` now preserves its bottom contact route and top 1,146-frame
+route with measured 19/403/659 attack opportunities.
 Round 6 `at=863` now uses its complete 432-frame top-entry route, including the
 measured frame-66 attack and bottom `Y=252` release.
 Round 6 `at=943` now uses its shared top-entry route through the measured

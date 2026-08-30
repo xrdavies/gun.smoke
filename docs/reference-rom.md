@@ -492,6 +492,9 @@ The same-time `at=1231` bottom entries are separate allocations: `x=112`
 reaches player-contact dispatch `0x41` at frame 34, while `x=144` matches the
 shared orbit state through frame 67 and reaches contact on frame 68. Neither
 records a successful shot.
+At `at=1279`, the bottom `x=112` entry reaches player contact at frame 34 with
+no successful shot. The top `x=136` entry matches the shared state machine for
+1,146 frames, fires at frames 19/403/659, and releases through the right edge.
 The top `at=863,x=128,code=6` entry independently matches 432 shared-state
 frames, fires at frame 66, and releases through the bottom `Y=252` boundary.
 The top `at=943,x=144,code=6` entry matches the shared state machine through

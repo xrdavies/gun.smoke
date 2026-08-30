@@ -1359,6 +1359,9 @@ changes to the non-colliding `0x8f` controller at frame 645, then releases the
 Boss slot and advances to Round 2 at frame 1,401: 765 frames after the lethal
 transition. Runtime keeps its original 30-frame explosion visible and holds the
 remaining measured controller interval before opening the next briefing.
+Equivalent controlled traces measure 764 frames for Cutter and 765 frames for
+Devil Hawk, Ninja and Fatman Joe from their lethal dispatch to the following
+Round index. Runtime preserves Cutter's one-frame exception.
 The real Wingate instead enters dispatch `0xa6` for nine frames and then the
 non-colliding `0xa7` controller for 752 frames; it releases and advances the
 Round index 761 frames after the lethal transition. Runtime holds the ending

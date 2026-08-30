@@ -214,7 +214,9 @@ export const EMPTY_BARREL_EXPLOSION_LIFETIME = 10 / NES_FRAME_RATE;
 export const ENEMY_DEFEAT_ANIMATION_DURATION = 5 / NES_FRAME_RATE;
 export const ENEMY_DEFEAT_Y_OFFSETS_NES = [0, -4, -7, -10, -12] as const;
 export const BOSS_DEFEAT_ANIMATION_DURATION = 30 / NES_FRAME_RATE;
-export const REGULAR_BOSS_STAGE_CLEAR_DELAY = 765 / NES_FRAME_RATE;
+export function bossStageClearDelay(stage: number): number {
+  return (stage === 2 ? 764 : 765) / NES_FRAME_RATE;
+}
 export const MAGNUM_BULLET_SPEED = WORLD_BULLET_SPEED;
 export const MAGNUM_BULLET_LIFETIME = 34 / NES_FRAME_RATE;
 export const SHOTGUN_BULLET_LIFETIME = 11 / NES_FRAME_RATE;

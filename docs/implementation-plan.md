@@ -170,7 +170,9 @@ left/right flank state with 64 and 80/400 attack windows. The isolated
 `at=2143,x=4` phase-one code-8 entry now uses the shared state through its
 frame-247 dispatch handoff, including the frame-64 attack and allocation-frame
 `x-1` correction. Scoped coordinates remain in place for `at=1679/4223` until
-a comparable dynamic handoff is shown.
+a comparable dynamic handoff is shown for `at=1679`; `at=4223` now uses the
+same shared state through its frame-247 dispatch handoff with attacks at
+66/130/194.
 The remaining naturally allocated Round 6 Gunman records are now classified:
 `at=4063,x=128` and `at=2959,x=136` enter contact dispatch before handoff,
 while the same-time `at=479,x=136` entry does likewise. This keeps the runtime

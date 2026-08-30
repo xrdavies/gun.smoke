@@ -198,6 +198,11 @@ Round 4 bottom coverage now includes `at=1791,x=80`, `at=1823,x=80`, and the
 long `at=1855,x=48` route. The first two match 350 frames and release at the
 screen boundary with attack frames 64 and 60; the latter matches 1300 frames
 with captured player movement windows and attack frames 485/933/1253.
+The later Round 4 bottom records `at=1951/2111/2143/2319/2431/2591` are now
+classified with event/X-qualified bindings and fixed-point tests. The dynamic
+traces cover 1000/687/683/375/1080/375 frames respectively, preserving their
+independent attack windows and screen-boundary releases; contact-dispatch
+variants remain explicitly bounded instead of using the shared route.
 Round 3 `at=1119` replaces its generic code-8 path with the shared state
 machine verified across all 282 controlled frames.
 Round 3 `at=687` replaces its generic phase-0 code-7 path with the shared state

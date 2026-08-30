@@ -1346,6 +1346,20 @@ describe("Gun.Smoke vertical slice", () => {
     }
     expect(round5Top2287).toMatchObject({ frame: 518, mode: "chase", heading: 25, timer: 0, x: 204 + 73 / 256, y: 251 + 20 / 256, dead: false });
 
+    const round5Top639 = createGunmanTopMovementState(136, 132, 47);
+    for (let frame = 1; frame <= 296; frame += 1) {
+      const scroll = (639 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(round5Top639, frame, 168, 216, (x, y) => roundActorCollisionAtNes(5, scroll, x, y));
+    }
+    expect(round5Top639).toMatchObject({ frame: 296, mode: "orbit", heading: 23, timer: 2, x: 230 + 96 / 256, y: 251 + 214 / 256, dead: false });
+
+    const round5Bottom655 = createGunmanBottomMovementState(88, 132, 47);
+    for (let frame = 49; frame <= 164; frame += 1) {
+      const scroll = (655 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(round5Bottom655, frame, 168, 216, (x, y) => roundActorCollisionAtNes(5, scroll, x, y));
+    }
+    expect(round5Bottom655).toMatchObject({ frame: 164, mode: "chase", heading: 6, timer: 0, x: 99 + 186 / 256, y: 251 + 157 / 256, dead: false });
+
     const round5Top2463 = createGunmanTopMovementState(40, 145, 3);
     const round5Top2463PlayerY = [213, 210, 208, 206, 205, 204, 204, 205, 206, 208, 210, 213, 216] as const;
     for (let frame = 1; frame <= 1082; frame += 1) {
@@ -2170,6 +2184,10 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankEventShotFrames(5, 575, 88)).toEqual([77, 333, 397]);
     expect(gunmanTopUsesDynamicState(5, 623)).toBe(true);
     expect(gunmanFlankEventShotFrames(5, 623, 184)).toEqual([13, 333]);
+    expect(gunmanTopUsesDynamicState(5, 639)).toBe(true);
+    expect(gunmanFlankEventShotFrames(5, 639, 136)).toEqual([45]);
+    expect(gunmanBottomUsesDynamicState(5, 655)).toBe(true);
+    expect(gunmanFlankEventShotFrames(5, 655, 88)).toEqual([]);
     expect(gunmanBottomUsesDynamicState(5, 959)).toBe(true);
     expect(gunmanFlankEventShotFrames(5, 959, 216)).toEqual([296, 616, 848, 912, 976]);
     expect(gunmanBottomUsesDynamicState(5, 1311)).toBe(true);

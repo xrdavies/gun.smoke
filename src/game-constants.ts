@@ -1104,6 +1104,8 @@ const GUNMAN_FLANK_EVENT_SHOT_FRAMES: Readonly<Record<string, readonly number[]>
   "5:2911:184": [13, 397],
   "5:3023:168": [33, 225],
   "5:3023:248": [93],
+  "5:639:136": [45],
+  "5:655:88": [],
   "5:1775:112": [35],
   "5:879:208": [23],
   "6:47:168": [24],
@@ -1234,6 +1236,7 @@ export function createGunmanFlankMovementState(entityCode: 7 | 8 | 9, x: number,
 }
 
 export function gunmanBottomUsesDynamicState(stage: number, eventAt?: number, originX?: number): boolean {
+  if (stage === 5 && eventAt === 655) return true;
   if (stage === 5 && eventAt === 1871) return Math.round(originX ?? -1) === 48;
   if (stage === 5 && (eventAt === 255 || eventAt === 511 || eventAt === 959 || eventAt === 1311 || eventAt === 1727 || eventAt === 1967)) return true;
   return stage === 6 && (eventAt === 175 || eventAt === 191 || eventAt === 447 || eventAt === 479 || eventAt === 559 || eventAt === 847 || eventAt === 3055 || eventAt === 3327 || eventAt === 3951 || eventAt === 4079 || eventAt === 4319 || eventAt === 4335 || eventAt === 4575 || eventAt === 4623 || eventAt === 4639 || eventAt === 4751 || eventAt === 815 || eventAt === 831 || eventAt === 1007 || eventAt === 1023 || eventAt === 1167 || eventAt === 1231 || eventAt === 1279 || eventAt === 1311 || eventAt === 1375 || eventAt === 1535 || eventAt === 2207 || eventAt === 2479 || eventAt === 2879);
@@ -1265,7 +1268,7 @@ export function createGunmanBottomMovementState(x: number, fineX = 0, fineY = 0)
 }
 
 export function gunmanTopUsesDynamicState(stage: number, eventAt?: number): boolean {
-  if (stage === 5 && (eventAt === 31 || eventAt === 47 || eventAt === 207 || eventAt === 559 || eventAt === 575 || eventAt === 623 || eventAt === 879 || eventAt === 1535 || eventAt === 1631 || eventAt === 1647 || eventAt === 1759 || eventAt === 1775 || eventAt === 1887 || eventAt === 1999 || eventAt === 2095 || eventAt === 2175 || eventAt === 2207 || eventAt === 2287 || eventAt === 2463 || eventAt === 2655 || eventAt === 2671 || eventAt === 2735 || eventAt === 2879 || eventAt === 2895 || eventAt === 2911 || eventAt === 3023)) return true;
+  if (stage === 5 && (eventAt === 31 || eventAt === 47 || eventAt === 207 || eventAt === 559 || eventAt === 575 || eventAt === 623 || eventAt === 639 || eventAt === 879 || eventAt === 1535 || eventAt === 1631 || eventAt === 1647 || eventAt === 1759 || eventAt === 1775 || eventAt === 1887 || eventAt === 1999 || eventAt === 2095 || eventAt === 2175 || eventAt === 2207 || eventAt === 2287 || eventAt === 2463 || eventAt === 2655 || eventAt === 2671 || eventAt === 2735 || eventAt === 2879 || eventAt === 2895 || eventAt === 2911 || eventAt === 3023)) return true;
   return stage === 6 && (eventAt === 47 || eventAt === 63 || eventAt === 239 || eventAt === 2255 || eventAt === 2287 || eventAt === 2447 || eventAt === 2623 || eventAt === 2687 || eventAt === 2735 || eventAt === 2751 || eventAt === 3215 || eventAt === 3295 || eventAt === 3487 || eventAt === 3551 || eventAt === 3711 || eventAt === 3951 || eventAt === 4415 || eventAt === 4479 || eventAt === 4511 || eventAt === 4623 || eventAt === 4639 || eventAt === 4783 || eventAt === 4911 || eventAt === 4975 || eventAt === 5087 || eventAt === 5103 || eventAt === 543 || eventAt === 863 || eventAt === 943 || eventAt === 975 || eventAt === 991 || eventAt === 1279 || eventAt === 1391 || eventAt === 1407 || eventAt === 1455 || eventAt === 1631 || eventAt === 1871 || eventAt === 1903 || eventAt === 2015);
 }
 

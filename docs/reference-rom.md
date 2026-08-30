@@ -1270,6 +1270,17 @@ teleport. Re-entry begins at frame 429, the first smoke controller appears at
 opportunities remain subject to the Boss's movement state and live aim-sector
 gate; the next accepted controller appears at frame 805, with later accepted
 controllers at 1001 and 1347 in the extended fixed-player trace.
+The frame-853 teleport retains NES fractions `fineX=162,fineY=152` through the
+frame-943 re-entry. From there, `$A131-$A1DB` executes the long-tail state:
+`AD += AC` gates a 26-frame attack hold, `AE += AC` chooses a direct movement
+heading or a player/lane target, and the `$A224/$A22C/$A234` tables select an
+8/16/24/32/48-frame overlay. Each movement frame applies both the stored main
+heading and that overlay. The controlled sequence selects heading `0x5c`,
+reaches `(174+34/256,34+24/256)` at frame 1,030, then dispatch `0xab` starts at
+1,031 because the completed segment lies outside `x=80..207,y=56..159`.
+Later trace teleports occur after variable 79/88/173-frame and longer movement
+windows, so runtime uses this state machine after the two measured opening
+cycles instead of repeating the first 424-frame interval.
 The Ninja remains in its initial smoke state for about 44 frames. Its isolated
 attack routine creates a low-slot smoke/prepare entity at frame 140, then emits
 four `0x30` shuriken bullets at frame 179; subsequent volleys commonly recur

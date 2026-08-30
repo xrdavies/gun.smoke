@@ -298,6 +298,10 @@ The Ninja Boss's first smoke controller and four-way shuriken volley now begin
 at the refreshed natural trace's frames 124/163 instead of 140/179.
 Its first post-teleport smoke/volley now uses the separate measured 196-frame
 re-entry delay, producing the frame-625/664 controller and shuriken timing.
+After the second natural teleport, Ninja Boss movement now uses the decoded
+random target/template/attack state and segment-boundary arena test. The
+frame-943 handoff preserves fractions `162/152` and reproduces the controlled
+frame-1,030 coordinate before the frame-1,031 teleport.
 Fatman Joe's moving shell now converts in place to a non-colliding split
 controller before its five timed four-frame mine releases. Cutter now keeps
 frames 350-379 as one paired boomerang volley and schedules the next allocation

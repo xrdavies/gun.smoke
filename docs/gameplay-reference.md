@@ -280,8 +280,12 @@ and the re-entry path retains the corrected relative-frame `y=60` and `y=90`
 samples at frames 80 and 216 instead of smoothing across those jumps.
 The re-entry attack clock is distinct from the opening: after re-entry begins at
 frame 429, its first smoke controller appears at 625 and the four shuriken fire
-at 664. The next re-entry opportunity appears at frame 805; later state- and
-aim-gated opportunities remain tied to the Boss movement cycle.
+at 664. The next re-entry opportunity appears at frame 805. After the second
+natural teleport at frame 853 and the frame-943 re-entry, the decoded long-tail
+state chooses 8/16/24/32/48-frame movement templates, player/lane targets and
+26-frame attack holds from the live ROM random registers. It teleports only
+when a completed segment leaves NES `x=80..207,y=56..159`; therefore later
+cycles are variable rather than another fixed 424-frame schedule.
 
 The ROM event stream is data-driven per Round. Its behavior routines map to the
 recognizable roster of gunmen, bombers, snipers, back-stabbers, riflemen,

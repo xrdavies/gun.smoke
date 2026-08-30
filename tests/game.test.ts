@@ -39,7 +39,7 @@ import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOME
 import { CUTTER_MOVEMENT_SPEED } from "../src/game-constants";
 import { advanceDevilHawkMovement, createDevilHawkMovementState, devilHawkAttackDelay, devilHawkFanHeadings, DEVIL_HAWK_ATTACK_FRAMES, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_FULL_FAN_HEADINGS, DEVIL_HAWK_FULL_FAN_LIFETIME, DEVIL_HAWK_FULL_FAN_MAX_Y_NES, devilHawkFullFanAt, DEVIL_HAWK_JUMP_PERIOD, devilHawkProjectileVelocity, DEVIL_HAWK_SIDE_FAN_LIFETIME, DEVIL_HAWK_VOLLEY_INTERVAL } from "../src/game-constants";
 import { devilHawkCombatY } from "../src/game-constants";
-import { NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_NATURAL_TELEPORT, NINJA_BOSS_REPEAT_NATURAL_TELEPORT, NINJA_BOSS_FIRST_ATTACK_DELAY, NINJA_BOSS_FIRST_PREPARE_DELAY, NINJA_BOSS_INITIAL_PREPARE_FRAMES, NINJA_BOSS_PREPARE_CONTROLLER_DURATION, NINJA_BOSS_PREPARE_DURATION, NINJA_BOSS_REENTRY_PREPARE_DELAY, NINJA_BOSS_REENTRY_PREPARE_FRAMES, NINJA_BOSS_SHURIKEN_COUNT, NINJA_BOSS_SHURIKEN_LIFETIME, NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES, NINJA_BOSS_SHURIKEN_VELOCITIES_NES, ninjaBossCombatX, ninjaBossCombatY, ninjaBossNextTeleportAt, ninjaBossPreparePosition } from "../src/game-constants";
+import { advanceNinjaBossMovement, createNinjaBossMovementState, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_NATURAL_TELEPORT, NINJA_BOSS_REPEAT_NATURAL_TELEPORT, NINJA_BOSS_FIRST_ATTACK_DELAY, NINJA_BOSS_FIRST_PREPARE_DELAY, NINJA_BOSS_INITIAL_PREPARE_FRAMES, NINJA_BOSS_PREPARE_CONTROLLER_DURATION, NINJA_BOSS_PREPARE_DURATION, NINJA_BOSS_REENTRY_PREPARE_DELAY, NINJA_BOSS_REENTRY_PREPARE_FRAMES, NINJA_BOSS_SHURIKEN_COUNT, NINJA_BOSS_SHURIKEN_LIFETIME, NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES, NINJA_BOSS_SHURIKEN_VELOCITIES_NES, NINJA_BOSS_TAIL_HANDOFF_FINE_X, NINJA_BOSS_TAIL_HANDOFF_FINE_Y, ninjaBossCombatX, ninjaBossCombatY, ninjaBossNextTeleportAt, ninjaBossPreparePosition } from "../src/game-constants";
 import { SHOTGUNNER_PATH_NES, shotgunnerPosition } from "../src/game-constants";
 import { SHOTGUNNER_SIDE_LIFETIME, SHOTGUNNER_SIDE_PATH_NES, SHOTGUNNER_SIDE_SHOT_FRAME, shotgunnerSidePosition } from "../src/game-constants";
 import { hasSpecialAmmoStock, romEnemyDrop, romEnemyScore } from "../src/game-constants";
@@ -816,6 +816,25 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ninjaBossCombatX(0, 112 * NES_WORLD_X_SCALE, true)).toBe(420);
     expect(ninjaBossCombatX(304 / NES_FRAME_RATE, 112 * NES_WORLD_X_SCALE, true)).toBe(611.25);
     expect([bossSpriteVisible(1, 1, 2, false), bossSpriteVisible(5, 1, 2, false), bossSpriteVisible(4, 1, 2, false), bossSpriteVisible(4, 3, 2, true), bossSpriteVisible(4, 3, 2, false)]).toEqual([true, true, false, false, true]);
+  });
+
+  it("runs the decoded Ninja Boss long-tail state", () => {
+    const attacking = createNinjaBossMovementState(192, 64, 0x40, NINJA_BOSS_TAIL_HANDOFF_FINE_X, NINJA_BOSS_TAIL_HANDOFF_FINE_Y);
+    expect(advanceNinjaBossMovement(attacking, 45, 136, 216, () => 0xff, () => 0x06, () => true)).toEqual({ prepareChecks: 0, teleport: false });
+    expect(attacking.mode).toBe("attack");
+    expect(advanceNinjaBossMovement(attacking, 58, 136, 216, () => 0xff, () => 0, () => true).prepareChecks).toBe(1);
+    advanceNinjaBossMovement(attacking, 71, 136, 216, () => 0xff, () => 0, () => true);
+    expect(attacking).toMatchObject({ mode: "move", remaining: 16, heading: 0x5c });
+    advanceNinjaBossMovement(attacking, 87, 136, 216, () => 0, () => 0, () => true);
+    expect([attacking.x, attacking.y]).toEqual([174 + 34 / 256, 34 + 24 / 256]);
+    expect(advanceNinjaBossMovement(attacking, 88, 136, 216, () => 0, () => 0, () => true).teleport).toBe(true);
+
+    const moving = createNinjaBossMovementState(112, 64);
+    advanceNinjaBossMovement(moving, 45, 136, 216, () => 0x20, () => 0, () => true);
+    advanceNinjaBossMovement(moving, 61, 136, 216, () => 0, () => 0, () => true);
+    expect([moving.mode, moving.x, moving.y]).toEqual(["select", 112, 24]);
+    expect(createNinjaBossMovementState(192, 64, 0x40, NINJA_BOSS_TAIL_HANDOFF_FINE_X, NINJA_BOSS_TAIL_HANDOFF_FINE_Y)).toMatchObject({ x: 192 + 162 / 256, y: 64 + 152 / 256 });
+    expect(advanceNinjaBossMovement(createNinjaBossMovementState(208, 64), 45, 136, 216, () => 0, () => 0, () => true).teleport).toBe(true);
   });
 
   it("matches the traced falling-rock hazard timing", () => {

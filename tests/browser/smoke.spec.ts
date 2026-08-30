@@ -336,6 +336,11 @@ test("fires the Ninja Boss opening volley on the traced frame", async ({ page })
   await page.clock.runFor(3_100);
   expect(await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; volleysFired: number }> }).__getGunSmokeUnits()
     .find((unit) => unit.kind === "boss")?.volleysFired)).toBe(4);
+  await page.clock.runFor(2_500);
+  const tail = await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; ninjaBossCycle?: number; ninjaBossMode?: string }> }).__getGunSmokeUnits()
+    .find((unit) => unit.kind === "boss"));
+  expect(tail?.ninjaBossCycle).toBe(2);
+  expect(tail?.ninjaBossMode).toBeDefined();
 });
 
 test("runs the distinct Boss projectile chains", async ({ page }) => {

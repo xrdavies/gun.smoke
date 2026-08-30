@@ -959,9 +959,13 @@ export function createSpearState(x: number, y: number, sideEntry: boolean, fineX
 }
 
 function moveEncodedHeading(state: { x: number; y: number }, encodedHeading: number): void {
+  if ((encodedHeading & 0xc0) === 0xc0) {
+    if (encodedHeading === 0xc1) state.y -= 4;
+    return;
+  }
   const [velocityX, velocityY] = SNIPER_BULLET_VELOCITIES_NES[encodedHeading & 31] ?? SNIPER_BULLET_VELOCITIES_NES[0];
   const tier = encodedHeading & 0xc0;
-  const speed = tier === 0xc0 ? 0 : (tier >> 6) + 1;
+  const speed = (tier >> 6) + 1;
   state.x += velocityX * speed;
   state.y += velocityY * speed;
 }
@@ -3049,6 +3053,114 @@ export const NINJA_BOSS_SHURIKEN_COUNT = 4;
 export const NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES = [6, -34] as const;
 export const NINJA_BOSS_SHURIKEN_VELOCITIES_NES = [[1.25, -1.5], [1.25, 1.5], [-1.25, 1.5], [-1.25, -1.5]] as const;
 export const NINJA_BOSS_SHURIKEN_LIFETIME = 40 / NES_FRAME_RATE;
+export const NINJA_BOSS_TAIL_HANDOFF_FINE_X = 162;
+export const NINJA_BOSS_TAIL_HANDOFF_FINE_Y = 152;
+const NINJA_BOSS_TAIL_ATTACK_FRAMES = 26;
+const NINJA_BOSS_TAIL_PREPARE_FRAME = 13;
+const NINJA_BOSS_TAIL_PATH_8 = [0x50, 0x10, 0x00, 0x40] as const;
+const NINJA_BOSS_TAIL_PATH_16 = [0xc2, 0x90, 0x50, 0x10, 0x00, 0x40, 0x80, 0xc1] as const;
+const NINJA_BOSS_TAIL_PATH_24 = [0xc2, 0x90, 0x50, 0x10, 0x10, 0xc0, 0xc0, 0x00, 0x00, 0x40, 0x80, 0xc1] as const;
+const NINJA_BOSS_TAIL_PATH_32 = [0xc2, 0xc2, 0x90, 0x90, 0x50, 0x50, 0x10, 0x10, 0x00, 0x00, 0x40, 0x40, 0x80, 0x80, 0xc1, 0xc1] as const;
+const NINJA_BOSS_TAIL_PATH_48 = [0xc2, 0x90, 0x90, 0x50, 0x50, 0x50, 0x10, 0x10, 0x10, 0x10, 0xc0, 0xc0, 0xc0, 0xc0, 0x00, 0x00, 0x00, 0x00, 0x40, 0x40, 0x40, 0x80, 0x80, 0xc1] as const;
+const NINJA_BOSS_TAIL_SEGMENTS = [
+  [8, NINJA_BOSS_TAIL_PATH_8], [8, NINJA_BOSS_TAIL_PATH_8],
+  [16, NINJA_BOSS_TAIL_PATH_16], [24, NINJA_BOSS_TAIL_PATH_24],
+  [32, NINJA_BOSS_TAIL_PATH_32], [32, NINJA_BOSS_TAIL_PATH_32],
+  [48, NINJA_BOSS_TAIL_PATH_48], [48, NINJA_BOSS_TAIL_PATH_48],
+] as const;
+
+export type NinjaBossMovementState = {
+  frame: number;
+  mode: "select" | "move" | "attack";
+  x: number;
+  y: number;
+  heading: number;
+  remaining: number;
+  segment: number;
+  targetPhase: 0 | 1 | 2;
+  targetIndex: number;
+  attackReady: boolean;
+  attackAge: number;
+};
+
+export function createNinjaBossMovementState(x: number, y: number, heading = 0x40, fineX = 0, fineY = 0): NinjaBossMovementState {
+  return { frame: 44, mode: "select", x: x + fineX / 256, y: y + fineY / 256, heading, remaining: 0, segment: 0, targetPhase: 0, targetIndex: 0, attackReady: true, attackAge: 0 };
+}
+
+function ninjaBossTailInsideArena(state: NinjaBossMovementState): boolean {
+  const x = Math.floor(state.x);
+  const y = Math.floor(state.y);
+  return x >= 80 && x < 208 && y >= 56 && y < 160;
+}
+
+export function advanceNinjaBossMovement(
+  state: NinjaBossMovementState,
+  targetFrame: number,
+  playerX: number,
+  playerY: number,
+  movementRandom: () => number,
+  attackRandom: () => number,
+  canPrepare: () => boolean,
+): { readonly prepareChecks: number; readonly teleport: boolean } {
+  let prepareChecks = 0;
+  let teleport = false;
+  while (state.frame < targetFrame && !teleport) {
+    state.frame += 1;
+    if (state.mode === "attack") {
+      state.attackAge += 1;
+      if (state.attackAge === NINJA_BOSS_TAIL_PREPARE_FRAME) prepareChecks += 1;
+      if (state.attackAge < NINJA_BOSS_TAIL_ATTACK_FRAMES) continue;
+      state.mode = "select";
+    }
+    if (state.mode === "move") {
+      state.remaining -= 1;
+      const pattern = NINJA_BOSS_TAIL_SEGMENTS[state.segment]![1];
+      moveEncodedHeading(state, state.heading);
+      moveEncodedHeading(state, pattern[Math.floor(state.remaining / 2)] ?? 0xc0);
+      if (state.remaining === 0) state.mode = "select";
+      continue;
+    }
+    if (state.targetPhase === 2) state.targetPhase = 0;
+    if (state.targetPhase === 0 && !ninjaBossTailInsideArena(state)) {
+      teleport = true;
+      continue;
+    }
+    if (state.targetPhase === 0 && state.attackReady && canPrepare() && (attackRandom() & 0x0f) >= 6) {
+      state.attackReady = false;
+      state.attackAge = 0;
+      state.mode = "attack";
+      continue;
+    }
+    let targetX: number;
+    let targetY: number;
+    if (state.targetPhase === 0) {
+      const random = movementRandom() & 0xff;
+      state.targetIndex = random & 0x03;
+      if ((random & 0xe0) !== 0) {
+        state.heading = (random & 0x1c) | 0x40;
+        state.remaining = 16;
+        state.segment = 2;
+        state.attackReady = true;
+        state.mode = "move";
+        continue;
+      }
+      state.targetPhase = 1;
+      targetX = Math.floor(playerX);
+      targetY = Math.floor(playerY) - 24;
+    } else {
+      state.targetPhase = 2;
+      [targetX, targetY] = NINJA_BOSS_ENTRY_LANES_NES[state.targetIndex] ?? NINJA_BOSS_ENTRY_LANES_NES[0];
+    }
+    const actorX = Math.floor(state.x);
+    const actorY = Math.floor(state.y);
+    const distance = Math.max(Math.abs(targetX - actorX), Math.abs(targetY - actorY));
+    state.segment = Math.min(7, Math.floor(distance / 16));
+    state.remaining = NINJA_BOSS_TAIL_SEGMENTS[state.segment]![0];
+    state.heading = 0x40 | nesAimHeading(actorX * NES_WORLD_X_SCALE, actorY * NES_WORLD_Y_SCALE, targetX * NES_WORLD_X_SCALE, targetY * NES_WORLD_Y_SCALE);
+    state.mode = "move";
+  }
+  return { prepareChecks, teleport };
+}
 
 export function ninjaBossPreparePosition(age: number, originX: number, originY: number, targetX: number, targetY: number): readonly [number, number] {
   const progress = clamp(age / NINJA_BOSS_PREPARE_DURATION, 0, 1);

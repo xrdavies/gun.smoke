@@ -1549,6 +1549,15 @@ describe("Gun.Smoke vertical slice", () => {
     }
     expect(round4Bottom1855).toMatchObject({ frame: 1300, heading: 31, timer: 0, x: 138 + 51 / 256, y: 174 + 8 / 256, dead: false });
 
+    const round4Bottom1951 = createGunmanBottomMovementState(40, 189, 206);
+    for (let frame = 49; frame <= 1000; frame += 1) {
+      const scroll = (1951 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      const playerX = frame >= 747 ? 88 : frame >= 699 ? 104 : frame >= 459 ? 120 : frame >= 267 ? 152 : 168;
+      const playerY = frame >= 744 && frame < 747 || frame >= 696 && frame < 699 || frame >= 456 && frame < 459 || frame >= 264 && frame < 267 ? 216 : 215;
+      advanceGunmanFlankMovement(round4Bottom1951, frame, playerX, playerY, (x, y) => roundActorCollisionAtNes(4, scroll, x, y));
+    }
+    expect(round4Bottom1951).toMatchObject({ frame: 1000, heading: 30, timer: 4, x: 132 + 28 / 256, y: 170 + 198 / 256, dead: false });
+
     const round4OpeningTopRoutes = [
       { at: 127, state: createGunmanTopMovementState(120, 182, 188), last: 911, mode: "chase" as const, heading: 3, timer: 2, x: 88 + 249 / 256, y: 251 + 132 / 256 },
       { at: 159, state: createGunmanTopMovementState(120, 182, 188), last: 815, mode: "chase" as const, heading: 4, timer: 2, x: 81 + 123 / 256, y: 251 + 29 / 256 },

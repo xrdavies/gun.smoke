@@ -228,7 +228,7 @@ traces cover 1000/687/683/375/1080/375 frames respectively, preserving their
 independent attack windows and screen-boundary releases; contact-dispatch
 variants remain explicitly bounded instead of using the shared route.
 The additional Round 4 tail entries `at=2095,x=88` and `at=2191,x=40` now use
-the shared state machine through their frame-211/frame-200 contact boundaries,
+the shared state machine through their frame-211/frame-200 contact handoffs,
 with frame-154/frame-149 attacks.
 The remaining Round 4 `at=1631,x=184` bottom candidate reaches contact
 dispatch at frame 58 and is intentionally left on the bounded contact path.

@@ -601,6 +601,8 @@ The top `at=1407,x=104,code=6,phase=1` entry follows the shared route for 763
 frames, fires at frames 55 and 443, and exits at the left boundary.
 The preceding `at=1391,x=120,code=6,phase=0` entry follows a 387-frame top
 route, fires at frame 75, and releases through the upper boundary.
+The top `at=1455,x=128,code=6,phase=0` entry follows a 399-frame route, fires
+at frame 63, and releases through the upper boundary.
 At `at=1279`, the bottom `x=112` entry contacts at frame 34 without firing;
 the top `x=136` entry follows a complete 1,146-frame route, fires at 19/403/659,
 and releases through the right boundary.

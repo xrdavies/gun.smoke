@@ -479,6 +479,8 @@ successful shot before `Y=252`; `at=4783,x=200,code=6` matches 383 top-entry
 frames, fires at frame 22, and releases through the right edge.
 The earlier `at=815,x=176,code=5` bottom entry matches 530 shared-state frames,
 fires at frame 187, and releases through the NES `Y=255` boundary.
+The adjacent `at=831,x=160,code=5` bottom entry independently matches 150
+shared-state frames with no successful shot before its `Y=252` release.
 The final top entries `at=4911/4975/5087/5103` independently match the shared
 state machine for 277/333/330/315 frames and fire at 47/21/13/32 before their
 measured left or bottom releases. `at=5119,x=4,y=48,code=8` keeps NES `x=4`

@@ -582,6 +582,8 @@ to `Y=252`, while `at=4783,x=200,code=6` follows a 383-frame top route, fires at
 frame 22, and exits through the right boundary.
 The earlier `at=815,x=176,code=5` bottom entry follows its shared route for 530
 frames, fires at frame 187, and releases through the NES `Y=255` boundary.
+The adjacent `at=831,x=160,code=5` bottom entry follows a shorter 150-frame
+no-shot route and releases at the same `Y=252` screen boundary.
 The final top-entry set at `at=4911/4975/5087/5103` follows complete shared
 routes of 277/333/330/315 frames, with successful shots at 47/21/13/32 before
 their measured left or bottom releases. The following `at=5119` code-8 side

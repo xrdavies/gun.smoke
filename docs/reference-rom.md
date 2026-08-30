@@ -472,6 +472,8 @@ frame 13. Both retain their spawn fractions; each ends at the observed player
 contact handoff rather than a natural screen release.
 At `at=4623`, the top `x=88` entry is distinct from the bottom `x=168` entry;
 it matches 324 frames, fires at frame 69, and releases through `Y=252`.
+At `at=4639`, the top `x=144` entry is distinct from the bottom `x=112` entry;
+it matches 295 frames, fires at frame 13, and releases through the left edge.
 Round 6 `at=4479,x=96,y=0,code=6,phase=1` likewise preserves its fine X/Y
 bytes, matches the shared state machine for 315 frames, fires at frame 29, and
 releases through the bottom boundary.

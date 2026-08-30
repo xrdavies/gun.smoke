@@ -1535,10 +1535,12 @@ class GunSmokeGame {
         unit.x = unit.gunmanBottomContactState.x * NES_WORLD_X_SCALE;
         unit.y = this.scroll + unit.gunmanBottomContactState.y * NES_WORLD_Y_SCALE;
         if (unit.gunmanBottomContactState.dead) unit.hp = 0;
-      } else if (unit.enemyType === "sniper") unit.y += scrollDelta * 2;
-      if (unit.gunmanBottomContactState) {
-        // The ROM contact state owns this bounded retreat and does not fire.
-      } else if (unit.enemyType === "backstabber") {
+        unit.sprite.position = { x: unit.x, y: unit.y };
+        this.syncRomEnemyFine(unit);
+        return;
+      }
+      if (unit.enemyType === "sniper") unit.y += scrollDelta * 2;
+      if (unit.enemyType === "backstabber") {
         if (unit.romBehavior === 3 && unit.backstabberRaidState) {
           advanceBackstabberRaid(unit.backstabberRaidState, Math.round(unit.age * NES_FRAME_RATE));
           unit.x = unit.backstabberRaidState.x * NES_WORLD_X_SCALE;

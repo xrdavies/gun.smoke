@@ -94,6 +94,8 @@ entries, preserving their fine coordinates and measured frame-63/frame-13
 attack opportunities through the observed contact handoffs.
 Round 6 `at=4319` now uses the shared bottom-entry and chase/orbit state machine
 through its complete 392-frame no-shot route and NES `Y=255` release boundary.
+Round 6 `at=4575`, `at=4623`, and `at=4639` now preserve their separate bottom
+routes, release boundaries, and measured `158`/none/`193` attack opportunities.
 Round 3 `at=1119` replaces its generic code-8 path with the shared state
 machine verified across all 282 controlled frames.
 Round 3 `at=687` replaces its generic phase-0 code-7 path with the shared state

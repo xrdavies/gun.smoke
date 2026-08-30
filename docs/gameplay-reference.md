@@ -574,6 +574,10 @@ The later `at=4319,x=200,y=0,code=5,phase=1` entry uses the same 48-frame
 bottom entrance as the earlier Round 6 code-5 routes, then follows the shared
 chase/orbit states to complete its 392-frame no-shot route at the NES `Y=255`
 release boundary.
+The later bottom entries preserve their event-specific routes as well:
+`at=4575,x=120` runs 419 frames and fires at 158 before the `Y=252` release;
+`at=4623,x=168` runs 150 frames with no successful shot before the same release;
+and `at=4639,x=112` fires at 193 before its frame-222 player-contact handoff.
 Round 4's `at=1503,x=248,y=80,code=7,phase=1` event uses the same state machine
 and matches all 356 fixed-point frames through its right-boundary release.
 Its `at=1727,x=248,y=96,code=7,phase=1` counterpart matches all 345 frames

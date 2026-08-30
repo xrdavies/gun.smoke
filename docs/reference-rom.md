@@ -476,6 +476,10 @@ releases through the bottom boundary.
 Round 6 `at=4319,x=200,y=0,code=5,phase=1` rises from NES `y=249` to `y=218`
 over 48 frames, then matches the shared chase/orbit state machine through its
 complete 392-frame no-shot route and releases at the NES `Y=255` boundary.
+The later bottom entries also match the shared state machine: `at=4575,x=120`
+matches 419 frames and fires at frame 158 before `Y=252`; `at=4623,x=168`
+matches 150 frames with no successful shot before `Y=252`; and `at=4639,x=112`
+fires at frame 193 before its frame-222 player-contact handoff.
 Round 4's naturally allocated `at=1503,x=248,y=80,code=7,phase=1` branch
 matches the shared state machine for all 356 coarse/fine samples and releases
 through the right boundary; it no longer inherits the unrelated 642-frame

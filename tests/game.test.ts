@@ -2324,6 +2324,16 @@ describe("Gun.Smoke vertical slice", () => {
     expect(state.dead).toBe(true);
   });
 
+  it("uses the same contact retreat for unshielded bottom Gunmen", () => {
+    const state = createGunmanBottomContactState(136, 227);
+    advanceGunmanBottomContact(state, 1);
+    expect(state).toMatchObject({ frame: 1, x: 136, y: 223, dead: false });
+    advanceGunmanBottomContact(state, GUNMAN_BOTTOM_CONTACT_FRAMES - 1);
+    expect(state).toMatchObject({ frame: GUNMAN_BOTTOM_CONTACT_FRAMES - 1, y: 230, dead: false });
+    advanceGunmanBottomContact(state, GUNMAN_BOTTOM_CONTACT_FRAMES);
+    expect(state.dead).toBe(true);
+  });
+
   it("routes the Round 6 bottom Gunman into the shared state machine", () => {
     expect(gunmanBottomUsesDynamicState(5, 255)).toBe(true);
     expect(gunmanFlankEventShotFrames(5, 255, 216)).toEqual([]);

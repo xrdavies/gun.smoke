@@ -2304,9 +2304,9 @@ class GunSmokeGame {
         else if (unit.kind === "enemyBullet" && contactSourceShouldClear(unit.kind, unit.projectileType, unit.projectileType === "dynamite" && dynamiteContactIsDefusable(unit.age), unit.bossProjectile)) unit.hp = 0;
       } else if ((unit.kind === "enemy" || unit.kind === "boss" || unit.kind === "enemyBullet") && this.invulnerable <= 0 && distance(unit, this.player) <= unit.radius + 20) {
         const smartBombsBefore = this.smartBombs;
-        const horseContact = this.horseHealth > 0 && unit.kind === "enemy" && unit.romBehavior === 2 && unit.romEntityCode === 5;
+        const bottomGunmanContact = unit.kind === "enemy" && unit.romBehavior === 2 && unit.romEntityCode === 5;
         this.takeHit();
-        if (horseContact) {
+        if (bottomGunmanContact && !unit.exploding && unit.hp > 0) {
           unit.gunmanBottomContactState = createGunmanBottomContactState(unit.x / NES_WORLD_X_SCALE, (unit.y - this.scroll) / NES_WORLD_Y_SCALE);
           unit.gunmanBottomContactStartFrame = Math.floor(unit.age * NES_FRAME_RATE);
           unit.maxAge = Number.POSITIVE_INFINITY;

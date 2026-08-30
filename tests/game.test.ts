@@ -4,7 +4,7 @@ import { AMMO_GAIN, advanceSniperFiring, backstabberAmbushY, BACKSTABBER_AMBUSH_
 import { advanceBackstabberRaid, createBackstabberRaidState } from "../src/game-constants";
 import { romPickupScreenY } from "../src/game-constants";
 import { advanceGunmanFlankMovement, createGunmanFlankMovementState, GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, GUNMAN_BOTTOM_NEAR_DISTANCE_NES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, gunmanCanFire, GUNMAN_ENTRY_PATH_NES, GUNMAN_FLANK_INITIAL_STATE_FRAMES, gunmanFlankFirstOpportunityFrame, gunmanFlankLifetime, gunmanFlankMovementFacingHeading, GUNMAN_FLANK_LIFETIMES, GUNMAN_FLANK_SHOT_FRAMES, gunmanFlankUsesDynamicState, GUNMAN_LIFETIME, GUNMAN_TOP_LIFETIMES_FRAMES, gunmanFirstOpportunityFrame, gunmanFlankPosition, gunmanOpeningY, gunmanTopBranch, gunmanTopHeading, gunmanTopPosition, gunmanProjectileVelocity, GUNMAN_SHOT_OPPORTUNITY_INTERVAL } from "../src/game-constants";
-import { createGunmanBottomMovementState, GUNMAN_BOTTOM_DYNAMIC_HANDOFF_FRAME, gunmanBottomDynamicPosition, gunmanBottomUsesDynamicState } from "../src/game-constants";
+import { createGunmanBottomMovementState, GUNMAN_BOTTOM_DYNAMIC_HANDOFF_FRAME, gunmanBottomDynamicPosition, gunmanBottomFirstOpportunityFrame, gunmanBottomUsesDynamicState } from "../src/game-constants";
 import { createGunmanTopMovementState, gunmanTopUsesDynamicState } from "../src/game-constants";
 import { RIFLEMAN_ATTACK_TO_FIRST_SHOT_FRAMES, RIFLEMAN_LIFETIME, RIFLEMAN_PATH_NES, riflemanAttackHeadingAtStart, riflemanCanAttack, riflemanFirstShotFrame, riflemanPosition, riflemanShotHeading, RIFLEMAN_SIDE_ATTACK_STATE_FRAME, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_PATH_NES, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition, mediumProjectileHeadingVelocity, mediumProjectileVelocity } from "../src/game-constants";
 import { bossSpriteVisible, ninjaBossEntryLaneIndex, NINJA_BOSS_TELEPORT_DELAY } from "../src/game-constants";
@@ -1464,6 +1464,7 @@ describe("Gun.Smoke vertical slice", () => {
   it("routes the Round 6 bottom Gunman into the shared state machine", () => {
     expect(GUNMAN_BOTTOM_DYNAMIC_HANDOFF_FRAME).toBe(48);
     expect(gunmanBottomUsesDynamicState(6, 3055)).toBe(true);
+    expect(gunmanBottomUsesDynamicState(6, 3327)).toBe(true);
     expect(gunmanBottomUsesDynamicState(6, 3023)).toBe(false);
     expect(gunmanBottomDynamicPosition(0, 112, 74, 68)).toEqual([(112 + 74 / 256) * NES_WORLD_X_SCALE, (249 + 68 / 256) * NES_WORLD_Y_SCALE]);
     expect(gunmanBottomDynamicPosition(48 / NES_FRAME_RATE, 112, 74, 68)).toEqual([(112 + 74 / 256) * NES_WORLD_X_SCALE, (218 + 68 / 256) * NES_WORLD_Y_SCALE]);
@@ -1476,6 +1477,14 @@ describe("Gun.Smoke vertical slice", () => {
     const releaseScroll = (3055 + 2 / 3 + 1429 / 3) * NES_WORLD_Y_SCALE;
     advanceGunmanFlankMovement(state, 1429, 136, 215, (x, y) => roundActorCollisionAtNes(6, releaseScroll, x, y));
     expect(state.dead).toBe(true);
+
+    expect(gunmanBottomFirstOpportunityFrame(238, 6, 3327)).toBe(232);
+    const contactState = createGunmanBottomMovementState(88, 240, 4);
+    for (let frame = 49; frame <= 272; frame += 1) {
+      const scroll = (3327 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(contactState, frame, 136, 215, (x, y) => roundActorCollisionAtNes(6, scroll, x, y));
+    }
+    expect(contactState).toMatchObject({ frame: 272, mode: "orbit", heading: 12, timer: 1, x: 139 + 128 / 256, y: 202 + 234 / 256, dead: false });
   });
 
   it("routes the offset Round 6 top Gunman into the shared state machine", () => {

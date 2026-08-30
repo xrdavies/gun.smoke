@@ -1116,7 +1116,11 @@ export function createGunmanFlankMovementState(entityCode: 7 | 8 | 9, x: number,
 }
 
 export function gunmanBottomUsesDynamicState(stage: number, eventAt?: number): boolean {
-  return stage === 6 && eventAt === 3055;
+  return stage === 6 && (eventAt === 3055 || eventAt === 3327);
+}
+
+export function gunmanBottomFirstOpportunityFrame(seed: number, stage: number, eventAt?: number): number {
+  return stage === 6 && eventAt === 3327 ? 232 : gunmanFirstOpportunityFrame(seed, 0);
 }
 
 export function gunmanBottomDynamicPosition(age: number, originX: number, fineX = 0, fineY = 0): readonly [number, number] {

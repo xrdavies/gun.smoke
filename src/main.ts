@@ -1028,7 +1028,7 @@ class GunSmokeGame {
       if (traceLifetime === undefined) enemy.ninjaState = createNinjaState(event.x, event.y, this.romEnemyFineX[romSlot ?? 0], this.romEnemyFineY[romSlot ?? 0]);
     }
     if (event.behavior === 2 && event.entityCode === 5) enemy.maxAge = GUNMAN_BOTTOM_LIFETIMES.far;
-    if (event.behavior === 2 && event.entityCode === 5 && gunmanBottomUsesDynamicState(this.stage, event.at)) enemy.maxAge = Number.POSITIVE_INFINITY;
+    if (event.behavior === 2 && event.entityCode === 5 && gunmanBottomUsesDynamicState(this.stage, event.at, event.x)) enemy.maxAge = Number.POSITIVE_INFINITY;
     if (flankCode !== undefined) enemy.maxAge = enemy.gunmanFlankState ? Number.POSITIVE_INFINITY : gunmanFlankLifetime(flankCode, event.y, this.stage, event.phase, event.x > 128, event.at);
     if (event.behavior === 3) enemy.maxAge = Number.POSITIVE_INFINITY;
     if (event.behavior === 8) enemy.maxAge = BACKSTABBER_AMBUSH_LIFETIME;
@@ -1898,7 +1898,7 @@ class GunSmokeGame {
         const previousY = unit.y;
         const tracedGunman = unit.romBehavior === 2;
         const bottomGunman = tracedGunman && unit.romEntityCode === 5;
-        const dynamicBottomGunman = bottomGunman && gunmanBottomUsesDynamicState(this.stage, unit.romEventAt);
+        const dynamicBottomGunman = bottomGunman && gunmanBottomUsesDynamicState(this.stage, unit.romEventAt, unit.romOriginX === undefined ? undefined : unit.romOriginX / NES_WORLD_X_SCALE);
         const dynamicTopGunman = tracedGunman && unit.romEntityCode === 6 && gunmanTopUsesDynamicState(this.stage, unit.romEventAt);
         if (bottomGunman && !dynamicBottomGunman && unit.gunmanBottomRoute === undefined && unit.age >= GUNMAN_BOTTOM_BRANCH_FRAME / NES_FRAME_RATE) {
           unit.targetX = this.player.x;

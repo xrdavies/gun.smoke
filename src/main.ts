@@ -528,6 +528,7 @@ class GunSmokeGame {
     this.deathClock = 0;
     this.deathCommitted = false;
     this.bossSpawned = false;
+    this.romFrameCounter = 0;
     this.stageClearClock = 0;
     this.hasWanted = false;
     this.wingatePhase = 0;
@@ -2479,6 +2480,7 @@ class GunSmokeGame {
     this.scroll = 0;
     this.bossFireClock = 1;
     this.bossSpawned = false;
+    this.romFrameCounter = 0;
     this.hasWanted = false;
     this.wingatePhase = 0;
     this.wingateRespawnClock = 0;
@@ -2503,6 +2505,7 @@ class GunSmokeGame {
 
   private loopStage(): void {
     this.scroll = 0;
+    this.romFrameCounter = 0;
     this.camera.position.y = 270;
     this.player.x = PLAYER_ENTRY_X;
     this.player.y = PLAYER_ENTRY_Y;
@@ -3011,6 +3014,7 @@ if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeRound", { v
   game.romEnemyFineX.fill(0);
   game.romEnemyFineY.fill(0);
   game.bossSpawned = false;
+  game.romFrameCounter = 0;
   game.romEventCursor = 0;
   game.romObjectCursor = 0;
   game.shopIndex = 0;

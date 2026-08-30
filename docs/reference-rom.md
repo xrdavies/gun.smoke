@@ -92,7 +92,9 @@ NES pixel; runtime retains that phase instead of spawning two frames early.
 At `$FA89-$FA92`, a full selected pool skips the record and `$FAD8` advances
 the script pointer; runtime applies the same one-shot capacity check to shops,
 containers, props and behavior entities instead of retrying or exempting shops.
-Boss arenas use a second entry into the same scheduler. The NMI path at
+Each Round initialization at `$E82F` clears the global frame counter `$22`
+along with the random registers before loading its event script. Boss arenas
+then use a second entry into the same scheduler. The NMI path at
 `$FF22-$FF5C` checks global frame counter `$22` when its low seven bits equal
 `0x40` or `0x60`, rejects the opportunity when `$AC & 3` is zero, then selects
 one of 16 overlapping records at `$83BF + ($AD & 0x1E)` in the current Round

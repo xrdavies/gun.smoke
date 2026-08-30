@@ -1126,6 +1126,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankUsesDynamicState(8, 96, 3, 0, 3823, false)).toBe(true);
     expect(gunmanFlankUsesDynamicState(8, 96, 6, 1, 2207, false)).toBe(true);
     expect(gunmanFlankUsesDynamicState(8, 32, 6, 1, 159, false)).toBe(true);
+    expect(gunmanFlankUsesDynamicState(8, 32, 6, 1, 607, false)).toBe(true);
     expect(gunmanFlankUsesDynamicState(8, 32, 6, 0, 207, false)).toBe(true);
     expect(gunmanFlankUsesDynamicState(8, 32, 6, 1, 2943, false)).toBe(true);
     expect(gunmanFlankFirstOpportunityFrame(116, 32, 6, 8, 1, 2943)).toBe(655);
@@ -1133,6 +1134,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankUsesDynamicState(8, 32, 6, 0, 3727, false)).toBe(true);
     expect(gunmanFlankEventShotFrames(6, 3727)).toEqual([68, 132, 196, 719, 847, 911]);
     expect(gunmanFlankEventShotFrames(6, 511)).toEqual([54, 118, 182]);
+    expect(gunmanFlankEventShotFrames(6, 607)).toEqual([75, 139]);
     expect(gunmanFlankEventShotFrames(6, 207)).toEqual([79, 143, 207]);
     expect(gunmanFlankUsesDynamicState(8, 48, 6, 1, 5119, false)).toBe(true);
     expect(gunmanFlankUsesDynamicState(8, 32, 6, 1, 1375, false)).toBe(true);
@@ -1293,6 +1295,14 @@ describe("Gun.Smoke vertical slice", () => {
       advanceGunmanFlankMovement(earlyRound6Code9, frame, 136, 216, (x, y) => roundActorCollisionAtNes(6, scroll, x, y));
     }
     expect(earlyRound6Code9).toMatchObject({ frame: 201, mode: "side", heading: 24, timer: 0, x: 155 + 98 / 256, y: 116 + 78 / 256, dead: false });
+
+    const secondRound6Code8 = createGunmanFlankMovementState(8, 4, 32, false, 117, 118);
+    for (let frame = 1; frame <= 246; frame += 1) {
+      const scroll = (607 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      const playerX = frame >= 27 ? 120 : 136;
+      advanceGunmanFlankMovement(secondRound6Code8, frame, playerX, 215, (x, y) => roundActorCollisionAtNes(6, scroll, x, y));
+    }
+    expect(secondRound6Code8).toMatchObject({ frame: 246, mode: "side", heading: 8, timer: 0, x: 36 + 25 / 256, y: 115 + 118 / 256, dead: false });
 
     const longRound6Code8 = createGunmanFlankMovementState(8, 4, 32, false, 56, 215);
     for (let frame = 1; frame <= 563; frame += 1) {

@@ -1103,6 +1103,7 @@ const GUNMAN_FLANK_EVENT_SHOT_FRAMES: Readonly<Record<string, readonly number[]>
   "4:2143:48": [359],
   "4:2319:32": [],
   "4:2431:152": [58],
+  "4:2591:32": [],
   "4:95:120": [22],
   "4:127:120": [13, 585],
   "4:159:120": [64],
@@ -1291,7 +1292,7 @@ export function gunmanBottomUsesDynamicState(stage: number, eventAt?: number, or
   if (stage === 4 && eventAt === 1679) return Math.round(originX ?? -1) === 112;
   if (stage === 4 && eventAt === 1727) return Math.round(originX ?? -1) === 32;
   if (stage === 4 && eventAt === 2431) return Math.round(originX ?? -1) === 152;
-  if (stage === 4 && (eventAt === 1791 || eventAt === 1823 || eventAt === 1855 || eventAt === 1951 || eventAt === 2111 || eventAt === 2143 || eventAt === 2319)) return true;
+  if (stage === 4 && (eventAt === 1791 || eventAt === 1823 || eventAt === 1855 || eventAt === 1951 || eventAt === 2111 || eventAt === 2143 || eventAt === 2319 || eventAt === 2591)) return true;
   if (stage === 4 && (eventAt === 447 || eventAt === 479 || eventAt === 639 || eventAt === 671 || eventAt === 863 || eventAt === 879 || eventAt === 895 || eventAt === 975 || eventAt === 1007 || eventAt === 1039 || eventAt === 1151 || eventAt === 1167 || eventAt === 1327 || eventAt === 1343)) return true;
   if (stage === 4 && eventAt === 1535) return Math.round(originX ?? -1) === 208;
   if (stage === 5 && eventAt === 655) return true;

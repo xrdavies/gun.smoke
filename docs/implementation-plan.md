@@ -148,6 +148,9 @@ The two naturally allocated Round 6 `at=2015` top entries now remain distinct by
 spawn X and use their frame-13/frame-37 attacks through separate contact
 handoffs. The same-time `at=2207` bottom entries now use their complete
 941/920-frame routes, measured 423/615 and 423 attacks, and upper releases.
+Round 6 `at=2255/2623/2687/2735` now routes four additional top entries through
+the shared state machine, preserving their frame-76/268, 13, 77, and 13 attack
+windows through the observed dispatch or contact handoffs.
 Round 3 `at=1119` replaces its generic code-8 path with the shared state
 machine verified across all 282 controlled frames.
 Round 3 `at=687` replaces its generic phase-0 code-7 path with the shared state

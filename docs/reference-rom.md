@@ -496,6 +496,11 @@ The same-time `at=2207` bottom entries both preserve the 48-frame lower entry
 and then match the shared chase/orbit routine. `x=88` runs 941 frames and fires
 at 423/615; `x=120` runs 920 frames and fires at 423. Both release through the
 upper boundary after the measured frame-216/219 player-coordinate changes.
+The next top entries continue the same fixed-point routine: `at=2255,x=112`
+matches 377 controlled frames and fires at 76/268; `at=2623,x=128` matches 182
+frames and fires at 13; `at=2687,x=136` matches 182 frames and fires at 77; and
+`at=2735,x=184` matches 260 frames and fires at 13 before the observed contact
+handoff. Their spawn fractions remain part of the route identity.
 The earlier `at=815,x=176,code=5` bottom entry matches 530 shared-state frames,
 fires at frame 187, and releases through the NES `Y=255` boundary.
 The adjacent `at=831,x=160,code=5` bottom entry independently matches 150

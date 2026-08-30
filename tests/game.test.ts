@@ -1303,6 +1303,34 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankEventShotFrames(6, 3919, 248)).toEqual([26, 90, 154, 218, 399, 527, 655, 1039]);
     expect(gunmanFlankEventShotFrames(6, 4319, 200)).toEqual([]);
     expect(gunmanFlankEventShotFrames(6, 4543, 4)).toEqual([102]);
+    expect(gunmanFlankEventShotFrames(2, 703, 4)).toEqual([64, 128, 192, 309]);
+    expect(gunmanFlankEventShotFrames(2, 1375, 4)).toEqual([79, 796, 1116, 1180, 1500]);
+    expect(gunmanFlankEventShotFrames(2, 1839, 248)).toEqual([45, 109, 173, 237, 546]);
+    expect(gunmanFlankEventShotFrames(3, 255, 4)).toEqual([94]);
+    expect(gunmanFlankEventShotFrames(3, 319, 4)).toEqual([64, 320]);
+    expect(gunmanFlankEventShotFrames(3, 687, 4)).toEqual([98]);
+    expect(gunmanFlankEventShotFrames(3, 959, 4)).toEqual([69]);
+    expect(gunmanFlankEventShotFrames(3, 1071, 4)).toEqual([]);
+    expect(gunmanFlankEventShotFrames(3, 1119, 4)).toEqual([]);
+    expect(gunmanFlankEventShotFrames(3, 1647, 4)).toEqual([64]);
+    expect(gunmanFlankEventShotFrames(3, 1711, 4)).toEqual([64]);
+    expect(gunmanFlankEventShotFrames(3, 3775, 4)).toEqual([]);
+    expect(gunmanFlankEventShotFrames(3, 3823, 4)).toEqual([]);
+    expect(gunmanFlankEventShotFrames(3, 4239, 4)).toEqual([78]);
+    expect(gunmanFlankEventShotFrames(3, 4255, 248)).toEqual([99, 336]);
+    expect(gunmanFlankEventShotFrames(3, 4831, 248)).toEqual([64, 320]);
+    expect(gunmanFlankEventShotFrames(3, 4863, 248)).toEqual([76]);
+    expect(gunmanFlankEventShotFrames(4, 1503, 248)).toEqual([70]);
+    expect(gunmanFlankEventShotFrames(4, 1695, 4)).toEqual([64]);
+    expect(gunmanFlankEventShotFrames(4, 1727, 248)).toEqual([79]);
+    expect(gunmanFlankEventShotFrames(4, 1743, 4)).toEqual([73]);
+    expect(gunmanFlankEventShotFrames(4, 2527, 4)).toEqual([64]);
+    expect(gunmanFlankEventShotFrames(4, 1343, 216)).toEqual([13, 461]);
+    expect(gunmanFlankEventShotFrames(5, 1759, 4)).toEqual([106]);
+    expect(gunmanFlankEventShotFrames(5, 1903, 4)).toEqual([68, 452, 836]);
+    expect(gunmanFlankEventShotFrames(5, 1999, 4)).toEqual([64]);
+    expect(gunmanFlankEventShotFrames(5, 2735, 4)).toEqual([64]);
+    expect(gunmanFlankEventShotFrames(5, 1135, 4)).toEqual([112, 304, 368, 432, 693]);
 
     const round5Actor = createGunmanFlankMovementState(7, 4, 32, false, 48, 68);
     for (let frame = 1; frame <= 1026; frame += 1) {

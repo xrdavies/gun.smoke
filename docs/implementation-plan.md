@@ -74,6 +74,8 @@ Round 6 `at=3055` now hands its bottom-entry code-5 actor to the shared state
 machine after frame 48 and preserves the complete 1,429-frame route.
 Round 6 `at=3295` now uses its downward top-entry state and shared chase/orbit
 routine through the complete 745-frame left-boundary route.
+Round 6 `at=3327` routes its naturally allocated bottom Gunman through the
+shared state machine to its measured frame-273 contact boundary.
 Round 3 `at=1119` replaces its generic code-8 path with the shared state
 machine verified across all 282 controlled frames.
 Round 3 `at=687` replaces its generic phase-0 code-7 path with the shared state

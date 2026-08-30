@@ -548,6 +548,10 @@ no-shot route and right-edge release instead of the generic near branch.
 Round 6 `at=3295,x=64,y=0,code=6` likewise uses a 48-frame top entrance before
 the shared state machine. Its 745-frame route fires at 62/126/574 and exits left;
 it is not a horizontal offset of the captured `x=88` top route.
+The naturally allocated `at=3327,x=88,y=0,code=5` entry follows the same
+bottom-to-shared-state handoff, fires at frame 232, and matches through its
+frame-273 Blue Yashichi contact. Its same-frame partner is dropped by pool
+pressure.
 Round 4's `at=1503,x=248,y=80,code=7,phase=1` event uses the same state machine
 and matches all 356 fixed-point frames through its right-boundary release.
 Its `at=1727,x=248,y=96,code=7,phase=1` counterpart matches all 345 frames

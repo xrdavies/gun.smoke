@@ -443,6 +443,11 @@ state and then follows the same chase/orbit routine. All 745 fixed-point frames
 match, successful shots occur at frames 62, 126, and 574, and the actor exits
 through the left boundary instead of using an X-offset copy of the `x=88`
 fixed route.
+At `at=3327,x=88,y=0,code=5`, the naturally allocated first bottom entry also
+hands off after frame 48. Its shared-state fixed-point coordinates match through
+frame 272 and it fires at frame 232; Blue Yashichi contact defeats it on the
+following frame, so no post-contact lifetime is inferred. The same-frame
+`x=144` partner is skipped by natural pool pressure.
 Round 4's naturally allocated `at=1503,x=248,y=80,code=7,phase=1` branch
 matches the shared state machine for all 356 coarse/fine samples and releases
 through the right boundary; it no longer inherits the unrelated 642-frame

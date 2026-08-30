@@ -8,6 +8,7 @@ import { createGunmanBottomMovementState, GUNMAN_BOTTOM_DYNAMIC_HANDOFF_FRAME, g
 import { createGunmanTopMovementState, gunmanTopUsesDynamicState } from "../src/game-constants";
 import { RIFLEMAN_ATTACK_TO_FIRST_SHOT_FRAMES, RIFLEMAN_LIFETIME, RIFLEMAN_PATH_NES, riflemanAttackHeadingAtStart, riflemanCanAttack, riflemanFirstShotFrame, riflemanPosition, riflemanShotHeading, RIFLEMAN_SIDE_ATTACK_STATE_FRAME, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_PATH_NES, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition, mediumProjectileHeadingVelocity, mediumProjectileVelocity } from "../src/game-constants";
 import { bossSpriteVisible, ninjaBossEntryLaneIndex, NINJA_BOSS_TELEPORT_DELAY } from "../src/game-constants";
+import { bossIsVulnerable } from "../src/game-constants";
 import { hasWeaponStock } from "../src/game-constants";
 import { ENEMY_DEFEAT_ANIMATION_DURATION } from "../src/game-constants";
 import { WINGATE_ENDING_INPUT_DELAY, WINGATE_ENTRY_INVULNERABILITY, WINGATE_FINAL_DEFEAT_ANIMATION_DURATION, WINGATE_FINAL_ENDING_DELAY } from "../src/game-constants";
@@ -3480,6 +3481,11 @@ describe("Gun.Smoke vertical slice", () => {
   });
 
   it("matches the traced Fatman Joe entrance", () => {
+    expect([
+      bossIsVulnerable(5, 169 / NES_FRAME_RATE, 170 / NES_FRAME_RATE, false),
+      bossIsVulnerable(5, 170 / NES_FRAME_RATE, 170 / NES_FRAME_RATE, false),
+      bossIsVulnerable(5, 170 / NES_FRAME_RATE, 170 / NES_FRAME_RATE, true),
+    ]).toEqual([false, false, true]);
     expect(FATMAN_JOE_ENTRY_X_NES).toEqual([64, 104, 152, 192]);
     expect(FATMAN_JOE_ENTRY_X_LANES).toEqual([240, 390, 570, 720]);
     expect(FATMAN_JOE_ENTRY_Y_NES).toBe(0);

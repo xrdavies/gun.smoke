@@ -654,6 +654,12 @@ export function bossSpriteVisible(stage: number, age: number, invulnerableUntil:
   return stage !== 4 || (!teleporting && age >= invulnerableUntil);
 }
 
+export function bossIsVulnerable(stage: number, age: number, invulnerableUntil: number, fired: boolean): boolean {
+  if (age < invulnerableUntil) return false;
+  if (stage === 2 || stage === 3 || stage === 5) return fired;
+  return true;
+}
+
 export const ROCK_IMPACT_DELAY = 96 / NES_FRAME_RATE;
 export const ROCK_IMPACT_LIFETIME = 25 / NES_FRAME_RATE;
 export const ROCK_LIFETIME = 121 / NES_FRAME_RATE;

@@ -495,6 +495,8 @@ records a successful shot.
 The side `at=1375,x=4,y=32,code=8,phase=1` entry matches the shared flank state
 machine for 564 frames, fires at frames 45/109/173/237, and releases through
 the upper screen boundary.
+The top `at=1407,x=104,code=6,phase=1` entry matches the shared state machine
+for 763 frames, fires at frames 55 and 443, and releases through the left edge.
 At `at=1279`, the bottom `x=112` entry reaches player contact at frame 34 with
 no successful shot. The top `x=136` entry matches the shared state machine for
 1,146 frames, fires at frames 19/403/659, and releases through the right edge.

@@ -623,6 +623,10 @@ with attack 359, 2319/2591 each match 375-frame no-shot releases, and
 2431 matches 1080 frames with attack 58. The paired `at=2431,x=96` route,
 like `at=1871`, `at=2191`, `at=2351`, and `at=2463`, reaches player-contact
 dispatch before handoff and remains on the bounded contact path.
+The same event-tail pass now binds the previously unscoped bottom entries
+`at=2095,x=88` and `at=2191,x=40`: they match through frames 210 and 199 of
+their shared state, fire at frames 154 and 149, and then reach their contact
+dispatch boundaries.
 The earlier `at=815,x=176,code=5` bottom entry matches 530 shared-state frames,
 fires at frame 187, and releases through the NES `Y=255` boundary.
 The adjacent `at=831,x=160,code=5` bottom entry independently matches 150

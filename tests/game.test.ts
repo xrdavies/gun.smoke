@@ -3117,6 +3117,18 @@ describe("Gun.Smoke vertical slice", () => {
     expect(state.dead).toBe(true);
   });
 
+  it("matches the Round 6 side Gunman at 2143 through its lunge handoff", () => {
+    expect(gunmanFlankUsesDynamicState(8, 32, 6, 1, 2143)).toBe(true);
+    expect(gunmanFlankEventShotFrames(6, 2143, 4)).toEqual([64]);
+    const state = createGunmanFlankMovementState(8, 4, 32, false, 232, 0);
+    state.x -= 1;
+    for (let frame = 1; frame <= 246; frame += 1) {
+      const scroll = (2143 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(state, frame, 136, 215, (x, y) => roundActorCollisionAtNes(6, scroll, x, y));
+    }
+    expect(state).toMatchObject({ frame: 246, heading: 8, x: 36 + 96 / 256, y: 115, dead: false });
+  });
+
   it("matches the traced Bandit Bill volley timing", () => {
     expect(BANDIT_BILL_FIRST_VOLLEY_DELAY).toBeCloseTo(107 / NES_FRAME_RATE, 9);
     expect(BANDIT_BILL_SHOT_INTERVAL).toBeCloseTo(12 / NES_FRAME_RATE, 9);

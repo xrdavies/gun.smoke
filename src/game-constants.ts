@@ -1076,6 +1076,8 @@ const GUNMAN_FLANK_EVENT_SHOT_FRAMES: Readonly<Record<string, readonly number[]>
   "6:1023": [65],
   "6:1167": [],
   "6:1231": [],
+  "6:1279:112": [],
+  "6:1279:136": [19, 403, 659],
   "6:4751:40": [],
   "6:4783:200": [22],
   "6:4911:128": [47],
@@ -1145,7 +1147,7 @@ export function createGunmanFlankMovementState(entityCode: 7 | 8 | 9, x: number,
 }
 
 export function gunmanBottomUsesDynamicState(stage: number, eventAt?: number): boolean {
-  return stage === 6 && (eventAt === 3055 || eventAt === 3327 || eventAt === 4319 || eventAt === 4575 || eventAt === 4623 || eventAt === 4639 || eventAt === 4751 || eventAt === 815 || eventAt === 831 || eventAt === 1007 || eventAt === 1023 || eventAt === 1167 || eventAt === 1231);
+  return stage === 6 && (eventAt === 3055 || eventAt === 3327 || eventAt === 4319 || eventAt === 4575 || eventAt === 4623 || eventAt === 4639 || eventAt === 4751 || eventAt === 815 || eventAt === 831 || eventAt === 1007 || eventAt === 1023 || eventAt === 1167 || eventAt === 1231 || eventAt === 1279);
 }
 
 export function gunmanBottomFirstOpportunityFrame(seed: number, stage: number, eventAt?: number): number {
@@ -1174,7 +1176,7 @@ export function createGunmanBottomMovementState(x: number, fineX = 0, fineY = 0)
 }
 
 export function gunmanTopUsesDynamicState(stage: number, eventAt?: number): boolean {
-  return stage === 6 && (eventAt === 3295 || eventAt === 3487 || eventAt === 3551 || eventAt === 3711 || eventAt === 4415 || eventAt === 4479 || eventAt === 4511 || eventAt === 4623 || eventAt === 4639 || eventAt === 4783 || eventAt === 4911 || eventAt === 4975 || eventAt === 5087 || eventAt === 5103 || eventAt === 863 || eventAt === 943 || eventAt === 975 || eventAt === 991);
+  return stage === 6 && (eventAt === 3295 || eventAt === 3487 || eventAt === 3551 || eventAt === 3711 || eventAt === 4415 || eventAt === 4479 || eventAt === 4511 || eventAt === 4623 || eventAt === 4639 || eventAt === 4783 || eventAt === 4911 || eventAt === 4975 || eventAt === 5087 || eventAt === 5103 || eventAt === 863 || eventAt === 943 || eventAt === 975 || eventAt === 991 || eventAt === 1279);
 }
 
 export function createGunmanTopMovementState(x: number, fineX = 0, fineY = 0): GunmanFlankMovementState {

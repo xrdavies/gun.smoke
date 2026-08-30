@@ -1477,6 +1477,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(GUNMAN_BOTTOM_DYNAMIC_HANDOFF_FRAME).toBe(48);
     expect(gunmanBottomUsesDynamicState(6, 3055)).toBe(true);
     expect(gunmanBottomUsesDynamicState(6, 3327)).toBe(true);
+    expect(gunmanBottomUsesDynamicState(6, 4319)).toBe(true);
     expect(gunmanBottomUsesDynamicState(6, 3023)).toBe(false);
     expect(gunmanBottomDynamicPosition(0, 112, 74, 68)).toEqual([(112 + 74 / 256) * NES_WORLD_X_SCALE, (249 + 68 / 256) * NES_WORLD_Y_SCALE]);
     expect(gunmanBottomDynamicPosition(48 / NES_FRAME_RATE, 112, 74, 68)).toEqual([(112 + 74 / 256) * NES_WORLD_X_SCALE, (218 + 68 / 256) * NES_WORLD_Y_SCALE]);
@@ -1497,6 +1498,16 @@ describe("Gun.Smoke vertical slice", () => {
       advanceGunmanFlankMovement(contactState, frame, 136, 215, (x, y) => roundActorCollisionAtNes(6, scroll, x, y));
     }
     expect(contactState).toMatchObject({ frame: 272, mode: "orbit", heading: 12, timer: 1, x: 139 + 128 / 256, y: 202 + 234 / 256, dead: false });
+
+    const laterBottomState = createGunmanBottomMovementState(200, 215, 189);
+    for (let frame = 49; frame <= 391; frame += 1) {
+      const scroll = (4319 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(laterBottomState, frame, 136, 215, (x, y) => roundActorCollisionAtNes(6, scroll, x, y));
+    }
+    expect(laterBottomState).toMatchObject({ frame: 391, mode: "orbit", heading: 0, timer: 3, x: 191 + 73 / 256, y: 0 + 43 / 256, dead: false });
+    const laterBottomReleaseScroll = (4319 + 2 / 3 + 392 / 3) * NES_WORLD_Y_SCALE;
+    advanceGunmanFlankMovement(laterBottomState, 392, 136, 215, (x, y) => roundActorCollisionAtNes(6, laterBottomReleaseScroll, x, y));
+    expect(laterBottomState.dead).toBe(true);
   });
 
   it("routes the offset Round 6 top Gunman into the shared state machine", () => {

@@ -477,6 +477,10 @@ it matches 295 frames, fires at frame 13, and releases through the left edge.
 The later `at=4751,x=40,code=5` bottom entry matches 414 frames with no
 successful shot before `Y=252`; `at=4783,x=200,code=6` matches 383 top-entry
 frames, fires at frame 22, and releases through the right edge.
+The final top entries `at=4911/4975/5087/5103` independently match the shared
+state machine for 277/333/330/315 frames and fire at 47/21/13/32 before their
+measured left or bottom releases. `at=5119,x=4,y=48,code=8` is a separate side
+entry and is not inferred from these top routes.
 Round 6 `at=4479,x=96,y=0,code=6,phase=1` likewise preserves its fine X/Y
 bytes, matches the shared state machine for 315 frames, fires at frame 29, and
 releases through the bottom boundary.

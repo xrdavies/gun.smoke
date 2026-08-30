@@ -575,6 +575,10 @@ left boundary.
 The later `at=4751,x=40,code=5` bottom entry follows a 414-frame no-shot route
 to `Y=252`, while `at=4783,x=200,code=6` follows a 383-frame top route, fires at
 frame 22, and exits through the right boundary.
+The final top-entry set at `at=4911/4975/5087/5103` follows complete shared
+routes of 277/333/330/315 frames, with successful shots at 47/21/13/32 before
+their measured left or bottom releases. The following `at=5119` code-8 side
+entry remains on its separate measured route rather than this top-entry path.
 The following `at=4479,x=96,y=0,code=6,phase=1` entry also preserves its fine
 coordinates, follows the shared route for 315 frames, fires at frame 29, and
 releases at the bottom boundary.

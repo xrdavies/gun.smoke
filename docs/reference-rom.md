@@ -452,6 +452,10 @@ Round 6 `at=3487,x=168,y=0,code=6` follows the shared top-entry state machine
 for all 306 fixed-point frames, fires at frames 13 and 77, and releases through
 the bottom edge. A projectile allocated at frame 240 originates from the next
 actor at NES `x=4`, so it is not attributed to this Gunman.
+Round 6 `at=3551,x=88,y=0,code=6` independently matches the shared state
+machine for 524 fixed-point frames. Its seed produces successful shots at
+60/124/188/252/316 before the actor releases through the bottom edge, rather
+than following the earlier 549-frame top-route recording.
 Round 4's naturally allocated `at=1503,x=248,y=80,code=7,phase=1` branch
 matches the shared state machine for all 356 coarse/fine samples and releases
 through the right boundary; it no longer inherits the unrelated 642-frame

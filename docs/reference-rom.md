@@ -575,6 +575,12 @@ then release on the following upward screen-Y boundary. The long
 `at=1855,x=48` route matches through frame 1300, including the four captured
 player movement windows, and emits at frames 485/933/1253 before continuing
 in the same fixed-point roam state.
+The later top entry `at=2335,x=104` matches 486 frames with a frame-47 shot
+before its bottom-boundary release. The `at=2479,x=128` entry matches 974
+frames and emits at 73/137 before its left-boundary release. At `at=2511`,
+the `x=144` top allocation remains dynamic for 1200 controlled frames with
+attacks at 13/77/829/1085, while the same-time `x=96` bottom allocation is
+the separate contact path.
 Later Round 4 bottom routes `at=1951,x=40`, `at=2111,x=48`,
 `at=2143,x=48`, `at=2319,x=32`, `at=2431,x=152`, and `at=2591,x=32`
 also use the shared state machine. Their controlled traces preserve distinct
@@ -582,8 +588,8 @@ slot fractions and input windows: 1951 matches 1000 frames with attacks at
 631/951, 2111 matches 687 frames with attack 461, 2143 matches 683 frames
 with attack 359, 2319/2591 each match 375-frame no-shot releases, and
 2431 matches 1080 frames with attack 58. The paired `at=2431,x=96` route,
-like `at=1871` and `at=2191`, reaches player-contact dispatch before handoff
-and remains on the bounded contact path.
+like `at=1871`, `at=2191`, `at=2351`, and `at=2463`, reaches player-contact
+dispatch before handoff and remains on the bounded contact path.
 The earlier `at=815,x=176,code=5` bottom entry matches 530 shared-state frames,
 fires at frame 187, and releases through the NES `Y=255` boundary.
 The adjacent `at=831,x=160,code=5` bottom entry independently matches 150

@@ -198,6 +198,9 @@ Round 4 bottom coverage now includes `at=1791,x=80`, `at=1823,x=80`, and the
 long `at=1855,x=48` route. The first two match 350 frames and release at the
 screen boundary with attack frames 64 and 60; the latter matches 1300 frames
 with captured player movement windows and attack frames 485/933/1253.
+The later top entries `at=2335,x=104`, `at=2479,x=128`, and `at=2511,x=144`
+now use state-qualified bindings, covering 486/974/1200 controlled frames
+with attack windows 47, 73/137, and 13/77/829/1085 respectively.
 The later Round 4 bottom records `at=1951/2111/2143/2319/2431/2591` are now
 classified with event/X-qualified bindings and fixed-point tests. The dynamic
 traces cover 1000/687/683/375/1080/375 frames respectively, preserving their

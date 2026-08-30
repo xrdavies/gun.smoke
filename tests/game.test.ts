@@ -1561,6 +1561,8 @@ describe("Gun.Smoke vertical slice", () => {
   it("routes the Round 6 bottom Gunman into the shared state machine", () => {
     expect(gunmanBottomUsesDynamicState(5, 255)).toBe(true);
     expect(gunmanFlankEventShotFrames(5, 255, 216)).toEqual([]);
+    expect(gunmanBottomUsesDynamicState(5, 511)).toBe(true);
+    expect(gunmanFlankEventShotFrames(5, 511, 88)).toEqual([]);
     expect(GUNMAN_BOTTOM_DYNAMIC_HANDOFF_FRAME).toBe(48);
     expect(gunmanBottomUsesDynamicState(6, 3055)).toBe(true);
     expect(gunmanBottomUsesDynamicState(6, 3327)).toBe(true);
@@ -1897,6 +1899,18 @@ describe("Gun.Smoke vertical slice", () => {
       advanceGunmanFlankMovement(round5BottomContactState, frame, 168, 215, (x, y) => roundActorCollisionAtNes(5, scroll, x, y));
     }
     expect(round5BottomContactState).toMatchObject({ frame: 118, mode: "orbit", heading: 0, timer: 3, x: 172 + 161 / 256, y: 227 + 5 / 256, dead: false });
+
+    const round5Bottom511State = createGunmanBottomMovementState(88, 136, 22);
+    const round5Bottom511PlayerY = [212, 209, 207, 205, 204, 203, 203, 204, 205, 207, 209, 212, 215, 216] as const;
+    for (let frame = 49; frame <= 164; frame += 1) {
+      const scroll = (511 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      const playerY = frame < 73 ? 215 : round5Bottom511PlayerY[Math.min(frame - 73, round5Bottom511PlayerY.length - 1)]!;
+      advanceGunmanFlankMovement(round5Bottom511State, frame, 168, playerY, (x, y) => roundActorCollisionAtNes(5, scroll, x, y));
+    }
+    expect(round5Bottom511State).toMatchObject({ frame: 164, mode: "chase", heading: 6, timer: 0, x: 106 + 94 / 256, y: 251 + 132 / 256, dead: false });
+    const round5Bottom511ReleaseScroll = (511 + 2 / 3 + 165 / 3) * NES_WORLD_Y_SCALE;
+    advanceGunmanFlankMovement(round5Bottom511State, 165, 168, 216, (x, y) => roundActorCollisionAtNes(5, round5Bottom511ReleaseScroll, x, y));
+    expect(round5Bottom511State.dead).toBe(true);
   });
 
   it("routes the offset Round 6 top Gunman into the shared state machine", () => {

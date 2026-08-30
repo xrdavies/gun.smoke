@@ -596,6 +596,8 @@ the shared orbit state through frame 67 and contacts on the next frame.
 At `at=1279`, the bottom `x=112` entry contacts at frame 34 without firing;
 the top `x=136` entry follows a complete 1,146-frame route, fires at 19/403/659,
 and releases through the right boundary.
+The following `at=1311,x=128,code=5` bottom entry reaches the player-contact
+dispatch at frame 34 without a successful shot.
 The top `at=863,x=128,code=6` entry follows a 432-frame shared route, fires at
 frame 66, and releases through the bottom `Y=252` boundary.
 The top `at=943,x=144,code=6` entry follows the shared route through frame 488,

@@ -555,7 +555,9 @@ also matches through frame 246 before dispatch `0x5d`, with attack windows
 longer needed for this event. The isolated left-side `at=1679,x=4,y=64`
 code-7 route matches 918 frames, fires at frame 92, and releases through the
 bottom boundary; it now uses the same state machine with its event-qualified
-entry condition.
+entry condition. When the captured entry fine X is `20/256`, the runtime also
+replays the trace's per-frame fine X/Y bytes; other slot fractions retain the
+coarse route fallback.
 The naturally allocated contact branches are intentionally bounded. Round 6
 `at=479,x=136`, `at=2959,x=136`, and `at=4063,x=128` switch to the ROM contact
 dispatch at frame 32/34 before the shared 48-frame movement handoff, so no

@@ -563,6 +563,10 @@ state route with shots at 68/132/196/719/847/911 and a right-boundary release.
 The later `at=4415,x=216,y=0,code=6,phase=1` entry preserves its spawned fine
 coordinates, follows the shared top-entry chase/orbit states for 603 frames,
 fires at frames 13 and 397, and releases at the bottom boundary.
+The two same-frame `at=4511` top entries are distinct: `x=152` follows a
+483-frame route with a frame-63 shot, while `x=168` follows a 506-frame route
+with a frame-13 shot. Both preserve their spawned fine coordinates and end in
+the observed player-contact handoff.
 The following `at=4479,x=96,y=0,code=6,phase=1` entry also preserves its fine
 coordinates, follows the shared route for 315 frames, fires at frame 29, and
 releases at the bottom boundary.

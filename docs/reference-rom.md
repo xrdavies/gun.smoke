@@ -466,6 +466,10 @@ Round 6 `at=3727,x=4,y=32,code=8,phase=0` matches the shared state machine for
 Round 6 `at=4415,x=216,y=0,code=6,phase=1` preserves the spawned fine X/Y
 bytes, matches the shared top-entry chase/orbit state machine for 603 frames,
 fires at frames 13 and 397, and releases through the bottom boundary.
+The same-frame `at=4511` entries are separated by allocation X: `x=152` matches
+483 frames and fires at frame 63, while `x=168` matches 506 frames and fires at
+frame 13. Both retain their spawn fractions; each ends at the observed player
+contact handoff rather than a natural screen release.
 Round 6 `at=4479,x=96,y=0,code=6,phase=1` likewise preserves its fine X/Y
 bytes, matches the shared state machine for 315 frames, fires at frame 29, and
 releases through the bottom boundary.

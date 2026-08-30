@@ -31,7 +31,7 @@ import { advanceNinja, createNinjaState, type NinjaState } from "./game-constant
 import { FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeAimAllowsLaunch, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, fatmanJoeShellHasSplit, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_MOVEMENT_SPEED, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, fatmanJoeCombatX, fatmanJoeCombatY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "./game-constants";
 import { advanceDevilHawkMovement, advanceWingateMovement, createDevilHawkMovementState, createWingateMovementState, DEVIL_HAWK_RANDOM_HANDOFF_ACTION_COUNTER, DEVIL_HAWK_RANDOM_HANDOFF_FINE_X, DEVIL_HAWK_RANDOM_HANDOFF_FINE_Y, DEVIL_HAWK_RANDOM_HANDOFF_GAIT, DEVIL_HAWK_RANDOM_HANDOFF_HEADING, DEVIL_HAWK_RANDOM_HANDOFF_SEGMENT_FRAMES, WINGATE_BULLET_LIFETIME, wingateCanFire, WINGATE_ENTRY_INVULNERABILITY, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, type DevilHawkMovementState, type WingateMovementState } from "./game-constants";
 import { bossDefeatAnimationDuration, WINGATE_ENDING_INPUT_DELAY, WINGATE_FINAL_DEFEAT_ANIMATION_DURATION, WINGATE_FINAL_ENDING_DELAY } from "./game-constants";
-import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
+import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_FOLLOWUP_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
 import { advanceCutterMovement, createCutterMovementState, CUTTER_ENTRY_DURATION, CUTTER_RANDOM_HANDOFF_FINE_X, CUTTER_RANDOM_HANDOFF_FINE_Y, CUTTER_RANDOM_HANDOFF_GAIT, CUTTER_RANDOM_HANDOFF_SEGMENT_FRAMES, CUTTER_RANDOM_ROUTE_START_FRAME, cutterBoomerangOnScreen, cutterCombatX, cutterCombatY, cutterOpeningX, cutterOpeningY, type CutterMovementState } from "./game-constants";
 import { DEVIL_HAWK_ENTRY_DURATION, devilHawkAttackDelay, devilHawkFanHeadings, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_FULL_FAN_LIFETIME, DEVIL_HAWK_FULL_FAN_MAX_Y_NES, devilHawkFullFanAt, DEVIL_HAWK_POST_ENTRY_X_HOLD, devilHawkProjectileVelocity, DEVIL_HAWK_SIDE_FAN_LIFETIME, devilHawkCombatX, devilHawkCombatY, devilHawkOpeningY, nesAimHeading } from "./game-constants";
 import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_PREPARE_DELAY, NINJA_BOSS_PREPARE_CONTROLLER_DURATION, NINJA_BOSS_PREPARE_DURATION, NINJA_BOSS_SHURIKEN_LIFETIME, NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES, NINJA_BOSS_SHURIKEN_VELOCITIES_NES, NINJA_BOSS_TELEPORT_DELAY, ninjaBossCombatX, ninjaBossCombatY, ninjaBossNextTeleportAt, ninjaBossPreparePosition } from "./game-constants";
@@ -133,6 +133,7 @@ interface Unit {
   bossEntryX?: number;
   bossEntryY?: number;
   fatmanFollowup?: boolean;
+  cutterFollowup?: boolean;
   banditState?: BanditBillMovementState;
   cutterState?: CutterMovementState;
   devilHawkState?: DevilHawkMovementState;
@@ -1097,7 +1098,13 @@ class GunSmokeGame {
       }
       boss.volleysFired += 1;
       boss.fired = true;
-      this.bossFireClock = CUTTER_ATTACK_INTERVAL;
+      if (boss.cutterFollowup) {
+        boss.cutterFollowup = false;
+        this.bossFireClock = CUTTER_ATTACK_INTERVAL;
+      } else {
+        boss.cutterFollowup = true;
+        this.bossFireClock = CUTTER_BOOMERANG_FOLLOWUP_DELAY;
+      }
       this.beep(186, 0.045);
       return;
     }
@@ -1377,7 +1384,7 @@ class GunSmokeGame {
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: frameDuration },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, defeatAnimationDuration: undefined, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romEventAt: undefined, romRandomSeed: undefined, romPhase: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, romFineX: undefined, romFineY: undefined, romSpawnFineX: undefined, romSpawnFineY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, gunmanFlankState: undefined, sniperFiringState: undefined, backstabberRaidState: undefined, romSlot: undefined, riflemanAimHeading: undefined, riflemanAttackStarted: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, banditState: undefined, cutterState: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined, rockPhase: undefined,
+      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, defeatAnimationDuration: undefined, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romEventAt: undefined, romRandomSeed: undefined, romPhase: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, romFineX: undefined, romFineY: undefined, romSpawnFineX: undefined, romSpawnFineY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, gunmanFlankState: undefined, sniperFiringState: undefined, backstabberRaidState: undefined, romSlot: undefined, riflemanAimHeading: undefined, riflemanAttackStarted: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, banditState: undefined, cutterState: undefined, cutterFollowup: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined, rockPhase: undefined,
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" || sceneObject ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,

@@ -219,6 +219,28 @@ test("keeps Snipers exposed during their firing cooldown", async ({ page }) => {
   expect(sniper!.invulnerableUntil).toBeLessThanOrEqual(sniper!.age);
 });
 
+test("keeps an ordinary enemy shot at its allocation coordinate", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/");
+  await page.locator("#start-button").click();
+  await page.locator("#continue-button").click();
+  await page.locator("#briefing-button").click();
+  await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
+  await page.evaluate(() => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(1));
+  await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
+  await page.evaluate(() => (window as unknown as { __fireGunSmokeBoss: () => void }).__fireGunSmokeBoss());
+  const launch = await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; projectileType?: string; bossProjectile?: boolean; hp: number; x: number; y: number }> }).__getGunSmokeUnits()
+    .find((unit) => unit.kind === "enemyBullet" && !unit.bossProjectile && unit.hp > 0));
+  expect(launch).toBeDefined();
+  await page.clock.runFor(8);
+  const firstFrame = await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; projectileType?: string; bossProjectile?: boolean; hp: number; age: number; x: number; y: number }> }).__getGunSmokeUnits()
+    .find((unit) => unit.kind === "enemyBullet" && !unit.bossProjectile && unit.hp > 0));
+  expect(firstFrame).toBeDefined();
+  expect(firstFrame!.age).toBeLessThanOrEqual(2 / 60.098);
+  expect(firstFrame!.x).toBeCloseTo(launch!.x, 6);
+  expect(firstFrame!.y).toBeCloseTo(launch!.y, 6);
+});
+
 test("creates each Boss from its wanted gate", async ({ page }) => {
   const pageErrors: Error[] = [];
   page.on("pageerror", (error) => pageErrors.push(error));

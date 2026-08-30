@@ -1568,6 +1568,10 @@ either NES coordinate leaves `0..255`; stationary controllers and hazards keep
 their explicit lifecycle. The web runtime first carries projectiles by the
 camera delta so their visible velocity remains the ROM velocity in world
 coordinates.
+Ordinary enemy-pool shots keep their allocation coordinate for that frame and
+begin velocity movement on the next fixed update; the shared projectile
+allocator applies this boundary to Sniper, Shotgunner, Rifleman, Ninja,
+Spear, Hatchet, Firebreather, Bomber, Gunman and Bandit Bill shots.
 With `$79/$88` set for an active Rifle stock, the straight A+B projectile moves
 8 pixels per frame but still persists for 15 frames. The runtime therefore
 applies a non-stacking `4 / 3` speed multiplier to Pistol shots rather than

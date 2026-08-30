@@ -1441,6 +1441,7 @@ class GunSmokeGame {
     if (!(bossProjectile ? canSpawnBossProjectile(active) : canSpawnEnemyProjectile(active))) return undefined;
     const projectile = this.spawnUnit("enemyBullet", x, y, 1);
     projectile.bossProjectile = bossProjectile;
+    if (!bossProjectile) projectile.phase = -1;
     return projectile;
   }
 
@@ -2161,7 +2162,7 @@ class GunSmokeGame {
           this.beep(95, 0.14);
         }
       }
-      const deferInitialProjectileMotion = unit.kind === "enemyBullet" && unit.phase < 0 && (unit.projectileType === "grenadeShell" || unit.bossProjectile && unit.projectileType === "shuriken");
+      const deferInitialProjectileMotion = unit.kind === "enemyBullet" && unit.phase < 0 && (!unit.bossProjectile || unit.projectileType === "grenadeShell" || unit.projectileType === "shuriken");
       if (deferInitialProjectileMotion) unit.phase = 0;
       if (unit.kind === "enemyBullet" && unit.projectileType === "grenadeShell" && fatmanJoeShellHasSplit(unit.age)) {
         unit.targetX ??= unit.x;

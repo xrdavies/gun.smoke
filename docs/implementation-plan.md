@@ -306,6 +306,8 @@ animation duration is stored per encounter so the decoy keeps 30 frames while
 the real encounter keeps its nine-frame ending animation.
 Boss timer checks now run after the Boss movement update, preserving the ROM's
 current-frame launch coordinate before the newly created projectile advances.
+Ordinary enemy-pool projectiles likewise retain their allocation-frame position
+before the shared velocity update begins on the following frame.
 
 ## Delivery Stages
 

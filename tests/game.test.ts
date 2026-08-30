@@ -1192,6 +1192,10 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanTopUsesDynamicState(5, 2895)).toBe(true);
     expect(gunmanFlankEventShotFrames(5, 2895, 104)).toEqual([56]);
     expect(gunmanFlankEventShotFrames(5, 2895, 192)).toEqual([42, 362]);
+    expect(gunmanTopUsesDynamicState(5, 2911)).toBe(true);
+    expect(gunmanFlankEventShotFrames(5, 2911, 128)).toEqual([37]);
+    expect(gunmanFlankEventShotFrames(5, 2911, 160)).toEqual([64]);
+    expect(gunmanFlankEventShotFrames(5, 2911, 184)).toEqual([13, 397]);
     expect(gunmanFlankUsesDynamicState(7, 32, 5, 0, 1903, false)).toBe(true);
     expect(gunmanFlankUsesDynamicState(7, 112, 5, 0, 1999, false)).toBe(true);
     expect(gunmanFlankUsesDynamicState(7, 64, 5, 0, 2735, false)).toBe(true);
@@ -1395,6 +1399,19 @@ describe("Gun.Smoke vertical slice", () => {
     for (const route of round5Top2895Routes) {
       for (let frame = 1; frame <= route.last; frame += 1) {
         const scroll = (2895 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+        advanceGunmanFlankMovement(route.state, frame, 104, 216, (x, y) => roundActorCollisionAtNes(5, scroll, x, y));
+      }
+      expect(route.state).toMatchObject({ frame: route.last, mode: "orbit", heading: route.heading, timer: route.timer, x: route.x, y: route.y, dead: false });
+    }
+
+    const round5Top2911Routes = [
+      { state: createGunmanTopMovementState(128, 20, 11), last: 267, heading: 25, timer: 3, x: 0 + 44 / 256, y: 183 + 46 / 256 },
+      { state: createGunmanTopMovementState(160, 41, 193), last: 305, heading: 26, timer: 4, x: 0 + 56 / 256, y: 151 + 66 / 256 },
+      { state: createGunmanTopMovementState(184, 220, 235), last: 596, heading: 14, timer: 2, x: 172 + 63 / 256, y: 251 + 111 / 256 },
+    ] as const;
+    for (const route of round5Top2911Routes) {
+      for (let frame = 1; frame <= route.last; frame += 1) {
+        const scroll = (2911 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
         advanceGunmanFlankMovement(route.state, frame, 104, 216, (x, y) => roundActorCollisionAtNes(5, scroll, x, y));
       }
       expect(route.state).toMatchObject({ frame: route.last, mode: "orbit", heading: route.heading, timer: route.timer, x: route.x, y: route.y, dead: false });

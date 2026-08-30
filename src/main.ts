@@ -516,6 +516,7 @@ class GunSmokeGame {
 
   continueGame(): void {
     if (this.mode !== "gameover") return;
+    this.resetRandom();
     this.lives = 3;
     this.scroll = 0;
     this.camera.position.y = 270;
@@ -528,7 +529,6 @@ class GunSmokeGame {
     this.deathClock = 0;
     this.deathCommitted = false;
     this.bossSpawned = false;
-    this.romFrameCounter = 0;
     this.stageClearClock = 0;
     this.hasWanted = false;
     this.wingatePhase = 0;
@@ -2477,10 +2477,10 @@ class GunSmokeGame {
       return;
     }
     this.stage += 1;
+    this.resetRandom();
     this.scroll = 0;
     this.bossFireClock = 1;
     this.bossSpawned = false;
-    this.romFrameCounter = 0;
     this.hasWanted = false;
     this.wingatePhase = 0;
     this.wingateRespawnClock = 0;
@@ -2504,8 +2504,8 @@ class GunSmokeGame {
   }
 
   private loopStage(): void {
+    this.resetRandom();
     this.scroll = 0;
-    this.romFrameCounter = 0;
     this.camera.position.y = 270;
     this.player.x = PLAYER_ENTRY_X;
     this.player.y = PLAYER_ENTRY_Y;
@@ -3008,13 +3008,13 @@ if (import.meta.env.DEV) Object.defineProperty(window, "__defeatGunSmokeBoss", {
 if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeRound", { value: (stage: number) => {
   if (!game || !Number.isInteger(stage) || stage < 1 || stage > MAX_STAGE) return;
   game.stage = stage;
+  (game as unknown as { resetRandom(): void }).resetRandom();
   game.scroll = 0;
   game.camera.position.y = 270;
   game.units.length = 0;
   game.romEnemyFineX.fill(0);
   game.romEnemyFineY.fill(0);
   game.bossSpawned = false;
-  game.romFrameCounter = 0;
   game.romEventCursor = 0;
   game.romObjectCursor = 0;
   game.shopIndex = 0;

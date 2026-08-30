@@ -1926,6 +1926,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankEventShotFrames(5, 575, 88)).toEqual([77, 333, 397]);
     expect(gunmanTopUsesDynamicState(5, 623)).toBe(true);
     expect(gunmanFlankEventShotFrames(5, 623, 184)).toEqual([13, 333]);
+    expect(gunmanBottomUsesDynamicState(5, 959)).toBe(true);
+    expect(gunmanFlankEventShotFrames(5, 959, 216)).toEqual([296, 616, 848, 912, 976]);
     expect(gunmanTopUsesDynamicState(5, 879)).toBe(true);
     expect(gunmanFlankEventShotFrames(5, 879, 208)).toEqual([23]);
     expect(gunmanTopUsesDynamicState(6, 47)).toBe(true);
@@ -2319,6 +2321,19 @@ describe("Gun.Smoke vertical slice", () => {
     const round5SeventhReleaseScroll = (879 + 2 / 3 + 354 / 3) * NES_WORLD_Y_SCALE;
     advanceGunmanFlankMovement(round5SeventhTopState, 354, 168, 216, (x, y) => roundActorCollisionAtNes(5, round5SeventhReleaseScroll, x, y));
     expect(round5SeventhTopState.dead).toBe(true);
+
+    const round5LateBottomState = createGunmanBottomMovementState(216, 144, 6);
+    const round5LateBottomPlayerY = [213, 210, 208, 206, 205, 204, 204, 205, 206, 208, 210, 213, 216] as const;
+    for (let frame = 49; frame <= 1775; frame += 1) {
+      const scroll = (959 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      const playerX = frame >= 987 ? 104 : frame >= 891 ? 184 : 168;
+      const playerY = frame >= 268 && frame < 281 ? round5LateBottomPlayerY[frame - 268]! : frame >= 891 && frame < 984 ? 215 : frame >= 987 ? 215 : 216;
+      advanceGunmanFlankMovement(round5LateBottomState, frame, playerX, playerY, (x, y) => roundActorCollisionAtNes(5, scroll, x, y));
+    }
+    expect(round5LateBottomState).toMatchObject({ frame: 1775, mode: "orbit", heading: 0, timer: 3, x: 156 + 9 / 256, y: 251 + 243 / 256, dead: false });
+    const round5LateBottomReleaseScroll = (959 + 2 / 3 + 1776 / 3) * NES_WORLD_Y_SCALE;
+    advanceGunmanFlankMovement(round5LateBottomState, 1776, 104, 216, (x, y) => roundActorCollisionAtNes(5, round5LateBottomReleaseScroll, x, y));
+    expect(round5LateBottomState.dead).toBe(true);
   });
 
   it("matches the traced Bandit Bill volley timing", () => {

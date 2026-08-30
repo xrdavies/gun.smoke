@@ -1303,6 +1303,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankEventShotFrames(6, 3919, 248)).toEqual([26, 90, 154, 218, 399, 527, 655, 1039]);
     expect(gunmanFlankEventShotFrames(6, 4319, 200)).toEqual([]);
     expect(gunmanFlankEventShotFrames(6, 4543, 4)).toEqual([102]);
+    expect(gunmanFlankEventShotFrames(6, 175, 152)).toEqual([]);
     expect(gunmanFlankEventShotFrames(2, 703, 4)).toEqual([64, 128, 192, 309]);
     expect(gunmanFlankEventShotFrames(2, 1375, 4)).toEqual([79, 796, 1116, 1180, 1500]);
     expect(gunmanFlankEventShotFrames(2, 1839, 248)).toEqual([45, 109, 173, 237, 546]);

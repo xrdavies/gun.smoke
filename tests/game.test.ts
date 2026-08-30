@@ -1113,6 +1113,10 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanTopUsesDynamicState(4, 159)).toBe(true);
     expect(gunmanFlankEventShotFrames(4, 159, 120)).toEqual([64]);
     expect(gunmanFlankEventShotFrames(4, 159, 216)).toEqual([28, 746, 1002]);
+    expect(gunmanTopUsesDynamicState(4, 191)).toBe(true);
+    expect(gunmanFlankEventShotFrames(4, 191, 216)).toEqual([23, 279, 970]);
+    expect(gunmanTopUsesDynamicState(4, 207)).toBe(true);
+    expect(gunmanFlankEventShotFrames(4, 207, 152)).toEqual([19]);
     expect(gunmanFlankUsesDynamicState(7, 96, 4, 1, 1727, true)).toBe(true);
     expect(gunmanFlankUsesDynamicState(7, 48, 4, 0, 1743, false)).toBe(true);
     expect(gunmanFlankUsesDynamicState(7, 64, 4, 1, 1695, false)).toBe(true);
@@ -1289,6 +1293,24 @@ describe("Gun.Smoke vertical slice", () => {
         advanceGunmanFlankMovement(route.state, frame, playerX, playerY, (x, y) => roundActorCollisionAtNes(4, scroll, x, y));
       }
       expect(route.state).toMatchObject({ frame: route.last, mode: route.mode, heading: route.heading, timer: route.timer, x: route.x, y: route.y, dead: false });
+    }
+
+    const round4NextTopRoutes = [
+      { at: 191, state: createGunmanTopMovementState(216, 182, 188), last: 1286, heading: 1, timer: 0, x: 239 + 158 / 256, y: 0 + 76 / 256 },
+      { at: 207, state: createGunmanTopMovementState(152, 182, 188), last: 435, heading: 19, timer: 3, x: 201 + 225 / 256, y: 251 + 171 / 256 },
+    ] as const;
+    for (const route of round4NextTopRoutes) {
+      for (let frame = 1; frame <= route.last; frame += 1) {
+        const scroll = (route.at + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+        let playerX = 136;
+        let playerY = 188;
+        if (route.at === 191) {
+          playerX = frame >= 1131 ? 168 : frame >= 1083 ? 152 : 136;
+          playerY = frame >= 1128 && frame < 1131 ? 216 : frame >= 999 && frame < 1083 ? Math.min(216, 188 + Math.floor((frame - 999) / 3) + 1) : frame >= 1083 ? 215 : 188;
+        }
+        advanceGunmanFlankMovement(route.state, frame, playerX, playerY, (x, y) => roundActorCollisionAtNes(4, scroll, x, y));
+      }
+      expect(route.state).toMatchObject({ frame: route.last, mode: "orbit", heading: route.heading, timer: route.timer, x: route.x, y: route.y, dead: false });
     }
 
     const round5Top1759 = createGunmanTopMovementState(88, 190, 39);

@@ -963,9 +963,11 @@ unhurt trace extends the available samples to 14,677 combat frames through
 frame 14,676; runtime consumes the route through the frame-12,000 handoff and
 then continues with the ROM's random direction segments and four-active/eight-idle gait. At frame 350 it creates the paired `0x98/0x99`
 boomerangs from Boss-relative offsets `(-3,+3)` and `(+3,+2)` NES pixels,
-holding those launch coordinates for the allocation frame; a second paired
-launch follows about 29 NES frames later, and the cycle repeats every 256
-frames. Both use a 32-direction steering state: initial
+holding those launch coordinates for the allocation frame. At frame 379 the
+same slots 2/3 remain active at NES `(189,179)/(69,178)` and change movement
+state; this is the outward turn, not another allocation. The next paired launch
+reinitializes those slots at frame 606, exactly 256 frames after frame 350.
+Both use a 32-direction steering state: initial
 headings `14/18` turn toward fixed NES points `(224,176)/(32,176)` by one
 heading step every two frames and use the shared third-tier discrete velocity
 table. On reaching NES `y=176`, each captures Billy's

@@ -163,8 +163,9 @@ at the refreshed natural trace's frames 124/163 instead of 140/179.
 Its first post-teleport smoke/volley now uses the separate measured 196-frame
 re-entry delay, producing the frame-625/664 controller and shuriken timing.
 Fatman Joe's moving shell now converts in place to a non-colliding split
-controller before its five timed four-frame mine releases. Cutter now emits the second paired
-boomerang about 29 frames after each cycle's first pair. Wingate defeat
+controller before its five timed four-frame mine releases. Cutter now keeps
+frames 350-379 as one paired boomerang volley and schedules the next allocation
+at the measured 256-frame cycle. Wingate defeat
 animation duration is stored per encounter so the decoy keeps 30 frames while
 the real encounter keeps its nine-frame ending animation.
 

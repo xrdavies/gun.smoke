@@ -173,8 +173,9 @@ Cutter enters from the top edge on one of the ROM's NES X lanes
 left to approximately `y=136` after 324 frames, using the captured discrete
 entrance steps. It holds that lane until frame 350,
 then follows its recorded X/Y combat route. The first paired boomerangs launch
-at frame 350, a second pair follows about 29 NES frames later, and the cycle
-then repeats every 256 frames. The available traces cover 14,677
+at frame 350. At frame 379 the same two low-slot actors reach their outward
+turn state; no second pair is allocated. The next paired launch is at frame 606,
+so the launch cycle repeats every 256 frames. The available traces cover 14,677
 measured combat frames through frame 14,676; runtime consumes the route through
 the frame-12,000 handoff and then
 continues Cutter with the ROM's random direction segments and four-active/eight-idle

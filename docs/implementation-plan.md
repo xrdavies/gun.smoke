@@ -180,8 +180,9 @@ bottom-boundary release and frame-92 attack; no Round 6 scoped Gunman route
 remains in this category.
 The remaining naturally allocated Round 6 Gunman records are now classified:
 `at=4063,x=128` and `at=2959,x=136` enter contact dispatch before handoff,
-while the same-time `at=479,x=136` entry does likewise. This keeps the runtime
-boundary explicit instead of extending an unverified route.
+while the `at=479,x=136` entry does likewise; its same-time `x=168` allocation
+uses the separate no-shot dynamic route. This keeps the runtime boundary
+explicit instead of extending an unverified route.
 Round 5 now also routes its naturally allocated top/bottom Gunmen at
 `at=31/47/207/255/511/559/575/623/879/959` through the shared state machine,
 preserving their measured attack windows and contact or screen-boundary exits.

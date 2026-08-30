@@ -552,7 +552,8 @@ entry condition.
 The naturally allocated contact branches are intentionally bounded. Round 6
 `at=479,x=136`, `at=2959,x=136`, and `at=4063,x=128` switch to the ROM contact
 dispatch at frame 32/34 before the shared 48-frame movement handoff, so no
-post-contact path is inferred from the controlled run.
+post-contact path is inferred from the controlled run. The same-time
+`at=479,x=168` allocation is the separate no-shot dynamic route.
 Round 5's early allocations follow the same measured contract. Top entries
 `at=31,x=168` and `at=47,x=192` match 365 and 702 frames with attacks at
 70/134 and 40/104/296; bottom `at=255,x=216` matches 119 frames into contact.

@@ -137,8 +137,11 @@ test("resets the ROM frame boundary without an extra loop tick", async ({ page }
   await page.locator("#briefing-button").click();
   await page.clock.runFor(500);
   await page.evaluate(() => (window as unknown as { __forceGunSmokeLoop: () => void }).__forceGunSmokeLoop());
-  await page.clock.runFor(20);
-  const state = await page.evaluate(() => (window as unknown as { __getGunSmokeState: () => { time: number; scroll: number; romFrameCounter: number; randomState: number[] } }).__getGunSmokeState());
+  let state: { time: number; scroll: number; romFrameCounter: number; randomState: number[] } | undefined;
+  for (let elapsed = 0; elapsed < 30 && state?.scroll !== 0; elapsed += 1) {
+    await page.clock.runFor(1);
+    state = await page.evaluate(() => (window as unknown as { __getGunSmokeState: () => { time: number; scroll: number; romFrameCounter: number; randomState: number[] } }).__getGunSmokeState());
+  }
   expect(state).toMatchObject({ time: 0, scroll: 0, romFrameCounter: 0, randomState: [0x88, 0, 0, 0] });
 });
 

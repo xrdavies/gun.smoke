@@ -80,6 +80,19 @@ test("freezes gameplay while the ROM clock continues in inventory", async ({ pag
   expect((during as { randomState: number[] }).randomState).not.toEqual((before as { randomState: number[] }).randomState);
 });
 
+test("resets the ROM frame boundary without an extra loop tick", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/");
+  await page.locator("#start-button").click();
+  await page.locator("#continue-button").click();
+  await page.locator("#briefing-button").click();
+  await page.clock.runFor(500);
+  await page.evaluate(() => (window as unknown as { __forceGunSmokeLoop: () => void }).__forceGunSmokeLoop());
+  await page.clock.runFor(20);
+  const state = await page.evaluate(() => (window as unknown as { __getGunSmokeState: () => { time: number; scroll: number; romFrameCounter: number; randomState: number[] } }).__getGunSmokeState());
+  expect(state).toMatchObject({ time: 0, scroll: 0, romFrameCounter: 0, randomState: [0x88, 0, 0, 0] });
+});
+
 test("renders all six procedural rounds", async ({ page }) => {
   const pageErrors: Error[] = [];
   page.on("pageerror", (error) => pageErrors.push(error));

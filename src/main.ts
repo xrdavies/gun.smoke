@@ -666,7 +666,11 @@ class GunSmokeGame {
     const scrollDelta = this.bossSpawned ? 0 : WORLD_SCROLL_SPEED * delta;
     this.scroll += scrollDelta;
     this.player.y += scrollDelta;
-    if (shouldLoopStage(this.scroll, this.stage, this.hasWanted)) this.loopStage();
+    if (shouldLoopStage(this.scroll, this.stage, this.hasWanted)) {
+      this.loopStage();
+      this.updateHud();
+      return;
+    }
     if (this.shopOpen) return;
     const collisionScrollStep = Number(roundCollisionScrollNes(this.scroll) > roundCollisionScrollNes(previousScroll));
     this.camera.position.y = this.scroll + 270;
@@ -3058,6 +3062,7 @@ let referenceGame: ReferenceRomGame | undefined;
 if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeInvulnerable", { value: (duration: number) => { if (game) game.invulnerable = duration; } });
 if (import.meta.env.DEV) Object.defineProperty(window, "__getGunSmokeUnits", { value: () => game?.units.map((unit) => ({ kind: unit.kind, enemyType: unit.enemyType, itemType: unit.itemType, projectileType: unit.projectileType, bossProjectile: unit.bossProjectile, romPool: unit.romPool, romSlot: unit.romSlot, romEntityCode: unit.romEntityCode, hp: unit.hp, age: unit.age, x: unit.x, y: unit.y, screenY: (unit.y - (game?.scroll ?? 0)) / NES_WORLD_Y_SCALE, visible: unit.sprite.visible, invulnerableUntil: unit.invulnerableUntil, defeatAnimationDuration: unit.defeatAnimationDuration, volleysFired: unit.volleysFired })) ?? [] });
 if (import.meta.env.DEV) Object.defineProperty(window, "__getGunSmokeState", { value: () => game ? { mode: game.mode, time: game.time, scroll: game.scroll, romFrameCounter: game.romFrameCounter, randomState: [...game.randomState], inventoryOpen: game.inventoryOpen, shopOpen: game.shopOpen } : undefined });
+if (import.meta.env.DEV) Object.defineProperty(window, "__forceGunSmokeLoop", { value: () => { if (game) { game.hasWanted = false; game.scroll = ROUND_LENGTHS[game.stage - 1] ?? ROUND_LENGTHS[0]!; } } });
 if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeWeapon", { value: (weapon: WeaponName, ammo: number) => {
   if (!game || weapon === "pistol" || !Number.isInteger(ammo) || ammo < 1) return;
   game.weaponAmmo[weapon] = ammo;

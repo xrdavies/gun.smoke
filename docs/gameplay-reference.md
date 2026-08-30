@@ -567,6 +567,8 @@ The two same-frame `at=4511` top entries are distinct: `x=152` follows a
 483-frame route with a frame-63 shot, while `x=168` follows a 506-frame route
 with a frame-13 shot. Both preserve their spawned fine coordinates and end in
 the observed player-contact handoff.
+At `at=4623`, the top `x=88` entry is distinct from the bottom `x=168` entry:
+it follows a 324-frame shared route, fires at frame 69, and exits at `Y=252`.
 The following `at=4479,x=96,y=0,code=6,phase=1` entry also preserves its fine
 coordinates, follows the shared route for 315 frames, fires at frame 29, and
 releases at the bottom boundary.

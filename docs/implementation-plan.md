@@ -92,6 +92,8 @@ Round 6 `at=4479` likewise uses the shared top-entry route through its complete
 Round 6 `at=4511` now distinguishes its same-frame `x=152` and `x=168` top
 entries, preserving their fine coordinates and measured frame-63/frame-13
 attack opportunities through the observed contact handoffs.
+Round 6 `at=4623` now distinguishes its top `x=88` and bottom `x=168` entries,
+preserving their shared routes and measured frame-69/no-shot opportunities.
 Round 6 `at=4319` now uses the shared bottom-entry and chase/orbit state machine
 through its complete 392-frame no-shot route and NES `Y=255` release boundary.
 Round 6 `at=4575`, `at=4623`, and `at=4639` now preserve their separate bottom

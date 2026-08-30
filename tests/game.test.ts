@@ -22,7 +22,7 @@ import { advanceNinja, createNinjaState, NINJA_ATTACK_MOVE_DURATION, NINJA_ENTRY
 import { ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y } from "../src/game-constants";
 import { BOMBER_ENTRY_DURATION, BOMBER_ENTRY_END_Y, BOMBER_ENTRY_END_Y_NES, bomberOpeningY } from "../src/game-constants";
 import { contactSourceShouldClear, DYNAMITE_AIM_FACTOR, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_VERTICAL_PATH_NES, dynamiteVerticalOffset } from "../src/game-constants";
-import { BOSS_COLLISION_HALF_SIZES_NES, BOSS_WEAPON_COLLISION_HALF_SIZE_NES, combatHitboxesOverlap, CONTAINER_COLLISION_HALF_SIZE_NES, ENEMY_COLLISION_HALF_SIZE_NES, ENEMY_PROJECTILE_COLLISION_HALF_SIZE_NES, playerContactHitboxOverlap } from "../src/game-constants";
+import { BOSS_COLLISION_HALF_SIZES_NES, BOSS_WEAPON_COLLISION_HALF_SIZE_NES, combatHitboxesOverlap, CONTAINER_COLLISION_HALF_SIZE_NES, ENEMY_COLLISION_HALF_SIZE_NES, ENEMY_PROJECTILE_COLLISION_HALF_SIZE_NES, LANDED_DYNAMITE_COLLISION_HALF_SIZE_NES, playerContactHitboxOverlap } from "../src/game-constants";
 import { advanceFirebreather, createFirebreatherState, FIREBREATHER_ACTIVATION_DISTANCE_NES, FIREBREATHER_AIM_WAIT_FRAMES, FIREBREATHER_ATTACK_FRAMES, FIREBREATHER_DECISION_INTERVAL_FRAMES, FIREBREATHER_ENTRY_FRAMES, FIREBREATHER_LIFETIME, FIREBREATHER_MOVE_FRAMES, FIREBREATHER_PROJECTILE_OFFSET_NES, FIREBREATHER_READY_WAIT_FRAMES } from "../src/game-constants";
 import { advanceSpear, createSpearState, SPEAR_ATTACK_REMAINING_FRAME, SPEAR_LIFETIME, SPEAR_MOVE_FRAMES, SPEAR_PROJECTILE_OFFSET_NES, SPEAR_SIDE_ENTRY_FRAMES, SPEAR_TOP_ENTRY_FRAMES, SPEAR_WAIT_FRAMES } from "../src/game-constants";
 import { advanceHatchet, createHatchetState, HATCHET_ENTRY_DEPTH_NES, HATCHET_ENTRY_PAUSE_FRAMES, HATCHET_LIFETIME, HATCHET_PATROL_BOUNDS_NES, HATCHET_THROW_FRAMES, HATCHET_TURN_FRAMES, hatchetCanThrow, hatchetTurnHeading, nesActorCollisionProbeOffset } from "../src/game-constants";
@@ -147,7 +147,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(clamp(12, 0, 10)).toBe(10);
     expect(clamp(-2, 0, 10)).toBe(0);
     expect(distance({ x: 0, y: 0 }, { x: 3, y: 4 })).toBe(5);
-    expect({ enemies: ENEMY_COLLISION_HALF_SIZE_NES, containers: CONTAINER_COLLISION_HALF_SIZE_NES, projectiles: ENEMY_PROJECTILE_COLLISION_HALF_SIZE_NES, bossWeapons: BOSS_WEAPON_COLLISION_HALF_SIZE_NES }).toEqual({ enemies: [9, 8], containers: [10, 10], projectiles: [6, 6], bossWeapons: [8, 8] });
+    expect({ enemies: ENEMY_COLLISION_HALF_SIZE_NES, containers: CONTAINER_COLLISION_HALF_SIZE_NES, projectiles: ENEMY_PROJECTILE_COLLISION_HALF_SIZE_NES, bossWeapons: BOSS_WEAPON_COLLISION_HALF_SIZE_NES, landedDynamite: LANDED_DYNAMITE_COLLISION_HALF_SIZE_NES }).toEqual({ enemies: [9, 8], containers: [10, 10], projectiles: [6, 6], bossWeapons: [8, 8], landedDynamite: [16, 16] });
     expect(BOSS_COLLISION_HALF_SIZES_NES).toEqual([[9, 15], [12, 7], [9, 15], [9, 13], [12, 12], [12, 15]]);
     expect(combatHitboxesOverlap(8.99, 11.99, 0, 4, 9, 8)).toBe(true);
     expect(combatHitboxesOverlap(9, 0, 0, 4, 9, 8)).toBe(false);

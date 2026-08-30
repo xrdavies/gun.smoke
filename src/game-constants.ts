@@ -98,6 +98,7 @@ export const ENEMY_COLLISION_HALF_SIZE_NES = [9, 8] as const;
 export const CONTAINER_COLLISION_HALF_SIZE_NES = [10, 10] as const;
 export const ENEMY_PROJECTILE_COLLISION_HALF_SIZE_NES = [6, 6] as const;
 export const BOSS_WEAPON_COLLISION_HALF_SIZE_NES = [8, 8] as const;
+export const LANDED_DYNAMITE_COLLISION_HALF_SIZE_NES = [16, 16] as const;
 export const MAX_LIVES = 5;
 export const MAX_SCORE = 999_990;
 export const BLUE_YASHICHI_DURATION = 360 / NES_FRAME_RATE;

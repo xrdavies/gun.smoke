@@ -282,8 +282,10 @@ horizontal correction ends after roughly 40 frames. The landed state then
 moves with the measured scene-object scroll instead of freezing in world space.
 Player-contact dispatch at `$CB3D-$CB4E` clears airborne `0x2F` dynamite and
 returns without applying damage. Landed `0x3E` instead enters the normal hazard
-branch without the pre-hit clear, so the runtime permits contact defusal only
-during flight and treats the landed fuse as damaging.
+branch without the pre-hit clear. Its animation changes from index 3 `(6,6)`
+to index 2 `(16,16)`, so the runtime permits contact defusal only during flight
+and applies the larger axis-aligned contact bound throughout the landed fuse.
+The 53-frame release does not add a separate radial damage check.
 The first in-range opportunity waits one frame before applying that same sum.
 When a 90-frame throw ends, the ROM sums `AD+AC` again but uses the resulting
 direction regardless of its sign, preventing consecutive throws. Screen Y

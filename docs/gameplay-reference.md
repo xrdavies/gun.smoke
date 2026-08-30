@@ -771,7 +771,9 @@ durations with one shared random byte selecting both the half-probability throw
 decision and the next direction between segments, releasing
 when the measured retreat leaves the NES screen. Their movement uses the actor
 terrain mask rather than Billy's narrower collision mask. Their dynamite has explicit flight, landed, defusable, and delayed
-explosion phases. Boss and enemy projectiles are typed separately as bullets,
+release phases. Airborne dynamite uses `(6,6)` contact and can be defused;
+landed dynamite uses `(16,16)`, cannot be defused, and deals damage only through
+contact rather than a final radial burst. Boss and enemy projectiles are typed separately as bullets,
 boomerangs, fireballs, shuriken, spears, hatchets, dynamite, or grenades. Spear and
 hatchet projectiles also use distinct proportions and rotation behavior rather
 than sharing the Ninja shuriken representation. Fatman Joe's shell is aimed and

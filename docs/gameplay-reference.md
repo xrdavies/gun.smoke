@@ -419,14 +419,11 @@ double-apply the subpixel offset.
 Gunmen use the same quantized table at the faster second tier. Their first
 movement-facing check is derived from the spawn-time `$0540` seed (the first
 natural Round 1 seeds yield `58/52/69` frames), then repeats every 64
-frames. Runtime replays the measured top-entry
-movement through the center/left/right release paths (549/828/1196 frames).
-Those three paths use the complete isolated ROM frame samples, preserving their
-discrete jumps and screen-release boundaries rather than interpolating between
-sparse waypoints. Their complete per-frame heading samples also preserve the
-later successful left-route shot at frame 314 and right-route shots at frames
-570/1146. The samples are bound to the captured `x=88,y=0` entry;
-other entry lanes retain the same branch selection with parameterized offsets.
+frames. All decoded top-entry code-6 actors now use the shared B284 movement
+state, while the center/left/right captures (549/828/1196 frames) remain
+calibration traces for its discrete entry, heading and release behavior. Event
+qualified shot windows are retained where isolated captures established them;
+the sole generic exception is the unallocated Round 6 `at=3263` candidate.
 The left-edge code-7 side route is likewise replayed from a complete 642-frame
 integer trace relative to the event origin and mirrored for its right-edge
 counterpart. Round 1's natural `at=687,x=4,y=32` event first fires at frame 58.

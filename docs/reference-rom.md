@@ -317,32 +317,26 @@ Natural `$B284` top-entry Gunmen begin with scheduler seeds `56`, `72`, and
 advances by three until wrapping at 192, so an
 attack opportunity repeats every 64 frames and only fires when the actor's
 stored movement heading is within two sectors of its integer aim at Billy.
-Isolated entry movement phases appear at frames `40/52/58/62`; the complete left route
-fires again at frame 314, while the complete right route fires again at frames
-570 and 1146. The runtime preserves those observed phases, the 64-frame retry,
-and the captured per-frame headings instead of imposing a one-shot limit. The
-center trace releases at age 549 after its retreat, and the left
-trace releases at age 828 from the screen bottom, while the right trace remains
-active through frame 1195 before its slot is reused. The runtime replays those
-measured center/left/right paths and uses release caps of 549/828/1196 frames.
+The shared B284 state machine now handles every decoded top-entry code-6 event;
+the isolated center/left/right traces remain calibration evidence for its entry,
+heading and release behavior rather than separate runtime paths. Its movement
+and cleanup are driven by the decoded state and screen boundaries.
 The projectile uses the ROM's quantized
 32-direction speed table at the second tier (about 266 world pixels/s on its
 diagonal), and ROM-tagged Gunmen use this per-actor timing
-instead of the procedural global firing clock. A clean Round 1 isolation also
-shows the actor rising from `y=0` to approximately `y=53` at frame 40 and
-`y=128/132` at frames 100/104 before its horizontal combat state; the runtime
-uses these entry checkpoints and keeps the later movement procedural. The
-complete center, left, and right isolation traces are replayed at integer NES
-frames for their 549-, 828-, and 1196-frame routes, respectively. Those exact
-samples are used for the captured `x=88,y=0` entry; runtime keeps the original
-branch-relative path for other entry coordinates instead of extrapolating a
-single trace beyond its evidence.
+instead of the procedural global firing clock. Clean Round 1 isolation shows
+the actor rising from `y=0` to approximately `y=53` at frame 40 and
+`y=128/132` at frames 100/104 before its horizontal combat state. The complete
+center, left, and right traces validate the shared entry and movement state;
+runtime applies that state to all decoded code-6 entries and uses the captured
+per-event shot windows where available.
 Entity code `5` initializes the same routine with the opposite heading and
-enters from the bottom edge. Its 56-NES-pixel proximity branch is visible in
-two isolated routes: the near route fires at frame 219 and releases at frame
-318, while the far route fires at frame 241 and releases at frame 479. Runtime
-samples both player axes when the branch runs at frame 50, mirrors the matching
-measured route, and does not apply the top-entry Gunman timing.
+enters from the bottom edge. The old 56-NES-pixel near/far captures (including
+the frame-219/frame-318 and frame-241/frame-479 routes) remain useful evidence
+for attack timing, but are no longer separate runtime movement branches. Every
+decoded code-5 entry now starts at NES `Y=249`, rises to `Y=218` over 48 frames,
+then enters the shared chase/orbit state machine; event-qualified shot tables
+are applied only where an isolated trace established them.
 The same routine has distinct side-entry initializers. Entity code `7` enters
 from either edge on a mirrored route, with successful attack windows observed
 at frames 64/410, and releases at frame 642. The left-edge `x=4,y=32` event has a complete 642-frame integer

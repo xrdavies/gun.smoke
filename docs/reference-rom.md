@@ -907,14 +907,14 @@ velocity table and a 45-frame lifetime. The Boss leaves its opening attack state
 even when the aim-sector gate produces no projectile, so vulnerability is tied
 to the attempted attack rather than slot allocation. Later position-dependent attacks select
 three adjacent headings from Billy's integer aim sector, using a 36-frame
-lifetime. The controlled unhurt trace attempts attacks at frames
-`174/365/459/722/815`; after that recorded window the routine commonly returns
-to a 125-frame interval. The runtime preserves these measured 5/3 fan geometries
-and lifetimes. The five-shot branch accepts aim
+lifetime. The movement trace's pre-handoff fire events are bound with their
+observed five- or three-shot fan type through frame 3,630; the first events are
+`174/381/505/610/910/1015`. The runtime preserves these measured 5/3 fan
+geometries, lifetimes and irregular action delays. The five-shot branch accepts aim
 sectors 8 through 24 (inclusive), as enforced by the ROM's `$C7E6` check. The
 runtime uses complete integer X/Y samples from the unhurt Boss traces through
 combat frame 11,857; the discrete samples preserve the long recorded route while the
-separate attack scheduler remains subject to aim and random gates. Runtime consumes
+same-source attack events remain subject to the live aim gate. Runtime consumes
 the route through the frame-3,600 handoff; after that
 window, the runtime uses the ROM's 48-frame action counter, `AE=(AE+AC)&0xff`
 movement decisions, discrete `24/48/72/96`-frame segments, short action holds,

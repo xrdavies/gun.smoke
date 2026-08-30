@@ -32,7 +32,7 @@ import { FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeAimAllowsLaunch, fatmanJo
 import { advanceWingateMovement, createWingateMovementState, wingateAimHeading, WINGATE_BULLET_LIFETIME, WINGATE_BULLET_VELOCITIES_NES, wingateCanFire, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity } from "../src/game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SCREEN_MAX_X_NES, CUTTER_BOOMERANG_SCREEN_MAX_Y_NES, CUTTER_BOOMERANG_SCREEN_MIN_X_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangOnScreen, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "../src/game-constants";
 import { CUTTER_MOVEMENT_SPEED } from "../src/game-constants";
-import { advanceDevilHawkMovement, createDevilHawkMovementState, devilHawkAttackDelay, devilHawkFanHeadings, DEVIL_HAWK_ATTACK_FRAMES, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_FULL_FAN_HEADINGS, DEVIL_HAWK_FULL_FAN_LIFETIME, DEVIL_HAWK_FULL_FAN_MAX_Y_NES, DEVIL_HAWK_JUMP_PERIOD, devilHawkProjectileVelocity, DEVIL_HAWK_SIDE_FAN_LIFETIME, DEVIL_HAWK_VOLLEY_INTERVAL } from "../src/game-constants";
+import { advanceDevilHawkMovement, createDevilHawkMovementState, devilHawkAttackDelay, devilHawkFanHeadings, DEVIL_HAWK_ATTACK_FRAMES, DEVIL_HAWK_FIRST_VOLLEY_DELAY, DEVIL_HAWK_FULL_FAN_HEADINGS, DEVIL_HAWK_FULL_FAN_LIFETIME, DEVIL_HAWK_FULL_FAN_MAX_Y_NES, devilHawkFullFanAt, DEVIL_HAWK_JUMP_PERIOD, devilHawkProjectileVelocity, DEVIL_HAWK_SIDE_FAN_LIFETIME, DEVIL_HAWK_VOLLEY_INTERVAL } from "../src/game-constants";
 import { devilHawkCombatY } from "../src/game-constants";
 import { NINJA_BOSS_ATTACK_INTERVAL, NINJA_BOSS_ENTRY_INVULNERABILITY, NINJA_BOSS_FIRST_NATURAL_TELEPORT, NINJA_BOSS_REPEAT_NATURAL_TELEPORT, NINJA_BOSS_FIRST_ATTACK_DELAY, NINJA_BOSS_FIRST_PREPARE_DELAY, NINJA_BOSS_PREPARE_CONTROLLER_DURATION, NINJA_BOSS_PREPARE_DURATION, NINJA_BOSS_SHURIKEN_COUNT, NINJA_BOSS_SHURIKEN_LIFETIME, NINJA_BOSS_SHURIKEN_SPAWN_OFFSET_NES, NINJA_BOSS_SHURIKEN_VELOCITIES_NES, ninjaBossCombatX, ninjaBossCombatY, ninjaBossNextTeleportAt, ninjaBossPreparePosition } from "../src/game-constants";
 import { SHOTGUNNER_PATH_NES, shotgunnerPosition } from "../src/game-constants";
@@ -1593,9 +1593,10 @@ describe("Gun.Smoke vertical slice", () => {
     expect(devilHawkOpeningY(DEVIL_HAWK_ENTRY_DURATION)).toBe(216);
     expect(DEVIL_HAWK_FIRST_VOLLEY_DELAY).toBeCloseTo(174 / NES_FRAME_RATE, 9);
     expect(DEVIL_HAWK_VOLLEY_INTERVAL).toBeCloseTo(125 / NES_FRAME_RATE, 9);
-    expect(DEVIL_HAWK_ATTACK_FRAMES).toEqual([174, 365, 459, 722, 815]);
-    expect(devilHawkAttackDelay(174 / NES_FRAME_RATE)).toBeCloseTo(191 / NES_FRAME_RATE, 9);
-    expect(devilHawkAttackDelay(815 / NES_FRAME_RATE)).toBeCloseTo(125 / NES_FRAME_RATE, 9);
+    expect(DEVIL_HAWK_ATTACK_FRAMES).toEqual([174, 381, 505, 610, 910, 1015, 1109, 1214, 1307, 1412, 1506, 1695, 1769, 1843, 1936, 2041, 2115, 2207, 2311, 2543, 2615, 2722, 2845, 2968, 3092, 3198, 3272, 3431, 3524, 3630]);
+    expect(devilHawkAttackDelay(174 / NES_FRAME_RATE)).toBeCloseTo(207 / NES_FRAME_RATE, 9);
+    expect(devilHawkAttackDelay(3630 / NES_FRAME_RATE)).toBeCloseTo(125 / NES_FRAME_RATE, 9);
+    expect([devilHawkFullFanAt(910 / NES_FRAME_RATE), devilHawkFullFanAt(610 / NES_FRAME_RATE), devilHawkFullFanAt(611 / NES_FRAME_RATE)]).toEqual([true, false, undefined]);
     expect(DEVIL_HAWK_FULL_FAN_HEADINGS).toEqual([12, 14, 16, 18, 20]);
     expect(DEVIL_HAWK_FULL_FAN_LIFETIME).toBeCloseTo(45 / NES_FRAME_RATE, 9);
     expect(DEVIL_HAWK_SIDE_FAN_LIFETIME).toBeCloseTo(36 / NES_FRAME_RATE, 9);

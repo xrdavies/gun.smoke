@@ -2338,7 +2338,15 @@ export const DEVIL_HAWK_ENTRY_DURATION = 143 / NES_FRAME_RATE;
 export const DEVIL_HAWK_POST_ENTRY_X_HOLD = 113 / NES_FRAME_RATE;
 export const DEVIL_HAWK_FIRST_VOLLEY_DELAY = 174 / NES_FRAME_RATE;
 export const DEVIL_HAWK_VOLLEY_INTERVAL = 125 / NES_FRAME_RATE;
-export const DEVIL_HAWK_ATTACK_FRAMES = [174, 365, 459, 722, 815] as const;
+export const DEVIL_HAWK_ATTACK_EVENTS = [
+  [174, true], [381, true], [505, true], [610, false], [910, true],
+  [1015, false], [1109, true], [1214, false], [1307, true], [1412, false],
+  [1506, true], [1695, false], [1769, false], [1843, false], [1936, true],
+  [2041, false], [2115, false], [2207, true], [2311, false], [2543, false],
+  [2615, true], [2722, true], [2845, true], [2968, true], [3092, true],
+  [3198, false], [3272, false], [3431, false], [3524, true], [3630, false],
+] as const;
+export const DEVIL_HAWK_ATTACK_FRAMES = DEVIL_HAWK_ATTACK_EVENTS.map(([frame]) => frame);
 export const DEVIL_HAWK_ENTRY_SPEED_Y = (96 / 143) * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
 export const DEVIL_HAWK_FULL_FAN_HEADINGS = [12, 14, 16, 18, 20] as const;
 export const DEVIL_HAWK_FULL_FAN_LIFETIME = 45 / NES_FRAME_RATE;
@@ -2369,6 +2377,11 @@ export function devilHawkAttackDelay(age: number): number {
   const frame = Math.round(age * NES_FRAME_RATE);
   const next = DEVIL_HAWK_ATTACK_FRAMES.find((at) => at > frame) ?? frame + Math.round(DEVIL_HAWK_VOLLEY_INTERVAL * NES_FRAME_RATE);
   return Math.max(1, next - frame) / NES_FRAME_RATE;
+}
+
+export function devilHawkFullFanAt(age: number): boolean | undefined {
+  const frame = Math.round(age * NES_FRAME_RATE);
+  return DEVIL_HAWK_ATTACK_EVENTS.find(([at]) => at === frame)?.[1];
 }
 // Complete integer X/Y samples from the unhurt Round 3 Boss trace. The ROM
 // updates these coordinates in coarse steps, so the runtime preserves them.

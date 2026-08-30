@@ -108,6 +108,8 @@ the road center with their 20-frame hold and two volleys, while side entries
 preserve the 113-frame fan, correction holds, and frame-230 release.
 Both Wingate encounters now preserve the measured frame-185 entry
 invulnerability instead of accepting damage from their top-edge spawn.
+Devil Hawk's pre-handoff fire now uses the same trace as his movement, including
+all irregular action delays and five-/three-shot fan choices through frame 3,630.
 
 ## Delivery Stages
 

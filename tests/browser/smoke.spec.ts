@@ -159,12 +159,18 @@ test("runs the distinct Boss projectile chains", async ({ page }) => {
   await page.evaluate(() => (window as unknown as { __fireGunSmokeBoss: () => void }).__fireGunSmokeBoss());
   expect(await waitForBossProjectile(page, ["bullet"], 300, false)).toBe(true);
 
-  for (const [stage, projectile] of [[2, "boomerang"], [3, "fireball"]] as const) {
-    await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), stage);
-    await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
-    await page.evaluate(() => (window as unknown as { __fireGunSmokeBoss: () => void }).__fireGunSmokeBoss());
-    expect(await waitForBossProjectile(page, [projectile], 300)).toBe(true);
-  }
+  await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), 2);
+  await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
+  await page.evaluate(() => (window as unknown as { __fireGunSmokeBoss: () => void }).__fireGunSmokeBoss());
+  expect(await waitForBossProjectile(page, ["boomerang"], 300)).toBe(true);
+
+  await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), 3);
+  await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
+  await page.clock.runFor(6_200);
+  expect(await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; volleysFired: number }> }).__getGunSmokeUnits().find((unit) => unit.kind === "boss")?.volleysFired)).toBe(1);
+  await page.clock.runFor(300);
+  expect(await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; volleysFired: number }> }).__getGunSmokeUnits().find((unit) => unit.kind === "boss")?.volleysFired)).toBe(2);
+  expect(await waitForBossProjectile(page, ["fireball"], 100)).toBe(true);
 
   await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), 4);
   await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());

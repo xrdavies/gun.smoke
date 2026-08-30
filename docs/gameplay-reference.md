@@ -210,7 +210,8 @@ discrete directional velocity table and their measured 45/36-frame lifetimes;
 its available recorded X/Y movement route covers 11,858 combat frames, while
 runtime consumes it through the frame-3,600 handoff and then
 uses the ROM's random movement/action state and boundary correction for the
-continued encounter. Long-tail fire is emitted from those action states:
+continued encounter. Before that handoff, fire uses the same trace's irregular
+five-/three-shot action events instead of a generic 125-frame cadence. Long-tail fire is emitted from those action states:
 the hold branch produces a three-shot fan, while the high-position vertical
 bounce emits a five-shot fan six movement frames into its measured arc. The
 low-position down action uses its separate 28-frame hold and 32-frame route

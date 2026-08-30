@@ -528,6 +528,10 @@ code-7 entries match left/right shared flank state through frames 315/596,
 fire at 64 and 80/400, and release at frames 316/597. The existing scoped
 traces for left `y=64` code-7 and phase-one `y=32` code-8 entries remain the
 authoritative paths for their respective events.
+The naturally allocated contact branches are intentionally bounded. Round 6
+`at=479,x=136`, `at=2959,x=136`, and `at=4063,x=128` switch to the ROM contact
+dispatch at frame 32/34 before the shared 48-frame movement handoff, so no
+post-contact path is inferred from the controlled run.
 The earlier `at=815,x=176,code=5` bottom entry matches 530 shared-state frames,
 fires at frame 187, and releases through the NES `Y=255` boundary.
 The adjacent `at=831,x=160,code=5` bottom entry independently matches 150

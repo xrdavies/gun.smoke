@@ -166,6 +166,10 @@ their measured lunge dispatches, with attacks at 79/143/207 and 75/139. The
 left/right flank state with 64 and 80/400 attack windows. Existing scoped
 coordinates remain in place for `at=1679/2143/4223` until a dynamic handoff is
 shown to improve their already decoded paths.
+The remaining naturally allocated Round 6 Gunman records are now classified:
+`at=4063,x=128` and `at=2959,x=136` enter contact dispatch before handoff,
+while the same-time `at=479,x=136` entry does likewise. This keeps the runtime
+boundary explicit instead of extending an unverified route.
 Round 3 `at=1119` replaces its generic code-8 path with the shared state
 machine verified across all 282 controlled frames.
 Round 3 `at=687` replaces its generic phase-0 code-7 path with the shared state

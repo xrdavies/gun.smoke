@@ -7,6 +7,7 @@ const args = process.argv.slice(2);
 const filename = args.find((argument) => !argument.startsWith("--")) ?? "Gun.Smoke.ZH.NES";
 const frames = Number(args.find((argument) => argument.startsWith("--frames="))?.split("=")[1] ?? 18_000);
 const bossFramesLimit = Number(args.find((argument) => argument.startsWith("--boss-frames="))?.split("=")[1] ?? (args.includes("--attack") ? 2_400 : 720));
+const postBossFramesLimit = Number(args.find((argument) => argument.startsWith("--post-boss-frames="))?.split("=")[1] ?? 0);
 const output = args.find((argument) => argument.startsWith("--out="))?.split("=")[1] ?? ".rom-traces/boss.json";
 const stateFile = args.find((argument) => argument.startsWith("--state="))?.split("=")[1];
 const attack = args.includes("--attack");
@@ -20,6 +21,7 @@ if (!fs.existsSync(filename)) {
 }
 if (!Number.isInteger(frames) || frames <= 0) throw new Error("--frames must be a positive integer");
 if (!Number.isInteger(bossFramesLimit) || bossFramesLimit <= 0) throw new Error("--boss-frames must be a positive integer");
+if (!Number.isInteger(postBossFramesLimit) || postBossFramesLimit < 0) throw new Error("--post-boss-frames must be a non-negative integer");
 if (stateFile && !fs.existsSync(stateFile)) throw new Error(`State file not found: ${stateFile}`);
 if (!new Set(["pistol", "magnum"]).has(weapon)) throw new Error("--weapon must be pistol or magnum");
 
@@ -48,7 +50,10 @@ const bossChanges = [];
 const bossFrames = [];
 const projectileEvents = [];
 const projectileFrames = [];
+const postBossFrames = [];
 let bossStart = stateFile ? 0 : undefined;
+let bossReleaseFrame;
+let bossRoundIndex;
 let previousBoss;
 const previousProjectiles = new Map();
 const roundState = () => ({
@@ -72,7 +77,7 @@ for (let frame = 0; frame < frames; frame += 1) {
   const mapEnd = (memory[0x5e] ?? 0) | ((memory[0x5f] ?? 0) << 8);
   if (memory[0x4b] === 0 && mapPointer >= mapEnd - 24) memory[0x49] = 1;
   memory[0x7c] = 255;
-  if (attack && bossStart !== undefined) {
+  if (attack && bossStart !== undefined && bossReleaseFrame === undefined) {
     if (weapon === "magnum") {
       memory[0x88] = 4;
       memory[0x9c] = 255;
@@ -85,7 +90,7 @@ for (let frame = 0; frame < frames; frame += 1) {
       else nes.buttonUp(1, button);
     }
   }
-  if (clearField && bossStart !== undefined) {
+  if (clearField && bossStart !== undefined && bossReleaseFrame === undefined) {
     for (let slot = 2; slot < 32; slot += 1) {
       const lowBossSlot = stateFile && slot < 8;
       const playerProjectile = slot >= 8 && slot < 14;
@@ -99,6 +104,7 @@ for (let frame = 0; frame < frames; frame += 1) {
   const boss = activeEntity(14);
   if (bossStart === undefined && boss?.dispatch === 0x88) {
     bossStart = frame;
+    bossRoundIndex = memory[0x41];
     if (clearField) {
       for (let slot = 2; slot < 14; slot += 1) nes.cpu.mem[0x400 + slot] = 0;
       for (let slot = 24; slot < 32; slot += 1) nes.cpu.mem[0x400 + slot] = 0;
@@ -108,7 +114,31 @@ for (let frame = 0; frame < frames; frame += 1) {
       nes.buttonUp(1, Controller.BUTTON_B);
     }
   }
-  if (bossStart === undefined || !boss) continue;
+  if (bossStart === undefined) continue;
+  if (bossRoundIndex === undefined) bossRoundIndex = memory[0x41];
+  if (!boss && bossReleaseFrame === undefined) {
+    bossReleaseFrame = frame;
+    for (const button of [Controller.BUTTON_A, Controller.BUTTON_B]) nes.buttonUp(1, button);
+  }
+  if (bossReleaseFrame !== undefined) {
+    const postFrame = frame - bossReleaseFrame;
+    postBossFrames.push({
+      frame: postFrame,
+      bossFrame: frame - bossStart,
+      roundState: roundState(),
+      gameState: {
+        mode: memory[0x4b],
+        state: memory[0x4c],
+        substate: memory[0x4f],
+        bossGate: memory[0x49],
+        playerState: memory[0x76],
+      },
+      boss: activeEntity(14),
+    });
+    if (memory[0x41] !== bossRoundIndex || postFrame >= postBossFramesLimit) break;
+    continue;
+  }
+  if (!boss) continue;
   const relativeFrame = frame - bossStart;
   if (attack || record) {
     bossFrames.push({
@@ -186,6 +216,7 @@ const trace = {
   bossChanges,
   ...(attack || record ? { bossFrames } : {}),
   ...(clearField ? { projectileFrames } : {}),
+  ...(postBossFramesLimit > 0 ? { bossReleaseFrame: bossReleaseFrame === undefined ? undefined : bossReleaseFrame - bossStart, postBossFrames } : {}),
   projectileEvents,
 };
 fs.mkdirSync(path.dirname(output), { recursive: true });

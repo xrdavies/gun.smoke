@@ -1430,6 +1430,10 @@ zero-page observations through a 2,400-frame Boss window; `--boss-frames=N`
 overrides either window.
 Adding `--clear-field --boss-frames=420` clears field actors and records each
 retained Boss projectile position for velocity comparison.
+Adding `--post-boss-frames=N` continues sampling after the Boss slot is released
+until either the Round changes or the requested window expires. The output adds
+the release frame plus Round, game-state and player-state fields for transition
+timing comparisons.
 Passing an ignored JSNES save with `--state=.rom-traces/round3-boss-state.json`
 starts directly at that Boss entrance. In snapshot mode the tracer also records
 the six low Boss-weapon slots, whose dispatch values can be outside the ordinary

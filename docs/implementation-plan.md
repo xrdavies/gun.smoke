@@ -219,6 +219,9 @@ with captured player movement windows and attack frames 485/933/1253.
 The later top entries `at=2335,x=104`, `at=2479,x=128`, and `at=2511,x=144`
 now use state-qualified bindings, covering 486/974/1200 controlled frames
 with attack windows 47, 73/137, and 13/77/829/1085 respectively.
+Round 4 `at=1871` now distinguishes its same-trigger bottom entries: `x=24`
+uses the shared state for 623 frames with a frame-399 attack, while `x=128`
+retains the bounded fallback path.
 The later Round 4 bottom records `at=1951/2111/2143/2319/2431/2591` are now
 classified with event/X-qualified bindings and fixed-point tests. The dynamic
 traces cover 1000/687/683/375/1080/375 frames respectively, preserving their

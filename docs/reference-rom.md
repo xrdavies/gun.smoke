@@ -543,6 +543,11 @@ matches 354 top-entry frames and fires at 23. The long `at=959,x=216` bottom
 route matches 1,776 frames and fires at 296/616/848/912/976 before its upper
 release. Short player Y/X perturbations in these traces are part of the
 controlled input and are preserved by the tests.
+The same Round 5 segment's `at=1311` bottom entries are now classified: `x=32`
+matches 264 frames and fires at 225 before its contact dispatch, while `x=88`
+matches 720 frames, fires at 212, and releases through `Y=252`. Their shared
+event time does not imply shared lifetime; the separate slot fractions and
+player-relative paths remain part of the trace identity.
 The earlier `at=815,x=176,code=5` bottom entry matches 530 shared-state frames,
 fires at frame 187, and releases through the NES `Y=255` boundary.
 The adjacent `at=831,x=160,code=5` bottom entry independently matches 150

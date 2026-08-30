@@ -173,6 +173,11 @@ boundary explicit instead of extending an unverified route.
 Round 5 now also routes its naturally allocated top/bottom Gunmen at
 `at=31/47/207/255/511/559/575/623/879/959` through the shared state machine,
 preserving their measured attack windows and contact or screen-boundary exits.
+The later Round 5 `at=1311` bottom entries now remain distinct by X: `x=32`
+uses the shared route through its frame-264 contact dispatch with a frame-225
+attack, while `x=88` follows 720 frames to the upper release with a frame-212
+attack. The trace tool can persist a matching JSNES state with `--save-state`
+so subsequent event captures start at a verified allocation boundary.
 Round 3 `at=1119` replaces its generic code-8 path with the shared state
 machine verified across all 282 controlled frames.
 Round 3 `at=687` replaces its generic phase-0 code-7 path with the shared state

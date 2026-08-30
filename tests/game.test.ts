@@ -1746,6 +1746,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanTopUsesDynamicState(6, 1903)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 2015)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 2255)).toBe(true);
+    expect(gunmanTopUsesDynamicState(6, 2447)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 2623)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 2687)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 2735)).toBe(true);
@@ -1775,6 +1776,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankEventShotFrames(6, 2015, 104)).toEqual([13]);
     expect(gunmanFlankEventShotFrames(6, 2015, 128)).toEqual([37]);
     expect(gunmanFlankEventShotFrames(6, 2255, 112)).toEqual([76, 268]);
+    expect(gunmanFlankEventShotFrames(6, 2447, 184)).toEqual([13, 397, 717]);
     expect(gunmanFlankEventShotFrames(6, 2623, 128)).toEqual([13]);
     expect(gunmanFlankEventShotFrames(6, 2687, 136)).toEqual([77]);
     expect(gunmanFlankEventShotFrames(6, 2735, 184)).toEqual([13]);
@@ -1968,6 +1970,18 @@ describe("Gun.Smoke vertical slice", () => {
       advanceGunmanFlankMovement(playerShiftTopState, frame, playerX, playerY, (x, y) => roundActorCollisionAtNes(6, scroll, x, y));
     }
     expect(playerShiftTopState).toMatchObject({ frame: 376, mode: "orbit", heading: 7, timer: 1, x: 164 + 29 / 256, y: 170 + 182 / 256, dead: false });
+
+    const longMidTopState = createGunmanTopMovementState(184, 115, 48);
+    for (let frame = 1; frame <= 926; frame += 1) {
+      const scroll = (2447 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      const playerX = frame >= 363 ? 136 : 120;
+      const playerY = frame >= 360 && frame < 363 ? 216 : 215;
+      advanceGunmanFlankMovement(longMidTopState, frame, playerX, playerY, (x, y) => roundActorCollisionAtNes(6, scroll, x, y));
+    }
+    expect(longMidTopState).toMatchObject({ frame: 926, mode: "orbit", heading: 24, timer: 2, x: 197 + 158 / 256, y: 251 + 27 / 256, dead: false });
+    const longMidTopReleaseScroll = (2447 + 2 / 3 + 927 / 3) * NES_WORLD_Y_SCALE;
+    advanceGunmanFlankMovement(longMidTopState, 927, 136, 215, (x, y) => roundActorCollisionAtNes(6, longMidTopReleaseScroll, x, y));
+    expect(longMidTopState.dead).toBe(true);
 
     const extraTopRoutes = [
       { state: createGunmanTopMovementState(128, 155, 24), last: 181, heading: 24, timer: 0, x: 79 + 99 / 256, y: 180 + 3 / 256 },

@@ -1032,6 +1032,11 @@ route is kept as a separate age-zero step path. Its integer-frame samples match
 the trace through relative frame 423, including corrected vertical samples
 `y=60` at relative frame 80 and `y=90` at relative frame 216; long plateaus
 remain flat until the recorded jump frame.
+The attack clock does not reuse the opening's 124-frame prepare delay after
+teleport. Re-entry begins at frame 429, the first smoke controller appears at
+625 after 196 frames, and its shuriken conversion occurs at 664. Subsequent
+60-frame opportunities remain subject to the live aim-sector gate; the next
+accepted controller appears at frame 805.
 The Ninja remains in its initial smoke state for about 44 frames. Its isolated
 attack routine creates a low-slot smoke/prepare entity at frame 140, then emits
 four `0x30` shuriken bullets at frame 179; subsequent volleys commonly recur

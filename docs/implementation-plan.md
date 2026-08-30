@@ -160,6 +160,8 @@ equivalent frame/input state, reseed its random registers, and restore Billy's
 entry state at the same boundary as ROM `$E817-$E85E`.
 The Ninja Boss's first smoke controller and four-way shuriken volley now begin
 at the refreshed natural trace's frames 124/163 instead of 140/179.
+Its first post-teleport smoke/volley now uses the separate measured 196-frame
+re-entry delay, producing the frame-625/664 controller and shuriken timing.
 Fatman Joe's moving shell now converts in place to a non-colliding split
 controller before its five timed four-frame mine releases. Cutter now emits the second paired
 boomerang about 29 frames after each cycle's first pair. Wingate defeat

@@ -245,6 +245,9 @@ The initial visible route is sampled through the natural teleport at frame
 separate measured step route. The initial route starts moving on frame 44,
 and the re-entry path retains the corrected relative-frame `y=60` and `y=90`
 samples at frames 80 and 216 instead of smoothing across those jumps.
+The re-entry attack clock is distinct from the opening: after re-entry begins at
+frame 429, its first smoke controller appears at 625 and the four shuriken fire
+at 664. Later checks retain the 60-frame opportunity cadence and live aim gate.
 
 The ROM event stream is data-driven per Round. Its behavior routines map to the
 recognizable roster of gunmen, bombers, snipers, back-stabbers, riflemen,

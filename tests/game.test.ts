@@ -1685,6 +1685,7 @@ describe("Gun.Smoke vertical slice", () => {
   it("routes the offset Round 6 top Gunman into the shared state machine", () => {
     expect(gunmanTopUsesDynamicState(6, 47)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 63)).toBe(true);
+    expect(gunmanTopUsesDynamicState(6, 239)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 3295)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 3487)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 3551)).toBe(true);
@@ -1730,6 +1731,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankEventShotFrames(6, 1631, 80)).toEqual([48]);
     expect(gunmanFlankEventShotFrames(6, 47, 168)).toEqual([24]);
     expect(gunmanFlankEventShotFrames(6, 63, 184)).toEqual([29]);
+    expect(gunmanFlankEventShotFrames(6, 239, 176)).toEqual([36]);
     expect(gunmanFirstOpportunityFrame(43, 0)).toBe(62);
     const state = createGunmanTopMovementState(64, 199, 25);
     for (let frame = 1; frame <= 744; frame += 1) {
@@ -1870,6 +1872,16 @@ describe("Gun.Smoke vertical slice", () => {
       advanceGunmanFlankMovement(secondOpeningTopState, frame, 136, 188, (x, y) => roundActorCollisionAtNes(6, scroll, x, y));
     }
     expect(secondOpeningTopState).toMatchObject({ frame: 246, mode: "chase", heading: 11, timer: 1, x: 81 + 77 / 256, y: 146 + 6 / 256, dead: false });
+
+    const thirdOpeningTopState = createGunmanTopMovementState(176, 254, 198);
+    for (let frame = 1; frame <= 443; frame += 1) {
+      const scroll = (239 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(thirdOpeningTopState, frame, 136, 216, (x, y) => roundActorCollisionAtNes(6, scroll, x, y));
+    }
+    expect(thirdOpeningTopState).toMatchObject({ frame: 443, mode: "orbit", heading: 0, timer: 4, x: 133 + 237 / 256, y: 0 + 125 / 256, dead: false });
+    const thirdOpeningReleaseScroll = (239 + 2 / 3 + 444 / 3) * NES_WORLD_Y_SCALE;
+    advanceGunmanFlankMovement(thirdOpeningTopState, 444, 136, 216, (x, y) => roundActorCollisionAtNes(6, thirdOpeningReleaseScroll, x, y));
+    expect(thirdOpeningTopState.dead).toBe(true);
 
     const earlyTopState = createGunmanTopMovementState(128, 7, 56);
     for (let frame = 1; frame <= 431; frame += 1) {

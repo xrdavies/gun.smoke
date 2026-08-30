@@ -1053,6 +1053,7 @@ export const GUNMAN_LIFETIME = 560 / NES_FRAME_RATE;
 export const GUNMAN_TOP_LIFETIMES_FRAMES = { center: 549, left: 828, right: 1196 } as const;
 export const GUNMAN_ENTRY_PATH_NES = [[0, 0], [40, 53], [100, 128], [104, 132]] as const;
 export const GUNMAN_BOTTOM_BRANCH_FRAME = 50;
+export const GUNMAN_BOTTOM_DYNAMIC_HANDOFF_FRAME = 48;
 export const GUNMAN_BOTTOM_NEAR_DISTANCE_NES = 56;
 export const GUNMAN_BOTTOM_SHOT_FRAMES = { near: [219], far: [241] } as const;
 export const GUNMAN_BOTTOM_LIFETIMES = { near: 318 / NES_FRAME_RATE, far: 479 / NES_FRAME_RATE } as const;
@@ -1110,6 +1111,31 @@ export function createGunmanFlankMovementState(entityCode: 7 | 8 | 9, x: number,
     fromRight,
     x: x + (entityCode === 7 ? 0 : fromRight ? -1 : 1) + fineX / 256,
     y: y + 1 + fineY / 256,
+    dead: false,
+  };
+}
+
+export function gunmanBottomUsesDynamicState(stage: number, eventAt?: number): boolean {
+  return stage === 6 && eventAt === 3055;
+}
+
+export function gunmanBottomDynamicPosition(age: number, originX: number, fineX = 0, fineY = 0): readonly [number, number] {
+  const frame = Math.max(0, Math.round(age * NES_FRAME_RATE));
+  const y = frame >= GUNMAN_BOTTOM_DYNAMIC_HANDOFF_FRAME ? 218 : 249 - Math.ceil(frame * 2 / 3);
+  return [(originX + fineX / 256) * NES_WORLD_X_SCALE, (y + fineY / 256) * NES_WORLD_Y_SCALE];
+}
+
+export function createGunmanBottomMovementState(x: number, fineX = 0, fineY = 0): GunmanFlankMovementState {
+  return {
+    frame: GUNMAN_BOTTOM_DYNAMIC_HANDOFF_FRAME,
+    mode: "chase",
+    timer: 0,
+    heading: 0,
+    orbitDirection: 1,
+    orbitPassedDown: false,
+    fromRight: false,
+    x: x + fineX / 256,
+    y: 218 + fineY / 256,
     dead: false,
   };
 }

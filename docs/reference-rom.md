@@ -532,6 +532,17 @@ The naturally allocated contact branches are intentionally bounded. Round 6
 `at=479,x=136`, `at=2959,x=136`, and `at=4063,x=128` switch to the ROM contact
 dispatch at frame 32/34 before the shared 48-frame movement handoff, so no
 post-contact path is inferred from the controlled run.
+Round 5's early allocations follow the same measured contract. Top entries
+`at=31,x=168` and `at=47,x=192` match 365 and 702 frames with attacks at
+70/134 and 40/104/296; bottom `at=255,x=216` matches 119 frames into contact.
+The later `at=207,x=136` top route matches 1,182 frames with attacks at
+13/269/525/845/973/1037. Bottom/top entries `at=511,x=88`, `at=559,x=64`,
+`at=575,x=88`, and `at=623,x=184` match 165/441/603/523 frames with attack
+windows `none`, 13/333, 77/333/397, and 13/333 respectively. `at=879,x=208`
+matches 354 top-entry frames and fires at 23. The long `at=959,x=216` bottom
+route matches 1,776 frames and fires at 296/616/848/912/976 before its upper
+release. Short player Y/X perturbations in these traces are part of the
+controlled input and are preserved by the tests.
 The earlier `at=815,x=176,code=5` bottom entry matches 530 shared-state frames,
 fires at frame 187, and releases through the NES `Y=255` boundary.
 The adjacent `at=831,x=160,code=5` bottom entry independently matches 150

@@ -170,6 +170,9 @@ The remaining naturally allocated Round 6 Gunman records are now classified:
 `at=4063,x=128` and `at=2959,x=136` enter contact dispatch before handoff,
 while the same-time `at=479,x=136` entry does likewise. This keeps the runtime
 boundary explicit instead of extending an unverified route.
+Round 5 now also routes its naturally allocated top/bottom Gunmen at
+`at=31/47/207/255/511/559/575/623/879/959` through the shared state machine,
+preserving their measured attack windows and contact or screen-boundary exits.
 Round 3 `at=1119` replaces its generic code-8 path with the shared state
 machine verified across all 282 controlled frames.
 Round 3 `at=687` replaces its generic phase-0 code-7 path with the shared state

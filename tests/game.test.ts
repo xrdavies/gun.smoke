@@ -1523,7 +1523,7 @@ describe("Gun.Smoke vertical slice", () => {
     advanceGunmanFlankMovement(lateBottomState, 419, 136, 215, (x, y) => roundActorCollisionAtNes(6, lateBottomReleaseScroll, x, y));
     expect(lateBottomState.dead).toBe(true);
 
-    expect(gunmanFlankEventShotFrames(6, 4623)).toEqual([]);
+    expect(gunmanFlankEventShotFrames(6, 4623, 168)).toEqual([]);
     const noShotBottomState = createGunmanBottomMovementState(168, 42, 35);
     for (let frame = 49; frame <= 149; frame += 1) {
       const scroll = (4623 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
@@ -1541,6 +1541,16 @@ describe("Gun.Smoke vertical slice", () => {
       advanceGunmanFlankMovement(contactBottomState, frame, 136, 215, (x, y) => roundActorCollisionAtNes(6, scroll, x, y));
     }
     expect(contactBottomState).toMatchObject({ frame: 221, mode: "orbit", heading: 8, timer: 2, x: 127 + 189 / 256, y: 224 + 87 / 256, dead: false });
+
+    const sameFrameTopState = createGunmanTopMovementState(88, 5, 97);
+    for (let frame = 1; frame <= 323; frame += 1) {
+      const scroll = (4623 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(sameFrameTopState, frame, 136, 215, (x, y) => roundActorCollisionAtNes(6, scroll, x, y));
+    }
+    expect(sameFrameTopState).toMatchObject({ frame: 323, mode: "orbit", heading: 25, timer: 3, x: 192 + 29 / 256, y: 251 + 129 / 256, dead: false });
+    const sameFrameTopReleaseScroll = (4623 + 2 / 3 + 324 / 3) * NES_WORLD_Y_SCALE;
+    advanceGunmanFlankMovement(sameFrameTopState, 324, 136, 215, (x, y) => roundActorCollisionAtNes(6, sameFrameTopReleaseScroll, x, y));
+    expect(sameFrameTopState.dead).toBe(true);
   });
 
   it("routes the offset Round 6 top Gunman into the shared state machine", () => {
@@ -1551,11 +1561,14 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanTopUsesDynamicState(6, 4415)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 4479)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 4511)).toBe(true);
+    expect(gunmanTopUsesDynamicState(6, 4623)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 3263)).toBe(false);
     expect(gunmanFlankEventShotFrames(6, 4415)).toEqual([13, 397]);
     expect(gunmanFlankEventShotFrames(6, 4479)).toEqual([29]);
     expect(gunmanFlankEventShotFrames(6, 4511, 152)).toEqual([63]);
     expect(gunmanFlankEventShotFrames(6, 4511, 168)).toEqual([13]);
+    expect(gunmanFlankEventShotFrames(6, 4623, 88)).toEqual([69]);
+    expect(gunmanFlankEventShotFrames(6, 4623, 168)).toEqual([]);
     expect(gunmanFirstOpportunityFrame(43, 0)).toBe(62);
     const state = createGunmanTopMovementState(64, 199, 25);
     for (let frame = 1; frame <= 744; frame += 1) {

@@ -1070,7 +1070,8 @@ const GUNMAN_FLANK_EVENT_SHOT_FRAMES: Readonly<Record<string, readonly number[]>
   "6:4511:152": [63],
   "6:4511:168": [13],
   "6:4575": [158],
-  "6:4623": [],
+  "6:4623:88": [69],
+  "6:4623:168": [],
   "6:4639": [193],
 };
 export const GUNMAN_FLANK_LIFETIMES = { 7: 642 / NES_FRAME_RATE, 8: 508 / NES_FRAME_RATE, 9: 826 / NES_FRAME_RATE } as const;
@@ -1155,7 +1156,7 @@ export function createGunmanBottomMovementState(x: number, fineX = 0, fineY = 0)
 }
 
 export function gunmanTopUsesDynamicState(stage: number, eventAt?: number): boolean {
-  return stage === 6 && (eventAt === 3295 || eventAt === 3487 || eventAt === 3551 || eventAt === 3711 || eventAt === 4415 || eventAt === 4479 || eventAt === 4511);
+  return stage === 6 && (eventAt === 3295 || eventAt === 3487 || eventAt === 3551 || eventAt === 3711 || eventAt === 4415 || eventAt === 4479 || eventAt === 4511 || eventAt === 4623);
 }
 
 export function createGunmanTopMovementState(x: number, fineX = 0, fineY = 0): GunmanFlankMovementState {

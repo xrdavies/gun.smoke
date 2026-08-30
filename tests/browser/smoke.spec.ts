@@ -158,6 +158,24 @@ test("spawns ROM-table reinforcements during a Boss fight", async ({ page }) => 
   expect(pageErrors).toEqual([]);
 });
 
+test("fires the Ninja Boss opening volley on the traced frame", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/");
+  await page.locator("#start-button").click();
+  await page.locator("#continue-button").click();
+  await page.locator("#briefing-button").click();
+  await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
+  await page.evaluate(() => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(4));
+  await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
+  const hasBossShuriken = () => page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; projectileType?: string; bossProjectile?: boolean }> }).__getGunSmokeUnits()
+    .some((unit) => unit.kind === "enemyBullet" && unit.projectileType === "shuriken" && unit.bossProjectile));
+
+  await page.clock.runFor(2_600);
+  expect(await hasBossShuriken()).toBe(false);
+  await page.clock.runFor(200);
+  expect(await hasBossShuriken()).toBe(true);
+});
+
 test("runs the distinct Boss projectile chains", async ({ page }) => {
   const pageErrors: Error[] = [];
   page.on("pageerror", (error) => pageErrors.push(error));

@@ -948,6 +948,11 @@ visible through their invulnerability/recovery timers; only Ninja's smoke and
 teleport windows hide its sprite and disable actor collision. The runtime also
 replays the measured X/Y routes for the initial and post-teleport cycles. Runtime target and
 contact checks exclude hidden actors, including Snipers while they are in cover.
+The refreshed natural low-slot trace creates the first `0xAF` smoke controller
+at Boss frame 124 and changes it to `0xB0` while creating four `0x30`
+shuriken at frame 163. The next controller/fire pair appears at frames 183/223;
+runtime uses the corrected first pair and keeps the live aim-sector gate on
+later 60-frame opportunities.
 The initial route is sampled against the Round 4 record at absolute frames
 43/44/95/170 (`x=176/175/163/102`, in NES pixels); frame 44 is the first
 visible movement frame and the opening protection boundary. The first re-entry

@@ -770,10 +770,10 @@ describe("Gun.Smoke vertical slice", () => {
 
   it("keeps the Ninja Boss smoke and teleport timing", () => {
     expect(NINJA_BOSS_ENTRY_INVULNERABILITY).toBeCloseTo(44 / NES_FRAME_RATE, 9);
-    expect(NINJA_BOSS_FIRST_PREPARE_DELAY).toBeCloseTo(140 / NES_FRAME_RATE, 9);
+    expect(NINJA_BOSS_FIRST_PREPARE_DELAY).toBeCloseTo(124 / NES_FRAME_RATE, 9);
     expect(NINJA_BOSS_PREPARE_DURATION).toBeCloseTo(40 / NES_FRAME_RATE, 9);
     expect(NINJA_BOSS_PREPARE_CONTROLLER_DURATION).toBeCloseTo(7 / NES_FRAME_RATE, 9);
-    expect(NINJA_BOSS_FIRST_ATTACK_DELAY).toBeCloseTo(179 / NES_FRAME_RATE, 9);
+    expect(NINJA_BOSS_FIRST_ATTACK_DELAY).toBeCloseTo(163 / NES_FRAME_RATE, 9);
     expect(NINJA_BOSS_TELEPORT_DELAY).toBeCloseTo(90 / NES_FRAME_RATE, 9);
     expect(NINJA_BOSS_FIRST_NATURAL_TELEPORT).toBeCloseTo(339 / NES_FRAME_RATE, 9);
     expect(NINJA_BOSS_REPEAT_NATURAL_TELEPORT).toBeCloseTo(424 / NES_FRAME_RATE, 9);
@@ -1693,7 +1693,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect([0, 1, 2, 3].map((value) => ninjaBossEntryLaneIndex(value, 80))).toEqual([2, 3, 2, 3]);
     expect(NINJA_BOSS_ENTRY_LANES_NES).toEqual([[112, 64], [192, 64], [120, 144], [176, 128]]);
     expect(NINJA_BOSS_ENTRY_LANES).toEqual([[420, 144], [720, 144], [450, 324], [660, 288]]);
-    expect(NINJA_BOSS_FIRST_ATTACK_DELAY).toBeCloseTo(179 / NES_FRAME_RATE, 9);
+    expect(NINJA_BOSS_FIRST_ATTACK_DELAY).toBeCloseTo(163 / NES_FRAME_RATE, 9);
     expect(NINJA_BOSS_ENTRY_INVULNERABILITY).toBeCloseTo(44 / NES_FRAME_RATE, 9);
     expect(NINJA_BOSS_ATTACK_INTERVAL).toBeCloseTo(60 / NES_FRAME_RATE, 9);
     expect(NINJA_BOSS_SHURIKEN_COUNT).toBe(4);

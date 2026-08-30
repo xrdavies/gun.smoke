@@ -113,6 +113,8 @@ all irregular action delays and five-/three-shot fan choices through frame 3,630
 Boss fights now keep the ROM's separate reinforcement scheduler: the global
 8-bit frame gate and `$AC/$AD` random selection feed each Round's decoded
 16-entry `$83BF` table into the existing seven-slot enemy initializer.
+The Ninja Boss's first smoke controller and four-way shuriken volley now begin
+at the refreshed natural trace's frames 124/163 instead of 140/179.
 
 ## Delivery Stages
 

@@ -2316,6 +2316,10 @@ describe("Gun.Smoke vertical slice", () => {
   it("matches the bounded Gunman contact retreat", () => {
     expect(GUNMAN_BOTTOM_CONTACT_FRAMES).toBe(60);
     const state = createGunmanBottomContactState(136, 227);
+    for (const [frame, offset] of [1, 2, 3, 4, 5, 6, 7, 8, 9].map((frame) => [frame, [0, -4, -7, -10, -12, -14, -15, -16, -16, -15][frame]!] as const)) {
+      advanceGunmanBottomContact(state, frame);
+      expect(state.y).toBe(227 + offset);
+    }
     advanceGunmanBottomContact(state, 10);
     expect(state).toMatchObject({ frame: 10, x: 136, y: 214, dead: false });
     advanceGunmanBottomContact(state, 59);

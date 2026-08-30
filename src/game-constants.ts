@@ -1383,6 +1383,7 @@ export function createGunmanBottomMovementState(x: number, fineX = 0, fineY = 0)
 }
 
 export const GUNMAN_BOTTOM_CONTACT_FRAMES = 60;
+const GUNMAN_BOTTOM_CONTACT_OFFSETS_NES = [0, -4, -7, -10, -12, -14, -15, -16, -16, -15] as const;
 export type GunmanBottomContactState = { frame: number; x: number; y: number; originY: number; dead: boolean };
 
 export function createGunmanBottomContactState(x: number, y: number): GunmanBottomContactState {
@@ -1396,7 +1397,7 @@ export function advanceGunmanBottomContact(state: GunmanBottomContactState, targ
       state.dead = true;
       break;
     }
-    const offset = state.frame <= 9 ? [0, -4, -7, -10, -12, -14, -15, -16, -16, -15][state.frame]! : -13 + Math.floor((state.frame - 10) / 3);
+    const offset = state.frame < GUNMAN_BOTTOM_CONTACT_OFFSETS_NES.length ? GUNMAN_BOTTOM_CONTACT_OFFSETS_NES[state.frame]! : -13 + Math.floor((state.frame - 10) / 3);
     state.y = state.originY + offset;
   }
 }

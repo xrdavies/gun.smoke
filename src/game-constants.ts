@@ -1317,7 +1317,6 @@ const GUNMAN_FLANK_NEAR_DISTANCE_NES = 56;
 const GUNMAN_FLANK_SIDE_TRIGGER_DISTANCE_NES = 101;
 const GUNMAN_FLANK_LUNGE_HEADINGS = [0x90, 0x8f, 0x4e, 0x4d, 0x4c, 0x4b, 0x0a, 0x09, 0x08, 0x07, 0x46, 0x45, 0x44] as const;
 
-// ponytail: web actors start with neutral subpixels; persist per-slot fine bytes when remaining parity requires it.
 export type GunmanFlankMovementState = {
   frame: number;
   mode: "entry" | "side" | "lunge" | "chase" | "orbit" | "roam";

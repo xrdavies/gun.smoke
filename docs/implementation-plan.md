@@ -23,9 +23,9 @@ input; ROM bytes, extracted artwork, and Capcom source are not distributed.
 | Collision and map data | Complete for decoded data | Six ROM collision rings drive movement and generated terrain; visual landmark art remains original |
 | ROM event scheduler | Complete for extracted scripts | Per-round enemy/object streams, Boss reinforcement tables, frame/random gates, map phases, independent seven/six-slot pools and slot fine coordinates |
 | Resources and combat | Complete for modeled rules | Weapons, ammo, score, drops, shops, Smart Bomb, Horse, damage and death state |
-| Ordinary enemy routines | Mostly complete | All core behavior routines are mapped; every Round 4 Ninja script record has a state-qualified trace or decoded-state fallback, while other long-tail random branches stay explicit |
-| Boss routines | Mostly complete | Measured entrances, attacks, health bars and long ROM X/Y traces are implemented for Bandit Bill, Cutter, Devil Hawk and Fatman Joe; remaining tails continue from ROM-shaped state |
-| Original visual/audio assets | Intentional baseline | Procedural textures and Web Audio are used instead of redistributed commercial assets |
+| Ordinary enemy routines | Complete for natural decoded paths | Every scripted behavior uses a measured route or decoded state machine; the sole generic candidate is not naturally allocated by the seven-slot pool |
+| Boss routines | Complete for decoded gameplay | All six entrances, attacks, health transitions, long tails, defeat controllers and Round exits are measured or state-driven |
+| Original visual/audio assets | Complete original baseline | Deterministic procedural pixel textures and Web Audio replace redistributed commercial assets |
 
 Recent evidence-backed parity passes closed the full Round 4 Ninja script set,
 enemy/object slot attribution, discrete Backstabber and scripted-object descent,
@@ -373,13 +373,14 @@ browser regression that would fail if the behavior regresses. Run unit tests,
 type checking, production build, browser tests, `git diff --check`, then create
 a focused Conventional Commit and push it to `origin/main`.
 
-## Remaining Work
+## Optional Fidelity Work
 
-The remaining parity work is evidence-driven rather than a new subsystem:
+The complete gameplay loop has no known unimplemented natural ROM path. Future
+fidelity work remains evidence-driven rather than a new subsystem:
 
-1. Capture and bind remaining non-Ninja enemy and Boss tails where they affect
-   gameplay decisions, release boundaries, or projectile timing.
-2. Replace the remaining visual approximations only when legally usable,
+1. Replace procedural visuals or audio only when legally usable,
    reproducible source assets or a measured procedural equivalent is available.
-3. Keep generic fallback routines and authored landmark parameters documented;
+2. Re-run fixed-input trace comparisons when new ROM evidence identifies a
+   concrete frame, coordinate, collision, or random-state discrepancy.
+3. Keep unreachable generic fallbacks and authored landmark parameters documented;
    do not present them as byte-identical ROM behavior.

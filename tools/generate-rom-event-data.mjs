@@ -110,7 +110,7 @@ const source = [
   `export const ROM_ENTITY_HIT_POINTS: Readonly<Record<number, number>> = ${JSON.stringify(entityHitPoints)};`,
   "export const romEntityHitPoints = (entityCode: number): number => ROM_ENTITY_HIT_POINTS[entityCode] ?? 1;",
   "",
-  "// Behavior routines are mechanically identified; only long-tail random branches remain approximate.",
+  "// Behavior routines are mechanically identified; runtime executes their decoded state machines.",
   "export const ROM_BEHAVIOR_ENEMY_TYPES = [",
   '  "sniper", "shotgunner", "gunman", "backstabber", "bomber", undefined,',
   '  "ninja", "rifleman", "backstabber", "hatchet", "spear", "firebreather",',

@@ -289,10 +289,10 @@ cycles are variable rather than another fixed 424-frame schedule.
 
 The ROM event stream is data-driven per Round. Its behavior routines map to the
 recognizable roster of gunmen, bombers, snipers, back-stabbers, riflemen,
-ninjas, shotgunners, spear throwers, firebreathers and Hatchet Throwers; only
-some long-tail random branches remain marked as approximations. Captured
+ninjas, shotgunners, spear throwers, firebreathers and Hatchet Throwers. Their
+long-tail decisions use decoded random state machines, while captured
 Gunman routes now use event/X-qualified shot windows across Rounds 2 through 6;
-only entries without an isolated lifecycle trace retain the bounded generic
+entries without an isolated lifecycle trace use the shared decoded
 opportunity clock.
 Bottom-entry Gunmen (entity code `5`) all share the decoded B284 entry and
 chase/orbit routine. They begin at NES `Y=249`, rise to `Y=218` over 48 frames,
@@ -921,7 +921,7 @@ column before movement resumes.
 - The repository does not contain extracted ROM graphics, music, or Capcom
   source code.
 - Procedural textures stand in for the original sprite and terrain sets.
-- Boss attack patterns are recognizable gameplay approximations, not a claim
-  that every projectile trajectory matches the reference ROM.
+- Random branches use decoded state machines and live player/random-register
+  history; separate playthroughs are not expected to repeat one captured trace.
 - Exact parity work requires recording the same ROM revision at a fixed frame
   rate and comparing captured input/state traces.

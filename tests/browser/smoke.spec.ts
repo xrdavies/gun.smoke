@@ -63,7 +63,7 @@ test("starts the WebGPU stage and renders gameplay", async ({ page }) => {
   expect(pageErrors).toEqual([]);
 });
 
-test("freezes the ROM clock and randomness while inventory is open", async ({ page }) => {
+test("freezes gameplay while the ROM clock continues in inventory", async ({ page }) => {
   await page.clock.install();
   await page.goto("/");
   await page.locator("#start-button").click();
@@ -75,7 +75,9 @@ test("freezes the ROM clock and randomness while inventory is open", async ({ pa
   await expect(page.locator("#inventory-screen")).toBeVisible();
   await page.clock.runFor(500);
   const during = await page.evaluate(() => (window as unknown as { __getGunSmokeState: () => unknown }).__getGunSmokeState());
-  expect(during).toEqual(expect.objectContaining({ time: (before as { time: number }).time, romFrameCounter: (before as { romFrameCounter: number }).romFrameCounter, randomState: (before as { randomState: number[] }).randomState }));
+  expect(during).toEqual(expect.objectContaining({ time: (before as { time: number }).time, scroll: (before as { scroll: number }).scroll }));
+  expect((during as { romFrameCounter: number }).romFrameCounter).toBeGreaterThan((before as { romFrameCounter: number }).romFrameCounter);
+  expect((during as { randomState: number[] }).randomState).not.toEqual((before as { randomState: number[] }).randomState);
 });
 
 test("renders all six procedural rounds", async ({ page }) => {

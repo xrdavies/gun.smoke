@@ -316,6 +316,7 @@ Player projectile hits now use decoded animation and projectile axis half-sizes
 for ordinary enemies, barrels, rocks, enemy shots and all six Bosses.
 Hostile contact and airborne dynamite defusal now use the separate ROM player
 contact bounds, including Horse's vertical eight-pixel expansion.
+Animation-1 pickups and shopkeepers use that same decoded contact path.
 
 ## Delivery Stages
 

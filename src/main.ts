@@ -1412,8 +1412,8 @@ class GunSmokeGame {
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" || sceneObject ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
-      collisionHalfX: isBoss ? BOSS_COLLISION_HALF_SIZES_NES[this.stage - 1]?.[0] ?? 9 : kind === "enemy" ? ENEMY_COLLISION_HALF_SIZE_NES[0] : kind === "barrel" ? CONTAINER_COLLISION_HALF_SIZE_NES[0] : kind === "enemyBullet" ? ENEMY_PROJECTILE_COLLISION_HALF_SIZE_NES[0] : 0,
-      collisionHalfY: isBoss ? BOSS_COLLISION_HALF_SIZES_NES[this.stage - 1]?.[1] ?? 15 : kind === "enemy" ? ENEMY_COLLISION_HALF_SIZE_NES[1] : kind === "barrel" ? CONTAINER_COLLISION_HALF_SIZE_NES[1] : kind === "enemyBullet" ? ENEMY_PROJECTILE_COLLISION_HALF_SIZE_NES[1] : 0,
+      collisionHalfX: isBoss ? BOSS_COLLISION_HALF_SIZES_NES[this.stage - 1]?.[0] ?? 9 : kind === "enemy" ? ENEMY_COLLISION_HALF_SIZE_NES[0] : isPickup || kind === "barrel" || kind === "shopkeeper" ? CONTAINER_COLLISION_HALF_SIZE_NES[0] : kind === "enemyBullet" ? ENEMY_PROJECTILE_COLLISION_HALF_SIZE_NES[0] : 0,
+      collisionHalfY: isBoss ? BOSS_COLLISION_HALF_SIZES_NES[this.stage - 1]?.[1] ?? 15 : kind === "enemy" ? ENEMY_COLLISION_HALF_SIZE_NES[1] : isPickup || kind === "barrel" || kind === "shopkeeper" ? CONTAINER_COLLISION_HALF_SIZE_NES[1] : kind === "enemyBullet" ? ENEMY_PROJECTILE_COLLISION_HALF_SIZE_NES[1] : 0,
       value: isBoss ? bossReward(this.stage, this.wingatePhase) : kind === "moneyBag" ? 200 : kind === "ammo" || kind === "item" || kind === "barrel" ? 0 : 100,
       age: 0, phase: this.nextRandom() * Math.PI * 2, damage: kind === "enemy" && enemyType === "rifleman" ? 0 : 1, fired: false, nextFireAt: 0, shotOpportunityIndex: 0, volleysFired: 0, turnRate: 0, maxAge: isBoss ? unitMaxAge("boss") : sceneObject ? Number.POSITIVE_INFINITY : small ? unitMaxAge("projectile") : isPickup || kind === "barrel" ? unitMaxAge("pickup") : unitMaxAge("enemy"), invulnerableUntil: 0, piercing: false,
     };
@@ -2313,14 +2313,14 @@ class GunSmokeGame {
       if (unit.kind === "enemyBullet" && (unit.projectileType === "ninjaSmoke" || unit.projectileType === "grenadeController")) continue;
       if ((unit.kind === "enemy" || unit.kind === "boss") && !unit.sprite.visible) continue;
       if (unit.kind === "moneyBag" || unit.kind === "item" || unit.kind === "ammo") {
-        if (distance(unit, this.player) <= unit.radius + 22) {
+        if (overlapsPlayerContact(unit)) {
           unit.hp = 0;
           this.score = addScore(this.score, unit.value);
           if (unit.kind === "item" && unit.itemType) this.collectItem(unit.itemType);
           else if (unit.kind === "ammo") this.refillAmmo(1);
           this.beep(unit.kind === "moneyBag" ? 980 : 620, 0.08);
         }
-      } else if (unit.kind === "shopkeeper" && distance(unit, this.player) <= unit.radius + 22) {
+      } else if (unit.kind === "shopkeeper" && overlapsPlayerContact(unit)) {
         this.openShop(unit.shopIndex ?? this.shopSpawnCursor);
         break;
       } else if (unit.kind === "enemyBullet" && unit.projectileType === "dynamite" && dynamiteContactIsDefusable(unit.age) && overlapsPlayerContact(unit)) {

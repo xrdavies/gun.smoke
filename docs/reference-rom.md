@@ -871,7 +871,10 @@ Player contact at `$CA83-$CAA7` uses a separate bound: absolute X must be less
 than the target animation half-width, while absolute Y must be less than the
 target half-height plus 4 NES pixels. Horse health expands only that vertical
 allowance by another 8 pixels. Runtime applies this rule to enemies, Bosses,
-enemy projectiles and airborne dynamite contact instead of a circular radius.
+enemy projectiles, airborne dynamite, animation-1 pickups and shopkeepers
+instead of a circular radius. Pickups and shopkeepers use `(10,10)` half-sizes,
+so Horse also expands their vertical collection/entry range through the shared
+ROM contact path.
 The routine updates five score tiles at `$06F2/$06F4/$06F6/$06F8/$06FA`;
 `$06FC` remains the fixed zero ones digit, and overflow clamps those five
 tiles to `9`, yielding a maximum displayed score of `999990`.

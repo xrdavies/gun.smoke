@@ -518,6 +518,16 @@ the same-time `x=128` bottom entry reaches contact at frame 34. Finally,
 whereas `at=4335,x=168` matches 150 frames with no shot. The `at=2959,x=136`
 bottom entry, like `at=4063,x=128`, enters player-contact dispatch at frame 34
 before the shared movement handoff.
+Side-entry traces extend the same boundary rules. `at=207,x=4,y=32,code=8`
+matches the shared flank coordinates through frame 249 and fires at 79/143/207
+before the ROM lunge dispatch at 250. `at=511,x=248,y=48,code=9` needs the
+allocation-frame `x+1` correction, then matches through frame 201 and fires at
+54/118/182 before its lunge dispatch. `at=607,x=4,y=32,code=8` matches through
+frame 246, fires at 75/139, and enters lunge at 247. The two `at=1135,y=32`
+code-7 entries match left/right shared flank state through frames 315/596,
+fire at 64 and 80/400, and release at frames 316/597. The existing scoped
+traces for left `y=64` code-7 and phase-one `y=32` code-8 entries remain the
+authoritative paths for their respective events.
 The earlier `at=815,x=176,code=5` bottom entry matches 530 shared-state frames,
 fires at frame 187, and releases through the NES `Y=255` boundary.
 The adjacent `at=831,x=160,code=5` bottom entry independently matches 150

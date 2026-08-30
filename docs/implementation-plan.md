@@ -159,6 +159,13 @@ their five-shot and no-shot bottom-boundary paths. `at=3215` and `at=4335`
 also preserve their left/bottom releases. The `at=4063` and `at=2959` center
 bottom entries both enter player-contact dispatch before the 48-frame handoff,
 so they remain on the explicit contact path.
+Round 6 side Gunmen `at=207` and `at=607` now use the shared flank state up to
+their measured lunge dispatches, with attacks at 79/143/207 and 75/139. The
+`at=511` code-9 route preserves its allocation-frame `x+1` correction and
+54/118/182 attacks. The paired `at=1135` code-7 entries now use shared
+left/right flank state with 64 and 80/400 attack windows. Existing scoped
+coordinates remain in place for `at=1679/2143/4223` until a dynamic handoff is
+shown to improve their already decoded paths.
 Round 3 `at=1119` replaces its generic code-8 path with the shared state
 machine verified across all 282 controlled frames.
 Round 3 `at=687` replaces its generic phase-0 code-7 path with the shared state

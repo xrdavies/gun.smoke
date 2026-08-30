@@ -1527,6 +1527,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanBottomUsesDynamicState(6, 447)).toBe(true);
     expect(gunmanBottomUsesDynamicState(6, 479)).toBe(true);
     expect(gunmanBottomUsesDynamicState(6, 559)).toBe(true);
+    expect(gunmanBottomUsesDynamicState(6, 847)).toBe(true);
     expect(gunmanBottomUsesDynamicState(6, 2207)).toBe(true);
     expect(gunmanBottomUsesDynamicState(6, 2479)).toBe(true);
     expect(gunmanBottomUsesDynamicState(6, 2879)).toBe(true);
@@ -1578,6 +1579,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankEventShotFrames(6, 447, 104)).toEqual([]);
     expect(gunmanFlankEventShotFrames(6, 479, 168)).toEqual([]);
     expect(gunmanFlankEventShotFrames(6, 559, 104)).toEqual([191]);
+    expect(gunmanFlankEventShotFrames(6, 847, 160)).toEqual([61]);
     expect(gunmanFlankEventShotFrames(6, 2207, 88)).toEqual([423, 615]);
     expect(gunmanFlankEventShotFrames(6, 2207, 120)).toEqual([423]);
     expect(gunmanFlankEventShotFrames(6, 2479, 152)).toEqual([64]);
@@ -1730,6 +1732,16 @@ describe("Gun.Smoke vertical slice", () => {
     const secondLoopBottomReleaseScroll = (559 + 2 / 3 + 828 / 3) * NES_WORLD_Y_SCALE;
     advanceGunmanFlankMovement(secondLoopBottomState, 828, 120, 215, (x, y) => roundActorCollisionAtNes(6, secondLoopBottomReleaseScroll, x, y));
     expect(secondLoopBottomState.dead).toBe(true);
+
+    const adjacentBottomState = createGunmanBottomMovementState(160, 83, 199);
+    for (let frame = 49; frame <= 149; frame += 1) {
+      const scroll = (847 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(adjacentBottomState, frame, 120, 215, (x, y) => roundActorCollisionAtNes(6, scroll, x, y));
+    }
+    expect(adjacentBottomState).toMatchObject({ frame: 149, mode: "orbit", heading: 24, timer: 0, x: 77 + 131 / 256, y: 251 + 199 / 256, dead: false });
+    const adjacentBottomReleaseScroll = (847 + 2 / 3 + 150 / 3) * NES_WORLD_Y_SCALE;
+    advanceGunmanFlankMovement(adjacentBottomState, 150, 120, 215, (x, y) => roundActorCollisionAtNes(6, adjacentBottomReleaseScroll, x, y));
+    expect(adjacentBottomState.dead).toBe(true);
 
     const lateBottomRoutes = [
       { state: createGunmanBottomMovementState(88, 55, 134), last: 940, heading: 0, timer: 0, x: 175 + 253 / 256, y: 0 + 28 / 256, release: 941 },

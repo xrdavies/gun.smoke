@@ -1064,6 +1064,7 @@ const GUNMAN_BOTTOM_PATHS_NES = {
 
 export const GUNMAN_FLANK_SHOT_FRAMES = { 7: [64, 410], 8: [309], 9: [399, 463] } as const;
 const GUNMAN_FLANK_EVENT_SHOT_FRAMES: Readonly<Record<string, readonly number[]>> = {
+  "5:1679:248": [73, 393],
   "5:31:168": [70, 134],
   "5:47:192": [40, 104, 296],
   "5:207:136": [13, 269, 525, 845, 973, 1037],
@@ -1176,7 +1177,7 @@ export type GunmanFlankMovementState = {
 };
 
 export function gunmanFlankUsesDynamicState(entityCode: 7 | 8 | 9, originY: number, stage: number, phase: number, eventAt?: number, fromRight = false): boolean {
-  if (stage === 5 && entityCode === 7 && [1759, 1903, 1999, 2735].includes(eventAt ?? -1)) return true;
+  if (stage === 5 && entityCode === 7 && [1679, 1759, 1903, 1999, 2735].includes(eventAt ?? -1)) return true;
   if (stage === 4 && entityCode === 7 && [1503, 1695, 1727, 1743, 2527].includes(eventAt ?? -1)) return true;
   if (stage === 3 && entityCode === 7 && [255, 319, 687, 959, 1647, 1711, 4239, 4255, 4831, 4863].includes(eventAt ?? -1)) return true;
   if (stage === 3 && entityCode === 8 && [1071, 1119, 3775, 3823].includes(eventAt ?? -1)) return true;

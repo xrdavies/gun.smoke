@@ -1093,6 +1093,9 @@ class GunSmokeGame {
       return;
     }
     if (this.stage === 2) {
+      for (const unit of this.units) {
+        if (unit.kind === "enemyBullet" && unit.bossProjectile && unit.projectileType === "boomerang") unit.hp = 0;
+      }
       for (let index = 0; index < CUTTER_BOOMERANG_SPAWN_NES.length; index += 1) {
         const [spawnX, spawnY] = CUTTER_BOOMERANG_SPAWN_NES[index]!;
         const heading = CUTTER_BOOMERANG_HEADINGS[index]!;

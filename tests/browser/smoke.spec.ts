@@ -221,6 +221,9 @@ test("runs the distinct Boss projectile chains", async ({ page }) => {
   expect(await waitForBossProjectile(page, ["boomerang"], 300)).toBe(true);
   await page.clock.runFor(400);
   expect(await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; volleysFired: number }> }).__getGunSmokeUnits().find((unit) => unit.kind === "boss")?.volleysFired)).toBe(1);
+  await page.evaluate(() => (window as unknown as { __fireGunSmokeBoss: () => void }).__fireGunSmokeBoss());
+  expect(await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; projectileType?: string; bossProjectile?: boolean; hp: number }> }).__getGunSmokeUnits()
+    .filter((unit) => unit.kind === "enemyBullet" && unit.projectileType === "boomerang" && unit.bossProjectile && unit.hp > 0).length)).toBe(2);
 
   await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), 3);
   await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));

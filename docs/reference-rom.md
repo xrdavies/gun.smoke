@@ -566,6 +566,9 @@ fixed-point precision. The routes at `95/127/159/191/207` retain their
 independent spawn fractions, player-input changes, attack windows and release
 or contact boundaries; the long `at=159,x=216` and `at=191,x=216` paths run
 1,314 and 1,287 frames respectively rather than using the generic top lifetime.
+The following `at=223,x=216`, `at=239,x=152`, `at=271,x=168`, and
+`at=287,x=216` entries independently match 783/436/675/624 controlled frames
+with attacks at 13/269, 13/205, 43 and 75 before their measured releases.
 The earlier `at=815,x=176,code=5` bottom entry matches 530 shared-state frames,
 fires at frame 187, and releases through the NES `Y=255` boundary.
 The adjacent `at=831,x=160,code=5` bottom entry independently matches 150

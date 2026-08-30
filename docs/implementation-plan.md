@@ -191,6 +191,9 @@ Round 5's later first-loop top groups through `at=3023` now use the same
 fixed-point state machine with event/X-qualified shot windows; same-trigger
 groups at `2095/2735/2895/2911/3023` retain independent lifetimes. Round 4
 coverage has started with exact shared-state routes for `at=95/127/159/191/207`.
+Round 4 opening coverage now extends through `at=223/239/271/287`; each route
+retains the ROM's slot fraction, player-input sequence, attack frames and
+release/contact boundary rather than sharing the generic top lifetime.
 Round 3 `at=1119` replaces its generic code-8 path with the shared state
 machine verified across all 282 controlled frames.
 Round 3 `at=687` replaces its generic phase-0 code-7 path with the shared state

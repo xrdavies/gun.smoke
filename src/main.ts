@@ -718,7 +718,6 @@ class GunSmokeGame {
     this.updateSmartBomb();
     this.updateSpawns();
     this.updateNinjaBossTeleport(delta);
-    this.updateEnemyFire(delta);
     for (const unit of this.units) this.updateUnit(unit, delta, scrollDelta);
     this.resolveCollisions();
     this.units.splice(0, this.units.length, ...this.units.filter((unit) => unit.age < unit.maxAge && unit.hp > 0 && unit.x > -96 && unit.x < 1056 && unit.y > this.scroll - 340 && unit.y < this.scroll + 760));
@@ -1058,19 +1057,16 @@ class GunSmokeGame {
     enemy.vy = enemyType === "backstabber" ? -100 : enemyType === "sniper" ? 0 : 24 + this.stage * 6;
   }
 
-  private updateEnemyFire(delta: number): void {
-    const boss = this.units.find((unit) => unit.kind === "boss" && unit.hp > 0 && !unit.exploding);
-    if (boss) {
-      if (this.stage === MAX_STAGE) return;
-      if (this.stage === 3 && boss.devilHawkState) return;
-      if (this.stage === 1 && boss.age >= BANDIT_BILL_ENTRY_DURATION && boss.age < boss.invulnerableUntil) return;
-      if (this.stage === 4) {
-        if (Math.round((boss.age + delta) * NES_FRAME_RATE) >= Math.round(boss.nextFireAt * NES_FRAME_RATE)) this.fireBoss(boss, boss.age + delta);
-        return;
-      }
-      this.bossFireClock -= delta;
-      if (this.bossFireClock <= 0) this.fireBoss(boss, boss.age + delta);
+  private updateEnemyFire(boss: Unit, delta: number): void {
+    if (boss.hp <= 0 || boss.exploding || this.stage === MAX_STAGE) return;
+    if (this.stage === 3 && boss.devilHawkState) return;
+    if (this.stage === 1 && boss.age >= BANDIT_BILL_ENTRY_DURATION && boss.age < boss.invulnerableUntil) return;
+    if (this.stage === 4) {
+      if (Math.round(boss.age * NES_FRAME_RATE) >= Math.round(boss.nextFireAt * NES_FRAME_RATE)) this.fireBoss(boss, boss.age);
+      return;
     }
+    this.bossFireClock -= delta;
+    if (this.bossFireClock <= 0) this.fireBoss(boss, boss.age);
   }
 
   private fireBoss(boss: Unit, effectiveAge = boss.age, devilFullFan?: boolean): void {
@@ -2115,6 +2111,7 @@ class GunSmokeGame {
       }
       else if (this.stage === 5) unit.y = this.scroll + (unit.age <= FATMAN_JOE_ENTRY_DURATION ? fatmanJoeOpeningY(unit.age) : fatmanJoeCombatY(unit.age));
       else unit.y = this.scroll + 92 + Math.sin(unit.age * 2) * 18;
+      this.updateEnemyFire(unit, delta);
       for (let index = 0; index < wingateFireChecks; index += 1) this.fireBoss(unit);
       for (const fullFan of devilFireFans) this.fireBoss(unit, unit.age, fullFan);
       unit.sprite.visible = bossSpriteVisible(this.stage, unit.age, unit.invulnerableUntil, ninjaTeleporting);

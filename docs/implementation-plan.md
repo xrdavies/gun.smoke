@@ -304,6 +304,8 @@ at the measured 256-frame cycle, replacing the previous fixed-slot pair instead
 of accumulating extra boomerangs. Wingate defeat
 animation duration is stored per encounter so the decoy keeps 30 frames while
 the real encounter keeps its nine-frame ending animation.
+Boss timer checks now run after the Boss movement update, preserving the ROM's
+current-frame launch coordinate before the newly created projectile advances.
 
 ## Delivery Stages
 

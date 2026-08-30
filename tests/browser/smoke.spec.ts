@@ -83,6 +83,35 @@ test("keeps a ROM event at its allocation-frame coordinate", async ({ page }) =>
   expect(gunman!.screenY).toBeCloseTo(1, 6);
 });
 
+test("fires Devil Hawk's first fan from the updated Boss coordinate", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/");
+  await page.locator("#start-button").click();
+  await page.locator("#continue-button").click();
+  await page.locator("#briefing-button").click();
+  await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
+  await page.evaluate(() => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(3));
+  await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
+  let firstSample: { fireballs: Array<{ age: number; x: number; screenY: number }>; boss: { age: number; x: number; screenY: number } } | undefined;
+  for (let elapsed = 0; elapsed < 10_000; elapsed += 8) {
+    await page.clock.runFor(8);
+    const sample = await page.evaluate(() => {
+      const units = (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; projectileType?: string; bossProjectile?: boolean; hp: number; age: number; x: number; screenY: number }> }).__getGunSmokeUnits();
+      const boss = units.find((unit) => unit.kind === "boss");
+      const fireballs = units.filter((unit) => unit.kind === "enemyBullet" && unit.projectileType === "fireball" && unit.bossProjectile && unit.hp > 0);
+      return fireballs.length > 0 && boss ? { fireballs: fireballs.map((fireball) => ({ age: fireball.age, x: fireball.x, screenY: fireball.screenY })), boss: { age: boss.age, x: boss.x, screenY: boss.screenY } } : undefined;
+    });
+    if (sample) {
+      firstSample = sample;
+      break;
+    }
+  }
+  expect(firstSample).toBeDefined();
+  const central = firstSample!.fireballs.reduce((closest, fireball) => Math.abs(fireball.x - firstSample!.boss.x) < Math.abs(closest.x - firstSample!.boss.x) ? fireball : closest);
+  expect(central.age).toBeCloseTo(1 / 60.098, 9);
+  expect(central.screenY - firstSample!.boss.screenY).toBeCloseTo(3 * (240 / 240), 6);
+});
+
 test("freezes gameplay while the ROM clock continues in inventory", async ({ page }) => {
   await page.clock.install();
   await page.goto("/");

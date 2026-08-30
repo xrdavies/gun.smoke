@@ -90,9 +90,12 @@ original order and compete for shared slots in the same sequence as the ROM.
 The map-row transition releases a record at decoded scroll plus `2/3` of one
 NES pixel; runtime retains that phase instead of spawning two frames early.
 Runtime-created ROM actors and objects use allocation-frame age zero, so their
-first visible sample is the initializer's frame-0 coordinate. The fixed-step
-loop advances a newly allocated unit only from the following NES frame; this
-avoids a one-frame coordinate or attack shift at every scheduler boundary.
+first visible sample is the initializer's frame-0 coordinate. Scheduler actors
+keep that age boundary instead of receiving an extra movement step on release.
+Boss timer checks run after the Boss position update, so a volley uses the
+current frame's Boss coordinate; the existing unit pass then advances a newly
+created projectile once, matching the ROM's allocation-frame sample and
+next-frame path.
 At `$FA89-$FA92`, a full selected pool skips the record and `$FAD8` advances
 the script pointer; runtime applies the same one-shot capacity check to shops,
 containers, props and behavior entities instead of retrying or exempting shops.

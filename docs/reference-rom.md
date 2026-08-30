@@ -485,6 +485,9 @@ The later bottom entries preserve their distinct boundaries: `at=1007,x=136`
 matches the shared route through the frame-58 player-contact handoff with no
 successful shot, while `at=1023,x=160` matches 150 frames, fires at frame 65,
 and releases through `Y=252`.
+The following `at=1167,x=128,code=5` entry preserves its bottom-entry position
+through frame 33 and reaches the player-contact dispatch on frame 34 before the
+shared movement handoff.
 The top `at=863,x=128,code=6` entry independently matches 432 shared-state
 frames, fires at frame 66, and releases through the bottom `Y=252` boundary.
 The top `at=943,x=144,code=6` entry matches the shared state machine through

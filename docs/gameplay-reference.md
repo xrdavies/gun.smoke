@@ -588,6 +588,8 @@ The later bottom entries `at=1007,x=136,code=5` and `at=1023,x=160,code=5`
 preserve their shared routes: the former reaches a frame-58 player-contact
 handoff without a successful shot, while the latter fires at frame 65 and
 releases at frame 150 through `Y=252`.
+The following `at=1167,x=128,code=5` entry preserves its bottom entrance and
+reaches the player-contact dispatch at frame 34 before the shared handoff.
 The top `at=863,x=128,code=6` entry follows a 432-frame shared route, fires at
 frame 66, and releases through the bottom `Y=252` boundary.
 The top `at=943,x=144,code=6` entry follows the shared route through frame 488,

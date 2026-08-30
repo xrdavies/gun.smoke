@@ -92,7 +92,8 @@ The matching Boss rewards are 10,000, 12,000, 25,000, 20,000, 20,000, and
 second Wingate; the decoy encounter does not duplicate the bounty. The reward
 is added to the same capped score balance when the Boss defeat branch completes.
 The defeated Boss remains as a short animated explosion while both projectile
-pools are cleared and the Round transition delay runs.
+pools are cleared and the Round transition delay runs. Regular Boss Rounds
+advance 765 NES frames after the lethal transition.
 
 Score and shop funds are the same NES value rather than separate counters.
 Buying an item subtracts directly from the score shown in the HUD.

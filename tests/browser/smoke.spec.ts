@@ -451,6 +451,8 @@ test("completes the six-round Boss transition chain", async ({ page }) => {
     await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
     await page.evaluate(() => (window as unknown as { __defeatGunSmokeBoss: () => void }).__defeatGunSmokeBoss());
     await page.clock.runFor(1_700);
+    await expect(page.locator("#briefing-screen")).toBeHidden();
+    await page.clock.runFor(11_300);
     await expect(page.locator("#briefing-screen")).toBeVisible();
     await expect(page.locator("#briefing-round")).toContainText(`ROUND ${stage + 1}`);
     await page.locator("#briefing-button").click();

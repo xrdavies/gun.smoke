@@ -307,6 +307,9 @@ animation duration is stored per encounter so the decoy keeps 30 frames while
 the real encounter keeps its nine-frame ending animation.
 Boss timer checks now run after the Boss movement update, preserving the ROM's
 current-frame launch coordinate before the newly created projectile advances.
+Regular Boss completion now holds the measured 765-frame interval from lethal
+dispatch to Boss release and the next Round, replacing the former 1.5-second
+placeholder.
 Ordinary enemy-pool projectiles likewise retain their allocation-frame position
 before the shared velocity update begins on the following frame.
 Player weapon templates now preserve their per-barrel NES X/Y muzzle offsets

@@ -87,6 +87,7 @@ interface Unit {
   vy: number;
   hp: number;
   exploding?: boolean;
+  defeatAnimationDuration?: number;
   radius: number;
   value: number;
   age: number;
@@ -1376,7 +1377,7 @@ class GunSmokeGame {
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: frameDuration },
     ]), true)) : undefined;
     const unit: Unit = {
-      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romEventAt: undefined, romRandomSeed: undefined, romPhase: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, romFineX: undefined, romFineY: undefined, romSpawnFineX: undefined, romSpawnFineY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, gunmanFlankState: undefined, sniperFiringState: undefined, backstabberRaidState: undefined, romSlot: undefined, riflemanAimHeading: undefined, riflemanAttackStarted: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, banditState: undefined, cutterState: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined, rockPhase: undefined,
+      kind, enemyType, itemType, projectileType: kind === "enemyBullet" ? "bullet" : undefined, sprite, x, y, animation, defeatAnimationDuration: undefined, shopIndex: undefined, romBehavior: undefined, romEntityCode: undefined, romEventAt: undefined, romRandomSeed: undefined, romPhase: undefined, romFlags: undefined, romPool: undefined, romOriginX: undefined, romOriginY: undefined, romFineX: undefined, romFineY: undefined, romSpawnFineX: undefined, romSpawnFineY: undefined, targetX: undefined, targetY: undefined, gunmanBottomRoute: undefined, gunmanTopBranch: undefined, gunmanFlankState: undefined, sniperFiringState: undefined, backstabberRaidState: undefined, romSlot: undefined, riflemanAimHeading: undefined, riflemanAttackStarted: undefined, hatchetState: undefined, firebreatherState: undefined, spearState: undefined, bomberState: undefined, bomberDirection: undefined, banditState: undefined, cutterState: undefined, boomerangHeading: undefined, bossCycleStart: undefined, bossNextTeleportAt: undefined, rockNextBoundary: undefined, rockPhase: undefined,
       vx: isBoss ? 42 : kind === "barrel" || kind === "shopkeeper" ? 0 : (this.nextRandom() - 0.5) * 70,
       vy: isBoss || isPickup || kind === "barrel" || kind === "shopkeeper" || sceneObject ? 0 : kind === "enemyBullet" ? 0 : 45,
       hp, radius: isBoss ? 48 : isPickup ? 17 : kind === "shopkeeper" ? 22 : small ? 7 : 19,
@@ -1451,7 +1452,7 @@ class GunSmokeGame {
     unit.age += delta;
     unit.animation?.update(delta);
     if (unit.kind === "boss" && unit.exploding) {
-      const defeatDuration = bossDefeatAnimationDuration(this.stage, this.wingatePhase);
+      const defeatDuration = unit.defeatAnimationDuration ?? bossDefeatAnimationDuration(this.stage, this.wingatePhase);
       const progress = clamp((unit.age - (unit.maxAge - defeatDuration)) / defeatDuration, 0, 1);
       unit.sprite.visible = unit.age < unit.maxAge && Math.floor(progress * 12) % 2 === 0;
       unit.sprite.size = { x: 110 + progress * 48, y: 68 + progress * 48 };
@@ -2296,11 +2297,13 @@ class GunSmokeGame {
       }
     } else if (target.kind === "boss") {
       const finalWingate = this.stage === MAX_STAGE && this.wingatePhase > 0;
+      const defeatDuration = bossDefeatAnimationDuration(this.stage, this.wingatePhase);
       target.hp = 1;
       target.exploding = true;
+      target.defeatAnimationDuration = defeatDuration;
       target.sprite.color = [1, 0.78, 0.3, 1];
       target.sprite.size = { x: 138, y: 92 };
-      target.maxAge = target.age + (finalWingate ? WINGATE_FINAL_DEFEAT_ANIMATION_DURATION : BOSS_DEFEAT_ANIMATION_DURATION);
+      target.maxAge = target.age + defeatDuration;
       this.score = scoreBossDefeat(this.score, this.stage, this.wingatePhase);
       if (this.stage === MAX_STAGE && this.wingatePhase === 0) {
         this.wingatePhase = 1;
@@ -3005,7 +3008,7 @@ class ReferenceRomGame {
 let game: GunSmokeGame | undefined;
 let referenceGame: ReferenceRomGame | undefined;
 if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeInvulnerable", { value: (duration: number) => { if (game) game.invulnerable = duration; } });
-if (import.meta.env.DEV) Object.defineProperty(window, "__getGunSmokeUnits", { value: () => game?.units.map((unit) => ({ kind: unit.kind, enemyType: unit.enemyType, itemType: unit.itemType, projectileType: unit.projectileType, bossProjectile: unit.bossProjectile, romPool: unit.romPool, romSlot: unit.romSlot, romEntityCode: unit.romEntityCode, hp: unit.hp, age: unit.age, visible: unit.sprite.visible, invulnerableUntil: unit.invulnerableUntil, volleysFired: unit.volleysFired })) ?? [] });
+if (import.meta.env.DEV) Object.defineProperty(window, "__getGunSmokeUnits", { value: () => game?.units.map((unit) => ({ kind: unit.kind, enemyType: unit.enemyType, itemType: unit.itemType, projectileType: unit.projectileType, bossProjectile: unit.bossProjectile, romPool: unit.romPool, romSlot: unit.romSlot, romEntityCode: unit.romEntityCode, hp: unit.hp, age: unit.age, visible: unit.sprite.visible, invulnerableUntil: unit.invulnerableUntil, defeatAnimationDuration: unit.defeatAnimationDuration, volleysFired: unit.volleysFired })) ?? [] });
 if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeWeapon", { value: (weapon: WeaponName, ammo: number) => {
   if (!game || weapon === "pistol" || !Number.isInteger(ammo) || ammo < 1) return;
   game.weaponAmmo[weapon] = ammo;

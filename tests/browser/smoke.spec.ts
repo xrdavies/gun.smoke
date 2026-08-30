@@ -285,9 +285,11 @@ test("completes the six-round Boss transition chain", async ({ page }) => {
   await page.evaluate(() => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(6));
   await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
   await page.evaluate(() => (window as unknown as { __defeatGunSmokeBoss: () => void }).__defeatGunSmokeBoss());
+  expect(await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; defeatAnimationDuration?: number }> }).__getGunSmokeUnits().find((unit) => unit.kind === "boss")?.defeatAnimationDuration)).toBeCloseTo(30 / 60.098, 9);
   await page.clock.runFor(5_000);
   await expect(page.locator("#boss-label")).toContainText("WINGATE II");
   await page.evaluate(() => (window as unknown as { __defeatGunSmokeBoss: () => void }).__defeatGunSmokeBoss());
+  expect(await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; defeatAnimationDuration?: number }> }).__getGunSmokeUnits().find((unit) => unit.kind === "boss")?.defeatAnimationDuration)).toBeCloseTo(9 / 60.098, 9);
   await page.clock.runFor(5_000);
   await expect(page.locator("#ending-screen")).toBeHidden();
   await page.clock.runFor(8_000);

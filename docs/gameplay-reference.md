@@ -539,6 +539,9 @@ generic 508-frame code-8 lifetime.
 The earlier `at=2943,x=4,y=32,code=8,phase=1` event runs the shared state
 machine for 1,350 verified fixed-point frames, fires once at frame 655, and
 releases at the left edge rather than ending on the 447-frame shared trace.
+The adjacent `at=3023,x=4,y=32,code=8,phase=0` event uses another complete
+1,215-frame state-machine route with no successful shot and the same left-edge
+release.
 Round 4's `at=1503,x=248,y=80,code=7,phase=1` event uses the same state machine
 and matches all 356 fixed-point frames through its right-boundary release.
 Its `at=1727,x=248,y=96,code=7,phase=1` counterpart matches all 345 frames

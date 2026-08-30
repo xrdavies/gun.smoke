@@ -1106,6 +1106,10 @@ const GUNMAN_FLANK_EVENT_SHOT_FRAMES: Readonly<Record<string, readonly number[]>
   "6:2015:128": [37],
   "6:2207:88": [423, 615],
   "6:2207:120": [423],
+  "6:2255:112": [76, 268],
+  "6:2623:128": [13],
+  "6:2687:136": [77],
+  "6:2735:184": [13],
   "6:5119": [],
   "6:4623:88": [69],
   "6:4623:168": [],
@@ -1194,7 +1198,7 @@ export function createGunmanBottomMovementState(x: number, fineX = 0, fineY = 0)
 }
 
 export function gunmanTopUsesDynamicState(stage: number, eventAt?: number): boolean {
-  return stage === 6 && (eventAt === 47 || eventAt === 63 || eventAt === 239 || eventAt === 3295 || eventAt === 3487 || eventAt === 3551 || eventAt === 3711 || eventAt === 4415 || eventAt === 4479 || eventAt === 4511 || eventAt === 4623 || eventAt === 4639 || eventAt === 4783 || eventAt === 4911 || eventAt === 4975 || eventAt === 5087 || eventAt === 5103 || eventAt === 863 || eventAt === 943 || eventAt === 975 || eventAt === 991 || eventAt === 1279 || eventAt === 1391 || eventAt === 1407 || eventAt === 1455 || eventAt === 1631 || eventAt === 1871 || eventAt === 1903 || eventAt === 2015);
+  return stage === 6 && (eventAt === 47 || eventAt === 63 || eventAt === 239 || eventAt === 2255 || eventAt === 2623 || eventAt === 2687 || eventAt === 2735 || eventAt === 3295 || eventAt === 3487 || eventAt === 3551 || eventAt === 3711 || eventAt === 4415 || eventAt === 4479 || eventAt === 4511 || eventAt === 4623 || eventAt === 4639 || eventAt === 4783 || eventAt === 4911 || eventAt === 4975 || eventAt === 5087 || eventAt === 5103 || eventAt === 863 || eventAt === 943 || eventAt === 975 || eventAt === 991 || eventAt === 1279 || eventAt === 1391 || eventAt === 1407 || eventAt === 1455 || eventAt === 1631 || eventAt === 1871 || eventAt === 1903 || eventAt === 2015);
 }
 
 export function createGunmanTopMovementState(x: number, fineX = 0, fineY = 0): GunmanFlankMovementState {

@@ -39,6 +39,9 @@ entrance until the first shell launch succeeds, matching the ROM's attack-gated
 vulnerability. Round 6 right-side code-7 `y=64` now uses that shared
 state machine instead of the available left-only trace, and the verified Round
 4 `at=1503/1695/1727/1743/2527` routes use their measured 356/360/345/360/630-frame state-machine paths.
+Horse-protected bottom Gunman contact now owns a measured 60-frame dispatch-
+`0x41` retreat before slot release, so the enemy no longer continues its normal
+route during the Horse protection window.
 Round 5 `at=1135` now uses its separate 1,107-frame fixed-point trace through
 the observed slot-reuse boundary.
 Round 5 `at=1711` now uses its separate 285-frame fixed-point trace.

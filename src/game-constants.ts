@@ -1072,6 +1072,8 @@ const GUNMAN_FLANK_EVENT_SHOT_FRAMES: Readonly<Record<string, readonly number[]>
   "6:4575": [158],
   "6:815": [187],
   "6:831": [],
+  "6:1007": [],
+  "6:1023": [65],
   "6:4751:40": [],
   "6:4783:200": [22],
   "6:4911:128": [47],
@@ -1141,7 +1143,7 @@ export function createGunmanFlankMovementState(entityCode: 7 | 8 | 9, x: number,
 }
 
 export function gunmanBottomUsesDynamicState(stage: number, eventAt?: number): boolean {
-  return stage === 6 && (eventAt === 3055 || eventAt === 3327 || eventAt === 4319 || eventAt === 4575 || eventAt === 4623 || eventAt === 4639 || eventAt === 4751 || eventAt === 815 || eventAt === 831);
+  return stage === 6 && (eventAt === 3055 || eventAt === 3327 || eventAt === 4319 || eventAt === 4575 || eventAt === 4623 || eventAt === 4639 || eventAt === 4751 || eventAt === 815 || eventAt === 831 || eventAt === 1007 || eventAt === 1023);
 }
 
 export function gunmanBottomFirstOpportunityFrame(seed: number, stage: number, eventAt?: number): number {

@@ -1154,6 +1154,11 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankEventShotFrames(4, 1343, 208)).toEqual([57]);
     expect(gunmanTopUsesDynamicState(4, 1487)).toBe(true);
     expect(gunmanFlankEventShotFrames(4, 1487, 56)).toEqual([13]);
+    expect(gunmanTopUsesDynamicState(4, 1519)).toBe(true);
+    expect(gunmanFlankEventShotFrames(4, 1519, 56)).toEqual([68]);
+    expect(gunmanBottomUsesDynamicState(4, 1535, 160)).toBe(false);
+    expect(gunmanBottomUsesDynamicState(4, 1535, 208)).toBe(true);
+    expect(gunmanFlankEventShotFrames(4, 1535, 208)).toEqual([]);
     expect(gunmanTopUsesDynamicState(4, 127)).toBe(true);
     expect(gunmanFlankEventShotFrames(4, 127, 120)).toEqual([13, 585]);
     expect(gunmanTopUsesDynamicState(4, 159)).toBe(true);
@@ -1474,6 +1479,20 @@ describe("Gun.Smoke vertical slice", () => {
       advanceGunmanFlankMovement(round4Top1487, frame, 168, 215, (x, y) => roundActorCollisionAtNes(4, scroll, x, y));
     }
     expect(round4Top1487).toMatchObject({ frame: 335, mode: "orbit", heading: 14, timer: 2, x: 237 + 27 / 256, y: 250 + 255 / 256, dead: false });
+
+    const round4Top1519 = createGunmanTopMovementState(56, 182, 188);
+    for (let frame = 1; frame <= 342; frame += 1) {
+      const scroll = (1519 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(round4Top1519, frame, 168, 215, (x, y) => roundActorCollisionAtNes(4, scroll, x, y));
+    }
+    expect(round4Top1519).toMatchObject({ frame: 342, mode: "orbit", heading: 17, timer: 0, x: 240 + 136 / 256, y: 251 + 29 / 256, dead: false });
+
+    const round4Bottom1535 = createGunmanBottomMovementState(208, 44, 5);
+    for (let frame = 49; frame <= 149; frame += 1) {
+      const scroll = (1535 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(round4Bottom1535, frame, 168, 215, (x, y) => roundActorCollisionAtNes(4, scroll, x, y));
+    }
+    expect(round4Bottom1535).toMatchObject({ frame: 149, mode: "orbit", heading: 24, timer: 0, x: 125 + 92 / 256, y: 251 + 5 / 256, dead: false });
 
     const round4OpeningTopRoutes = [
       { at: 127, state: createGunmanTopMovementState(120, 182, 188), last: 911, mode: "chase" as const, heading: 3, timer: 2, x: 88 + 249 / 256, y: 251 + 132 / 256 },

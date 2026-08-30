@@ -362,6 +362,15 @@ describe("Gun.Smoke vertical slice", () => {
     expect(round2At143.map((event) => event.entityCode)).toEqual([33, 34, 6]);
     expect(round1At319.map((event) => event.pool)).toEqual(["enemy", "object"]);
     expect(round2At143.map((event) => event.pool)).toEqual(["object", "object", "enemy"]);
+    const decodedGunmen = ROUND_ROM_ENEMY_EVENTS.flatMap((events, index) => events
+      .filter((event) => event.behavior === 2 && (event.entityCode === 5 || event.entityCode === 6))
+      .map((event) => ({ stage: index + 1, event })));
+    expect(decodedGunmen.filter(({ event }) => event.entityCode === 5)
+      .every(({ stage, event }) => gunmanBottomUsesDynamicState(stage, event.at, event.x))).toBe(true);
+    expect(decodedGunmen.filter(({ event }) => event.entityCode === 6)
+      .filter(({ stage, event }) => !(stage === 6 && event.at === 3263))
+      .every(({ stage, event }) => gunmanTopUsesDynamicState(stage, event.at))).toBe(true);
+    expect(gunmanTopUsesDynamicState(6, 3263)).toBe(false);
   });
 
   it("keeps Boss units alive until their health reaches zero", () => {

@@ -1619,6 +1619,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanTopUsesDynamicState(6, 4975)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 5087)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 5103)).toBe(true);
+    expect(gunmanTopUsesDynamicState(6, 863)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 3263)).toBe(false);
     expect(gunmanFlankEventShotFrames(6, 4415)).toEqual([13, 397]);
     expect(gunmanFlankEventShotFrames(6, 4479)).toEqual([29]);
@@ -1632,6 +1633,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankEventShotFrames(6, 4975, 96)).toEqual([21]);
     expect(gunmanFlankEventShotFrames(6, 5087, 80)).toEqual([13]);
     expect(gunmanFlankEventShotFrames(6, 5103, 96)).toEqual([32]);
+    expect(gunmanFlankEventShotFrames(6, 863, 128)).toEqual([66]);
     expect(gunmanFirstOpportunityFrame(43, 0)).toBe(62);
     const state = createGunmanTopMovementState(64, 199, 25);
     for (let frame = 1; frame <= 744; frame += 1) {
@@ -1746,6 +1748,16 @@ describe("Gun.Smoke vertical slice", () => {
       advanceGunmanFlankMovement(routeState, route.release, 136, 215, (x, y) => roundActorCollisionAtNes(6, releaseScroll, x, y));
       expect(routeState.dead).toBe(true);
     }
+
+    const earlyTopState = createGunmanTopMovementState(128, 7, 56);
+    for (let frame = 1; frame <= 431; frame += 1) {
+      const scroll = (863 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(earlyTopState, frame, 120, 215, (x, y) => roundActorCollisionAtNes(6, scroll, x, y));
+    }
+    expect(earlyTopState).toMatchObject({ frame: 431, mode: "orbit", heading: 11, timer: 2, x: 175 + 33 / 256, y: 251 + 16 / 256, dead: false });
+    const earlyTopReleaseScroll = (863 + 2 / 3 + 432 / 3) * NES_WORLD_Y_SCALE;
+    advanceGunmanFlankMovement(earlyTopState, 432, 120, 215, (x, y) => roundActorCollisionAtNes(6, earlyTopReleaseScroll, x, y));
+    expect(earlyTopState.dead).toBe(true);
   });
 
   it("matches the traced Bandit Bill volley timing", () => {

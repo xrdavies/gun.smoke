@@ -1180,6 +1180,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankEventShotFrames(5, 2287, 224)).toEqual([18, 338, 402]);
     expect(gunmanTopUsesDynamicState(5, 2463)).toBe(true);
     expect(gunmanFlankEventShotFrames(5, 2463, 40)).toEqual([13, 269, 333, 461, 589]);
+    expect(gunmanTopUsesDynamicState(5, 2655)).toBe(true);
+    expect(gunmanFlankEventShotFrames(5, 2655, 208)).toEqual([26]);
     expect(gunmanFlankUsesDynamicState(7, 32, 5, 0, 1903, false)).toBe(true);
     expect(gunmanFlankUsesDynamicState(7, 112, 5, 0, 1999, false)).toBe(true);
     expect(gunmanFlankUsesDynamicState(7, 64, 5, 0, 2735, false)).toBe(true);
@@ -1338,6 +1340,15 @@ describe("Gun.Smoke vertical slice", () => {
     const round5Top2463ReleaseScroll = (2463 + 2 / 3 + 1083 / 3) * NES_WORLD_Y_SCALE;
     advanceGunmanFlankMovement(round5Top2463, 1083, 104, 216, (x, y) => roundActorCollisionAtNes(5, round5Top2463ReleaseScroll, x, y));
     expect(round5Top2463.dead).toBe(true);
+
+    const round5Top2655 = createGunmanTopMovementState(208, 41, 25);
+    const round5Top2655PlayerY = [213, 210, 208, 206, 205, 204, 204, 205, 206, 208, 210, 213, 216] as const;
+    for (let frame = 1; frame <= 569; frame += 1) {
+      const scroll = (2655 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      const playerY = frame < 172 ? 216 : round5Top2655PlayerY[Math.min(frame - 172, round5Top2655PlayerY.length - 1)]!;
+      advanceGunmanFlankMovement(round5Top2655, frame, 104, playerY, (x, y) => roundActorCollisionAtNes(5, scroll, x, y));
+    }
+    expect(round5Top2655).toMatchObject({ frame: 569, mode: "orbit", heading: 30, timer: 2, x: 59, y: 0 + 93 / 256, dead: false });
 
     const round6Actor = createGunmanFlankMovementState(8, 4, 96, false, 119, 29);
     for (let frame = 1; frame <= 647; frame += 1) {

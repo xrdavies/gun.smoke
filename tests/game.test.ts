@@ -1133,6 +1133,14 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankEventShotFrames(4, 863, 216)).toEqual([53]);
     expect(gunmanFlankEventShotFrames(4, 879, 240)).toEqual([]);
     expect(gunmanFlankEventShotFrames(4, 895, 192)).toEqual([]);
+    expect(gunmanBottomUsesDynamicState(4, 975)).toBe(true);
+    expect(gunmanBottomUsesDynamicState(4, 1007)).toBe(true);
+    expect(gunmanBottomUsesDynamicState(4, 1039)).toBe(true);
+    expect(gunmanFlankEventShotFrames(4, 975, 216)).toEqual([56]);
+    expect(gunmanFlankEventShotFrames(4, 1007, 232)).toEqual([]);
+    expect(gunmanFlankEventShotFrames(4, 1039, 216)).toEqual([64]);
+    expect(gunmanTopUsesDynamicState(4, 1055)).toBe(true);
+    expect(gunmanFlankEventShotFrames(4, 1055, 136)).toEqual([31]);
     expect(gunmanTopUsesDynamicState(4, 127)).toBe(true);
     expect(gunmanFlankEventShotFrames(4, 127, 120)).toEqual([13, 585]);
     expect(gunmanTopUsesDynamicState(4, 159)).toBe(true);
@@ -1388,6 +1396,26 @@ describe("Gun.Smoke vertical slice", () => {
       }
       expect(route.state).toMatchObject({ frame: route.last, mode: "orbit", heading: route.heading, timer: route.timer, x: route.x, y: route.y, dead: false });
     }
+
+    const round4LaterBottomRoutes = [
+      { at: 975, state: createGunmanBottomMovementState(216, 0, 93), last: 515, heading: 0, timer: 0, x: 140 + 164 / 256, y: 0 + 93 / 256 },
+      { at: 1007, state: createGunmanBottomMovementState(232, 182, 188), last: 389, heading: 0, timer: 2, x: 223 + 252 / 256, y: 0 + 42 / 256 },
+      { at: 1039, state: createGunmanBottomMovementState(216, 182, 188), last: 149, heading: 24, timer: 0, x: 133 + 230 / 256, y: 251 + 188 / 256 },
+    ] as const;
+    for (const route of round4LaterBottomRoutes) {
+      for (let frame = 49; frame <= route.last; frame += 1) {
+        const scroll = (route.at + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+        advanceGunmanFlankMovement(route.state, frame, 168, 215, (x, y) => roundActorCollisionAtNes(4, scroll, x, y));
+      }
+      expect(route.state).toMatchObject({ frame: route.last, mode: "orbit", heading: route.heading, timer: route.timer, x: route.x, y: route.y, dead: false });
+    }
+
+    const round4Top1055 = createGunmanTopMovementState(136, 182, 188);
+    for (let frame = 1; frame <= 296; frame += 1) {
+      const scroll = (1055 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(round4Top1055, frame, 168, 215, (x, y) => roundActorCollisionAtNes(4, scroll, x, y));
+    }
+    expect(round4Top1055).toMatchObject({ frame: 296, mode: "orbit", heading: 23, timer: 3, x: 229 + 154 / 256, y: 251 + 154 / 256, dead: false });
 
     const round4OpeningTopRoutes = [
       { at: 127, state: createGunmanTopMovementState(120, 182, 188), last: 911, mode: "chase" as const, heading: 3, timer: 2, x: 88 + 249 / 256, y: 251 + 132 / 256 },

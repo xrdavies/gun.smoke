@@ -993,7 +993,8 @@ opening state `0x9c` through frame 169, observes the shell and vulnerable
 protects only the 170-frame entrance; shell launch does not add a separate
 0.75-second invulnerability window. The shell uses the
 shared integer direction quantizer, flies for 31 frames, and becomes a
-stationary split controller. Beginning four frames later, it emits five `0x3f`
+stationary, non-colliding split controller that keeps its original low slot.
+Beginning four frames later, it emits five `0x3f`
 mines at 4-frame intervals with relative offsets
 `(-16,+4),(-10,+12),(0,+16),(+10,+12),(+16,+4)`. Each mine remains for about
 29 frames and the controller releases at age 61. In one controlled trace Billy

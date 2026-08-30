@@ -120,8 +120,8 @@ equivalent frame/input state, reseed its random registers, and restore Billy's
 entry state at the same boundary as ROM `$E817-$E85E`.
 The Ninja Boss's first smoke controller and four-way shuriken volley now begin
 at the refreshed natural trace's frames 124/163 instead of 140/179.
-Fatman Joe's moving shell now converts in place to the central mine controller
-before its timed four-frame mine releases. Cutter now emits the second paired
+Fatman Joe's moving shell now converts in place to a non-colliding split
+controller before its five timed four-frame mine releases. Cutter now emits the second paired
 boomerang about 29 frames after each cycle's first pair. Wingate defeat
 animation duration is stored per encounter so the decoy keeps 30 frames while
 the real encounter keeps its nine-frame ending animation.

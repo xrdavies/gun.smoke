@@ -58,7 +58,7 @@ type GameAction =
   | "start";
 type GameMode = "title" | "intro" | "briefing" | "playing" | "paused" | "gameover" | "ending";
 type UnitKind = "enemy" | "boss" | "bullet" | "enemyBullet" | "moneyBag" | "ammo" | "barrel" | "item" | "shopkeeper" | "sceneObject";
-type ProjectileType = "bullet" | "dynamite" | "grenade" | "grenadeShell" | "boomerang" | "fireball" | "shuriken" | "ninjaSmoke" | "spear" | "hatchet" | "rock";
+type ProjectileType = "bullet" | "dynamite" | "grenade" | "grenadeController" | "grenadeShell" | "boomerang" | "fireball" | "shuriken" | "ninjaSmoke" | "spear" | "hatchet" | "rock";
 type TextureName = "player" | "horse" | "shopkeeper" | "bullet" | "moneyBag" | "ammo" | "barrel" | "terrain" | "road" | "landmark";
 type Rgba = [number, number, number, number];
 
@@ -2123,13 +2123,12 @@ class GunSmokeGame {
         unit.y = unit.targetY;
         unit.vx = 0;
         unit.vy = 0;
-        unit.projectileType = "grenade";
-        unit.maxAge = unit.age + FATMAN_JOE_GRENADE_LIFETIME;
-        unit.volleysFired = 1;
-        unit.sprite.size = PROJECTILE_STYLES.grenade!.size;
-        unit.sprite.color = PROJECTILE_STYLES.grenade!.color;
+        unit.projectileType = "grenadeController";
+        unit.volleysFired = 0;
+        unit.radius = 0;
+        unit.sprite.visible = false;
       }
-      if (unit.kind === "enemyBullet" && unit.projectileType === "grenade" && unit.bossProjectile && unit.targetX !== undefined && unit.targetY !== undefined && unit.volleysFired < FATMAN_JOE_MINE_OFFSETS_NES.length) {
+      if (unit.kind === "enemyBullet" && unit.projectileType === "grenadeController" && unit.targetX !== undefined && unit.targetY !== undefined && unit.volleysFired < FATMAN_JOE_MINE_OFFSETS_NES.length) {
         const mineCount = fatmanJoeMineCount(unit.age);
         while (unit.volleysFired < mineCount) {
           const [offsetX, offsetY] = FATMAN_JOE_MINE_OFFSETS_NES[unit.volleysFired]!;
@@ -2195,7 +2194,7 @@ class GunSmokeGame {
         unit.x += unit.vx * delta;
         if (unit.projectileType !== "dynamite") unit.y += unit.vy * delta;
       }
-      const coordinateBoundProjectile = unit.kind === "enemyBullet" && unit.projectileType !== "rock" && unit.projectileType !== "dynamite" && unit.projectileType !== "ninjaSmoke" && unit.projectileType !== "grenade";
+      const coordinateBoundProjectile = unit.kind === "enemyBullet" && unit.projectileType !== "rock" && unit.projectileType !== "dynamite" && unit.projectileType !== "ninjaSmoke" && unit.projectileType !== "grenade" && unit.projectileType !== "grenadeController";
       if (coordinateBoundProjectile && !romProjectileOnScreen(unit.x / NES_WORLD_X_SCALE, (unit.y - this.scroll) / NES_WORLD_Y_SCALE)) unit.hp = 0;
     }
     this.syncRomEnemyFine(unit);
@@ -2208,7 +2207,7 @@ class GunSmokeGame {
     for (const bullet of bullets) {
       while (bullet.hp > 0) {
         if (bullet.piercing) {
-          const projectile = this.units.find((candidate) => candidate.kind === "enemyBullet" && candidate.projectileType !== "ninjaSmoke" && candidate.projectileType !== "grenade" && candidate.projectileType !== "rock" && candidate.hp > 0 && distance(bullet, candidate) <= bullet.radius + candidate.radius);
+          const projectile = this.units.find((candidate) => candidate.kind === "enemyBullet" && candidate.projectileType !== "ninjaSmoke" && candidate.projectileType !== "grenade" && candidate.projectileType !== "grenadeController" && candidate.projectileType !== "rock" && candidate.hp > 0 && distance(bullet, candidate) <= bullet.radius + candidate.radius);
           if (projectile) {
             projectile.hp = 0;
             continue;
@@ -2234,7 +2233,7 @@ class GunSmokeGame {
     for (const unit of this.units.filter((candidate) => candidate.hp > 0)) {
       if (unit.hp <= 0) continue;
       if (unit.exploding) continue;
-      if (unit.kind === "enemyBullet" && unit.projectileType === "ninjaSmoke") continue;
+      if (unit.kind === "enemyBullet" && (unit.projectileType === "ninjaSmoke" || unit.projectileType === "grenadeController")) continue;
       if ((unit.kind === "enemy" || unit.kind === "boss") && !unit.sprite.visible) continue;
       if (unit.kind === "moneyBag" || unit.kind === "item" || unit.kind === "ammo") {
         if (distance(unit, this.player) <= unit.radius + 22) {

@@ -261,9 +261,10 @@ test("converts Fatman Joe shells into timed mines", async ({ page }) => {
     .filter((unit) => unit.kind === "enemyBullet" && unit.bossProjectile && unit.hp > 0));
   await page.clock.runFor(300);
   expect((await projectiles()).some((unit) => unit.projectileType === "grenadeShell")).toBe(true);
-  await page.clock.runFor(350);
+  await page.clock.runFor(650);
   const mines = await projectiles();
-  expect(mines.some((unit) => unit.projectileType === "grenade")).toBe(true);
+  expect(mines.filter((unit) => unit.projectileType === "grenade")).toHaveLength(5);
+  expect(mines.filter((unit) => unit.projectileType === "grenadeController")).toHaveLength(1);
   expect(mines.some((unit) => unit.projectileType === "grenadeShell")).toBe(false);
 });
 

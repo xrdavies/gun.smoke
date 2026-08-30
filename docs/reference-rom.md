@@ -230,13 +230,13 @@ to an unshielded contact; player invulnerability prevents repeated damage while
 the source actor remains in its routine. Once the first unshielded contact sets
 the death state in `$76`, the collision dispatcher stops processing additional
 sources for that frame; runtime contact resolution now has the same boundary.
-For a Horse contact with a bottom-entry Gunman, the ROM keeps the enemy in a
+For any player contact with a bottom-entry Gunman, the ROM keeps the enemy in a
 short dispatch-`0x41` retreat before converting it to the normal release state.
 The measured route is 60 frames: it starts at the collision coordinate, applies
 the stepped `-4/-7/-10/-12/-14/-15/-16` NES-Y retreat, then returns toward the
 original lane before slot release. Runtime now owns this bounded contact state
-for ROM code 5 Gunmen instead of continuing their movement route through the
-Horse protection window.
+for ROM code 5 Gunmen instead of continuing their movement route after contact;
+Horse protection uses the same state.
 The Round transition path at `$B9BD-$B9DA` clears `$77` before incrementing the
 Round, so Horse health does not carry into the next Round. Runtime stage changes
 apply the same reset while preserving stored Boots/Rifle and weapon stocks.

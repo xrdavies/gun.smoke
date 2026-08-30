@@ -1363,6 +1363,9 @@ that carry through four chained rotates, then increments `$AC`. Same-frame AI
 branches mutate individual bytes in place. The runtime seeds the register at
 new-game initialization and at every Round transition, loop, and Continue
 initialization, matching `$E83D-$E845`.
+The NMI performs this random update, and increments the global frame counter,
+before gameplay/menu gates run. Runtime menus therefore stop simulation time
+and scrolling without stopping those two ROM clock values.
 
 The one supply-shop record per Round carries entity flag `0x40`; its decoded
 NES X positions are `[200,64,216,216,72,216]`. Unflagged weapon-shop counts are

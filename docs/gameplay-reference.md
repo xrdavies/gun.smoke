@@ -59,6 +59,8 @@ flagged supply shop sells Horse, Bullet refills, and Wanted posters, and Rounds
 3 and 6 receive a later weapon-shop revisit.
 Entering either shop clears ordinary enemy projectiles before the menu freezes;
 falling-rock actors and the separate Boss weapon pool are not part of that clear.
+The menu freezes gameplay time, scrolling and actors, but the emulated ROM NMI
+clock and random registers continue to tick while the engine remains running.
 
 The Horse is a three-hit shield and selects the ROM's `5/3` movement tier. A blocked hit removes
 the colliding low-dispatch projectile but leaves enemy actors and high-dispatch

@@ -3,7 +3,7 @@ import { advanceRomRandom, mixRomRandomDifference, mixRomRandomFirstSum, mixRomR
 import { AMMO_GAIN, advanceSniperFiring, backstabberAmbushY, BACKSTABBER_AMBUSH_DEPTH, BACKSTABBER_AMBUSH_DEPTH_NES, BACKSTABBER_AMBUSH_LIFETIME, bomberCanThrow, bomberMovementDecision, bomberMovementDuration, BOMBER_MOVEMENT_DURATIONS, bomberMovementUsesRandom, bomberMovementVelocity, BOMBER_THROW_CHANCE, BOMBER_THROW_DURATION, bossReward, BOSS_DEFEAT_ANIMATION_DURATION, BOSS_REWARDS, BOOTS_SPEED_MULTIPLIER, clamp, createSniperFiringState, distance, DYNAMITE_AIRBORNE_DURATION, DYNAMITE_LANDED_DURATION, DYNAMITE_LIFETIME, DYNAMITE_WORLD_SPEED, EMPTY_BARREL_EXPLOSION_LIFETIME, fallingRockOnScreen, fallingRockPosition, FIREBREATHER_FIRST_DECISION_DELAY, formationEntryY, HORSE_HIT_INVULNERABILITY, MACHINE_GUN_BULLET_LIFETIME, MAGNUM_BULLET_LIFETIME, MAGNUM_BULLET_SPEED, MAX_STAGE, NES_BULLET_SPEED, NES_DIAGONAL_BULLET_X, NES_DIAGONAL_BULLET_Y, NES_FRAME_RATE, NES_PLAYER_SPEED, NES_SCROLL_SPEED, NINJA_FIRST_SHOT_DELAY, NINJA_PROJECTILE_SPEED, obstacleBlocks, PISTOL_BULLET_LIFETIME, PLAYER_DEATH_ANIMATION_DURATION, PLAYER_DEATH_RECOVERY_DURATION, PLAYER_RESPAWN_HIDDEN_DURATION, PLAYER_RESPAWN_READY_DURATION, playerDeathPhase, RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_FLIGHT_PATH_NES, ROCK_FLIGHT_PATH_PHASE0_NES, ROCK_IMPACT_DELAY, ROCK_IMPACT_LIFETIME, ROCK_LIFETIME, ROM_OBJECT_DROP_SPEED, romObjectScreenY, ROM_SCREEN_RELEASE_Y_NES, romActorScreenYReleased, ROAD_WIDTHS, ROUND_BOSS_GATE_SCROLL_NES, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_LOOP_SCROLL_NES, ROUND_OBSTACLES, ROUND_SEGMENTS, scoreBossDefeat, SHOTGUN_BULLET_LIFETIME, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_VOLLEY_INTERVAL, SHOP_COSTS, SHOP_TYPES, shouldClearProjectilesAfterBossDefeat, SMART_BOMB_CAPACITY, SNIPER_CODE2_SHOT_FRAMES, SNIPER_COOLDOWN, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, sniperProjectileVelocity, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WORLD_BULLET_SPEED, WORLD_DIAGONAL_BULLET_X, WORLD_DIAGONAL_BULLET_Y, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, shouldLoopStage } from "../src/game-constants";
 import { advanceBackstabberRaid, createBackstabberRaidState } from "../src/game-constants";
 import { romPickupScreenY } from "../src/game-constants";
-import { advanceGunmanFlankMovement, createGunmanFlankMovementState, GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, GUNMAN_BOTTOM_NEAR_DISTANCE_NES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, gunmanCanFire, GUNMAN_ENTRY_PATH_NES, GUNMAN_FLANK_INITIAL_STATE_FRAMES, gunmanFlankFirstOpportunityFrame, gunmanFlankLifetime, gunmanFlankMovementFacingHeading, GUNMAN_FLANK_LIFETIMES, GUNMAN_FLANK_SHOT_FRAMES, gunmanFlankUsesDynamicState, GUNMAN_LIFETIME, GUNMAN_TOP_LIFETIMES_FRAMES, gunmanFirstOpportunityFrame, gunmanFlankPosition, gunmanOpeningY, gunmanTopBranch, gunmanTopHeading, gunmanTopPosition, gunmanProjectileVelocity, GUNMAN_SHOT_OPPORTUNITY_INTERVAL } from "../src/game-constants";
+import { advanceGunmanFlankMovement, createGunmanFlankMovementState, GUNMAN_BOTTOM_BRANCH_FRAME, GUNMAN_BOTTOM_LIFETIMES, GUNMAN_BOTTOM_NEAR_DISTANCE_NES, gunmanBottomPosition, gunmanBottomRoute, GUNMAN_BOTTOM_SHOT_FRAMES, gunmanCanFire, GUNMAN_ENTRY_PATH_NES, GUNMAN_FLANK_INITIAL_STATE_FRAMES, gunmanFlankEventShotFrames, gunmanFlankFirstOpportunityFrame, gunmanFlankLifetime, gunmanFlankMovementFacingHeading, GUNMAN_FLANK_LIFETIMES, GUNMAN_FLANK_SHOT_FRAMES, gunmanFlankUsesDynamicState, GUNMAN_LIFETIME, GUNMAN_TOP_LIFETIMES_FRAMES, gunmanFirstOpportunityFrame, gunmanFlankPosition, gunmanOpeningY, gunmanTopBranch, gunmanTopHeading, gunmanTopPosition, gunmanProjectileVelocity, GUNMAN_SHOT_OPPORTUNITY_INTERVAL } from "../src/game-constants";
 import { createGunmanBottomMovementState, GUNMAN_BOTTOM_DYNAMIC_HANDOFF_FRAME, gunmanBottomDynamicPosition, gunmanBottomFirstOpportunityFrame, gunmanBottomUsesDynamicState } from "../src/game-constants";
 import { createGunmanTopMovementState, gunmanTopUsesDynamicState } from "../src/game-constants";
 import { RIFLEMAN_ATTACK_TO_FIRST_SHOT_FRAMES, RIFLEMAN_LIFETIME, RIFLEMAN_PATH_NES, riflemanAttackHeadingAtStart, riflemanCanAttack, riflemanFirstShotFrame, riflemanPosition, riflemanShotHeading, RIFLEMAN_SIDE_ATTACK_STATE_FRAME, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_PATH_NES, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition, mediumProjectileHeadingVelocity, mediumProjectileVelocity } from "../src/game-constants";
@@ -1127,6 +1127,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankUsesDynamicState(8, 32, 6, 1, 2943, false)).toBe(true);
     expect(gunmanFlankFirstOpportunityFrame(116, 32, 6, 8, 1, 2943)).toBe(655);
     expect(gunmanFlankUsesDynamicState(8, 32, 6, 0, 3023, false)).toBe(true);
+    expect(gunmanFlankUsesDynamicState(8, 32, 6, 0, 3727, false)).toBe(true);
+    expect(gunmanFlankEventShotFrames(6, 3727)).toEqual([68, 132, 196, 719, 847, 911]);
     expect(gunmanFlankUsesDynamicState(9, 32, 6, 1, 2783, true)).toBe(true);
     expect(gunmanFlankUsesDynamicState(9, 32, 6, 0, 3919, true)).toBe(true);
     expect(gunmanFlankUsesDynamicState(7, 48, 6, 1, 4543, false)).toBe(true);
@@ -1201,6 +1203,16 @@ describe("Gun.Smoke vertical slice", () => {
     const nextRound6Code8ReleaseScroll = (3023 + 2 / 3 + 1215 / 3) * NES_WORLD_Y_SCALE;
     advanceGunmanFlankMovement(nextRound6Code8, 1215, 136, 215, (x, y) => roundActorCollisionAtNes(6, nextRound6Code8ReleaseScroll, x, y));
     expect(nextRound6Code8.dead).toBe(true);
+
+    const latePhase0Round6Code8 = createGunmanFlankMovementState(8, 4, 32, false, 97, 34);
+    for (let frame = 1; frame <= 1004; frame += 1) {
+      const scroll = (3727 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(latePhase0Round6Code8, frame, 136, 215, (x, y) => roundActorCollisionAtNes(6, scroll, x, y));
+    }
+    expect(latePhase0Round6Code8).toMatchObject({ frame: 1004, mode: "orbit", heading: 24, timer: 0, x: 83 + 144 / 256, y: 251 + 184 / 256, dead: false });
+    const latePhase0Round6Code8ReleaseScroll = (3727 + 2 / 3 + 1005 / 3) * NES_WORLD_Y_SCALE;
+    advanceGunmanFlankMovement(latePhase0Round6Code8, 1005, 136, 215, (x, y) => roundActorCollisionAtNes(6, latePhase0Round6Code8ReleaseScroll, x, y));
+    expect(latePhase0Round6Code8.dead).toBe(true);
 
     const firstRound6Code8 = createGunmanFlankMovementState(8, 4, 32, false, 38, 250);
     for (let frame = 1; frame <= 449; frame += 1) {

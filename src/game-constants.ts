@@ -1063,6 +1063,7 @@ const GUNMAN_BOTTOM_PATHS_NES = {
 } as const;
 
 export const GUNMAN_FLANK_SHOT_FRAMES = { 7: [64, 410], 8: [309], 9: [399, 463] } as const;
+const GUNMAN_FLANK_EVENT_SHOT_FRAMES = { "6:3727": [68, 132, 196, 719, 847, 911] } as const;
 export const GUNMAN_FLANK_LIFETIMES = { 7: 642 / NES_FRAME_RATE, 8: 508 / NES_FRAME_RATE, 9: 826 / NES_FRAME_RATE } as const;
 export const GUNMAN_FLANK_INITIAL_STATE_FRAMES = 250;
 const GUNMAN_FLANK_ENTRY_FRAMES = 48;
@@ -1090,7 +1091,7 @@ export function gunmanFlankUsesDynamicState(entityCode: 7 | 8 | 9, originY: numb
   if (stage === 4 && entityCode === 7 && [1503, 1695, 1727, 1743, 2527].includes(eventAt ?? -1)) return true;
   if (stage === 3 && entityCode === 7 && [255, 319, 687, 959, 1647, 1711, 4239, 4255, 4831, 4863].includes(eventAt ?? -1)) return true;
   if (stage === 3 && entityCode === 8 && [1071, 1119, 3775, 3823].includes(eventAt ?? -1)) return true;
-  if (stage === 6 && entityCode === 8 && (eventAt === 159 || eventAt === 2207 || eventAt === 2943 || eventAt === 3023)) return true;
+  if (stage === 6 && entityCode === 8 && (eventAt === 159 || eventAt === 2207 || eventAt === 2943 || eventAt === 3023 || eventAt === 3727)) return true;
   if (stage === 6 && entityCode === 9 && (eventAt === 2783 || eventAt === 3919)) return true;
   if (stage === 6 && entityCode === 7 && eventAt === 4543) return true;
   if (stage === 6 && entityCode === 7 && Math.round(originY) === 64 && fromRight) return true;
@@ -1846,6 +1847,10 @@ export function gunmanFlankLifetime(entityCode: 7 | 8 | 9, originY = 0, stage = 
 export function gunmanFlankFirstOpportunityFrame(seed: number, originY = 16, stage = 2, entityCode: 7 | 8 | 9 = 7, phase = 0, eventAt?: number): number {
   if (stage === 6 && entityCode === 8 && phase === 1 && eventAt === 2943) return 655;
   return gunmanFirstOpportunityFrame(seed, originY, (stage === 2 || stage === 3) && entityCode === 7 && Math.round(originY) === 0 && phase === 1 ? 46 : undefined);
+}
+
+export function gunmanFlankEventShotFrames(stage: number, eventAt?: number): readonly number[] | undefined {
+  return GUNMAN_FLANK_EVENT_SHOT_FRAMES[`${stage}:${eventAt}` as keyof typeof GUNMAN_FLANK_EVENT_SHOT_FRAMES];
 }
 
 const GUNMAN_TOP_PATHS_NES = {

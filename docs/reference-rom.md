@@ -611,8 +611,9 @@ the `x=144` top allocation remains dynamic for 1200 controlled frames with
 attacks at 13/77/829/1085, while the same-time `x=96` bottom allocation is
 the separate contact path.
 The Round 4 `at=1871` pair is X-qualified: `x=24` follows the shared bottom
-state through 623 controlled frames and its frame-399 shot before the contact
-boundary, while `x=128` remains on the bounded fallback path.
+state through 623 controlled frames and its frame-399 shot, while `x=128`
+matches the same state through frame 209, fires at frame 164, and reaches the
+contact dispatch on frame 210.
 Later Round 4 bottom routes `at=1951,x=40`, `at=2111,x=48`,
 `at=2143,x=48`, `at=2319,x=32`, `at=2431,x=152`, and `at=2591,x=32`
 also use the shared state machine. Their controlled traces preserve distinct

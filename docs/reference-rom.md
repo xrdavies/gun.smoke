@@ -1066,6 +1066,10 @@ mask the selected heading to an even sector before allocation.
 Spear, Hatchet and Firebreather states are created at script allocation from
 the coarse event coordinate plus the slot's captured fine bytes; later slot
 synchronization does not reapply those fractions on their first update.
+All ROM behavior actors retain the decoded entry X, including the off-center
+`x=4/248` values used by side-entry Spear, Firebreather, Rifleman, Shotgunner,
+Backstabber and Gunman records. Runtime no longer clamps those initializers into
+the central playable bounds before their state machine runs.
 An isolated `$B8F4` Hatchet Thrower descends to NES `y=40` in 20 frames, pauses
 for 20 frames, then patrols with the shared second-tier 32-heading movement
 table. Collision probes follow its facing edge; a blocked path starts a 34-frame

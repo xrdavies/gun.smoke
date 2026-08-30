@@ -32,7 +32,8 @@ enemy/object slot attribution, discrete Backstabber and scripted-object descent,
 all-or-nothing player volleys and final-ammo weapon fallback, Bandit/Fatman
 entry vulnerability and first-shot timing, same-slot object conversion/pickup
 descent, and browser coverage for every distinct Boss projectile chain and pool
-owner. A further Round 2 Gunman pass fixed the shared 8-bit orbit-counter wrap
+owner. Decoded edge-entry X coordinates are retained instead of clamping actors
+into the playable center range. A further Round 2 Gunman pass fixed the shared 8-bit orbit-counter wrap
 and now matches the full 483-frame code-8 and 873-frame mirrored code-9 routes
 through natural release. Fatman Joe now remains protected after his 170-frame
 entrance until the first shell launch succeeds, matching the ROM's attack-gated

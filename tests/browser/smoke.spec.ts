@@ -203,6 +203,24 @@ test("starts untraced bottom Gunmen at the ROM bottom entry", async ({ page }) =
   expect(bottomGunman!.screenY).toBeGreaterThan(240);
 });
 
+test("preserves decoded side-entry enemy X coordinates", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/");
+  await page.locator("#start-button").click();
+  await page.locator("#continue-button").click();
+  await page.locator("#briefing-button").click();
+  await page.evaluate(() => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(3));
+  await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
+  let spear: { age: number; x: number; romEntityCode?: number } | undefined;
+  for (let elapsed = 0; elapsed < 30_000 && spear === undefined; elapsed += 8) {
+    await page.clock.runFor(8);
+    spear = await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ enemyType?: string; romEntityCode?: number; age: number; x: number }> }).__getGunSmokeUnits()
+      .find((unit) => unit.enemyType === "spear" && unit.romEntityCode === 20 && unit.age <= 2 / 60.098));
+  }
+  expect(spear).toBeDefined();
+  expect(Math.floor(spear!.x / (960 / 256))).toBe(248);
+});
+
 test("keeps Snipers exposed during their firing cooldown", async ({ page }) => {
   await page.clock.install();
   await page.goto("/");

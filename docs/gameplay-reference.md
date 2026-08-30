@@ -807,7 +807,8 @@ NES pixels (world `(510,423)`), and each new Round or loop resets to that same
 coordinate.
 
 Enemy spawning now consumes decoded Round event records with a verified
-behavior routine and preserves the NES enemy/object pool bit. Each runtime
+behavior routine, preserves decoded edge-entry X coordinates, and preserves the
+NES enemy/object pool bit. Each runtime
 unit retains its behavior, entity code and pool for trace comparison; the
 visible type is selected from the identified behavior mapping. The pools are
 capped independently at seven enemy slots and

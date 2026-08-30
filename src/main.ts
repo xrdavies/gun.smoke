@@ -994,7 +994,7 @@ class GunSmokeGame {
     const bottomGunman = event.behavior === 2 && event.entityCode === 5;
     const enemy = this.spawnUnit(
       "enemy",
-      event.behavior === 3 || flankCode !== undefined || sideShotgunner || sideRifleman ? eventX : clamp(eventX, 40, 920),
+      eventX,
       this.scroll + (bottomGunman ? 249 * NES_WORLD_Y_SCALE : romEventWorldY(event)),
       romEntityHitPoints(event.entityCode),
       enemyType,

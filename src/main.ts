@@ -1013,6 +1013,7 @@ class GunSmokeGame {
     if (flankCode !== undefined && gunmanFlankUsesDynamicState(flankCode, event.y, this.stage, event.phase, event.at, event.x > 128)) {
       enemy.gunmanFlankState = createGunmanFlankMovementState(flankCode, event.x, event.y, event.x > 128, (enemy.romSpawnFineX ?? 0) * 256, (enemy.romSpawnFineY ?? 0) * 256);
       if (this.stage === 6 && flankCode === 9 && event.at === 3919) enemy.gunmanFlankState.x += 1;
+      if (this.stage === 6 && flankCode === 9 && event.at === 511) enemy.gunmanFlankState.x += 1;
       if (this.stage === 6 && flankCode === 8 && event.at === 5119) enemy.gunmanFlankState.x -= 1;
     }
     if (event.behavior === 2 && event.entityCode === 6 && gunmanTopUsesDynamicState(this.stage, event.at)) enemy.gunmanFlankState = createGunmanTopMovementState(event.x, this.romEnemyFineX[romSlot ?? 0], this.romEnemyFineY[romSlot ?? 0]);

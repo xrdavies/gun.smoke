@@ -1112,6 +1112,7 @@ const GUNMAN_FLANK_EVENT_SHOT_FRAMES: Readonly<Record<string, readonly number[]>
   "6:2015:104": [13],
   "6:2015:128": [37],
   "6:207": [79, 143, 207],
+  "6:511": [54, 118, 182],
   "6:2207:88": [423, 615],
   "6:2207:120": [423],
   "6:2255:112": [76, 268],
@@ -1162,7 +1163,7 @@ export function gunmanFlankUsesDynamicState(entityCode: 7 | 8 | 9, originY: numb
   if (stage === 3 && entityCode === 7 && [255, 319, 687, 959, 1647, 1711, 4239, 4255, 4831, 4863].includes(eventAt ?? -1)) return true;
   if (stage === 3 && entityCode === 8 && [1071, 1119, 3775, 3823].includes(eventAt ?? -1)) return true;
   if (stage === 6 && entityCode === 8 && (eventAt === 159 || eventAt === 207 || eventAt === 2207 || eventAt === 2943 || eventAt === 3023 || eventAt === 3727 || eventAt === 5119 || eventAt === 1375)) return true;
-  if (stage === 6 && entityCode === 9 && (eventAt === 2783 || eventAt === 3919)) return true;
+  if (stage === 6 && entityCode === 9 && (eventAt === 511 || eventAt === 2783 || eventAt === 3919)) return true;
   if (stage === 6 && entityCode === 7 && eventAt === 4543) return true;
   if (stage === 6 && entityCode === 7 && Math.round(originY) === 64 && fromRight) return true;
   if (stage !== 2 || entityCode === 7 && Math.round(originY) === 0 && phase === 1) return false;

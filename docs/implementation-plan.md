@@ -100,6 +100,8 @@ Round 6 `at=4751` and `at=4783` now use their measured bottom/top shared routes,
 release boundaries, and no-shot/frame-22 attack behavior.
 Round 6 `at=4911/4975/5087/5103` now use their complete shared top-entry routes,
 release boundaries, and measured 47/21/13/32 attack opportunities.
+Round 6 `at=5119` now preserves its allocation-frame X and follows the shared
+code-8 state machine through its complete 776-frame no-shot route.
 Round 6 `at=4319` now uses the shared bottom-entry and chase/orbit state machine
 through its complete 392-frame no-shot route and NES `Y=255` release boundary.
 Round 6 `at=4575`, `at=4623`, and `at=4639` now preserve their separate bottom

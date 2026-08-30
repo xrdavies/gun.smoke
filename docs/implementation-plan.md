@@ -114,6 +114,8 @@ The same-time Round 6 `at=1375` bottom code-5 entry now preserves its frame-58
 player-contact boundary and no-shot behavior.
 Round 6 `at=1407` now uses its complete top-entry route through the left-boundary
 release and measured frame-55/frame-443 attacks.
+Round 6 `at=1391` now uses its complete 387-frame top-entry route and measured
+frame-75 attack opportunity.
 Round 6 `at=1279` now preserves its bottom contact route and top 1,146-frame
 route with measured 19/403/659 attack opportunities.
 Round 6 `at=1311` now preserves its bottom-entry player-contact boundary and

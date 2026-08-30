@@ -1105,6 +1105,7 @@ const GUNMAN_FLANK_EVENT_SHOT_FRAMES: Readonly<Record<string, readonly number[]>
   "4:2431:152": [58],
   "4:2591:32": [],
   "4:2335:104": [47],
+  "4:2479:128": [73, 137],
   "4:95:120": [22],
   "4:127:120": [13, 585],
   "4:159:120": [64],
@@ -1328,7 +1329,7 @@ export function createGunmanBottomMovementState(x: number, fineX = 0, fineY = 0)
 }
 
 export function gunmanTopUsesDynamicState(stage: number, eventAt?: number): boolean {
-  if (stage === 4 && (eventAt === 95 || eventAt === 127 || eventAt === 159 || eventAt === 191 || eventAt === 207 || eventAt === 223 || eventAt === 239 || eventAt === 271 || eventAt === 287 || eventAt === 639 || eventAt === 671 || eventAt === 703 || eventAt === 735 || eventAt === 1055 || eventAt === 1343 || eventAt === 1487 || eventAt === 1519 || eventAt === 2335)) return true;
+  if (stage === 4 && (eventAt === 95 || eventAt === 127 || eventAt === 159 || eventAt === 191 || eventAt === 207 || eventAt === 223 || eventAt === 239 || eventAt === 271 || eventAt === 287 || eventAt === 639 || eventAt === 671 || eventAt === 703 || eventAt === 735 || eventAt === 1055 || eventAt === 1343 || eventAt === 1487 || eventAt === 1519 || eventAt === 2335 || eventAt === 2479)) return true;
   if (stage === 5 && (eventAt === 31 || eventAt === 47 || eventAt === 207 || eventAt === 559 || eventAt === 575 || eventAt === 623 || eventAt === 639 || eventAt === 879 || eventAt === 1535 || eventAt === 1631 || eventAt === 1647 || eventAt === 1759 || eventAt === 1775 || eventAt === 1887 || eventAt === 1999 || eventAt === 2015 || eventAt === 2095 || eventAt === 2175 || eventAt === 2207 || eventAt === 2287 || eventAt === 2463 || eventAt === 2655 || eventAt === 2671 || eventAt === 2735 || eventAt === 2879 || eventAt === 2895 || eventAt === 2911 || eventAt === 3023)) return true;
   return stage === 6 && (eventAt === 47 || eventAt === 63 || eventAt === 239 || eventAt === 2255 || eventAt === 2287 || eventAt === 2447 || eventAt === 2623 || eventAt === 2687 || eventAt === 2735 || eventAt === 2751 || eventAt === 3215 || eventAt === 3295 || eventAt === 3487 || eventAt === 3551 || eventAt === 3711 || eventAt === 3951 || eventAt === 4415 || eventAt === 4479 || eventAt === 4511 || eventAt === 4623 || eventAt === 4639 || eventAt === 4783 || eventAt === 4911 || eventAt === 4975 || eventAt === 5087 || eventAt === 5103 || eventAt === 543 || eventAt === 863 || eventAt === 943 || eventAt === 975 || eventAt === 991 || eventAt === 1279 || eventAt === 1391 || eventAt === 1407 || eventAt === 1455 || eventAt === 1631 || eventAt === 1871 || eventAt === 1903 || eventAt === 2015);
 }

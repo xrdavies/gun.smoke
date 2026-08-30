@@ -552,6 +552,15 @@ The subsequent `at=1535,x=216` top entry matches 480 frames, fires at 13/333,
 and releases through `Y=252`; `at=1631,x=152` matches 368 frames, fires at
 33/161, and exits through the left boundary. Both preserve their captured
 fine-coordinate bytes.
+Round 5's remaining natural first-loop Gunmen are now classified through the
+script tail. `at=1647/1759/1775/1887/1999/2015/2175/2207/2287/2463/2655/
+2671/2879` use distinct shared top-entry routes and measured shot frames.
+The `at=2095`, `at=2735`, `at=2895`, `at=2911`, and `at=3023` same-trigger
+groups retain independent slot fractions, lifetimes and attack windows. Bottom
+`at=1727,x=56`, `at=1871,x=48`, and `at=1967,x=56` use the shared bottom
+handoff, while `at=1871,x=96` and `at=1983,x=96` reach contact at frame 32 and
+remain explicitly bounded there. The right `at=1679,x=248,y=96,code=7` route
+matches 642 shared flank frames with attacks at 73/393 before `Y=252` release.
 The earlier `at=815,x=176,code=5` bottom entry matches 530 shared-state frames,
 fires at frame 187, and releases through the NES `Y=255` boundary.
 The adjacent `at=831,x=160,code=5` bottom entry independently matches 150

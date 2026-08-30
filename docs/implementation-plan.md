@@ -151,6 +151,14 @@ handoffs. The same-time `at=2207` bottom entries now use their complete
 Round 6 `at=2255/2623/2687/2735` now routes four additional top entries through
 the shared state machine, preserving their frame-76/268, 13, 77, and 13 attack
 windows through the observed dispatch or contact handoffs.
+The opening bottom entries `at=175/191/447/479/559/847` now use the shared
+state machine with their measured no-shot or frame-61/frame-191 attacks and
+screen-boundary releases. `at=2287` and `at=2447` add top routes with
+frame-39/487 and frame-13/397/717 attacks; `at=2751` and `at=2879` preserve
+their five-shot and no-shot bottom-boundary paths. `at=3215` and `at=4335`
+also preserve their left/bottom releases. The `at=4063` and `at=2959` center
+bottom entries both enter player-contact dispatch before the 48-frame handoff,
+so they remain on the explicit contact path.
 Round 3 `at=1119` replaces its generic code-8 path with the shared state
 machine verified across all 282 controlled frames.
 Round 3 `at=687` replaces its generic phase-0 code-7 path with the shared state

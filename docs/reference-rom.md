@@ -501,6 +501,23 @@ matches 377 controlled frames and fires at 76/268; `at=2623,x=128` matches 182
 frames and fires at 13; `at=2687,x=136` matches 182 frames and fires at 77; and
 `at=2735,x=184` matches 260 frames and fires at 13 before the observed contact
 handoff. Their spawn fractions remain part of the route identity.
+The remaining early bottom entries are also now classified from controlled
+traces. `at=175,x=152` matches 336 frames with no shot; `at=191,x=168`
+matches 306 frames with no shot; `at=447,x=104` matches 384 frames with no
+shot; `at=479,x=168` matches 150 frames with no shot; `at=559,x=104` matches
+828 frames and fires at 191; and `at=847,x=160` matches 150 frames and fires
+at 61. `at=2287,x=104` matches 980 top-entry frames and fires at 39/487;
+`at=2447,x=184` matches 927 frames and fires at 13/397/717. The later
+`at=2751,x=88` top entry matches 438 frames and fires at 40/104/168/232/296,
+while `at=2879,x=120` matches 380 bottom-entry frames with no successful shot.
+The `at=3215,x=96` top route matches 448 frames and fires at 16 before its
+left-edge release. `at=3951` preserves the top `x=96` 1,091-frame route with
+15/271/463 attacks and the bottom `x=104` contact path through frame 191;
+the same-time `x=128` bottom entry reaches contact at frame 34. Finally,
+`at=4079,x=104` matches 1,497 bottom-entry frames and fires at 926/1246,
+whereas `at=4335,x=168` matches 150 frames with no shot. The `at=2959,x=136`
+bottom entry, like `at=4063,x=128`, enters player-contact dispatch at frame 34
+before the shared movement handoff.
 The earlier `at=815,x=176,code=5` bottom entry matches 530 shared-state frames,
 fires at frame 187, and releases through the NES `Y=255` boundary.
 The adjacent `at=831,x=160,code=5` bottom entry independently matches 150

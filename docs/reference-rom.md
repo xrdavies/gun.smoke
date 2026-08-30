@@ -1619,6 +1619,13 @@ single-side traces measure base Pistol vectors near `(2,-5),(3,-5)` NES pixels
 per frame and Machine Gun vectors near `(4,-9),(7,-7)`; Rapid pulse
 traces measure Pistol/Shotgun/Machine Gun/Magnum trigger intervals of
 `4/12/5/4` frames.
+Straight Machine Gun projectiles remain active for 12 visible frames. Pistol
+and Shotgun remain active for 15 and 11 visible frames; Magnum keeps its
+34-frame internal state but straight shots cross the NES top boundary after 29
+visible frames and release on the following movement step. Runtime includes the
+allocation update in each age limit and applies the same `0..255` coordinate
+release to player projectiles, so offscreen shots stop occupying the six-slot
+pool.
 
 The first active enemy wave appears around gameplay frame 195 in the verified
 Round 1 trace, which maps to roughly 146 world pixels at the calibrated 45

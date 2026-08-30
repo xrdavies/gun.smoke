@@ -310,6 +310,8 @@ Ordinary enemy-pool projectiles likewise retain their allocation-frame position
 before the shared velocity update begins on the following frame.
 Player weapon templates now preserve their per-barrel NES X/Y muzzle offsets
 and apply their first velocity step without a second same-frame camera carry.
+Player projectiles also use their measured visible lifetimes and NES coordinate
+release, preventing offscreen Magnum shots from retaining scarce player slots.
 
 ## Delivery Stages
 

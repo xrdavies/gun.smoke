@@ -1422,7 +1422,7 @@ class GunSmokeGame {
     unit.vx = vx;
     unit.vy = vy;
     unit.damage = damage;
-    unit.maxAge = lifetime;
+    unit.maxAge = lifetime + 1 / NES_FRAME_RATE;
     unit.piercing = piercing;
     unit.hitTargets = piercing ? new Set<Unit>() : undefined;
     if (piercing) {
@@ -2248,6 +2248,7 @@ class GunSmokeGame {
         unit.x += unit.vx * delta;
         if (unit.projectileType !== "dynamite") unit.y += unit.vy * delta;
       }
+      if (unit.kind === "bullet" && !romProjectileOnScreen(unit.x / NES_WORLD_X_SCALE, (unit.y - this.scroll) / NES_WORLD_Y_SCALE)) unit.hp = 0;
       const coordinateBoundProjectile = unit.kind === "enemyBullet" && unit.projectileType !== "rock" && unit.projectileType !== "dynamite" && unit.projectileType !== "ninjaSmoke" && unit.projectileType !== "grenade" && unit.projectileType !== "grenadeController";
       if (coordinateBoundProjectile && !romProjectileOnScreen(unit.x / NES_WORLD_X_SCALE, (unit.y - this.scroll) / NES_WORLD_Y_SCALE)) unit.hp = 0;
     }

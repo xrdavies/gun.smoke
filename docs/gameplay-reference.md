@@ -134,6 +134,10 @@ its full three-point damage to each target without depending on which weapon is
 selected after the shot was fired. Pistol, Shotgun, and Magnum require
 fresh button presses; only Machine Gun repeats while fire is held. Their traced
 minimum trigger intervals are 4, 12, 5, and 4 NES frames respectively.
+Pistol, Shotgun and Machine Gun shots remain active for 15, 11 and 12 visible
+frames. Magnum retains its longer internal state but releases as soon as its
+coordinate leaves the NES screen, preventing offscreen bullets from holding a
+player-projectile slot.
 When the six player projectile slots cannot fit the complete two- or five-shot
 template, the trigger creates no partial volley and consumes no special ammo.
 Creating the final special-weapon volley immediately returns the equipped

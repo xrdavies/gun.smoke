@@ -548,6 +548,10 @@ matches 264 frames and fires at 225 before its contact dispatch, while `x=88`
 matches 720 frames, fires at 212, and releases through `Y=252`. Their shared
 event time does not imply shared lifetime; the separate slot fractions and
 player-relative paths remain part of the trace identity.
+The subsequent `at=1535,x=216` top entry matches 480 frames, fires at 13/333,
+and releases through `Y=252`; `at=1631,x=152` matches 368 frames, fires at
+33/161, and exits through the left boundary. Both preserve their captured
+fine-coordinate bytes.
 The earlier `at=815,x=176,code=5` bottom entry matches 530 shared-state frames,
 fires at frame 187, and releases through the NES `Y=255` boundary.
 The adjacent `at=831,x=160,code=5` bottom entry independently matches 150

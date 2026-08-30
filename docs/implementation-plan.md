@@ -178,6 +178,10 @@ uses the shared route through its frame-264 contact dispatch with a frame-225
 attack, while `x=88` follows 720 frames to the upper release with a frame-212
 attack. The trace tool can persist a matching JSNES state with `--save-state`
 so subsequent event captures start at a verified allocation boundary.
+Round 5 `at=1535,x=216` and `at=1631,x=152` now use measured top-entry routes
+with 13/333 and 33/161 attacks. These additions close the naturally allocated
+Round 5 Gunman coverage available from the saved trace chain; later records
+remain candidates for the same evidence-driven process.
 Round 3 `at=1119` replaces its generic code-8 path with the shared state
 machine verified across all 282 controlled frames.
 Round 3 `at=687` replaces its generic phase-0 code-7 path with the shared state

@@ -1436,10 +1436,11 @@ selected without relying on a global `--skip` count.
 Candidate listings include the current Round index plus map pointer/page/fine-scroll state, so
 same-coordinate initializers can be attributed to their `$8C00` event before a
 full trace is captured.
-When several records trigger in one frame, attribution selects the nearest
-script coordinate before using initializer dispatch as a tie-breaker. This is
-required because an actor such as bottom-entry code 5 can change from its
-initializer dispatch `0x5b` to `0x57` inside the allocation frame.
+When several records trigger in one frame, attribution first maps each record
+to its behavior initializer's first active coordinate, then selects the nearest
+candidate and uses initializer dispatch as a tie-breaker. This prevents a
+bottom-entry code 5 (`y=249`) from being attributed to a nearby side record
+whose raw script coordinate is closer than code 5's stored `y=0` initializer.
 `--match-map-pointer`, `--match-map-page`, and `--match-scroll-offset` apply
 those fields as trace-selection filters; this remains stable when a Round loop
 reuses the same entity coordinate with different slot fractions.

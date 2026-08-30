@@ -77,7 +77,14 @@ const scriptRecord = (roundIndex, index) => {
   const positionByte = prg[offset + 1] ?? 0;
   const positionIndex = positionByte & 0x7f;
   const typeByte = prg[offset + 2] ?? 0;
-  return { index, pool: typeByte & 0x20 ? "object" : "enemy", dispatch: initializerDispatch(typeByte & 0x3f), x: positionX[positionIndex], y: positionY[positionIndex] };
+  return { index, pool: typeByte & 0x20 ? "object" : "enemy", entityCode: typeByte & 0x3f, dispatch: initializerDispatch(typeByte & 0x3f), x: positionX[positionIndex], y: positionY[positionIndex] };
+};
+const initialPosition = (record) => {
+  let x = record.x;
+  let y = record.y + 1;
+  if (record.entityCode === 5) y = 249;
+  else if ((record.entityCode === 8 || record.entityCode === 9) && record.x !== undefined) x = record.x < 128 ? 5 : 247;
+  return { x, y };
 };
 const axisDistance = (left, right) => {
   const difference = Math.abs(left - right);
@@ -88,7 +95,10 @@ const matchingEventIndexes = (roundIndex, before, after, candidate) => {
   const records = Array.from({ length: after - before }, (_, offset) => scriptRecord(roundIndex, before + offset))
     .filter((record) => record.pool === pool);
   if (records.length === 0) return [];
-  const scores = records.map((record) => axisDistance(candidate.x, record.x) + axisDistance(candidate.y, record.y));
+  const scores = records.map((record) => {
+    const position = initialPosition(record);
+    return axisDistance(candidate.x, position.x) + axisDistance(candidate.y, position.y);
+  });
   const best = Math.min(...scores);
   const nearest = records.filter((_, index) => scores[index] === best);
   const matchingDispatch = nearest.filter((record) => record.dispatch === candidate.dispatch);

@@ -595,6 +595,8 @@ full route: `x=112` reaches dispatch `0x41` at frame 34, while `x=144` reaches
 the shared orbit state through frame 67 and contacts on the next frame.
 The side `at=1375,x=4,y=32,code=8,phase=1` entry follows the shared flank state
 machine for 564 frames, fires at frames 45/109/173/237, and releases upward.
+The same-time bottom `at=1375,x=136,code=5` entry reaches the player-contact
+dispatch at frame 58 without a successful shot.
 The top `at=1407,x=104,code=6,phase=1` entry follows the shared route for 763
 frames, fires at frames 55 and 443, and exits at the left boundary.
 At `at=1279`, the bottom `x=112` entry contacts at frame 34 without firing;

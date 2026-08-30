@@ -166,9 +166,11 @@ Round 6 side Gunmen `at=207` and `at=607` now use the shared flank state up to
 their measured lunge dispatches, with attacks at 79/143/207 and 75/139. The
 `at=511` code-9 route preserves its allocation-frame `x+1` correction and
 54/118/182 attacks. The paired `at=1135` code-7 entries now use shared
-left/right flank state with 64 and 80/400 attack windows. Existing scoped
-coordinates remain in place for `at=1679/2143/4223` until a dynamic handoff is
-shown to improve their already decoded paths.
+left/right flank state with 64 and 80/400 attack windows. The isolated
+`at=2143,x=4` phase-one code-8 entry now uses the shared state through its
+frame-247 dispatch handoff, including the frame-64 attack and allocation-frame
+`x-1` correction. Scoped coordinates remain in place for `at=1679/4223` until
+a comparable dynamic handoff is shown.
 The remaining naturally allocated Round 6 Gunman records are now classified:
 `at=4063,x=128` and `at=2959,x=136` enter contact dispatch before handoff,
 while the same-time `at=479,x=136` entry does likewise. This keeps the runtime

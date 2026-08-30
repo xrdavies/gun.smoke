@@ -530,7 +530,11 @@ frame 246, fires at 75/139, and enters lunge at 247. The two `at=1135,y=32`
 code-7 entries match left/right shared flank state through frames 315/596,
 fire at 64 and 80/400, and release at frames 316/597. The existing scoped
 traces for left `y=64` code-7 and phase-one `y=32` code-8 entries remain the
-authoritative paths for their respective events.
+authoritative paths for their respective events. The isolated `at=2143,x=4`
+phase-one code-8 entry matches through frame 246 before dispatch `0x5d`, with
+an attack at frame 64 and an allocation-frame `x-1` correction; it now uses
+the shared state machine in the web runtime. The `at=4223` phase-one entry
+remains on its scoped path until a comparable handoff trace is captured.
 The naturally allocated contact branches are intentionally bounded. Round 6
 `at=479,x=136`, `at=2959,x=136`, and `at=4063,x=128` switch to the ROM contact
 dispatch at frame 32/34 before the shared 48-frame movement handoff, so no

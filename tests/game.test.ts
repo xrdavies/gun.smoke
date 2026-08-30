@@ -1108,6 +1108,11 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankUsesDynamicState(7, 80, 4, 1, 1503, true)).toBe(true);
     expect(gunmanTopUsesDynamicState(4, 95)).toBe(true);
     expect(gunmanFlankEventShotFrames(4, 95, 120)).toEqual([22]);
+    expect(gunmanTopUsesDynamicState(4, 127)).toBe(true);
+    expect(gunmanFlankEventShotFrames(4, 127, 120)).toEqual([13, 585]);
+    expect(gunmanTopUsesDynamicState(4, 159)).toBe(true);
+    expect(gunmanFlankEventShotFrames(4, 159, 120)).toEqual([64]);
+    expect(gunmanFlankEventShotFrames(4, 159, 216)).toEqual([28, 746, 1002]);
     expect(gunmanFlankUsesDynamicState(7, 96, 4, 1, 1727, true)).toBe(true);
     expect(gunmanFlankUsesDynamicState(7, 48, 4, 0, 1743, false)).toBe(true);
     expect(gunmanFlankUsesDynamicState(7, 64, 4, 1, 1695, false)).toBe(true);
@@ -1267,6 +1272,24 @@ describe("Gun.Smoke vertical slice", () => {
       advanceGunmanFlankMovement(round4Top95, frame, 136, 188, (x, y) => roundActorCollisionAtNes(4, scroll, x, y));
     }
     expect(round4Top95).toMatchObject({ frame: 934, mode: "orbit", heading: 29, timer: 0, x: 133 + 17 / 256, y: 200 + 13 / 256, dead: false });
+
+    const round4OpeningTopRoutes = [
+      { at: 127, state: createGunmanTopMovementState(120, 182, 188), last: 911, mode: "chase" as const, heading: 3, timer: 2, x: 88 + 249 / 256, y: 251 + 132 / 256 },
+      { at: 159, state: createGunmanTopMovementState(120, 182, 188), last: 815, mode: "chase" as const, heading: 4, timer: 2, x: 81 + 123 / 256, y: 251 + 29 / 256 },
+      { at: 159, state: createGunmanTopMovementState(216, 0, 93), last: 1313, mode: "roam" as const, heading: 0, timer: 0, x: 191 + 51 / 256, y: 0 + 34 / 256 },
+    ] as const;
+    for (const route of round4OpeningTopRoutes) {
+      for (let frame = 1; frame <= route.last; frame += 1) {
+        const scroll = (route.at + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+        const finalRoute = route.state === round4OpeningTopRoutes[2].state;
+        const playerX = finalRoute ? frame >= 1227 ? 168 : frame >= 1179 ? 152 : 136 : 136;
+        const playerY = finalRoute
+          ? frame >= 1224 && frame < 1227 ? 216 : frame >= 1095 && frame < 1179 ? Math.min(216, 188 + Math.floor((frame - 1095) / 3) + 1) : frame >= 1179 ? 215 : 188
+          : 188;
+        advanceGunmanFlankMovement(route.state, frame, playerX, playerY, (x, y) => roundActorCollisionAtNes(4, scroll, x, y));
+      }
+      expect(route.state).toMatchObject({ frame: route.last, mode: route.mode, heading: route.heading, timer: route.timer, x: route.x, y: route.y, dead: false });
+    }
 
     const round5Top1759 = createGunmanTopMovementState(88, 190, 39);
     for (let frame = 1; frame <= 284; frame += 1) {

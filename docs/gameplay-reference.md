@@ -144,6 +144,8 @@ against ordinary enemy `(9,8)` half-sizes and animation-specific Boss bounds.
 Hostile contact is also axis-aligned: Billy contributes 4 NES pixels only on
 the vertical axis, and Horse adds another 8 vertical pixels while equipped.
 Pickups and shopkeepers use the same contact path with `(10,10)` half-sizes.
+Cutter boomerangs and Fatman shell/mines use `(8,8)`; the other moving Boss
+shots use `(6,6)`.
 When the six player projectile slots cannot fit the complete two- or five-shot
 template, the trigger creates no partial volley and consumes no special ammo.
 Creating the final special-weapon volley immediately returns the equipped

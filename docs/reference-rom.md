@@ -875,6 +875,10 @@ enemy projectiles, airborne dynamite, animation-1 pickups and shopkeepers
 instead of a circular radius. Pickups and shopkeepers use `(10,10)` half-sizes,
 so Horse also expands their vertical collection/entry range through the shared
 ROM contact path.
+Low-slot weapon animations preserve the same table: Cutter boomerangs and
+Fatman shell/mines use animation 0 `(8,8)`, while Devil fireballs, Ninja
+shuriken and Wingate bullets use animation 3 `(6,6)`. Non-colliding smoke and
+split controllers use zero bounds.
 The routine updates five score tiles at `$06F2/$06F4/$06F6/$06F8/$06FA`;
 `$06FC` remains the fixed zero ones digit, and overflow clamps those five
 tiles to `9`, yielding a maximum displayed score of `999990`.

@@ -317,6 +317,8 @@ for ordinary enemies, barrels, rocks, enemy shots and all six Bosses.
 Hostile contact and airborne dynamite defusal now use the separate ROM player
 contact bounds, including Horse's vertical eight-pixel expansion.
 Animation-1 pickups and shopkeepers use that same decoded contact path.
+Boss weapon contact uses animation-specific `(8,8)` or `(6,6)` bounds, with
+controller actors explicitly non-colliding.
 
 ## Delivery Stages
 

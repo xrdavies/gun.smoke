@@ -22,7 +22,7 @@ import { advanceFirebreather, advanceHatchet, advanceSpear, createFirebreatherSt
 import { RIFLEMAN_ATTACK_STATE_FRAME, RIFLEMAN_LIFETIME, riflemanAttackHeadingAtStart, riflemanCanAttack, riflemanFirstShotFrame, riflemanPosition, riflemanShotHeading, RIFLEMAN_SIDE_ATTACK_STATE_FRAME, RIFLEMAN_SIDE_LIFETIME, RIFLEMAN_SIDE_SHOT_FRAMES, riflemanSidePosition, sniperProjectileVelocity } from "./game-constants";
 import { advanceBanditBillMovement, BANDIT_BILL_ATTACK_PAUSE_FRAMES, BANDIT_BILL_DAMAGE_RECOVERY_DURATION, BANDIT_BILL_ENTRY_DURATION, BANDIT_BILL_FIRST_VOLLEY_DELAY, BANDIT_BILL_PROJECTILE_OFFSET_NES, BANDIT_BILL_RANDOM_HANDOFF_FINE_X, BANDIT_BILL_RANDOM_HANDOFF_FINE_Y, BANDIT_BILL_RANDOM_ROUTE_START_FRAME, banditBillCombatX, banditBillCombatY, banditBillProjectileVelocity, createBanditBillMovementState, type BanditBillMovementState } from "./game-constants";
 import { banditBillCooldown } from "./game-constants";
-import { advanceInvulnerability, BLUE_YASHICHI_DURATION, BOSS_BAR_RECOVERY_DURATION, BOSS_COLLISION_HALF_SIZES_NES, bossCurrentBarHitPoints, bossHealthProfile, bossIsVulnerable, bossTotalHitPoints, CONTAINER_COLLISION_HALF_SIZE_NES, ENEMY_COLLISION_HALF_SIZE_NES, ENEMY_PROJECTILE_COLLISION_HALF_SIZE_NES, lifePickup, scoreBossDefeat, shouldClearProjectilesAfterBossDefeat } from "./game-constants";
+import { advanceInvulnerability, BLUE_YASHICHI_DURATION, BOSS_BAR_RECOVERY_DURATION, BOSS_COLLISION_HALF_SIZES_NES, bossCurrentBarHitPoints, bossHealthProfile, bossIsVulnerable, bossTotalHitPoints, BOSS_WEAPON_COLLISION_HALF_SIZE_NES, CONTAINER_COLLISION_HALF_SIZE_NES, ENEMY_COLLISION_HALF_SIZE_NES, ENEMY_PROJECTILE_COLLISION_HALF_SIZE_NES, lifePickup, scoreBossDefeat, shouldClearProjectilesAfterBossDefeat } from "./game-constants";
 import { machineGunVelocities, NES_WORLD_X_SCALE, NES_WORLD_Y_SCALE, PLAYER_ENTRY_X, PLAYER_ENTRY_Y, PLAYER_MAX_X_NES, PLAYER_MAX_Y_NES, PLAYER_MIN_X_NES, PLAYER_MIN_Y_NES, pistolBulletSpeedFactor, pistolVelocities, playerCollisionFallbackY, playerContactHitboxOverlap, playerMovementVelocity, shotgunVelocities, weaponBulletLifetime, weaponCanRepeat } from "./game-constants";
 import { storedPowerupPickup } from "./game-constants";
 import { addScore, combatHitboxesOverlap } from "./game-constants";
@@ -1111,6 +1111,7 @@ class GunSmokeGame {
         const projectile = this.spawnEnemyProjectile(boss.x + spawnX * NES_WORLD_X_SCALE, boss.y + spawnY * NES_WORLD_Y_SCALE, true);
         if (!projectile) break;
         projectile.projectileType = "boomerang";
+        [projectile.collisionHalfX, projectile.collisionHalfY] = BOSS_WEAPON_COLLISION_HALF_SIZE_NES;
         [projectile.vx, projectile.vy] = cutterBoomerangVelocity(heading);
         projectile.turnRate = cutterBoomerangHeadingToward(projectile.x, projectile.y, targetX * NES_WORLD_X_SCALE, this.scroll + targetY * NES_WORLD_Y_SCALE);
         projectile.phase = -1;
@@ -1149,6 +1150,7 @@ class GunSmokeGame {
         const projectile = this.spawnEnemyProjectile(boss.x - 8 * NES_WORLD_X_SCALE, boss.y + 6 * NES_WORLD_Y_SCALE, true);
         if (!projectile) return;
         projectile.projectileType = "grenadeShell";
+        [projectile.collisionHalfX, projectile.collisionHalfY] = BOSS_WEAPON_COLLISION_HALF_SIZE_NES;
         [projectile.vx, projectile.vy] = fatmanJoeShellVelocity(boss.x, boss.y, this.player.x, this.player.y);
         projectile.phase = -1;
         projectile.volleysFired = 0;
@@ -1187,6 +1189,8 @@ class GunSmokeGame {
           smoke.vx = 0;
           smoke.vy = 0;
           smoke.radius = 0;
+          smoke.collisionHalfX = 0;
+          smoke.collisionHalfY = 0;
           smoke.maxAge = NINJA_BOSS_PREPARE_DURATION + NINJA_BOSS_PREPARE_CONTROLLER_DURATION;
         }
       }
@@ -2186,6 +2190,8 @@ class GunSmokeGame {
         unit.projectileType = "grenadeController";
         unit.volleysFired = 0;
         unit.radius = 0;
+        unit.collisionHalfX = 0;
+        unit.collisionHalfY = 0;
         unit.sprite.visible = false;
       }
       if (unit.kind === "enemyBullet" && unit.projectileType === "grenadeController" && unit.targetX !== undefined && unit.targetY !== undefined && unit.volleysFired < FATMAN_JOE_MINE_OFFSETS_NES.length) {
@@ -2195,6 +2201,7 @@ class GunSmokeGame {
           const mine = this.spawnEnemyProjectile(unit.targetX + offsetX * NES_WORLD_X_SCALE, unit.targetY + offsetY * NES_WORLD_Y_SCALE, true);
           if (!mine) break;
           mine.projectileType = "grenade";
+          [mine.collisionHalfX, mine.collisionHalfY] = BOSS_WEAPON_COLLISION_HALF_SIZE_NES;
           mine.vx = 0;
           mine.vy = 0;
           mine.maxAge = FATMAN_JOE_GRENADE_LIFETIME;

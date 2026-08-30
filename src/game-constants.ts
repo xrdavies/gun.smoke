@@ -1089,7 +1089,7 @@ export function gunmanFlankUsesDynamicState(entityCode: 7 | 8 | 9, originY: numb
   if (stage === 4 && entityCode === 7 && [1503, 1695, 1727, 1743, 2527].includes(eventAt ?? -1)) return true;
   if (stage === 3 && entityCode === 7 && [255, 319, 687, 959, 1647, 1711, 4239, 4255, 4831, 4863].includes(eventAt ?? -1)) return true;
   if (stage === 3 && entityCode === 8 && [1071, 1119, 3775, 3823].includes(eventAt ?? -1)) return true;
-  if (stage === 6 && entityCode === 8 && (eventAt === 159 || eventAt === 2207)) return true;
+  if (stage === 6 && entityCode === 8 && (eventAt === 159 || eventAt === 2207 || eventAt === 2943)) return true;
   if (stage === 6 && entityCode === 9 && (eventAt === 2783 || eventAt === 3919)) return true;
   if (stage === 6 && entityCode === 7 && eventAt === 4543) return true;
   if (stage === 6 && entityCode === 7 && Math.round(originY) === 64 && fromRight) return true;
@@ -1794,7 +1794,8 @@ export function gunmanFlankLifetime(entityCode: 7 | 8 | 9, originY = 0, stage = 
   return (scoped ?? Math.round(GUNMAN_FLANK_LIFETIMES[entityCode] * NES_FRAME_RATE)) / NES_FRAME_RATE;
 }
 
-export function gunmanFlankFirstOpportunityFrame(seed: number, originY = 16, stage = 2, entityCode: 7 | 8 | 9 = 7, phase = 0): number {
+export function gunmanFlankFirstOpportunityFrame(seed: number, originY = 16, stage = 2, entityCode: 7 | 8 | 9 = 7, phase = 0, eventAt?: number): number {
+  if (stage === 6 && entityCode === 8 && phase === 1 && eventAt === 2943) return 655;
   return gunmanFirstOpportunityFrame(seed, originY, (stage === 2 || stage === 3) && entityCode === 7 && Math.round(originY) === 0 && phase === 1 ? 46 : undefined);
 }
 

@@ -100,6 +100,27 @@ test("runs ROM event streams in every round", async ({ page }) => {
   expect(pageErrors).toEqual([]);
 });
 
+test("starts untraced bottom Gunmen at the ROM bottom entry", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/");
+  await page.locator("#start-button").click();
+  await page.locator("#continue-button").click();
+  await page.locator("#briefing-button").click();
+  await page.evaluate(() => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(4));
+  await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
+
+  let bottomGunman: { age: number; screenY: number } | undefined;
+  for (let elapsed = 0; elapsed < 30_000 && bottomGunman === undefined; elapsed += 50) {
+    await page.clock.runFor(50);
+    bottomGunman = await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ romEntityCode?: number; hp: number; age: number; screenY: number }> }).__getGunSmokeUnits()
+      .find((unit) => unit.romEntityCode === 5 && unit.hp > 0));
+  }
+
+  expect(bottomGunman).toBeDefined();
+  expect(bottomGunman!.age).toBeLessThan(0.2);
+  expect(bottomGunman!.screenY).toBeGreaterThan(240);
+});
+
 test("keeps Snipers exposed during their firing cooldown", async ({ page }) => {
   await page.clock.install();
   await page.goto("/");

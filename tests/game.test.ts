@@ -1132,7 +1132,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankEventShotFrames(4, 671, 184)).toEqual([13, 269, 461]);
     expect(gunmanFlankEventShotFrames(4, 671, 216)).toEqual([]);
     expect(gunmanTopUsesDynamicState(4, 703)).toBe(true);
-    expect(gunmanBottomUsesDynamicState(4, 703)).toBe(false);
+    expect(gunmanBottomUsesDynamicState(4, 703)).toBe(true);
     expect(gunmanFlankEventShotFrames(4, 703, 184)).toEqual([63]);
     expect(gunmanFlankEventShotFrames(4, 703, 232)).toEqual([24]);
     expect(gunmanTopUsesDynamicState(4, 735)).toBe(true);
@@ -1166,7 +1166,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankEventShotFrames(4, 1487, 56)).toEqual([13]);
     expect(gunmanTopUsesDynamicState(4, 1519)).toBe(true);
     expect(gunmanFlankEventShotFrames(4, 1519, 56)).toEqual([68]);
-    expect(gunmanBottomUsesDynamicState(4, 1535, 160)).toBe(false);
+    expect(gunmanBottomUsesDynamicState(4, 1535, 160)).toBe(true);
     expect(gunmanBottomUsesDynamicState(4, 1535, 208)).toBe(true);
     expect(gunmanFlankEventShotFrames(4, 1535, 208)).toEqual([]);
     expect(gunmanBottomUsesDynamicState(4, 1615, 152)).toBe(true);
@@ -1250,7 +1250,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankUsesDynamicState(7, 96, 5, 0, 1679, true)).toBe(true);
     expect(gunmanFlankEventShotFrames(5, 1679, 248)).toEqual([73, 393]);
     expect(gunmanBottomUsesDynamicState(5, 1871, 48)).toBe(true);
-    expect(gunmanBottomUsesDynamicState(5, 1871, 96)).toBe(false);
+    expect(gunmanBottomUsesDynamicState(5, 1871, 96)).toBe(true);
     expect(gunmanFlankEventShotFrames(5, 1871, 48)).toEqual([437]);
     expect(gunmanBottomUsesDynamicState(5, 1967)).toBe(true);
     expect(gunmanFlankEventShotFrames(5, 1967, 56)).toEqual([167]);
@@ -2402,7 +2402,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanBottomUsesDynamicState(6, 191)).toBe(true);
     expect(gunmanBottomUsesDynamicState(6, 447)).toBe(true);
     expect(gunmanBottomUsesDynamicState(6, 479, 168)).toBe(true);
-    expect(gunmanBottomUsesDynamicState(6, 479, 136)).toBe(false);
+    expect(gunmanBottomUsesDynamicState(6, 479, 136)).toBe(true);
     expect(gunmanBottomUsesDynamicState(6, 559)).toBe(true);
     expect(gunmanBottomUsesDynamicState(6, 847)).toBe(true);
     expect(gunmanBottomUsesDynamicState(6, 2207)).toBe(true);
@@ -2411,7 +2411,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanBottomUsesDynamicState(6, 3951)).toBe(true);
     expect(gunmanBottomUsesDynamicState(6, 4079)).toBe(true);
     expect(gunmanBottomUsesDynamicState(6, 4335)).toBe(true);
-    expect(gunmanBottomUsesDynamicState(6, 3023)).toBe(false);
+    expect(gunmanBottomUsesDynamicState(6, 3023)).toBe(true);
     expect(gunmanBottomDynamicPosition(0, 112, 74, 68)).toEqual([(112 + 74 / 256) * NES_WORLD_X_SCALE, (249 + 68 / 256) * NES_WORLD_Y_SCALE]);
     expect(gunmanBottomDynamicPosition(48 / NES_FRAME_RATE, 112, 74, 68)).toEqual([(112 + 74 / 256) * NES_WORLD_X_SCALE, (218 + 68 / 256) * NES_WORLD_Y_SCALE]);
     const state = createGunmanBottomMovementState(112, 74, 68);

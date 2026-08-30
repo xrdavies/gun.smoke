@@ -1346,22 +1346,10 @@ export function createGunmanFlankMovementState(entityCode: 7 | 8 | 9, x: number,
 }
 
 export function gunmanBottomUsesDynamicState(stage: number, eventAt?: number, originX?: number): boolean {
-  if (stage === 4 && eventAt === 2191) return Math.round(originX ?? -1) === 40;
-  if (stage === 4 && eventAt === 2095) return Math.round(originX ?? -1) === 88;
-  if (stage === 4 && eventAt === 1871) return Math.round(originX ?? -1) === 24 || Math.round(originX ?? -1) === 128;
-  if (stage === 4 && eventAt === 1615) return Math.round(originX ?? -1) === 152 || Math.round(originX ?? -1) === 208;
-  if (stage === 4 && eventAt === 1647) return Math.round(originX ?? -1) === 120;
-  if (stage === 4 && eventAt === 1679) return Math.round(originX ?? -1) === 112;
-  if (stage === 4 && eventAt === 1727) return Math.round(originX ?? -1) === 32;
-  if (stage === 4 && eventAt === 2431) return Math.round(originX ?? -1) === 152;
-  if (stage === 4 && (eventAt === 1791 || eventAt === 1823 || eventAt === 1855 || eventAt === 1951 || eventAt === 2111 || eventAt === 2143 || eventAt === 2319 || eventAt === 2591)) return true;
-  if (stage === 4 && (eventAt === 447 || eventAt === 479 || eventAt === 639 || eventAt === 671 || eventAt === 863 || eventAt === 879 || eventAt === 895 || eventAt === 975 || eventAt === 1007 || eventAt === 1039 || eventAt === 1151 || eventAt === 1167 || eventAt === 1327 || eventAt === 1343)) return true;
-  if (stage === 4 && eventAt === 1535) return Math.round(originX ?? -1) === 208;
-  if (stage === 5 && eventAt === 655) return true;
-  if (stage === 5 && eventAt === 1871) return Math.round(originX ?? -1) === 48;
-  if (stage === 5 && (eventAt === 255 || eventAt === 511 || eventAt === 959 || eventAt === 1311 || eventAt === 1727 || eventAt === 1967)) return true;
-  if (stage === 6 && eventAt === 479) return Math.round(originX ?? -1) === 168;
-  return stage === 6 && (eventAt === 175 || eventAt === 191 || eventAt === 447 || eventAt === 559 || eventAt === 847 || eventAt === 3055 || eventAt === 3327 || eventAt === 3951 || eventAt === 4079 || eventAt === 4319 || eventAt === 4335 || eventAt === 4575 || eventAt === 4623 || eventAt === 4639 || eventAt === 4751 || eventAt === 815 || eventAt === 831 || eventAt === 1007 || eventAt === 1023 || eventAt === 1167 || eventAt === 1231 || eventAt === 1279 || eventAt === 1311 || eventAt === 1375 || eventAt === 1535 || eventAt === 2207 || eventAt === 2479 || eventAt === 2879);
+  // Every code-5 initializer enters the same decoded B284 movement routine.
+  // Event-specific traces still refine shot windows, but movement does not
+  // need a separate near/far fallback path.
+  return true;
 }
 
 export function gunmanBottomFirstOpportunityFrame(seed: number, stage: number, eventAt?: number): number {

@@ -454,6 +454,11 @@ Round 6's `at=3055,x=112,y=0,code=5` bottom entry rises from NES `y=249` to
 fixed-point path matches through all 1,429 frames, produces no successful shot
 for Billy at `(136,215)`, and releases through the right boundary; it does not
 use the shorter 318-frame near route.
+The same B284 entry is now used for every decoded code-5 bottom entry, including
+routes without an isolated lifecycle capture. Their initial `Y=249` to `Y=218`
+step is therefore preserved instead of falling through the generic enemy
+velocity path; event-specific traces still override only movement details and
+shot windows where evidence exists.
 Round 6's naturally allocated opening top entries also match the shared state
 machine at fixed-point precision. `at=47,x=168` remains in dispatch `0x57` for
 234 frames and fires at frame 24 before its `0x59` handoff; `at=63,x=184`

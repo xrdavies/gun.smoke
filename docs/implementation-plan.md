@@ -39,6 +39,10 @@ entrance until the first shell launch succeeds, matching the ROM's attack-gated
 vulnerability. Round 6 right-side code-7 `y=64` now uses that shared
 state machine instead of the available left-only trace, and the verified Round
 4 `at=1503/1695/1727/1743/2527` routes use their measured 356/360/345/360/630-frame state-machine paths.
+All decoded bottom-entry Gunmen (entity code `5`) now use the shared B284
+fixed-point state machine: the common `Y=249` to `Y=218` entry is preserved
+before chase/orbit movement, while event-specific shot traces remain layered on
+top when available.
 Bottom Gunman contact now owns a measured 60-frame dispatch-`0x41` retreat
 before slot release, so the enemy no longer continues its normal route after a
 player collision; Horse protection uses the same state.

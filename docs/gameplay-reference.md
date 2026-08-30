@@ -263,6 +263,10 @@ some long-tail random branches remain marked as approximations. Captured
 Gunman routes now use event/X-qualified shot windows across Rounds 2 through 6;
 only entries without an isolated lifecycle trace retain the bounded generic
 opportunity clock.
+Bottom-entry Gunmen (entity code `5`) all share the decoded B284 entry and
+chase/orbit routine. They begin at NES `Y=249`, rise to `Y=218` over 48 frames,
+then follow player-relative movement; isolated event traces only refine their
+attack windows and release/contact boundaries.
 Snipers are edge-mounted static shooters that adjust among six discrete lane
 headings toward Billy, keep an 8-bit 90-frame firing cooldown, and do not walk
 with field enemies. The actor remains visible and collidable while that

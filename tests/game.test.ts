@@ -1168,6 +1168,10 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankEventShotFrames(5, 1887, 24)).toEqual([38, 358]);
     expect(gunmanTopUsesDynamicState(5, 1999)).toBe(true);
     expect(gunmanFlankEventShotFrames(5, 1999, 64)).toEqual([69]);
+    expect(gunmanTopUsesDynamicState(5, 2095)).toBe(true);
+    expect(gunmanFlankEventShotFrames(5, 2095, 184)).toEqual([13, 792, 920]);
+    expect(gunmanFlankEventShotFrames(5, 2095, 208)).toEqual([65, 321]);
+    expect(gunmanFlankEventShotFrames(5, 2095, 240)).toEqual([105, 361]);
     expect(gunmanFlankUsesDynamicState(7, 32, 5, 0, 1903, false)).toBe(true);
     expect(gunmanFlankUsesDynamicState(7, 112, 5, 0, 1999, false)).toBe(true);
     expect(gunmanFlankUsesDynamicState(7, 64, 5, 0, 2735, false)).toBe(true);
@@ -1276,6 +1280,19 @@ describe("Gun.Smoke vertical slice", () => {
     const round5Top1999ReleaseScroll = (1999 + 2 / 3 + 405 / 3) * NES_WORLD_Y_SCALE;
     advanceGunmanFlankMovement(round5Top1999, 405, 104, 216, (x, y) => roundActorCollisionAtNes(5, round5Top1999ReleaseScroll, x, y));
     expect(round5Top1999.dead).toBe(true);
+
+    const round5Top2095Routes = [
+      { state: createGunmanTopMovementState(184, 20, 11), last: 1130, heading: 25, timer: 4, x: 204 + 73 / 256, y: 251 + 250 / 256 },
+      { state: createGunmanTopMovementState(208, 41, 193), last: 491, heading: 24, timer: 2, x: 165 + 35 / 256, y: 251 + 152 / 256 },
+      { state: createGunmanTopMovementState(240, 220, 235), last: 644, heading: 0, timer: 2, x: 60 + 18 / 256, y: 251 + 113 / 256 },
+    ] as const;
+    for (const route of round5Top2095Routes) {
+      for (let frame = 1; frame <= route.last; frame += 1) {
+        const scroll = (2095 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+        advanceGunmanFlankMovement(route.state, frame, 104, 216, (x, y) => roundActorCollisionAtNes(5, scroll, x, y));
+      }
+      expect(route.state).toMatchObject({ frame: route.last, mode: route.heading === 25 ? "chase" : "orbit", heading: route.heading, timer: route.timer, x: route.x, y: route.y, dead: false });
+    }
 
     const round6Actor = createGunmanFlankMovementState(8, 4, 96, false, 119, 29);
     for (let frame = 1; frame <= 647; frame += 1) {

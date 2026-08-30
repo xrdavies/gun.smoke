@@ -1140,6 +1140,25 @@ export function createGunmanBottomMovementState(x: number, fineX = 0, fineY = 0)
   };
 }
 
+export function gunmanTopUsesDynamicState(stage: number, eventAt?: number): boolean {
+  return stage === 6 && eventAt === 3295;
+}
+
+export function createGunmanTopMovementState(x: number, fineX = 0, fineY = 0): GunmanFlankMovementState {
+  return {
+    frame: 0,
+    mode: "entry",
+    timer: GUNMAN_FLANK_ENTRY_FRAMES,
+    heading: 16,
+    orbitDirection: 1,
+    orbitPassedDown: false,
+    fromRight: false,
+    x: x + fineX / 256,
+    y: 1 + fineY / 256,
+    dead: false,
+  };
+}
+
 export function gunmanFlankMovementFacingHeading(state: GunmanFlankMovementState): number {
   return state.mode === "side" ? 16 : state.heading & 31;
 }

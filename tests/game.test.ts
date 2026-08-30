@@ -3105,6 +3105,18 @@ describe("Gun.Smoke vertical slice", () => {
     expect(round5LateTop1647State).toMatchObject({ frame: 626, mode: "orbit", heading: 26, timer: 0, x: 0 + 17 / 256, y: 151 + 14 / 256, dead: false });
   });
 
+  it("routes the isolated Round 6 top Gunman at 367", () => {
+    const state = createGunmanTopMovementState(200, 152, 0);
+    for (let frame = 1; frame <= 615; frame += 1) {
+      const scroll = (367 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(state, frame, 136, 216, (x, y) => roundActorCollisionAtNes(6, scroll, x, y));
+    }
+    expect(state).toMatchObject({ frame: 615, heading: 15, timer: 1, x: 203 + 92 / 256, y: 251 + 52 / 256, dead: false });
+    const releaseScroll = (367 + 2 / 3 + 616 / 3) * NES_WORLD_Y_SCALE;
+    advanceGunmanFlankMovement(state, 616, 136, 216, (x, y) => roundActorCollisionAtNes(6, releaseScroll, x, y));
+    expect(state.dead).toBe(true);
+  });
+
   it("matches the traced Bandit Bill volley timing", () => {
     expect(BANDIT_BILL_FIRST_VOLLEY_DELAY).toBeCloseTo(107 / NES_FRAME_RATE, 9);
     expect(BANDIT_BILL_SHOT_INTERVAL).toBeCloseTo(12 / NES_FRAME_RATE, 9);

@@ -438,6 +438,13 @@ Round 6's `at=3055,x=112,y=0,code=5` bottom entry rises from NES `y=249` to
 fixed-point path matches through all 1,429 frames, produces no successful shot
 for Billy at `(136,215)`, and releases through the right boundary; it does not
 use the shorter 318-frame near route.
+Round 6's naturally allocated opening top entries also match the shared state
+machine at fixed-point precision. `at=47,x=168` remains in dispatch `0x57` for
+234 frames and fires at frame 24 before its `0x59` handoff; `at=63,x=184`
+remains for 247 frames and fires at frame 29 before the same handoff; and
+`at=239,x=176` fires at frame 36 before its frame-444 upper-boundary release.
+The scripted `at=255,x=168` record is not allocated in the controlled natural
+run because the seven-slot enemy pool is full, so no route is inferred for it.
 Round 6's `at=3295,x=64,y=0,code=6` top entry starts with a 48-frame downward
 state and then follows the same chase/orbit routine. All 745 fixed-point frames
 match, successful shots occur at frames 62, 126, and 574, and the actor exits
@@ -477,6 +484,18 @@ it matches 295 frames, fires at frame 13, and releases through the left edge.
 The later `at=4751,x=40,code=5` bottom entry matches 414 frames with no
 successful shot before `Y=252`; `at=4783,x=200,code=6` matches 383 top-entry
 frames, fires at frame 22, and releases through the right edge.
+The top `at=1631,x=80,code=6` entry matches all 208 controlled frames through
+its `0x59` handoff and fires at frame 48. The later `at=1871,x=184` and
+`at=1903,x=152` entries match 351 and 208 controlled frames through their
+`0x59` handoffs, with attacks at frames 57/313 and 57 respectively.
+At `at=2015`, the naturally allocated top entries remain separate: `x=104`
+matches 208 controlled frames and fires at frame 13, while `x=128` matches 182
+frames and fires at frame 37. Their traces preserve the same frame-120/123
+player-coordinate changes before the observed dispatch handoffs.
+The same-time `at=2207` bottom entries both preserve the 48-frame lower entry
+and then match the shared chase/orbit routine. `x=88` runs 941 frames and fires
+at 423/615; `x=120` runs 920 frames and fires at 423. Both release through the
+upper boundary after the measured frame-216/219 player-coordinate changes.
 The earlier `at=815,x=176,code=5` bottom entry matches 530 shared-state frames,
 fires at frame 187, and releases through the NES `Y=255` boundary.
 The adjacent `at=831,x=160,code=5` bottom entry independently matches 150

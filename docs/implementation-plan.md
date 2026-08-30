@@ -138,6 +138,16 @@ Round 6 `at=4319` now uses the shared bottom-entry and chase/orbit state machine
 through its complete 392-frame no-shot route and NES `Y=255` release boundary.
 Round 6 `at=4575`, `at=4623`, and `at=4639` now preserve their separate bottom
 routes, release boundaries, and measured `158`/none/`193` attack opportunities.
+Round 6 `at=47/63/239` now routes its naturally allocated opening top Gunmen
+through the shared fixed-point state machine with measured frame-24/29/36
+attacks and their observed dispatch or upper-boundary endings.
+Round 6 `at=1631/1871/1903` now preserves three later top-entry routes and their
+measured frame-48, frame-57/313, and frame-57 attack opportunities through the
+observed dispatch handoffs.
+The two naturally allocated Round 6 `at=2015` top entries now remain distinct by
+spawn X and use their frame-13/frame-37 attacks through separate contact
+handoffs. The same-time `at=2207` bottom entries now use their complete
+941/920-frame routes, measured 423/615 and 423 attacks, and upper releases.
 Round 3 `at=1119` replaces its generic code-8 path with the shared state
 machine verified across all 282 controlled frames.
 Round 3 `at=687` replaces its generic phase-0 code-7 path with the shared state

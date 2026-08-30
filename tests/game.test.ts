@@ -1290,6 +1290,19 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankEventShotFrames(5, 1775, 112)).toEqual([35]);
     expect(gunmanBottomUsesDynamicState(5, 1727)).toBe(true);
     expect(gunmanFlankEventShotFrames(5, 1727, 56)).toEqual([168]);
+    expect(gunmanFlankEventShotFrames(6, 159, 4)).toEqual([87, 151]);
+    expect(gunmanFlankEventShotFrames(6, 2207, 4)).toEqual([194, 450]);
+    expect(gunmanFlankEventShotFrames(6, 2783, 248)).toEqual([31, 532, 852]);
+    expect(gunmanFlankEventShotFrames(6, 2943, 4)).toEqual([655]);
+    expect(gunmanFlankEventShotFrames(6, 2991, 4)).toEqual([256]);
+    expect(gunmanFlankEventShotFrames(6, 3055, 112)).toEqual([]);
+    expect(gunmanFlankEventShotFrames(6, 3295, 64)).toEqual([62, 574]);
+    expect(gunmanFlankEventShotFrames(6, 3487, 168)).toEqual([13, 77, 240]);
+    expect(gunmanFlankEventShotFrames(6, 3551, 88)).toEqual([60, 124, 188, 252, 316]);
+    expect(gunmanFlankEventShotFrames(6, 3711, 136)).toEqual([66]);
+    expect(gunmanFlankEventShotFrames(6, 3919, 248)).toEqual([26, 90, 154, 218, 399, 527, 655, 1039]);
+    expect(gunmanFlankEventShotFrames(6, 4319, 200)).toEqual([]);
+    expect(gunmanFlankEventShotFrames(6, 4543, 4)).toEqual([102]);
 
     const round5Actor = createGunmanFlankMovementState(7, 4, 32, false, 48, 68);
     for (let frame = 1; frame <= 1026; frame += 1) {

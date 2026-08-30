@@ -912,6 +912,7 @@ class GunSmokeGame {
     const romRandomSeed = event.entityCode < 0x20 ? this.nextRomSpawnSeedByte() : undefined;
     if (event.semantic === "weaponShop" || event.semantic === "supplyShop") {
       const keeper = this.spawnUnit("shopkeeper", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), 1);
+      keeper.age = -1 / NES_FRAME_RATE;
       keeper.vy = ROM_OBJECT_DROP_SPEED;
       keeper.shopIndex = event.shopIndex;
       this.shopSpawnCursor = Math.max(this.shopSpawnCursor, event.shopIndex ?? 0);
@@ -925,6 +926,7 @@ class GunSmokeGame {
     }
     if (event.semantic === "sceneObject" && ROM_SCENE_PROP_DISPATCH_TYPES.includes(event.dispatchType as 8)) {
       const prop = this.spawnUnit("sceneObject", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), 1);
+      prop.age = -1 / NES_FRAME_RATE;
       prop.romEntityCode = event.entityCode;
       prop.romRandomSeed = romRandomSeed;
       prop.romFlags = event.flags;
@@ -937,6 +939,7 @@ class GunSmokeGame {
     if (event.semantic !== "sceneObject" || !ROM_BREAKABLE_CONTAINER_DISPATCH_TYPES.includes(event.dispatchType as 7)) return;
     const pickup = ROM_OBJECT_PICKUPS[event.entityCode as keyof typeof ROM_OBJECT_PICKUPS];
     const container = this.spawnUnit(pickup || ROM_EMPTY_BARREL_ENTITY_CODES.includes(event.entityCode as 32 | 41) ? "barrel" : "sceneObject", clamp(romObjectWorldX(event), 40, 920), this.scroll + romObjectWorldY(event), romEntityHitPoints(event.entityCode), undefined, pickup);
+    container.age = -1 / NES_FRAME_RATE;
     container.vy = ROM_OBJECT_DROP_SPEED;
     container.romEntityCode = event.entityCode;
     container.romRandomSeed = romRandomSeed;
@@ -953,6 +956,7 @@ class GunSmokeGame {
     const romRandomSeed = event.entityCode < 0x20 ? this.nextRomSpawnSeedByte() : undefined;
     if (ROM_FALLING_ROCK_BEHAVIORS.includes(event.behavior as 5)) {
       const rock = this.spawnUnit("enemyBullet", romEventWorldX(event), this.scroll + romEventWorldY(event), 1);
+      rock.age = -1 / NES_FRAME_RATE;
       rock.projectileType = "rock";
       rock.romBehavior = event.behavior;
       rock.romEntityCode = event.entityCode;
@@ -993,6 +997,7 @@ class GunSmokeGame {
       romEntityHitPoints(event.entityCode),
       enemyType,
     );
+    enemy.age = -1 / NES_FRAME_RATE;
     enemy.value = romEnemyScore(event.entityCode);
     enemy.romBehavior = event.behavior;
     enemy.romEntityCode = event.entityCode;

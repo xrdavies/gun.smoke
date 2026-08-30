@@ -63,6 +63,26 @@ test("starts the WebGPU stage and renders gameplay", async ({ page }) => {
   expect(pageErrors).toEqual([]);
 });
 
+test("keeps a ROM event at its allocation-frame coordinate", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/");
+  await page.locator("#start-button").click();
+  await page.locator("#continue-button").click();
+  await page.locator("#briefing-button").click();
+  await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
+
+  let gunman: { age: number; screenY: number; romEntityCode?: number; romSlot?: number } | undefined;
+  for (let elapsed = 0; elapsed < 5_000 && gunman === undefined; elapsed += 17) {
+    await page.clock.runFor(17);
+    gunman = await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ enemyType?: string; age: number; screenY: number; romEntityCode?: number; romSlot?: number }> }).__getGunSmokeUnits()
+      .find((unit) => unit.enemyType === "gunman" && unit.romEntityCode === 6 && unit.romSlot === 0));
+  }
+
+  expect(gunman).toBeDefined();
+  expect(gunman!.age).toBeLessThanOrEqual(1 / 60.098);
+  expect(gunman!.screenY).toBeCloseTo(1, 6);
+});
+
 test("freezes gameplay while the ROM clock continues in inventory", async ({ page }) => {
   await page.clock.install();
   await page.goto("/");

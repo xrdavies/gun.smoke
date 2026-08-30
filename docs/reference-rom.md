@@ -89,6 +89,10 @@ by trigger and script index so mixed enemy/object/shop groups preserve their
 original order and compete for shared slots in the same sequence as the ROM.
 The map-row transition releases a record at decoded scroll plus `2/3` of one
 NES pixel; runtime retains that phase instead of spawning two frames early.
+Runtime-created ROM actors and objects use allocation-frame age zero, so their
+first visible sample is the initializer's frame-0 coordinate. The fixed-step
+loop advances a newly allocated unit only from the following NES frame; this
+avoids a one-frame coordinate or attack shift at every scheduler boundary.
 At `$FA89-$FA92`, a full selected pool skips the record and `$FAD8` advances
 the script pointer; runtime applies the same one-shot capacity check to shops,
 containers, props and behavior entities instead of retrying or exempting shops.

@@ -1245,8 +1245,10 @@ one moving `0x86` shell at Boss offset `(-8,+6)` NES pixels. A controlled Magnum
 trace keeps Fatman in
 opening state `0x9c` through frame 169, observes the shell and vulnerable
 `0x98` state on frame 170, and lands a hit on frame 172. Runtime therefore
-protects only the 170-frame entrance; shell launch does not add a separate
-0.75-second invulnerability window. The shell uses the
+`0x98` state on frame 170, and lands a hit on frame 172. Runtime protects
+Fatman through the 170-frame entrance and until the first shell is actually
+launched; a failed first aim/random gate does not expose him early. Once the
+shell launches, no separate 0.75-second invulnerability window is added. The shell uses the
 shared integer direction quantizer, flies for 31 frames, and becomes a
 stationary, non-colliding split controller that keeps its original low slot.
 Beginning four frames later, it emits five `0x3f`

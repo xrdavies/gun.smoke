@@ -34,7 +34,9 @@ entry vulnerability and first-shot timing, same-slot object conversion/pickup
 descent, and browser coverage for every distinct Boss projectile chain and pool
 owner. A further Round 2 Gunman pass fixed the shared 8-bit orbit-counter wrap
 and now matches the full 483-frame code-8 and 873-frame mirrored code-9 routes
-through natural release. Round 6 right-side code-7 `y=64` now uses that shared
+through natural release. Fatman Joe now remains protected after his 170-frame
+entrance until the first shell launch succeeds, matching the ROM's attack-gated
+vulnerability. Round 6 right-side code-7 `y=64` now uses that shared
 state machine instead of the available left-only trace, and the verified Round
 4 `at=1503/1695/1727/1743/2527` routes use their measured 356/360/345/360/630-frame state-machine paths.
 Round 5 `at=1135` now uses its separate 1,107-frame fixed-point trace through

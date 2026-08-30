@@ -35,6 +35,7 @@ const pool = option("pool") ?? "enemy";
 const slotStart = pool === "object" ? 2 : 16;
 const slotEnd = pool === "object" ? 8 : 23;
 const output = option("out") ?? ".rom-traces/entity.json";
+const saveState = option("save-state");
 
 if (!fs.existsSync(filename)) {
   console.log(`Reference ROM not found: ${filename}`);
@@ -233,6 +234,7 @@ for (let frame = 0; frame < frames; frame += 1) {
       targetEventScriptIndexes = eventScriptIndexes;
       for (let other = slotStart; other < slotEnd; other += 1) if (other !== slot) memory[0x400 + other] = 0;
       for (let projectile = 24; projectile < 32; projectile += 1) memory[0x400 + projectile] = 0;
+      if (saveState) fs.writeFileSync(saveState, JSON.stringify(nes.toJSON()));
       break;
     }
   }

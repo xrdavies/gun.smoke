@@ -443,6 +443,9 @@ machine at fixed-point precision. `at=47,x=168` remains in dispatch `0x57` for
 234 frames and fires at frame 24 before its `0x59` handoff; `at=63,x=184`
 remains for 247 frames and fires at frame 29 before the same handoff; and
 `at=239,x=176` fires at frame 36 before its frame-444 upper-boundary release.
+An isolated `at=367,x=200` top entry matches 616 fixed-point frames, fires at
+51/371, and releases through the bottom boundary. It is normally skipped by
+the crowded seven-slot pool, so the binding is kept as an isolated event route.
 The scripted `at=255,x=168` record is not allocated in the controlled natural
 run because the seven-slot enemy pool is full, so no route is inferred for it.
 Round 6's `at=3295,x=64,y=0,code=6` top entry starts with a 48-frame downward

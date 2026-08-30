@@ -141,6 +141,9 @@ routes, release boundaries, and measured `158`/none/`193` attack opportunities.
 Round 6 `at=47/63/239` now routes its naturally allocated opening top Gunmen
 through the shared fixed-point state machine with measured frame-24/29/36
 attacks and their observed dispatch or upper-boundary endings.
+The isolated Round 6 `at=367,x=200` top route now covers 616 frames with
+frame-51/371 attacks and a bottom-boundary release; its event binding is kept
+separate because natural pool pressure normally skips the allocation.
 Round 6 `at=1631/1871/1903` now preserves three later top-entry routes and their
 measured frame-48, frame-57/313, and frame-57 attack opportunities through the
 observed dispatch handoffs.

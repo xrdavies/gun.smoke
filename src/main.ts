@@ -517,6 +517,7 @@ class GunSmokeGame {
   continueGame(): void {
     if (this.mode !== "gameover") return;
     this.resetRandom();
+    this.time = 0;
     this.lives = 3;
     this.scroll = 0;
     this.camera.position.y = 270;
@@ -2478,14 +2479,20 @@ class GunSmokeGame {
     }
     this.stage += 1;
     this.resetRandom();
+    this.time = 0;
     this.scroll = 0;
     this.bossFireClock = 1;
+    this.fireClock = 0;
+    this.fireMask = 0;
+    this.bombLatch = false;
     this.bossSpawned = false;
     this.hasWanted = false;
     this.wingatePhase = 0;
     this.wingateRespawnClock = 0;
     this.deathClock = 0;
     this.deathCommitted = false;
+    this.invulnerable = 0;
+    this.invulnerableDestroysEnemies = false;
     this.romObjectCursor = 0;
     this.romEventCursor = 0;
     this.shopIndex = 0;
@@ -2499,13 +2506,28 @@ class GunSmokeGame {
     this.buildBackground();
     this.player.x = PLAYER_ENTRY_X;
     this.player.y = PLAYER_ENTRY_Y;
+    this.player.sprite.position = { x: this.player.x, y: this.player.y };
     this.showMessage(`STAGE ${this.stage}`);
     this.showBriefing();
   }
 
   private loopStage(): void {
     this.resetRandom();
+    this.time = 0;
     this.scroll = 0;
+    this.fireClock = 0;
+    this.fireMask = 0;
+    this.bombLatch = false;
+    this.invulnerable = 0;
+    this.invulnerableDestroysEnemies = false;
+    this.deathClock = 0;
+    this.deathCommitted = false;
+    this.stageClearClock = 0;
+    this.hasWanted = false;
+    this.wingatePhase = 0;
+    this.smartBombArmed = false;
+    this.shopOpen = false;
+    this.inventoryOpen = false;
     this.camera.position.y = 270;
     this.player.x = PLAYER_ENTRY_X;
     this.player.y = PLAYER_ENTRY_Y;

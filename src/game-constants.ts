@@ -1064,6 +1064,7 @@ const GUNMAN_BOTTOM_PATHS_NES = {
 
 export const GUNMAN_FLANK_SHOT_FRAMES = { 7: [64, 410], 8: [309], 9: [399, 463] } as const;
 const GUNMAN_FLANK_EVENT_SHOT_FRAMES: Readonly<Record<string, readonly number[]>> = {
+  "4:447:192": [],
   "4:95:120": [22],
   "4:127:120": [13, 585],
   "4:159:120": [64],
@@ -1247,6 +1248,7 @@ export function createGunmanFlankMovementState(entityCode: 7 | 8 | 9, x: number,
 }
 
 export function gunmanBottomUsesDynamicState(stage: number, eventAt?: number, originX?: number): boolean {
+  if (stage === 4 && eventAt === 447) return true;
   if (stage === 5 && eventAt === 655) return true;
   if (stage === 5 && eventAt === 1871) return Math.round(originX ?? -1) === 48;
   if (stage === 5 && (eventAt === 255 || eventAt === 511 || eventAt === 959 || eventAt === 1311 || eventAt === 1727 || eventAt === 1967)) return true;

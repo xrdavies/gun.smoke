@@ -92,6 +92,7 @@ test("runs ROM event streams in every round", async ({ page }) => {
   await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
   for (let stage = 1; stage <= 6; stage += 1) {
     await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), stage);
+    await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
     await page.clock.runFor(8_000);
     await expect(page.locator("#stage-label")).toContainText(`ROUND ${stage}`);
     await expect(page.locator("#hud")).toBeVisible();
@@ -166,6 +167,7 @@ test("fires the Ninja Boss opening volley on the traced frame", async ({ page })
   await page.locator("#briefing-button").click();
   await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
   await page.evaluate(() => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(4));
+  await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
   await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
   const hasBossShuriken = () => page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; projectileType?: string; bossProjectile?: boolean }> }).__getGunSmokeUnits()
     .some((unit) => unit.kind === "enemyBullet" && unit.projectileType === "shuriken" && unit.bossProjectile));
@@ -193,6 +195,7 @@ test("runs the distinct Boss projectile chains", async ({ page }) => {
   });
 
   await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), 1);
+  await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
   await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
   expect(await bossProtection()).toBeCloseTo(96 / 60.098, 9);
   await page.clock.runFor(1_700);
@@ -203,11 +206,13 @@ test("runs the distinct Boss projectile chains", async ({ page }) => {
   expect(await waitForBossProjectile(page, ["bullet"], 300, false)).toBe(true);
 
   await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), 2);
+  await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
   await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
   await page.evaluate(() => (window as unknown as { __fireGunSmokeBoss: () => void }).__fireGunSmokeBoss());
   expect(await waitForBossProjectile(page, ["boomerang"], 300)).toBe(true);
 
   await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), 3);
+  await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
   await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
   await page.clock.runFor(6_200);
   expect(await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; volleysFired: number }> }).__getGunSmokeUnits().find((unit) => unit.kind === "boss")?.volleysFired)).toBe(1);
@@ -216,12 +221,14 @@ test("runs the distinct Boss projectile chains", async ({ page }) => {
   expect(await waitForBossProjectile(page, ["fireball"], 100)).toBe(true);
 
   await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), 4);
+  await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
   await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
   await page.evaluate(() => (window as unknown as { __fireGunSmokeBoss: () => void }).__fireGunSmokeBoss());
   expect(await waitForBossProjectile(page, ["ninjaSmoke"], 300)).toBe(true);
   expect(await waitForBossProjectile(page, ["shuriken"], 1_500)).toBe(true);
 
   await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), 5);
+  await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
   await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
   expect(await bossProtection()).toBeCloseTo(170 / 60.098, 9);
   await page.evaluate(() => (window as unknown as { __fireGunSmokeBoss: (randomByte: number) => void }).__fireGunSmokeBoss(8));
@@ -229,6 +236,7 @@ test("runs the distinct Boss projectile chains", async ({ page }) => {
   expect(await waitForBossProjectile(page, ["grenadeShell", "grenade"], 300)).toBe(true);
 
   await page.evaluate((round) => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(round), 6);
+  await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
   await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
   expect(await bossProtection()).toBeCloseTo(185 / 60.098, 9);
   await page.evaluate(() => (window as unknown as { __fireGunSmokeBoss: (randomByte: number) => void }).__fireGunSmokeBoss(1));

@@ -2331,7 +2331,8 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanBottomUsesDynamicState(6, 175)).toBe(true);
     expect(gunmanBottomUsesDynamicState(6, 191)).toBe(true);
     expect(gunmanBottomUsesDynamicState(6, 447)).toBe(true);
-    expect(gunmanBottomUsesDynamicState(6, 479)).toBe(true);
+    expect(gunmanBottomUsesDynamicState(6, 479, 168)).toBe(true);
+    expect(gunmanBottomUsesDynamicState(6, 479, 136)).toBe(false);
     expect(gunmanBottomUsesDynamicState(6, 559)).toBe(true);
     expect(gunmanBottomUsesDynamicState(6, 847)).toBe(true);
     expect(gunmanBottomUsesDynamicState(6, 2207)).toBe(true);

@@ -1347,7 +1347,8 @@ export function gunmanBottomUsesDynamicState(stage: number, eventAt?: number, or
   if (stage === 5 && eventAt === 655) return true;
   if (stage === 5 && eventAt === 1871) return Math.round(originX ?? -1) === 48;
   if (stage === 5 && (eventAt === 255 || eventAt === 511 || eventAt === 959 || eventAt === 1311 || eventAt === 1727 || eventAt === 1967)) return true;
-  return stage === 6 && (eventAt === 175 || eventAt === 191 || eventAt === 447 || eventAt === 479 || eventAt === 559 || eventAt === 847 || eventAt === 3055 || eventAt === 3327 || eventAt === 3951 || eventAt === 4079 || eventAt === 4319 || eventAt === 4335 || eventAt === 4575 || eventAt === 4623 || eventAt === 4639 || eventAt === 4751 || eventAt === 815 || eventAt === 831 || eventAt === 1007 || eventAt === 1023 || eventAt === 1167 || eventAt === 1231 || eventAt === 1279 || eventAt === 1311 || eventAt === 1375 || eventAt === 1535 || eventAt === 2207 || eventAt === 2479 || eventAt === 2879);
+  if (stage === 6 && eventAt === 479) return Math.round(originX ?? -1) === 168;
+  return stage === 6 && (eventAt === 175 || eventAt === 191 || eventAt === 447 || eventAt === 559 || eventAt === 847 || eventAt === 3055 || eventAt === 3327 || eventAt === 3951 || eventAt === 4079 || eventAt === 4319 || eventAt === 4335 || eventAt === 4575 || eventAt === 4623 || eventAt === 4639 || eventAt === 4751 || eventAt === 815 || eventAt === 831 || eventAt === 1007 || eventAt === 1023 || eventAt === 1167 || eventAt === 1231 || eventAt === 1279 || eventAt === 1311 || eventAt === 1375 || eventAt === 1535 || eventAt === 2207 || eventAt === 2479 || eventAt === 2879);
 }
 
 export function gunmanBottomFirstOpportunityFrame(seed: number, stage: number, eventAt?: number): number {

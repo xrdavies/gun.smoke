@@ -486,6 +486,10 @@ frames, fires at frame 66, and releases through the bottom `Y=252` boundary.
 The top `at=943,x=144,code=6` entry matches the shared state machine through
 frame 488, fires at frames 76 and 268, and enters the observed player-contact
 dispatch on frame 489 instead of reaching a natural screen boundary.
+The following top entries independently match the same state machine:
+`at=975,x=224,code=6` runs 729 frames and fires at 33/481 before `Y=253`, while
+`at=991,x=184,code=6` runs 489 frames, fires at frame 13, and releases through
+`Y=252`. Both traces use Billy's NES `x=120` position for the movement gate.
 The final top entries `at=4911/4975/5087/5103` independently match the shared
 state machine for 277/333/330/315 frames and fire at 47/21/13/32 before their
 measured left or bottom releases. `at=5119,x=4,y=48,code=8` keeps NES `x=4`

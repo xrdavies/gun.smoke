@@ -589,6 +589,9 @@ frame 66, and releases through the bottom `Y=252` boundary.
 The top `at=943,x=144,code=6` entry follows the shared route through frame 488,
 fires at frames 76 and 268, then reaches the observed player-contact handoff at
 frame 489 rather than a natural screen release.
+The next top entries are also event-specific: `at=975,x=224,code=6` runs 729
+frames with shots at 33 and 481 before `Y=253`, while `at=991,x=184,code=6`
+runs 489 frames with a frame-13 shot before `Y=252`.
 The final top-entry set at `at=4911/4975/5087/5103` follows complete shared
 routes of 277/333/330/315 frames, with successful shots at 47/21/13/32 before
 their measured left or bottom releases. The following `at=5119` code-8 side

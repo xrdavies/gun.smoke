@@ -106,6 +106,8 @@ Round 6 `at=863` now uses its complete 432-frame top-entry route, including the
 measured frame-66 attack and bottom `Y=252` release.
 Round 6 `at=943` now uses its shared top-entry route through the measured
 frame-489 player-contact handoff and explicit frame-76/frame-268 attacks.
+Round 6 `at=975` and `at=991` now use their complete top-entry routes with
+measured `33/481` and `13` attack opportunities and `Y=253`/`Y=252` releases.
 Round 6 `at=4911/4975/5087/5103` now use their complete shared top-entry routes,
 release boundaries, and measured 47/21/13/32 attack opportunities.
 Round 6 `at=5119` now preserves its allocation-frame X and follows the shared

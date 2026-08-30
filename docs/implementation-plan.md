@@ -154,6 +154,10 @@ handoffs. The same-time `at=2207` bottom entries now use their complete
 Round 6 `at=2255/2623/2687/2735` now routes four additional top entries through
 the shared state machine, preserving their frame-76/268, 13, 77, and 13 attack
 windows through the observed dispatch or contact handoffs.
+Event/X-qualified shot tables now preserve the traced windows for the isolated
+Round 6 routes at `159`, `2207`, `2783`, `2943`, `2991`, `3295`, `3487`,
+`3551`, `3711`, `3919`, and `4543`; no-shot routes at `3055` and `4319` stay
+explicitly empty.
 The opening bottom entries `at=175/191/447/479/559/847` now use the shared
 state machine with their measured no-shot or frame-61/frame-191 attacks and
 screen-boundary releases. `at=2287` and `at=2447` add top routes with

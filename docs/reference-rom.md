@@ -415,6 +415,14 @@ Round 6's naturally allocated `at=2207,x=4,y=96,code=8,phase=1` branch matches
 the shared state machine for all 648 controlled coarse/fine samples and its
 left-edge release. The comparison uses Billy's post-scroll coordinate read by
 the enemy routine on each frame.
+Its event-qualified shot windows are 194/450. The isolated side routes at
+`at=159,x=4`, `at=2783,x=248`, `at=2943,x=4`, and `at=2991,x=4` preserve
+87/151, 31/532/852, 655, and 256 respectively; the latter two retain their
+measured lunge/contact boundaries. Top entries `at=3295,x=64`,
+`at=3487,x=168`, `at=3551,x=88`, and `at=3711,x=136` preserve
+62/574, 13/77/240, 60/124/188/252/316, and 66. The long side route
+`at=3919,x=248` keeps 26/90/154/218/399/527/655/1039, while the no-shot
+bottom routes `at=3055,x=112` and `at=4319,x=200` remain explicitly empty.
 Round 6's opening `at=159,x=4,y=32,code=8,phase=1` branch matches the state
 machine for all 450 coarse/fine samples and releases through the top edge. The
 former 447-frame integer trace truncated three frames and lost slot fractions.

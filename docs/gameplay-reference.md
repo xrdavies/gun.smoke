@@ -560,6 +560,10 @@ Round 6 `at=3711,x=136,y=0,code=6` uses a 287-frame shared-state route, fires
 at frame 66, and exits through the left boundary.
 Round 6 `at=3727,x=4,y=32,code=8,phase=0` uses a complete 1,005-frame shared
 state route with shots at 68/132/196/719/847/911 and a right-boundary release.
+The later `at=4319,x=200,y=0,code=5,phase=1` entry uses the same 48-frame
+bottom entrance as the earlier Round 6 code-5 routes, then follows the shared
+chase/orbit states to complete its 392-frame no-shot route at the NES `Y=255`
+release boundary.
 Round 4's `at=1503,x=248,y=80,code=7,phase=1` event uses the same state machine
 and matches all 356 fixed-point frames through its right-boundary release.
 Its `at=1727,x=248,y=96,code=7,phase=1` counterpart matches all 345 frames

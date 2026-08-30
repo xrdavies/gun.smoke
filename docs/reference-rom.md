@@ -462,7 +462,10 @@ at frame 287.
 Round 6 `at=3727,x=4,y=32,code=8,phase=0` matches the shared state machine for
 1,005 fixed-point frames. Its six successful shots occur at
 68/132/196/719/847/911; the 11-frame state pause between the third and fourth
-opportunities is preserved, and the actor releases through the right boundary.
+ opportunities is preserved, and the actor releases through the right boundary.
+Round 6 `at=4319,x=200,y=0,code=5,phase=1` rises from NES `y=249` to `y=218`
+over 48 frames, then matches the shared chase/orbit state machine through its
+complete 392-frame no-shot route and releases at the NES `Y=255` boundary.
 Round 4's naturally allocated `at=1503,x=248,y=80,code=7,phase=1` branch
 matches the shared state machine for all 356 coarse/fine samples and releases
 through the right boundary; it no longer inherits the unrelated 642-frame

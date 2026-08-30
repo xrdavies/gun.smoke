@@ -1691,6 +1691,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanTopUsesDynamicState(6, 991)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 1407)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 1391)).toBe(true);
+    expect(gunmanTopUsesDynamicState(6, 1455)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 3263)).toBe(false);
     expect(gunmanFlankEventShotFrames(6, 4415)).toEqual([13, 397]);
     expect(gunmanFlankEventShotFrames(6, 4479)).toEqual([29]);
@@ -1710,6 +1711,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanFlankEventShotFrames(6, 991, 184)).toEqual([13]);
     expect(gunmanFlankEventShotFrames(6, 1407, 104)).toEqual([55, 443]);
     expect(gunmanFlankEventShotFrames(6, 1391, 120)).toEqual([75]);
+    expect(gunmanFlankEventShotFrames(6, 1455, 128)).toEqual([63]);
     expect(gunmanFirstOpportunityFrame(43, 0)).toBe(62);
     const state = createGunmanTopMovementState(64, 199, 25);
     for (let frame = 1; frame <= 744; frame += 1) {
@@ -1816,6 +1818,7 @@ describe("Gun.Smoke vertical slice", () => {
       { at: 991, x: 184, fineX: 145, fineY: 50, last: 488, heading: 18, timer: 2, lastX: 196 + 86 / 256, lastY: 250 + 106 / 256, release: 489, playerX: 120 },
       { at: 1407, x: 104, fineX: 124, fineY: 194, last: 762, heading: 28, timer: 1, lastX: 144 / 256, lastY: 52 + 97 / 256, release: 763, playerX: 120 },
       { at: 1391, x: 120, fineX: 180, fineY: 31, last: 386, heading: 0, timer: 4, lastX: 108 + 72 / 256, lastY: 0 + 31 / 256, release: 387, playerX: 120 },
+      { at: 1455, x: 128, fineX: 4, fineY: 215, last: 398, heading: 0, timer: 1, lastX: 108 + 208 / 256, lastY: 0 + 208 / 256, release: 399, playerX: 120 },
     ] as const;
     for (const route of tailRoutes) {
       const routeState = createGunmanTopMovementState(route.x, route.fineX, route.fineY);

@@ -2806,6 +2806,10 @@ export function fatmanJoeShellVelocity(originX: number, originY: number, targetX
   return [velocity[0] * NES_FRAME_RATE * NES_WORLD_X_SCALE, velocity[1] * NES_FRAME_RATE * NES_WORLD_Y_SCALE];
 }
 
+export function fatmanJoeShellHasSplit(age: number): boolean {
+  return Math.round(age * NES_FRAME_RATE) >= Math.round(FATMAN_JOE_SHELL_FLIGHT_DURATION * NES_FRAME_RATE);
+}
+
 export function fatmanJoeMineCount(age: number): number {
   const frame = Math.round(age * NES_FRAME_RATE);
   const splitFrame = Math.round(FATMAN_JOE_SHELL_SPLIT_DELAY * NES_FRAME_RATE);

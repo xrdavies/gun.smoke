@@ -28,7 +28,7 @@ import { storedPowerupPickup } from "./game-constants";
 import { addScore } from "./game-constants";
 import { ninjaCanThrow, ninjaTraceLifetime, ninjaTracePosition, ninjaTraceThrowFrames } from "./game-constants";
 import { advanceNinja, createNinjaState, type NinjaState } from "./game-constants";
-import { FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeAimAllowsLaunch, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_MOVEMENT_SPEED, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, fatmanJoeCombatX, fatmanJoeCombatY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "./game-constants";
+import { FATMAN_JOE_ATTACK_DECISION_INTERVAL, fatmanJoeAimAllowsLaunch, fatmanJoeArenaXBounds, fatmanJoeCanLaunch, FATMAN_JOE_FIRST_ATTACK_DELAY, fatmanJoeShellHasSplit, FATMAN_JOE_GRENADE_LIFETIME, FATMAN_JOE_MOVEMENT_SPEED, fatmanJoeMineCount, FATMAN_JOE_MINE_OFFSETS_NES, FATMAN_JOE_SHELL_FLIGHT_DURATION, FATMAN_JOE_SHELL_LIFETIME, fatmanJoeCombatX, fatmanJoeCombatY, fatmanJoeMovementActionDuration, fatmanJoeShellVelocity } from "./game-constants";
 import { advanceDevilHawkMovement, advanceWingateMovement, createDevilHawkMovementState, createWingateMovementState, DEVIL_HAWK_RANDOM_HANDOFF_ACTION_COUNTER, DEVIL_HAWK_RANDOM_HANDOFF_FINE_X, DEVIL_HAWK_RANDOM_HANDOFF_FINE_Y, DEVIL_HAWK_RANDOM_HANDOFF_GAIT, DEVIL_HAWK_RANDOM_HANDOFF_HEADING, DEVIL_HAWK_RANDOM_HANDOFF_SEGMENT_FRAMES, WINGATE_BULLET_LIFETIME, wingateCanFire, WINGATE_ENTRY_INVULNERABILITY, WINGATE_PROJECTILE_X_OFFSET_NES, WINGATE_PROJECTILE_Y_OFFSET_NES, wingateProjectileVelocity, type DevilHawkMovementState, type WingateMovementState } from "./game-constants";
 import { WINGATE_ENDING_INPUT_DELAY, WINGATE_FINAL_DEFEAT_ANIMATION_DURATION, WINGATE_FINAL_ENDING_DELAY } from "./game-constants";
 import { CUTTER_ATTACK_INTERVAL, CUTTER_BOOMERANG_FIRST_TURN_DELAY, CUTTER_BOOMERANG_HEADINGS, cutterBoomerangHeadingToward, CUTTER_BOOMERANG_OUTWARD_TARGETS_NES, CUTTER_BOOMERANG_REAIM_Y_NES, CUTTER_BOOMERANG_SPAWN_NES, CUTTER_BOOMERANG_TURN_INTERVAL, cutterBoomerangTurn, cutterBoomerangVelocity, CUTTER_FIRST_ATTACK_DELAY } from "./game-constants";
@@ -2107,13 +2107,20 @@ class GunSmokeGame {
           this.beep(95, 0.14);
         }
       }
-      if (unit.kind === "enemyBullet" && unit.projectileType === "grenadeShell" && unit.age >= FATMAN_JOE_SHELL_FLIGHT_DURATION) {
+      if (unit.kind === "enemyBullet" && unit.projectileType === "grenadeShell" && fatmanJoeShellHasSplit(unit.age)) {
         unit.targetX ??= unit.x;
         unit.targetY ??= unit.y;
         unit.x = unit.targetX;
         unit.y = unit.targetY;
         unit.vx = 0;
         unit.vy = 0;
+        unit.projectileType = "grenade";
+        unit.maxAge = unit.age + FATMAN_JOE_GRENADE_LIFETIME;
+        unit.volleysFired = 1;
+        unit.sprite.size = PROJECTILE_STYLES.grenade!.size;
+        unit.sprite.color = PROJECTILE_STYLES.grenade!.color;
+      }
+      if (unit.kind === "enemyBullet" && unit.projectileType === "grenade" && unit.bossProjectile && unit.targetX !== undefined && unit.targetY !== undefined && unit.volleysFired < FATMAN_JOE_MINE_OFFSETS_NES.length) {
         const mineCount = fatmanJoeMineCount(unit.age);
         while (unit.volleysFired < mineCount) {
           const [offsetX, offsetY] = FATMAN_JOE_MINE_OFFSETS_NES[unit.volleysFired]!;

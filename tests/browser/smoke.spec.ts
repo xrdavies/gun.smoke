@@ -244,6 +244,27 @@ test("runs the distinct Boss projectile chains", async ({ page }) => {
   expect(pageErrors).toEqual([]);
 });
 
+test("converts Fatman Joe shells into timed mines", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/");
+  await page.locator("#start-button").click();
+  await page.locator("#continue-button").click();
+  await page.locator("#briefing-button").click();
+  await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
+  await page.evaluate(() => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(5));
+  await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
+  await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
+  await page.evaluate(() => (window as unknown as { __fireGunSmokeBoss: (randomByte: number) => void }).__fireGunSmokeBoss(8));
+  const projectiles = () => page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; projectileType?: string; bossProjectile?: boolean; hp: number }> }).__getGunSmokeUnits()
+    .filter((unit) => unit.kind === "enemyBullet" && unit.bossProjectile && unit.hp > 0));
+  await page.clock.runFor(300);
+  expect((await projectiles()).some((unit) => unit.projectileType === "grenadeShell")).toBe(true);
+  await page.clock.runFor(350);
+  const mines = await projectiles();
+  expect(mines.some((unit) => unit.projectileType === "grenade")).toBe(true);
+  expect(mines.some((unit) => unit.projectileType === "grenadeShell")).toBe(false);
+});
+
 test("completes the six-round Boss transition chain", async ({ page }) => {
   const pageErrors: Error[] = [];
   page.on("pageerror", (error) => pageErrors.push(error));

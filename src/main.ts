@@ -2161,8 +2161,8 @@ class GunSmokeGame {
           this.beep(95, 0.14);
         }
       }
-      const deferShellMotion = unit.kind === "enemyBullet" && unit.projectileType === "grenadeShell" && unit.phase < 0;
-      if (deferShellMotion) unit.phase = 0;
+      const deferInitialProjectileMotion = unit.kind === "enemyBullet" && unit.phase < 0 && (unit.projectileType === "grenadeShell" || unit.bossProjectile && unit.projectileType === "shuriken");
+      if (deferInitialProjectileMotion) unit.phase = 0;
       if (unit.kind === "enemyBullet" && unit.projectileType === "grenadeShell" && fatmanJoeShellHasSplit(unit.age)) {
         unit.targetX ??= unit.x;
         unit.targetY ??= unit.y;
@@ -2200,6 +2200,7 @@ class GunSmokeGame {
             projectile.projectileType = "shuriken";
             projectile.vx = x * NES_FRAME_RATE * NES_WORLD_X_SCALE;
             projectile.vy = y * NES_FRAME_RATE * NES_WORLD_Y_SCALE;
+            projectile.phase = -1;
             projectile.maxAge = NINJA_BOSS_SHURIKEN_LIFETIME;
             projectile.radius = 8;
           }
@@ -2237,7 +2238,7 @@ class GunSmokeGame {
         unit.vy = Math.sin(angle) * speed;
       }
       if (unit.kind === "enemyBullet" && (unit.projectileType === "boomerang" || unit.projectileType === "shuriken" || unit.projectileType === "hatchet")) unit.sprite.rotation += delta * 10;
-      if (!boomerangPathDriven && !ninjaSmokePathDriven && !deferShellMotion) {
+      if (!boomerangPathDriven && !ninjaSmokePathDriven && !deferInitialProjectileMotion) {
         unit.x += unit.vx * delta;
         if (unit.projectileType !== "dynamite") unit.y += unit.vy * delta;
       }

@@ -72,8 +72,8 @@ test("keeps a ROM event at its allocation-frame coordinate", async ({ page }) =>
   await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
 
   let gunman: { age: number; screenY: number; romEntityCode?: number; romSlot?: number } | undefined;
-  for (let elapsed = 0; elapsed < 5_000 && gunman === undefined; elapsed += 17) {
-    await page.clock.runFor(17);
+  for (let elapsed = 0; elapsed < 5_000 && gunman === undefined; elapsed += 8) {
+    await page.clock.runFor(8);
     gunman = await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ enemyType?: string; age: number; screenY: number; romEntityCode?: number; romSlot?: number }> }).__getGunSmokeUnits()
       .find((unit) => unit.enemyType === "gunman" && unit.romEntityCode === 6 && unit.romSlot === 0));
   }
@@ -269,13 +269,19 @@ test("fires the Ninja Boss opening volley on the traced frame", async ({ page })
   await page.evaluate(() => (window as unknown as { __setGunSmokeRound: (round: number) => void }).__setGunSmokeRound(4));
   await page.evaluate(() => (window as unknown as { __setGunSmokeInvulnerable: (duration: number) => void }).__setGunSmokeInvulnerable(Number.POSITIVE_INFINITY));
   await page.evaluate(() => (window as unknown as { __forceGunSmokeBoss: () => void }).__forceGunSmokeBoss());
-  const hasBossShuriken = () => page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; projectileType?: string; bossProjectile?: boolean }> }).__getGunSmokeUnits()
-    .some((unit) => unit.kind === "enemyBullet" && unit.projectileType === "shuriken" && unit.bossProjectile));
+  const getBossShuriken = () => page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; projectileType?: string; bossProjectile?: boolean; hp: number; age: number; x: number; y: number }> }).__getGunSmokeUnits()
+    .filter((unit) => unit.kind === "enemyBullet" && unit.projectileType === "shuriken" && unit.bossProjectile && unit.hp > 0));
 
   await page.clock.runFor(2_600);
-  expect(await hasBossShuriken()).toBe(false);
-  await page.clock.runFor(200);
-  expect(await hasBossShuriken()).toBe(true);
+  expect(await getBossShuriken()).toHaveLength(0);
+  let firstShuriken: Awaited<ReturnType<typeof getBossShuriken>> = [];
+  for (let elapsed = 0; elapsed < 1_000 && firstShuriken.length === 0; elapsed += 1) {
+    await page.clock.runFor(1);
+    firstShuriken = await getBossShuriken();
+  }
+  expect(firstShuriken).toHaveLength(4);
+  expect(firstShuriken.every((unit) => unit.age <= 2 / 60.098)).toBe(true);
+  expect(new Set(firstShuriken.map((unit) => `${unit.x}:${unit.y}`)).size).toBe(1);
   expect(await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; volleysFired: number }> }).__getGunSmokeUnits()
     .find((unit) => unit.kind === "boss")?.volleysFired)).toBeGreaterThan(0);
   await page.clock.runFor(2_500);

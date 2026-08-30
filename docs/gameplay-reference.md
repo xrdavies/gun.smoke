@@ -252,7 +252,8 @@ diagonal cross spawned just above Billy; each shot lasts about 40 frames and the
 attack uses a common 60-frame repeat interval. A non-damaging low-slot smoke
 proxy starts at frame 124, travels toward the captured player-relative launch
 point for 40 frames, then remains as a hidden seven-frame controller while the
-four shuriken slots are active.
+four shuriken slots are active. The four shots share their launch coordinate on
+the allocation frame and begin their diagonal movement on the following frame.
 The initial visible route is sampled through the natural teleport at frame
 339. Its first re-entry begins after the 90-frame hidden delay and uses the
 separate measured step route. The initial route starts moving on frame 44,

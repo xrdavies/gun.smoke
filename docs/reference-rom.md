@@ -1248,8 +1248,10 @@ attack routine creates a low-slot smoke/prepare entity at frame 140, then emits
 four `0x30` shuriken bullets at frame 179; subsequent volleys commonly recur
 after 60 frames. The four bullets begin together near Billy at NES offset
 `(+6,-34)`, use the four diagonal velocity pairs `(±1.25,±1.5)`, and release
-after about 40 frames. Bank 3 `$A093-$A0B2` initializes the prepare slot with a
-40-frame timer; `$A23E-$A28F` converts it to a seven-frame controller and
+after about 40 frames. They hold their shared launch coordinate for the
+allocation frame before separating on the next movement step. Bank 3
+`$A093-$A0B2` initializes the prepare slot with a 40-frame timer;
+`$A23E-$A28F` converts it to a seven-frame controller and
 initializes all four shuriken slots together. The runtime preserves that
 low-slot lifecycle with a self-generated smoke proxy, plus the player-relative
 cross, multi-height combat profile, opening timing and interval. Entry and

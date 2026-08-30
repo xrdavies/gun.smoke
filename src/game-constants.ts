@@ -2786,6 +2786,7 @@ export function ninjaBossEntryLaneIndex(randomByte: number, playerScreenY: numbe
 }
 
 export const NINJA_BOSS_FIRST_PREPARE_DELAY = 124 / NES_FRAME_RATE;
+export const NINJA_BOSS_REENTRY_PREPARE_DELAY = 196 / NES_FRAME_RATE;
 export const NINJA_BOSS_PREPARE_DURATION = 40 / NES_FRAME_RATE;
 export const NINJA_BOSS_PREPARE_CONTROLLER_DURATION = 7 / NES_FRAME_RATE;
 export const NINJA_BOSS_FIRST_ATTACK_DELAY = 163 / NES_FRAME_RATE;

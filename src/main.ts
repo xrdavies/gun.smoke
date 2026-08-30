@@ -1969,7 +1969,7 @@ class GunSmokeGame {
         const topGunman = !bottomGunman && flankGunman === undefined;
         const explicitShotFrames = bottomGunmanRoute !== undefined
           ? GUNMAN_BOTTOM_SHOT_FRAMES[bottomGunmanRoute]
-          : flankGunman !== undefined ? gunmanFlankEventShotFrames(this.stage, unit.romEventAt) : undefined;
+          : flankGunman !== undefined || dynamicTopGunman ? gunmanFlankEventShotFrames(this.stage, unit.romEventAt) : undefined;
         const timedGunman = explicitShotFrames === undefined && (dynamicBottomGunman || topGunman || flankGunman !== undefined);
         if (timedGunman && unit.nextFireAt === 0) unit.nextFireAt = (flankGunman === undefined
           ? dynamicBottomGunman

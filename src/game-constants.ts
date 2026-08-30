@@ -249,28 +249,33 @@ export function romEnemyScore(entityCode: number): number {
   return ROM_ENEMY_SCORES[entityCode] ?? 100;
 }
 
-export function pistolShots(left: boolean, right: boolean): readonly { direction: number; offset: number }[] {
+export function pistolShots(left: boolean, right: boolean): readonly { direction: number; offsetX: number; offsetY: number }[] {
   return left && right
-    ? [{ direction: 0, offset: -8 }, { direction: 0, offset: 8 }]
-    : [{ direction: left ? -1 : 1, offset: -8 }, { direction: left ? -1 : 1, offset: 8 }];
+    ? [{ direction: 0, offsetX: -8, offsetY: -12 }, { direction: 0, offsetX: 8, offsetY: -12 }]
+    : left
+      ? [{ direction: -1, offsetX: -8, offsetY: -14 }, { direction: -1, offsetX: 2, offsetY: -16 }]
+      : [{ direction: 1, offsetX: -2, offsetY: -16 }, { direction: 1, offsetX: 8, offsetY: -14 }];
 }
 
-export function pistolVelocities(left: boolean, right: boolean): readonly (readonly [number, number, number])[] {
-  if (left && right) return [[0, -6, -8], [0, -6, 8]];
-  if (left) return [[-3, -5, -8], [-2, -5, 8]];
-  return [[2, -5, -8], [3, -5, 8]];
+export function pistolVelocities(left: boolean, right: boolean): readonly (readonly [number, number, number, number])[] {
+  if (left && right) return [[0, -6, -8, -12], [0, -6, 8, -12]];
+  if (left) return [[-3, -5, -8, -14], [-2, -5, 2, -16]];
+  return [[2, -5, -2, -16], [3, -5, 8, -14]];
 }
 
-export function machineGunVelocities(left: boolean, right: boolean): readonly (readonly [number, number, number])[] {
-  if (left && right) return [[0, -10, -8], [0, -10, 8]];
-  if (left) return [[-7, -7, -8], [-4, -9, 8]];
-  return [[4, -9, -8], [7, -7, 8]];
+export function machineGunVelocities(left: boolean, right: boolean): readonly (readonly [number, number, number, number])[] {
+  if (left && right) return [[0, -10, -8, -12], [0, -10, 8, -12]];
+  if (left) return [[-7, -7, -8, -14], [-4, -9, 2, -16]];
+  return [[4, -9, -2, -16], [7, -7, 8, -14]];
 }
 
-export function shotgunVelocities(left: boolean, right: boolean): readonly (readonly [number, number])[] {
-  if (left && right) return [[-8, -8], [-4, -11], [0, -12], [4, -11], [8, -8]];
-  if (left) return [[-12, 0], [-11, -4], [-8, -8], [-4, -11], [0, -12]];
-  return [[0, -12], [4, -11], [8, -8], [11, -4], [12, 0]];
+export function shotgunVelocities(left: boolean, right: boolean): readonly (readonly [number, number, number, number])[] {
+  const velocities = left && right
+    ? [[-8, -8], [-4, -11], [0, -12], [4, -11], [8, -8]]
+    : left
+      ? [[-12, 0], [-11, -4], [-8, -8], [-4, -11], [0, -12]]
+      : [[0, -12], [4, -11], [8, -8], [11, -4], [12, 0]];
+  return velocities.map(([x, y]) => [x!, y!, 0, -10] as const);
 }
 
 export function weaponCanRepeat(weapon: WeaponName): boolean {

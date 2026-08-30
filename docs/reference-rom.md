@@ -1576,9 +1576,14 @@ With `$79/$88` set for an active Rifle stock, the straight A+B projectile moves
 8 pixels per frame but still persists for 15 frames. The runtime therefore
 applies a non-stacking `4 / 3` speed multiplier to Pistol shots rather than
 extending their lifetime.
-Straight A+B fire occupies both player projectile slots at X offsets `-8/+8`;
-the runtime emits two parallel bullets. A single A or B press also emits two
-diagonal bullets from the corresponding side, one per gun barrel. The allocator
+Straight A+B fire occupies both player projectile slots at NES offsets
+`(-8,-12)/(+8,-12)`; after the same-frame movement step their first visible
+positions are `(playerX-8,playerY-18)/(playerX+8,playerY-18)`. Single-side
+Pistol, Magnum and Machine Gun templates use separate muzzle offsets
+`(-8,-14)/(+2,-16)` on the left and `(-2,-16)/(+8,-14)` on the right. Shotgun
+fans share `(0,-10)`. Because Billy has already received the current scroll
+step before firing, a newly allocated player projectile does not receive that
+camera delta a second time; it only applies its first velocity step. The allocator
 scans six player projectile slots at `$0408-$040d`. `$EE40-$EE56` collects every
 slot required by the selected firing template before activating any of them;
 if the full two- or five-slot set is unavailable, it jumps past both allocation

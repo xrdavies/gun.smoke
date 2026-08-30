@@ -308,6 +308,8 @@ Boss timer checks now run after the Boss movement update, preserving the ROM's
 current-frame launch coordinate before the newly created projectile advances.
 Ordinary enemy-pool projectiles likewise retain their allocation-frame position
 before the shared velocity update begins on the following frame.
+Player weapon templates now preserve their per-barrel NES X/Y muzzle offsets
+and apply their first velocity step without a second same-frame camera carry.
 
 ## Delivery Stages
 

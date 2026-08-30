@@ -820,15 +820,15 @@ class GunSmokeGame {
     if (this.weapon !== "pistol") this.ammo = Math.max(0, this.ammo - 1);
     if (this.weapon === "pistol") {
       const speedFactor = pistolBulletSpeedFactor(this.powerups.rifle);
-      for (const [x, y, offset] of pistolVelocities(left, right)) this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE * speedFactor, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE * speedFactor, weapon.damage, weaponBulletLifetime("pistol"), offset * NES_WORLD_X_SCALE);
+      for (const [x, y, offsetX, offsetY] of pistolVelocities(left, right)) this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE * speedFactor, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE * speedFactor, weapon.damage, weaponBulletLifetime("pistol"), offsetX * NES_WORLD_X_SCALE, offsetY * NES_WORLD_Y_SCALE);
     } else if (this.weapon === "shotgun") {
-      for (const [x, y] of shotgunVelocities(left, right)) {
-        this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE, weapon.damage, weaponBulletLifetime("shotgun"));
+      for (const [x, y, offsetX, offsetY] of shotgunVelocities(left, right)) {
+        this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE, weapon.damage, weaponBulletLifetime("shotgun"), offsetX * NES_WORLD_X_SCALE, offsetY * NES_WORLD_Y_SCALE);
       }
     } else if (this.weapon === "machinegun") {
-      for (const [x, y, offset] of machineGunVelocities(left, right)) this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE, weapon.damage, weaponBulletLifetime("machinegun"), offset * NES_WORLD_X_SCALE);
+      for (const [x, y, offsetX, offsetY] of machineGunVelocities(left, right)) this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE, weapon.damage, weaponBulletLifetime("machinegun"), offsetX * NES_WORLD_X_SCALE, offsetY * NES_WORLD_Y_SCALE);
     } else if (this.weapon === "magnum") {
-      for (const [x, y, offset] of pistolVelocities(left, right)) this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE, weapon.damage, weaponBulletLifetime("magnum"), offset * NES_WORLD_X_SCALE, true);
+      for (const [x, y, offsetX, offsetY] of pistolVelocities(left, right)) this.spawnBulletVelocity(x * NES_FRAME_RATE * NES_WORLD_X_SCALE, y * NES_FRAME_RATE * NES_WORLD_Y_SCALE, weapon.damage, weaponBulletLifetime("magnum"), offsetX * NES_WORLD_X_SCALE, offsetY * NES_WORLD_Y_SCALE, true);
     }
     if (this.weapon !== "pistol" && this.ammo === 0) {
       this.ownedWeapons.delete(this.weapon);
@@ -1416,8 +1416,8 @@ class GunSmokeGame {
     return unit;
   }
 
-  private spawnBulletVelocity(vx: number, vy: number, damage: number, lifetime = 0.55, offset = 0, piercing = false): void {
-    const unit = this.spawnPlayerBullet(this.player.x + offset);
+  private spawnBulletVelocity(vx: number, vy: number, damage: number, lifetime = 0.55, offsetX = 0, offsetY = 0, piercing = false): void {
+    const unit = this.spawnPlayerBullet(this.player.x + offsetX, this.player.y + offsetY);
     if (!unit) return;
     unit.vx = vx;
     unit.vy = vy;
@@ -1431,9 +1431,12 @@ class GunSmokeGame {
     }
   }
 
-  private spawnPlayerBullet(x: number): Unit | undefined {
+  private spawnPlayerBullet(x: number, y: number): Unit | undefined {
     const active = this.units.filter((unit) => unit.kind === "bullet" && unit.hp > 0).length;
-    return canSpawnPlayerBullet(active) ? this.spawnUnit("bullet", x, this.player.y - 32, 1) : undefined;
+    if (!canSpawnPlayerBullet(active)) return undefined;
+    const bullet = this.spawnUnit("bullet", x, y, 1);
+    bullet.phase = -1;
+    return bullet;
   }
 
   private spawnEnemyProjectile(x: number, y: number, bossProjectile = false): Unit | undefined {
@@ -2137,7 +2140,10 @@ class GunSmokeGame {
       if (unit.romPool === undefined) unit.x += Math.sin(unit.age * 4 + unit.phase) * 14 * delta;
       if ((unit.y - this.scroll) / NES_WORLD_Y_SCALE >= ROM_SCREEN_RELEASE_Y_NES) unit.hp = 0;
     } else {
-      unit.y += scrollDelta;
+      const deferInitialProjectileMotion = unit.kind === "enemyBullet" && unit.phase < 0 && (!unit.bossProjectile || unit.projectileType === "grenadeShell" || unit.projectileType === "shuriken");
+      const skipInitialProjectileScroll = deferInitialProjectileMotion || unit.kind === "bullet" && unit.phase < 0;
+      if (!skipInitialProjectileScroll) unit.y += scrollDelta;
+      if (unit.kind === "bullet" && unit.phase < 0) unit.phase = 0;
       if (unit.kind === "enemyBullet") {
         const style = PROJECTILE_STYLES[unit.projectileType ?? "bullet"];
         if (style) {
@@ -2162,7 +2168,6 @@ class GunSmokeGame {
           this.beep(95, 0.14);
         }
       }
-      const deferInitialProjectileMotion = unit.kind === "enemyBullet" && unit.phase < 0 && (!unit.bossProjectile || unit.projectileType === "grenadeShell" || unit.projectileType === "shuriken");
       if (deferInitialProjectileMotion) unit.phase = 0;
       if (unit.kind === "enemyBullet" && unit.projectileType === "grenadeShell" && fatmanJoeShellHasSplit(unit.age)) {
         unit.targetX ??= unit.x;

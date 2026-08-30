@@ -139,6 +139,11 @@ template, the trigger creates no partial volley and consumes no special ammo.
 Creating the final special-weapon volley immediately returns the equipped
 weapon to Pistol; holding Machine Gun does not synthesize a follow-up Pistol
 trigger.
+The two-gun templates retain the ROM's separate left/right muzzle offsets;
+straight A+B shots start at NES `(x±8,y-12)`, while each single-side pair uses
+staggered horizontal and vertical offsets. Shotgun fans originate together at
+`(x,y-10)` before their first velocity step. Newly fired shots skip a duplicate
+camera carry because Billy has already moved with that frame's scroll.
 
 The runtime now exercises the engine's animation binding for player/enemy/Boss
 sprites, WebGPU `Renderer2D` batches, `AudioManager` buses, `ActionMap` keyboard

@@ -509,6 +509,27 @@ test("returns to Pistol after the final special volley", async ({ page }) => {
   expect(playerBullets).toBe(2);
 });
 
+test("uses the traced player muzzle offsets", async ({ page }) => {
+  await page.clock.install();
+  await page.goto("/");
+  await page.locator("#start-button").click();
+  await page.locator("#continue-button").click();
+  await page.locator("#briefing-button").click();
+  await page.keyboard.down("z");
+  await page.keyboard.down("x");
+  let bullets: Array<{ x: number; screenY: number }> = [];
+  for (let elapsed = 0; elapsed < 100 && bullets.length === 0; elapsed += 1) {
+    await page.clock.runFor(1);
+    bullets = await page.evaluate(() => (window as unknown as { __getGunSmokeUnits: () => Array<{ kind: string; hp: number; x: number; screenY: number }> }).__getGunSmokeUnits()
+      .filter((unit) => unit.kind === "bullet" && unit.hp > 0)
+      .map(({ x, screenY }) => ({ x, screenY })));
+  }
+  await page.keyboard.up("z");
+  await page.keyboard.up("x");
+  expect(bullets).toHaveLength(2);
+  expect(bullets.map(({ x, screenY }) => [x, screenY])).toEqual([[128 * (960 / 256), 170], [144 * (960 / 256), 170]]);
+});
+
 test("continues the current Round after Game Over", async ({ page }) => {
   await page.goto("/");
   await page.locator("#start-button").click();

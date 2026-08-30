@@ -162,20 +162,20 @@ describe("Gun.Smoke vertical slice", () => {
   });
 
   it("matches the NES two-gun pistol directions", () => {
-    expect(pistolShots(true, false)).toEqual([{ direction: -1, offset: -8 }, { direction: -1, offset: 8 }]);
-    expect(pistolShots(false, true)).toEqual([{ direction: 1, offset: -8 }, { direction: 1, offset: 8 }]);
-    expect(pistolShots(true, true)).toEqual([{ direction: 0, offset: -8 }, { direction: 0, offset: 8 }]);
-    expect(pistolVelocities(true, false)).toEqual([[-3, -5, -8], [-2, -5, 8]]);
-    expect(machineGunVelocities(false, true)).toEqual([[4, -9, -8], [7, -7, 8]]);
+    expect(pistolShots(true, false)).toEqual([{ direction: -1, offsetX: -8, offsetY: -14 }, { direction: -1, offsetX: 2, offsetY: -16 }]);
+    expect(pistolShots(false, true)).toEqual([{ direction: 1, offsetX: -2, offsetY: -16 }, { direction: 1, offsetX: 8, offsetY: -14 }]);
+    expect(pistolShots(true, true)).toEqual([{ direction: 0, offsetX: -8, offsetY: -12 }, { direction: 0, offsetX: 8, offsetY: -12 }]);
+    expect(pistolVelocities(true, false)).toEqual([[-3, -5, -8, -14], [-2, -5, 2, -16]]);
+    expect(machineGunVelocities(false, true)).toEqual([[4, -9, -2, -16], [7, -7, 8, -14]]);
     expect(NES_WORLD_X_SCALE).toBe(3.75);
     expect(NES_WORLD_Y_SCALE).toBe(2.25);
     expect([pistolBulletSpeedFactor(0), pistolBulletSpeedFactor(4)]).toEqual([1, RIFLE_BULLET_SPEED_MULTIPLIER]);
   });
 
   it("matches the traced five-way Shotgun fans", () => {
-    expect(shotgunVelocities(false, true)).toEqual([[0, -12], [4, -11], [8, -8], [11, -4], [12, 0]]);
-    expect(shotgunVelocities(true, false)).toEqual([[-12, 0], [-11, -4], [-8, -8], [-4, -11], [0, -12]]);
-    expect(shotgunVelocities(true, true)).toEqual([[-8, -8], [-4, -11], [0, -12], [4, -11], [8, -8]]);
+    expect(shotgunVelocities(false, true)).toEqual([[0, -12, 0, -10], [4, -11, 0, -10], [8, -8, 0, -10], [11, -4, 0, -10], [12, 0, 0, -10]]);
+    expect(shotgunVelocities(true, false)).toEqual([[-12, 0, 0, -10], [-11, -4, 0, -10], [-8, -8, 0, -10], [-4, -11, 0, -10], [0, -12, 0, -10]]);
+    expect(shotgunVelocities(true, true)).toEqual([[-8, -8, 0, -10], [-4, -11, 0, -10], [0, -12, 0, -10], [4, -11, 0, -10], [8, -8, 0, -10]]);
   });
 
   it("only repeats fire for the traced automatic weapon", () => {

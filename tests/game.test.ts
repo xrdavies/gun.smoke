@@ -1891,6 +1891,8 @@ describe("Gun.Smoke vertical slice", () => {
   });
 
   it("routes the offset Round 6 top Gunman into the shared state machine", () => {
+    expect(gunmanTopUsesDynamicState(5, 31)).toBe(true);
+    expect(gunmanFlankEventShotFrames(5, 31, 168)).toEqual([70, 134]);
     expect(gunmanTopUsesDynamicState(6, 47)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 63)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 239)).toBe(true);
@@ -2204,6 +2206,18 @@ describe("Gun.Smoke vertical slice", () => {
       advanceGunmanFlankMovement(contactTopState, frame, 120, 215, (x, y) => roundActorCollisionAtNes(6, scroll, x, y));
     }
     expect(contactTopState).toMatchObject({ frame: 488, mode: "orbit", heading: 12, timer: 1, x: 123 + 237 / 256, y: 202 + 112 / 256, dead: false });
+
+    const round5OpeningTopState = createGunmanTopMovementState(168, 68, 181);
+    for (let frame = 1; frame <= 364; frame += 1) {
+      const scroll = (31 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      const playerX = frame >= 363 ? 168 : frame >= 315 ? 120 : 136;
+      const playerY = frame >= 360 && frame < 363 ? 216 : frame < 231 ? 188 : Math.min(216, 188 + Math.floor((frame - 231) / 3) + 1);
+      advanceGunmanFlankMovement(round5OpeningTopState, frame, playerX, playerY, (x, y) => roundActorCollisionAtNes(5, scroll, x, y));
+    }
+    expect(round5OpeningTopState).toMatchObject({ frame: 364, mode: "orbit", heading: 2, timer: 2, x: 232 + 124 / 256, y: 0 + 92 / 256, dead: false });
+    const round5OpeningReleaseScroll = (31 + 2 / 3 + 365 / 3) * NES_WORLD_Y_SCALE;
+    advanceGunmanFlankMovement(round5OpeningTopState, 365, 168, 215, (x, y) => roundActorCollisionAtNes(5, round5OpeningReleaseScroll, x, y));
+    expect(round5OpeningTopState.dead).toBe(true);
   });
 
   it("matches the traced Bandit Bill volley timing", () => {

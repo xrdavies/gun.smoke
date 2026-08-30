@@ -102,6 +102,8 @@ Round 6 `at=815` now uses its complete bottom-entry and chase/orbit route,
 including the measured frame-187 attack and NES `Y=255` release.
 Round 6 `at=831` now uses its complete 150-frame no-shot bottom route and
 measured `Y=252` release boundary.
+Round 6 `at=863` now uses its complete 432-frame top-entry route, including the
+measured frame-66 attack and bottom `Y=252` release.
 Round 6 `at=4911/4975/5087/5103` now use their complete shared top-entry routes,
 release boundaries, and measured 47/21/13/32 attack opportunities.
 Round 6 `at=5119` now preserves its allocation-frame X and follows the shared

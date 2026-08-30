@@ -1517,9 +1517,12 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanTopUsesDynamicState(6, 3711)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 4415)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 4479)).toBe(true);
+    expect(gunmanTopUsesDynamicState(6, 4511)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 3263)).toBe(false);
     expect(gunmanFlankEventShotFrames(6, 4415)).toEqual([13, 397]);
     expect(gunmanFlankEventShotFrames(6, 4479)).toEqual([29]);
+    expect(gunmanFlankEventShotFrames(6, 4511, 152)).toEqual([63]);
+    expect(gunmanFlankEventShotFrames(6, 4511, 168)).toEqual([13]);
     expect(gunmanFirstOpportunityFrame(43, 0)).toBe(62);
     const state = createGunmanTopMovementState(64, 199, 25);
     for (let frame = 1; frame <= 744; frame += 1) {
@@ -1582,6 +1585,20 @@ describe("Gun.Smoke vertical slice", () => {
     const shortLaterReleaseScroll = (4479 + 2 / 3 + 315 / 3) * NES_WORLD_Y_SCALE;
     advanceGunmanFlankMovement(shortLaterState, 315, 136, 215, (x, y) => roundActorCollisionAtNes(6, shortLaterReleaseScroll, x, y));
     expect(shortLaterState.dead).toBe(true);
+
+    const sameFrameState = createGunmanTopMovementState(152, 250, 204);
+    for (let frame = 1; frame <= 482; frame += 1) {
+      const scroll = (4511 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(sameFrameState, frame, 136, 215, (x, y) => roundActorCollisionAtNes(6, scroll, x, y));
+    }
+    expect(sameFrameState).toMatchObject({ frame: 482, mode: "orbit", heading: 12, timer: 1, x: 140 + 22 / 256, y: 203 + 89 / 256, dead: false });
+
+    const offsetSameFrameState = createGunmanTopMovementState(168, 127, 18);
+    for (let frame = 1; frame <= 505; frame += 1) {
+      const scroll = (4511 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(offsetSameFrameState, frame, 136, 215, (x, y) => roundActorCollisionAtNes(6, scroll, x, y));
+    }
+    expect(offsetSameFrameState).toMatchObject({ frame: 505, mode: "orbit", heading: 12, timer: 3, x: 140 + 240 / 256, y: 203 + 246 / 256, dead: false });
   });
 
   it("matches the traced Bandit Bill volley timing", () => {

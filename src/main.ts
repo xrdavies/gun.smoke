@@ -1969,7 +1969,7 @@ class GunSmokeGame {
         const topGunman = !bottomGunman && flankGunman === undefined;
         const explicitShotFrames = bottomGunmanRoute !== undefined
           ? GUNMAN_BOTTOM_SHOT_FRAMES[bottomGunmanRoute]
-          : flankGunman !== undefined || dynamicTopGunman ? gunmanFlankEventShotFrames(this.stage, unit.romEventAt) : undefined;
+          : flankGunman !== undefined || dynamicTopGunman ? gunmanFlankEventShotFrames(this.stage, unit.romEventAt, unit.romOriginX === undefined ? undefined : unit.romOriginX / NES_WORLD_X_SCALE) : undefined;
         const timedGunman = explicitShotFrames === undefined && (dynamicBottomGunman || topGunman || flankGunman !== undefined);
         if (timedGunman && unit.nextFireAt === 0) unit.nextFireAt = (flankGunman === undefined
           ? dynamicBottomGunman

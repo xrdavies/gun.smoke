@@ -43,6 +43,10 @@ All decoded bottom-entry Gunmen (entity code `5`) now use the shared B284
 fixed-point state machine: the common `Y=249` to `Y=218` entry is preserved
 before chase/orbit movement, while event-specific shot traces remain layered on
 top when available.
+Top-entry Gunmen (entity code `6`) now follow the same shared B284 state machine
+across all decoded events. The only retained generic path is the isolated Round
+6 `at=3263` candidate, which is never naturally allocated by the seven-slot
+enemy pool and therefore has no lifecycle evidence.
 Bottom Gunman contact now owns a measured 60-frame dispatch-`0x41` retreat
 before slot release, so the enemy no longer continues its normal route after a
 player collision; Horse protection uses the same state.

@@ -912,6 +912,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect([56, 72, 22].map((seed) => gunmanFirstOpportunityFrame(seed))).toEqual([58, 52, 69]);
     expect(GUNMAN_SHOT_OPPORTUNITY_INTERVAL).toBeCloseTo(64 / NES_FRAME_RATE, 9);
     expect(GUNMAN_LIFETIME).toBeCloseTo(560 / NES_FRAME_RATE, 9);
+    expect([gunmanTopUsesDynamicState(1, 47), gunmanTopUsesDynamicState(2, 79), gunmanTopUsesDynamicState(3, 63)]).toEqual([true, true, true]);
     expect([gunmanCanFire(16, 14), gunmanCanFire(16, 18), gunmanCanFire(16, 13), gunmanCanFire(31, 1)]).toEqual([true, true, false, true]);
     expect(GUNMAN_ENTRY_PATH_NES).toEqual([[0, 0], [40, 53], [100, 128], [104, 132]]);
     expect(gunmanOpeningY(40 / NES_FRAME_RATE)).toBeCloseTo(53 * (540 / 240), 9);

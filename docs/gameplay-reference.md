@@ -658,9 +658,10 @@ The left-side `at=1743,x=4,y=48,code=7,phase=0` route matches 360 frames
 through its bottom-edge release.
 The left-side `at=1695,x=4,y=64,code=7,phase=1` route independently matches
 360 frames through the same release.
-Other rounds,
-phases and entry heights use the generic routes until their slot-state traces
-are captured.
+All decoded top-entry Gunmen (entity code `6`) now use the shared B284 state
+machine. The isolated Round 6 `at=3263` candidate remains on the bounded
+generic path because the seven-slot allocator never produced a natural trace
+for that record.
 Round 2 side Gunmen without a verified complete event trace use the Gunman
 movement states rather than a shared coordinate path. Code 7 enters for 48
 frames, tracks Billy while either axis is at least 56 NES pixels away, then

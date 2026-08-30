@@ -1354,6 +1354,9 @@ Current behavior map:
 All core behavior entries in the table above have an identified runtime
 mapping. The runtime still stores each original routine and entity code so
 long-tail random branches can be compared without changing the mapped types.
+The B284 top-entry code-6 initializer now uses the shared decoded state machine
+for every event. Round 6 `at=3263` remains the sole generic exception because
+the event is skipped by natural seven-slot pressure and has no lifecycle trace.
 The web runtime advances a ROM-shaped `$AC-$AF` random register once per NES
 frame. `$FF08` derives one initial carry from the bit-1 XOR of `$AC/$AD`, ripples
 that carry through four chained rotates, then increments `$AC`. Same-frame AI

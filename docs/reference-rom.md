@@ -438,6 +438,11 @@ Round 6's `at=3055,x=112,y=0,code=5` bottom entry rises from NES `y=249` to
 fixed-point path matches through all 1,429 frames, produces no successful shot
 for Billy at `(136,215)`, and releases through the right boundary; it does not
 use the shorter 318-frame near route.
+Round 6's `at=3295,x=64,y=0,code=6` top entry starts with a 48-frame downward
+state and then follows the same chase/orbit routine. All 745 fixed-point frames
+match, successful shots occur at frames 62, 126, and 574, and the actor exits
+through the left boundary instead of using an X-offset copy of the `x=88`
+fixed route.
 Round 4's naturally allocated `at=1503,x=248,y=80,code=7,phase=1` branch
 matches the shared state machine for all 356 coarse/fine samples and releases
 through the right boundary; it no longer inherits the unrelated 642-frame

@@ -1516,8 +1516,10 @@ describe("Gun.Smoke vertical slice", () => {
     expect(gunmanTopUsesDynamicState(6, 3551)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 3711)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 4415)).toBe(true);
+    expect(gunmanTopUsesDynamicState(6, 4479)).toBe(true);
     expect(gunmanTopUsesDynamicState(6, 3263)).toBe(false);
     expect(gunmanFlankEventShotFrames(6, 4415)).toEqual([13, 397]);
+    expect(gunmanFlankEventShotFrames(6, 4479)).toEqual([29]);
     expect(gunmanFirstOpportunityFrame(43, 0)).toBe(62);
     const state = createGunmanTopMovementState(64, 199, 25);
     for (let frame = 1; frame <= 744; frame += 1) {
@@ -1570,6 +1572,16 @@ describe("Gun.Smoke vertical slice", () => {
     const laterReleaseScroll = (4415 + 2 / 3 + 603 / 3) * NES_WORLD_Y_SCALE;
     advanceGunmanFlankMovement(laterState, 603, 136, 215, (x, y) => roundActorCollisionAtNes(6, laterReleaseScroll, x, y));
     expect(laterState.dead).toBe(true);
+
+    const shortLaterState = createGunmanTopMovementState(96, 161, 100);
+    for (let frame = 1; frame <= 314; frame += 1) {
+      const scroll = (4479 + 2 / 3 + frame / 3) * NES_WORLD_Y_SCALE;
+      advanceGunmanFlankMovement(shortLaterState, frame, 136, 215, (x, y) => roundActorCollisionAtNes(6, scroll, x, y));
+    }
+    expect(shortLaterState).toMatchObject({ frame: 314, mode: "orbit", heading: 25, timer: 0, x: 194 + 250 / 256, y: 251 + 83 / 256, dead: false });
+    const shortLaterReleaseScroll = (4479 + 2 / 3 + 315 / 3) * NES_WORLD_Y_SCALE;
+    advanceGunmanFlankMovement(shortLaterState, 315, 136, 215, (x, y) => roundActorCollisionAtNes(6, shortLaterReleaseScroll, x, y));
+    expect(shortLaterState.dead).toBe(true);
   });
 
   it("matches the traced Bandit Bill volley timing", () => {

@@ -18,7 +18,7 @@ input; ROM bytes, extracted artwork, and Capcom source are not distributed.
 
 | Area | Status | Evidence or boundary |
 | --- | --- | --- |
-| Engine integration | Complete | WebGPU renderer, animation bindings, audio buses, input actions, deterministic clock/randomness |
+| Engine integration | Complete | WebGPU renderer, animation bindings, audio buses, input actions, deterministic clock/randomness; Gun.Smoke pins engine `v0.1.3` |
 | Six-round game loop | Complete | Title, intro, briefing, scrolling rounds, shops, wanted gates, bosses, ending and continue flow |
 | Collision and map data | Complete for decoded data | Six ROM collision rings drive movement and generated terrain; visual landmark art remains original |
 | ROM event scheduler | Complete for extracted scripts | Per-round enemy/object streams, Boss reinforcement tables, frame/random gates, map phases, independent seven/six-slot pools and slot fine coordinates |

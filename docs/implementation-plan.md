@@ -206,6 +206,8 @@ classified with event/X-qualified bindings and fixed-point tests. The dynamic
 traces cover 1000/687/683/375/1080/375 frames respectively, preserving their
 independent attack windows and screen-boundary releases; contact-dispatch
 variants remain explicitly bounded instead of using the shared route.
+The remaining Round 4 `at=1631,x=184` bottom candidate reaches contact
+dispatch at frame 58 and is intentionally left on the bounded contact path.
 Round 3 `at=1119` replaces its generic code-8 path with the shared state
 machine verified across all 282 controlled frames.
 Round 3 `at=687` replaces its generic phase-0 code-7 path with the shared state

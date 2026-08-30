@@ -316,6 +316,7 @@ describe("Gun.Smoke vertical slice", () => {
     expect(ROM_BEHAVIOR_ENEMY_TYPES[3]).toBe("backstabber");
     expect(ROM_BEHAVIOR_ENEMY_TYPES[5]).toBeUndefined();
     expect(ROM_BEHAVIOR_ENEMY_TYPES[7]).toBe("rifleman");
+    expect(ROUND_ROM_ENEMY_EVENTS.flat().every((event) => event.behavior === 5 || ROM_BEHAVIOR_ENEMY_TYPES[event.behavior] !== undefined)).toBe(true);
     expect(ROUND_ROM_BOSS_REINFORCEMENTS.map((round) => round.length)).toEqual([16, 16, 16, 16, 16, 16]);
     expect(ROUND_ROM_BOSS_REINFORCEMENTS[2]![0]).toEqual([96, 0, 10, 19]);
     expect(ROUND_ROM_BOSS_REINFORCEMENTS[2]![15]).toEqual([4, 64, 2, 8]);

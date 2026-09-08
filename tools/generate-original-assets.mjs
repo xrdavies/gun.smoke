@@ -5,9 +5,10 @@ import { PNG } from "pngjs";
 const root = path.resolve("public/assets");
 const spritesRoot = path.join(root, "sprites");
 const backgroundsRoot = path.join(root, "backgrounds");
+const screensRoot = path.join(root, "screens");
 const musicRoot = path.join(root, "music");
 const sfxRoot = path.join(root, "sfx");
-for (const directory of [spritesRoot, backgroundsRoot, musicRoot, sfxRoot]) fs.mkdirSync(directory, { recursive: true });
+for (const directory of [spritesRoot, backgroundsRoot, screensRoot, musicRoot, sfxRoot]) fs.mkdirSync(directory, { recursive: true });
 
 const palette = {
   ".": [0, 0, 0, 0],
@@ -162,6 +163,61 @@ writePng(path.join(backgroundsRoot, "landmark.png"), [
   "pbpdddddddddpppppppppddddddddpbp", "pbpddddddddddddddddddddddddddpbp", "pppppppppppppppppppppppppppppppp",
 ]);
 
+function scenePng(filename, draw) {
+  const width = 256;
+  const height = 240;
+  const png = new PNG({ width, height });
+  const set = (x, y, color) => {
+    if (x < 0 || y < 0 || x >= width || y >= height) return;
+    const offset = (y * width + x) * 4;
+    png.data[offset] = color[0]; png.data[offset + 1] = color[1]; png.data[offset + 2] = color[2]; png.data[offset + 3] = color[3];
+  };
+  const rect = (x, y, w, h, color) => { for (let yy = y; yy < y + h; yy += 1) for (let xx = x; xx < x + w; xx += 1) set(xx, yy, color); };
+  const line = (x0, y0, x1, y1, color) => {
+    const steps = Math.max(Math.abs(x1 - x0), Math.abs(y1 - y0));
+    for (let step = 0; step <= steps; step += 1) set(Math.round(x0 + (x1 - x0) * step / steps), Math.round(y0 + (y1 - y0) * step / steps), color);
+  };
+  rect(0, 0, width, height, palette.k);
+  draw({ set, rect, line, width, height });
+  fs.writeFileSync(filename, PNG.sync.write(png));
+}
+
+const sky = [38, 73, 112, 255];
+const dusk = [112, 69, 113, 255];
+const sand = [188, 132, 72, 255];
+const road = [46, 56, 68, 255];
+const snow = [226, 216, 185, 255];
+const sunset = [238, 158, 70, 255];
+scenePng(path.join(screensRoot, "title.png"), ({ rect, line, set, width, height }) => {
+  for (let y = 0; y < height; y += 1) rect(0, y, width, 1, y < 125 ? [28 + Math.floor(y / 8), 34 + Math.floor(y / 5), 70 + Math.floor(y / 3), 255] : [18, 24, 30, 255]);
+  rect(185, 28, 30, 30, sunset); rect(190, 33, 20, 20, dusk);
+  line(0, 142, 72, 96, [32, 44, 60, 255]); line(72, 96, 125, 142, [32, 44, 60, 255]); line(108, 142, 162, 84, [32, 44, 60, 255]); line(162, 84, 256, 142, [32, 44, 60, 255]);
+  rect(0, 143, width, 97, road); line(93, 143, 120, 240, [108, 94, 74, 255]); line(164, 143, 136, 240, [108, 94, 74, 255]);
+  for (const x of [18, 34, 218, 236]) { rect(x, 104, 14, 39, [94, 57, 46, 255]); rect(x + 2, 110, 10, 9, [238, 183, 88, 255]); }
+  for (const x of [8, 248]) { rect(x, 136, 2, 20, snow); set(x - 1, 139, snow); }
+});
+scenePng(path.join(screensRoot, "intro.png"), ({ rect, line, set, width, height }) => {
+  for (let y = 0; y < 120; y += 1) rect(0, y, width, 1, y < 65 ? dusk : [150, 73, 95, 255]);
+  rect(178, 30, 28, 28, snow); rect(182, 34, 20, 20, [202, 174, 170, 255]);
+  line(0, 142, 52, 96, [23, 38, 52, 255]); line(52, 96, 94, 142, [23, 38, 52, 255]); line(84, 142, 134, 84, [23, 38, 52, 255]); line(134, 84, 256, 142, [23, 38, 52, 255]);
+  rect(0, 143, width, 97, [27, 72, 97, 255]); line(95, 143, 124, 240, sand); line(161, 143, 136, 240, sand);
+  rect(0, 112, 30, 31, [62, 49, 57, 255]); rect(6, 104, 18, 8, [88, 57, 50, 255]); rect(226, 111, 30, 32, [62, 49, 57, 255]); rect(232, 103, 18, 8, [88, 57, 50, 255]);
+  for (const x of [41, 53, 204, 216]) { rect(x, 125, 3, 18, [14, 25, 30, 255]); set(x - 2, 125, [14, 25, 30, 255]); set(x + 2, 125, [14, 25, 30, 255]); }
+});
+scenePng(path.join(screensRoot, "briefing.png"), ({ rect, line }) => {
+  rect(22, 18, 212, 204, [35, 42, 53, 255]); rect(28, 24, 200, 192, [210, 169, 100, 255]); rect(36, 32, 184, 176, [243, 218, 160, 255]);
+  rect(47, 45, 62, 82, [54, 95, 142, 255]); rect(53, 51, 50, 42, [68, 126, 172, 255]); rect(61, 100, 34, 20, [42, 68, 98, 255]);
+  line(132, 56, 206, 56, [102, 64, 44, 255]); line(132, 72, 206, 72, [102, 64, 44, 255]); line(132, 88, 194, 88, [102, 64, 44, 255]); line(47, 147, 208, 147, [102, 64, 44, 255]); line(47, 164, 208, 164, [102, 64, 44, 255]);
+  rect(92, 181, 72, 10, [190, 52, 52, 255]);
+});
+scenePng(path.join(screensRoot, "ending.png"), ({ rect, line, set, width, height }) => {
+  for (let y = 0; y < height; y += 1) rect(0, y, width, 1, y < 125 ? [116 + Math.floor(y / 4), 65 + Math.floor(y / 8), 72, 255] : [17, 28, 37, 255]);
+  rect(174, 39, 36, 36, sunset); rect(180, 45, 24, 24, [245, 191, 112, 255]);
+  line(0, 144, 70, 92, [33, 45, 58, 255]); line(70, 92, 124, 144, [33, 45, 58, 255]); line(117, 144, 170, 78, [33, 45, 58, 255]); line(170, 78, 256, 144, [33, 45, 58, 255]);
+  rect(0, 145, width, 95, [34, 77, 67, 255]); line(100, 145, 124, 240, [193, 130, 68, 255]); line(156, 145, 136, 240, [193, 130, 68, 255]);
+  for (const x of [42, 54, 196, 208]) { rect(x, 122, 3, 22, [18, 30, 32, 255]); set(x - 2, 122, [18, 30, 32, 255]); set(x + 2, 122, [18, 30, 32, 255]); }
+});
+
 function writeWav(filename, samples, sampleRate = 22050) {
   const data = Buffer.alloc(samples.length * 2);
   samples.forEach((sample, index) => data.writeInt16LE(Math.max(-1, Math.min(1, sample)) * 32767, index * 2));
@@ -222,5 +278,6 @@ fs.writeFileSync(path.join(root, "manifest.json"), JSON.stringify({
   stages: 6,
   sfxFrequencies: frequencies,
   music: ["round-1", "round-2", "round-3", "round-4", "round-5", "round-6", "ending"],
+  screens: ["title", "intro", "briefing", "ending"],
 }, null, 2));
 console.log(`Generated original PNG/WAV assets in ${root}`);

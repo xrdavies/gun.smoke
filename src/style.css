@@ -40,6 +40,11 @@ body { margin: 0; min-width: 320px; min-height: 100vh; background: #080d18; }
   background: rgba(8, 13, 24, .96);
 }
 
+#title-screen { background: rgba(8, 13, 24, .82) url("/assets/screens/title.png") center / cover no-repeat; background-blend-mode: multiply; }
+#intro-screen { background: rgba(8, 13, 24, .78) url("/assets/screens/intro.png") center / cover no-repeat; background-blend-mode: multiply; }
+#briefing-screen { background: rgba(8, 13, 24, .72) url("/assets/screens/briefing.png") center / cover no-repeat; background-blend-mode: multiply; }
+#ending-screen { background: rgba(8, 13, 24, .78) url("/assets/screens/ending.png") center / cover no-repeat; background-blend-mode: multiply; }
+
 #intro-screen h2 { margin: 0; color: #efbd58; font-size: clamp(30px, 7vw, 64px); }
 #intro-screen p:not(.eyebrow) { margin: 0; color: #d4c9ab; }
 #briefing-screen h2 { margin: 0; color: #efbd58; font-size: clamp(30px, 7vw, 64px); }

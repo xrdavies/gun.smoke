@@ -29,5 +29,11 @@
     "round-5",
     "round-6",
     "ending"
+  ],
+  "screens": [
+    "title",
+    "intro",
+    "briefing",
+    "ending"
   ]
 }

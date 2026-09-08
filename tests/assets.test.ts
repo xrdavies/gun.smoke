@@ -18,6 +18,9 @@ describe("generated Gun.Smoke assets", () => {
     };
     expect(pngSize(path.join(root, "sprites/player.png"))).toEqual({ width: 64, height: 32 });
     expect(pngSize(path.join(root, "backgrounds/terrain-1.png"))).toEqual({ width: 96, height: 96 });
+    for (const name of ["title", "intro", "briefing", "ending"]) {
+      expect(pngSize(path.join(root, "screens", `${name}.png`))).toEqual({ width: 256, height: 240 });
+    }
   });
 
   it("contains valid PCM music and tone assets", () => {

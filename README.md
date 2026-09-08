@@ -12,11 +12,12 @@ enemies and projectiles, Money Bags, life pickups, stage bosses, spendable score
 damage recovery, wanted-poster gates, two final Wingate encounters, game over
 and a completion state.
 
-The shipped assets are deterministic, self-generated pixel sprites, terrain
-patterns, and Web Audio oscillator music. No commercial ROM, copyrighted
-extracted assets, or original Capcom source code is included. Exact ROM-level
-reproduction requires a legally obtained reference ROM and a fixed
-revision/hash for comparison.
+The shipped assets are deterministic, self-generated PNG pixel sprites,
+six-round terrain textures, PCM WAV music loops and WAV sound effects. No
+commercial ROM, copyrighted extracted assets, or original Capcom source code
+is included. `npm run generate:assets` recreates them from the fixed generator.
+Exact ROM-level reproduction requires a legally obtained reference ROM and a
+fixed revision/hash for comparison.
 
 For local verification, the title screen also accepts a legally obtained `.NES`
 file. That Reference ROM mode runs the supplied ROM through JSNES while the
@@ -34,6 +35,7 @@ The staged implementation scope and current parity status are recorded in
 
 ```sh
 npm install
+npm run generate:assets
 npm run dev
 ```
 

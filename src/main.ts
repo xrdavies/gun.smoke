@@ -239,6 +239,21 @@ function pixelTexture(engine: Engine, rows: readonly string[], palette: Record<s
   return texture;
 }
 
+async function imageTexture(engine: Engine, url: string): Promise<GPUTexture> {
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`Asset request failed (${response.status}): ${url}`);
+  const bitmap = await createImageBitmap(await response.blob());
+  const texture = engine.gpu.device.createTexture({
+    label: `gun-smoke-asset:${url}`,
+    size: { width: bitmap.width, height: bitmap.height, depthOrArrayLayers: 1 },
+    format: "rgba8unorm",
+    usage: GPUTextureUsage.TEXTURE_BINDING | GPUTextureUsage.COPY_DST,
+  });
+  engine.gpu.device.queue.copyExternalImageToTexture({ source: bitmap }, { texture }, { width: bitmap.width, height: bitmap.height });
+  bitmap.close();
+  return texture;
+}
+
 function proceduralRows(width: number, height: number, seed: number, values: readonly string[]): string[] {
   return Array.from({ length: height }, (_, y) =>
     Array.from({ length: width }, (_, x) => values[(x * 17 + y * 31 + seed + (x ^ y)) % values.length] ?? values[0] ?? ".").join(""),
@@ -333,6 +348,10 @@ class GunSmokeGame {
   shopSpawnCursor = 0;
   musicTimer: number | undefined;
   musicStep = 0;
+  musicSource: AudioBufferSourceNode | undefined;
+  musicKey: string | undefined;
+  readonly musicBuffers = new Map<string, AudioBuffer>();
+  readonly sfxBuffers = new Map<number, AudioBuffer>();
   endingReady = false;
   endingReadyTimer: number | undefined;
   randomState: [number, number, number, number] = [...ROM_RANDOM_SEED];
@@ -477,8 +496,64 @@ class GunSmokeGame {
   static async create(): Promise<GunSmokeGame> {
     const engine = await Engine.create({ canvas, autoStart: false, fixedDelta: 1 / NES_FRAME_RATE });
     const game = new GunSmokeGame(engine);
+    await game.loadGeneratedAssets();
     engine.start();
     return game;
+  }
+
+  private async loadGeneratedAssets(): Promise<void> {
+    const replace = async (current: GPUTexture, url: string): Promise<GPUTexture> => {
+      try {
+        const loaded = await imageTexture(this.engine, url);
+        current.destroy();
+        return loaded;
+      } catch {
+        return current;
+      }
+    };
+    const spriteUrl = (name: string) => `/assets/sprites/${name}.png`;
+    const backgroundUrl = (name: string) => `/assets/backgrounds/${name}.png`;
+    for (const name of Object.keys(this.textures) as TextureName[]) {
+      const file = name === "terrain" || name === "road" ? `${name}-1` : name;
+      this.textures[name] = await replace(this.textures[name], `${name === "terrain" || name === "road" ? backgroundUrl(file) : spriteUrl(file)}`);
+    }
+    for (const name of Object.keys(this.itemTextures) as ItemType[]) this.itemTextures[name] = await replace(this.itemTextures[name], spriteUrl(name));
+    for (const name of Object.keys(this.enemyTextures) as EnemyType[]) this.enemyTextures[name] = await replace(this.enemyTextures[name], spriteUrl(name));
+    for (let index = 0; index < this.bossTextures.length; index += 1) this.bossTextures[index] = await replace(this.bossTextures[index]!, spriteUrl(`boss-${index + 1}`));
+    for (let index = 0; index < STAGES.length; index += 1) {
+      this.terrainTextures[index] = await replace(this.terrainTextures[index]!, backgroundUrl(`terrain-${index + 1}`));
+      this.roadTextures[index] = await replace(this.roadTextures[index]!, backgroundUrl(`road-${index + 1}`));
+      this.mapTextures[index] = await replace(this.mapTextures[index]!, backgroundUrl(`terrain-${index + 1}`));
+    }
+    this.horseSprite.texture = this.textures.horse;
+    this.player.sprite.texture = this.textures.player;
+    this.buildBackground();
+    await this.loadGeneratedAudio();
+  }
+
+  private async loadGeneratedAudio(): Promise<void> {
+    if (!this.audio) return;
+    const decode = async (url: string): Promise<AudioBuffer> => {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`Audio request failed (${response.status}): ${url}`);
+      return this.audio!.context.decodeAudioData(await response.arrayBuffer());
+    };
+    const frequencies = [75, 95, 110, 120, 168, 170, 180, 186, 204, 222, 240, 258, 440, 620, 740, 980];
+    await Promise.all(frequencies.map(async (frequency) => {
+      try {
+        this.sfxBuffers.set(frequency, await decode(`/assets/sfx/tone-${frequency}.wav`));
+      } catch {
+        // Keep the oscillator fallback when a generated optional asset is unavailable.
+      }
+    }));
+    const musicKeys = [...Array.from({ length: STAGES.length }, (_, index) => `round-${index + 1}`), "ending"];
+    await Promise.all(musicKeys.map(async (key) => {
+      try {
+        this.musicBuffers.set(key, await decode(`/assets/music/${key}.wav`));
+      } catch {
+        // Keep the oscillator fallback when a generated optional asset is unavailable.
+      }
+    }));
   }
 
   start(): void {
@@ -2753,6 +2828,12 @@ class GunSmokeGame {
 
   private beep(frequency: number, duration: number): void {
     if (!this.audio) return;
+    const asset = this.sfxBuffers.get(Math.round(frequency));
+    if (asset) {
+      const source = this.audio.play(asset, { bus: "sfx", volume: 0.9 });
+      if (duration < asset.duration) source.stop(this.audio.context.currentTime + duration);
+      return;
+    }
     const oscillator = this.audio.context.createOscillator();
     const gain = this.audio.context.createGain();
     oscillator.type = "square";
@@ -2766,7 +2847,16 @@ class GunSmokeGame {
   }
 
   private startMusic(): void {
-    if (this.musicTimer !== undefined || !this.audio) return;
+    if (!this.audio) return;
+    const key = this.mode === "ending" ? "ending" : `round-${this.stage}`;
+    if (this.musicSource && this.musicKey === key) return;
+    this.stopMusic();
+    const asset = this.musicBuffers.get(key);
+    if (asset) {
+      this.musicKey = key;
+      this.musicSource = this.audio.play(asset, { bus: "music", loop: true, volume: 0.75 });
+      return;
+    }
     this.musicTimer = window.setInterval(() => this.playMusicStep(), 180);
   }
 
@@ -2797,6 +2887,11 @@ class GunSmokeGame {
   }
 
   private stopMusic(): void {
+    if (this.musicSource) {
+      this.musicSource.stop();
+      this.musicSource = undefined;
+      this.musicKey = undefined;
+    }
     if (this.musicTimer !== undefined) {
       window.clearInterval(this.musicTimer);
       this.musicTimer = undefined;

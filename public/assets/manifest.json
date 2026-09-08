@@ -1,0 +1,33 @@
+{
+  "generator": "tools/generate-original-assets.mjs",
+  "license": "Original generated assets; deterministic visual data and synthesized PCM.",
+  "spriteScale": 2,
+  "stages": 6,
+  "sfxFrequencies": [
+    75,
+    95,
+    110,
+    120,
+    168,
+    170,
+    180,
+    186,
+    204,
+    222,
+    240,
+    258,
+    440,
+    620,
+    740,
+    980
+  ],
+  "music": [
+    "round-1",
+    "round-2",
+    "round-3",
+    "round-4",
+    "round-5",
+    "round-6",
+    "ending"
+  ]
+}

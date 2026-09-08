@@ -29,6 +29,11 @@ test("starts the WebGPU stage and renders gameplay", async ({ page }) => {
   const pageErrors: Error[] = [];
   page.on("pageerror", (error) => pageErrors.push(error));
   await page.goto("/");
+  await expect(page.locator("#start-button")).toBeEnabled();
+  const assets = await page.evaluate(() => (window as unknown as { __getGunSmokeAssetState: () => { generatedTextures: number; musicBuffers: number; sfxBuffers: number } }).__getGunSmokeAssetState());
+  expect(assets.generatedTextures).toBeGreaterThanOrEqual(50);
+  expect(assets.musicBuffers).toBe(7);
+  expect(assets.sfxBuffers).toBe(16);
   await expect(page.locator("#title-screen")).toBeVisible();
   await page.locator("#start-button").click();
   await expect(page.locator("#intro-screen")).toBeVisible();

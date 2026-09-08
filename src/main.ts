@@ -352,6 +352,7 @@ class GunSmokeGame {
   musicKey: string | undefined;
   readonly musicBuffers = new Map<string, AudioBuffer>();
   readonly sfxBuffers = new Map<number, AudioBuffer>();
+  generatedTextureCount = 0;
   endingReady = false;
   endingReadyTimer: number | undefined;
   randomState: [number, number, number, number] = [...ROM_RANDOM_SEED];
@@ -506,6 +507,7 @@ class GunSmokeGame {
       try {
         const loaded = await imageTexture(this.engine, url);
         current.destroy();
+        this.generatedTextureCount += 1;
         return loaded;
       } catch {
         return current;
@@ -3232,6 +3234,7 @@ let game: GunSmokeGame | undefined;
 let referenceGame: ReferenceRomGame | undefined;
 if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeInvulnerable", { value: (duration: number) => { if (game) game.invulnerable = duration; } });
 if (import.meta.env.DEV) Object.defineProperty(window, "__getGunSmokeUnits", { value: () => game?.units.map((unit) => ({ kind: unit.kind, enemyType: unit.enemyType, itemType: unit.itemType, projectileType: unit.projectileType, bossProjectile: unit.bossProjectile, romPool: unit.romPool, romSlot: unit.romSlot, romEntityCode: unit.romEntityCode, hp: unit.hp, age: unit.age, x: unit.x, y: unit.y, screenY: (unit.y - (game?.scroll ?? 0)) / NES_WORLD_Y_SCALE, visible: unit.sprite.visible, invulnerableUntil: unit.invulnerableUntil, volleysFired: unit.volleysFired, ninjaBossCycle: unit.ninjaBossCycle, ninjaBossMode: unit.ninjaBossState?.mode })) ?? [] });
+if (import.meta.env.DEV) Object.defineProperty(window, "__getGunSmokeAssetState", { value: () => game ? { generatedTextures: game.generatedTextureCount, musicBuffers: game.musicBuffers.size, sfxBuffers: game.sfxBuffers.size } : undefined });
 if (import.meta.env.DEV) Object.defineProperty(window, "__getGunSmokeState", { value: () => game ? { mode: game.mode, time: game.time, scroll: game.scroll, romFrameCounter: game.romFrameCounter, randomState: [...game.randomState], inventoryOpen: game.inventoryOpen, shopOpen: game.shopOpen } : undefined });
 if (import.meta.env.DEV) Object.defineProperty(window, "__forceGunSmokeLoop", { value: () => { if (game) { game.hasWanted = false; game.scroll = ROUND_LENGTHS[game.stage - 1] ?? ROUND_LENGTHS[0]!; } } });
 if (import.meta.env.DEV) Object.defineProperty(window, "__setGunSmokeWeapon", { value: (weapon: WeaponName, ammo: number) => {

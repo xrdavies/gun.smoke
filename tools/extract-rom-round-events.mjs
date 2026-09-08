@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 
-const filename = process.argv[2] ?? "Gun.Smoke.ZH.NES";
+const filename = process.argv[2] ?? "Gun.Smoke (USA).nes";
 const outputDirectory = process.argv[3] ?? ".rom-traces/round-events";
 if (!fs.existsSync(filename)) {
   console.log(`Reference ROM not found: ${filename}`);

@@ -4,7 +4,7 @@ import path from "node:path";
 import { Controller, NES } from "jsnes";
 import { PNG } from "pngjs";
 
-const filename = process.argv[2] ?? "Gun.Smoke.ZH.NES";
+const filename = process.argv[2] ?? "Gun.Smoke (USA).nes";
 const output = process.argv[3] ?? ".rom-assets";
 if (!fs.existsSync(filename)) {
   console.log(`Reference ROM not found: ${filename}`);

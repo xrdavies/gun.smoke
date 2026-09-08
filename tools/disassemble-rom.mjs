@@ -4,7 +4,7 @@ import path from "node:path";
 
 const require = createRequire(import.meta.url);
 const args = process.argv.slice(2);
-const filename = args.find((argument) => !argument.startsWith("--")) ?? "Gun.Smoke.ZH.NES";
+const filename = args.find((argument) => !argument.startsWith("--")) ?? "Gun.Smoke (USA).nes";
 const option = (name, fallback) => args.find((argument) => argument.startsWith(`--${name}=`))?.split("=")[1] ?? fallback;
 const address = (value) => {
   const parsed = Number.parseInt(value.replace(/^\$/, ""), 16);

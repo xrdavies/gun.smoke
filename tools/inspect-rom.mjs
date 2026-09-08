@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
 
-const filename = process.argv[2] ?? "Gun.Smoke.ZH.NES";
+const filename = process.argv[2] ?? "Gun.Smoke (USA).nes";
 if (!fs.existsSync(filename)) {
   console.log(`Reference ROM not found: ${filename}`);
   process.exit(0);

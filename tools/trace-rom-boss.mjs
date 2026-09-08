@@ -4,7 +4,7 @@ import path from "node:path";
 import { Controller, NES } from "jsnes";
 
 const args = process.argv.slice(2);
-const filename = args.find((argument) => !argument.startsWith("--")) ?? "Gun.Smoke.ZH.NES";
+const filename = args.find((argument) => !argument.startsWith("--")) ?? "Gun.Smoke (USA).nes";
 const frames = Number(args.find((argument) => argument.startsWith("--frames="))?.split("=")[1] ?? 18_000);
 const bossFramesLimit = Number(args.find((argument) => argument.startsWith("--boss-frames="))?.split("=")[1] ?? (args.includes("--attack") ? 2_400 : 720));
 const postBossFramesLimit = Number(args.find((argument) => argument.startsWith("--post-boss-frames="))?.split("=")[1] ?? 0);

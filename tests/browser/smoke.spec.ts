@@ -666,7 +666,7 @@ test("keeps ROM barrel pickups in the object pool", async ({ page }) => {
 });
 
 test("runs a locally supplied reference ROM through the engine", async ({ page }) => {
-  const romPath = path.resolve(process.cwd(), "Gun.Smoke.ZH.NES");
+  const romPath = path.resolve(process.cwd(), "Gun.Smoke (USA).nes");
   test.skip(!fs.existsSync(romPath), "Reference ROM is intentionally not present in clean clones");
   const pageErrors: Error[] = [];
   page.on("pageerror", (error) => pageErrors.push(error));

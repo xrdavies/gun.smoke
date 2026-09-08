@@ -3,7 +3,7 @@ import fs from "node:fs";
 import { Controller, NES } from "jsnes";
 
 const timeline = process.argv.includes("--timeline");
-const filename = process.argv.slice(2).find((argument) => !argument.startsWith("--")) ?? "Gun.Smoke.ZH.NES";
+const filename = process.argv.slice(2).find((argument) => !argument.startsWith("--")) ?? "Gun.Smoke (USA).nes";
 if (!fs.existsSync(filename)) {
   console.log(`Reference ROM not found: ${filename}`);
   process.exit(0);

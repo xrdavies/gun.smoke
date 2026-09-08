@@ -1,12 +1,12 @@
 # Reference ROM
 
 The local development workspace contains a user-supplied reference file named
-`Gun.Smoke.ZH.NES`. It is intentionally excluded from Git by the repository
+`Gun.Smoke (USA).nes`. It is intentionally excluded from Git by the repository
 ignore rules and is not redistributed by this project.
 
 Verified metadata:
 
-- SHA-256: `f110936c8781eb978f73403c0499e9ea3b99cf5af3cd31a282d4fab737c1b45d`
+- SHA-256: `4ad9629a2bacc158a7f50975869c7dfe533567ae399a5bdc5df2240286df259f`
 - Format: iNES header
 - PRG: 8 x 16 KiB (128 KiB)
 - CHR ROM: 0 KiB (the cartridge uses CHR RAM)

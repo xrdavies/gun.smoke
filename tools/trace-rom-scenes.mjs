@@ -4,7 +4,7 @@ import path from "node:path";
 import { Controller, NES } from "jsnes";
 
 const args = process.argv.slice(2);
-const filename = args.find((argument) => !argument.startsWith("--")) ?? "Gun.Smoke.ZH.NES";
+const filename = args.find((argument) => !argument.startsWith("--")) ?? "Gun.Smoke (USA).nes";
 const frames = Number(args.find((argument) => argument.startsWith("--frames="))?.split("=")[1] ?? 12_000);
 const every = Number(args.find((argument) => argument.startsWith("--every="))?.split("=")[1] ?? 60);
 const holdFire = args.includes("--hold-ab");

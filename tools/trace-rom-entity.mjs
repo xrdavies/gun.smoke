@@ -10,7 +10,7 @@ const attack = args.includes("--attack");
 const horse = args.includes("--horse");
 const option = (name) => args.find((argument) => argument.startsWith(`--${name}=`))?.split("=")[1];
 const numberOption = (name, fallback) => Number.parseInt(option(name) ?? String(fallback), 0);
-const filename = args.find((argument) => !argument.startsWith("--")) ?? "Gun.Smoke.ZH.NES";
+const filename = args.find((argument) => !argument.startsWith("--")) ?? "Gun.Smoke (USA).nes";
 const stateFile = option("state");
 const dispatch = numberOption("dispatch", Number.NaN);
 const followDispatches = (option("follow")?.split(",") ?? []).filter(Boolean).map((value) => Number.parseInt(value, 0));

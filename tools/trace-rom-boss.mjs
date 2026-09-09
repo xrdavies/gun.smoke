@@ -36,7 +36,11 @@ const memory = new Proxy({}, {
   get: (_, property) => property === "slice" ? (start, end) => Uint8Array.from({ length: (end ?? 0x800) - start }, (_, index) => nes.read(start + index)) : nes.read(Number(property)),
   set: (_, property, value) => { nes.write(Number(property), Number(value)); return true; },
 });
-if (stateFile) throw new Error("--state requires a lib-jsnes state export; start a fresh trace without --state");
+if (stateFile) {
+  const saved = JSON.parse(fs.readFileSync(stateFile, "utf8"));
+  if (saved.format !== "lib-jsnes" || typeof saved.state !== "string") throw new Error("State file is not a lib-jsnes export; regenerate it with --save-state");
+  nes.loadState(Buffer.from(saved.state, "base64"));
+}
 let mapperBank = 0;
 const mapperWrite = nes.cartridge.writeCpu.bind(nes.cartridge);
 nes.cartridge.writeCpu = (address, value, consecutive) => {

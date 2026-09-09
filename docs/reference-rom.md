@@ -1458,8 +1458,9 @@ Adding `--post-boss-frames=N` continues sampling after the Boss slot is released
 until either the Round changes or the requested window expires. The output adds
 the release frame plus Round, game-state and player-state fields for transition
 timing comparisons.
-Passing an ignored JSNES save with `--state=.rom-traces/round3-boss-state.json`
-starts directly at that Boss entrance. In snapshot mode the tracer also records
+Passing a lib-jsnes state export with `--state=.rom-traces/round3-boss-state.json`
+starts directly at that Boss entrance; older JSNES JSON saves are rejected and
+must be regenerated with `--save-state`. In snapshot mode the tracer also records
 the six low Boss-weapon slots, whose dispatch values can be outside the ordinary
 projectile range; for example Devil Hawk's five `0xA2` fireballs appear there.
 `--record` captures every Boss frame without injecting fire input or Boss damage,

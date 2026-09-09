@@ -203,7 +203,7 @@ preserving their measured attack windows and contact or screen-boundary exits.
 The later Round 5 `at=1311` bottom entries now remain distinct by X: `x=32`
 uses the shared route through its frame-264 contact dispatch with a frame-225
 attack, while `x=88` follows 720 frames to the upper release with a frame-212
-attack. The trace tool can persist a matching JSNES state with `--save-state`
+attack. The trace tool can persist a matching lib-jsnes state with `--save-state`
 so subsequent event captures start at a verified allocation boundary.
 Round 5 `at=1535,x=216` and `at=1631,x=152` now use measured top-entry routes
 with 13/333 and 33/161 attacks. These additions close the naturally allocated

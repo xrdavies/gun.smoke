@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
-import { Controller, NES } from "jsnes";
+import { Button, Nes } from "lib-jsnes";
 
 const args = process.argv.slice(2);
 const filename = args.find((argument) => !argument.startsWith("--")) ?? "Gun.Smoke (USA).nes";
@@ -26,24 +26,32 @@ if (stateFile && !fs.existsSync(stateFile)) throw new Error(`State file not foun
 if (!new Set(["pistol", "magnum"]).has(weapon)) throw new Error("--weapon must be pistol or magnum");
 
 const romBytes = fs.readFileSync(filename);
-const nes = new NES({ onFrame: () => {}, onAudioSample: () => {} });
-nes.loadROM(romBytes.toString("binary"));
-if (stateFile) nes.fromJSON(JSON.parse(fs.readFileSync(stateFile, "utf8")));
+const nes = new Nes(romBytes);
+nes.reset();
+let controllerMask = 0;
+const buttonDown = (button) => { controllerMask |= button; nes.setController(1, controllerMask); };
+const buttonUp = (button) => { controllerMask &= ~button; nes.setController(1, controllerMask); };
+const frame = () => nes.runFrame();
+const memory = new Proxy({}, {
+  get: (_, property) => property === "slice" ? (start, end) => Uint8Array.from({ length: (end ?? 0x800) - start }, (_, index) => nes.read(start + index)) : nes.read(Number(property)),
+  set: (_, property, value) => { nes.write(Number(property), Number(value)); return true; },
+});
+if (stateFile) throw new Error("--state requires a lib-jsnes state export; start a fresh trace without --state");
 let mapperBank = 0;
-const mapperWrite = nes.mmap.write.bind(nes.mmap);
-nes.mmap.write = (address, value) => {
-  if (address >= 0x8000) mapperBank = value % nes.rom.romCount;
-  return mapperWrite(address, value);
+const mapperWrite = nes.cartridge.writeCpu.bind(nes.cartridge);
+nes.cartridge.writeCpu = (address, value, consecutive) => {
+  if (address >= 0x8000) mapperBank = value % Math.max(1, nes.rom.prgRom.length / 0x4000);
+  return mapperWrite(address, value, consecutive);
 };
 
 if (!stateFile) {
-  for (let frame = 0; frame < 180; frame += 1) nes.frame();
-  nes.buttonDown(1, Controller.BUTTON_START);
-  for (let frame = 0; frame < 5; frame += 1) nes.frame();
-  nes.buttonUp(1, Controller.BUTTON_START);
-  for (let frame = 0; frame < 650; frame += 1) nes.frame();
-  nes.buttonDown(1, Controller.BUTTON_A);
-  nes.buttonDown(1, Controller.BUTTON_B);
+  for (let tick = 0; tick < 180; tick += 1) frame();
+  buttonDown(Button.Start);
+  for (let tick = 0; tick < 5; tick += 1) frame();
+  buttonUp(Button.Start);
+  for (let tick = 0; tick < 650; tick += 1) frame();
+  buttonDown(Button.A);
+  buttonDown(Button.B);
 }
 
 const bossChanges = [];
@@ -57,22 +65,20 @@ let bossRoundIndex;
 let previousBoss;
 const previousProjectiles = new Map();
 const roundState = () => ({
-  roundIndex: nes.cpu.mem[0x41],
-  mapPointer: (nes.cpu.mem[0x5a] ?? 0) | ((nes.cpu.mem[0x5b] ?? 0) << 8),
-  mapEnd: (nes.cpu.mem[0x5e] ?? 0) | ((nes.cpu.mem[0x5f] ?? 0) << 8),
-  mapPage: nes.cpu.mem[0x5c],
-  scrollOffset: nes.cpu.mem[0x5d],
-  player: { x: nes.cpu.mem[0x74], y: nes.cpu.mem[0x71] },
+  roundIndex: memory[0x41],
+  mapPointer: (memory[0x5a] ?? 0) | ((memory[0x5b] ?? 0) << 8),
+  mapEnd: (memory[0x5e] ?? 0) | ((memory[0x5f] ?? 0) << 8),
+  mapPage: memory[0x5c],
+  scrollOffset: memory[0x5d],
+  player: { x: memory[0x74], y: memory[0x71] },
 });
 const activeEntity = (slot) => {
-  const memory = nes.cpu.mem;
   return (memory[0x400 + slot] ?? 0) & 0x80
     ? { state: memory[0x400 + slot], dispatch: memory[0x420 + slot], variant: memory[0x480 + slot], x: memory[0x5e0 + slot], y: memory[0x5c0 + slot] }
     : undefined;
 };
 
-for (let frame = 0; frame < frames; frame += 1) {
-  const memory = nes.cpu.mem;
+for (let current = 0; current < frames; current += 1) {
   const mapPointer = (memory[0x5a] ?? 0) | ((memory[0x5b] ?? 0) << 8);
   const mapEnd = (memory[0x5e] ?? 0) | ((memory[0x5f] ?? 0) << 8);
   if (memory[0x4b] === 0 && mapPointer >= mapEnd - 24) memory[0x49] = 1;
@@ -84,47 +90,47 @@ for (let frame = 0; frame < frames; frame += 1) {
     }
     memory[0x74] = memory[0x5ee] ?? memory[0x74];
     if (followY) memory[0x71] = Math.min(216, (memory[0x5ce] ?? memory[0x71]) + 64);
-    const pressed = (frame - bossStart) % 5 === 0;
-    for (const button of [Controller.BUTTON_A, Controller.BUTTON_B]) {
-      if (pressed) nes.buttonDown(1, button);
-      else nes.buttonUp(1, button);
+    const pressed = (current - bossStart) % 5 === 0;
+    for (const button of [Button.A, Button.B]) {
+      if (pressed) buttonDown(button);
+      else buttonUp(button);
     }
   }
   if (clearField && bossStart !== undefined && bossReleaseFrame === undefined) {
     for (let slot = 2; slot < 32; slot += 1) {
       const lowBossSlot = stateFile && slot < 8;
       const playerProjectile = slot >= 8 && slot < 14;
-      const banditBillShot = !stateFile && Boolean(nes.cpu.mem[0x400 + slot] & 0x80) && nes.cpu.mem[0x420 + slot] === 0x30;
-      if (slot !== 14 && !lowBossSlot && !playerProjectile && !banditBillShot) nes.cpu.mem[0x400 + slot] = 0;
+      const banditBillShot = !stateFile && Boolean(memory[0x400 + slot] & 0x80) && memory[0x420 + slot] === 0x30;
+      if (slot !== 14 && !lowBossSlot && !playerProjectile && !banditBillShot) memory[0x400 + slot] = 0;
     }
   }
   const playerBefore = { x: memory[0x74], y: memory[0x71] };
-  nes.frame();
+  frame();
 
   const boss = activeEntity(14);
   if (bossStart === undefined && boss?.dispatch === 0x88) {
-    bossStart = frame;
+    bossStart = current;
     bossRoundIndex = memory[0x41];
     if (clearField) {
-      for (let slot = 2; slot < 14; slot += 1) nes.cpu.mem[0x400 + slot] = 0;
-      for (let slot = 24; slot < 32; slot += 1) nes.cpu.mem[0x400 + slot] = 0;
+      for (let slot = 2; slot < 14; slot += 1) memory[0x400 + slot] = 0;
+      for (let slot = 24; slot < 32; slot += 1) memory[0x400 + slot] = 0;
     }
     if (!attack) {
-      nes.buttonUp(1, Controller.BUTTON_A);
-      nes.buttonUp(1, Controller.BUTTON_B);
+      buttonUp(Button.A);
+      buttonUp(Button.B);
     }
   }
   if (bossStart === undefined) continue;
   if (bossRoundIndex === undefined) bossRoundIndex = memory[0x41];
   if (!boss && bossReleaseFrame === undefined) {
-    bossReleaseFrame = frame;
-    for (const button of [Controller.BUTTON_A, Controller.BUTTON_B]) nes.buttonUp(1, button);
+    bossReleaseFrame = current;
+    for (const button of [Button.A, Button.B]) buttonUp(button);
   }
   if (bossReleaseFrame !== undefined) {
-    const postFrame = frame - bossReleaseFrame;
+    const postFrame = current - bossReleaseFrame;
     postBossFrames.push({
       frame: postFrame,
-      bossFrame: frame - bossStart,
+      bossFrame: current - bossStart,
       roundState: roundState(),
       gameState: {
         mode: memory[0x4b],
@@ -139,12 +145,12 @@ for (let frame = 0; frame < frames; frame += 1) {
     continue;
   }
   if (!boss) continue;
-  const relativeFrame = frame - bossStart;
+  const relativeFrame = current - bossStart;
   if (attack || record) {
     bossFrames.push({
       frame: relativeFrame,
       roundIndex: memory[0x41],
-      pc: `$${nes.cpu.REG_PC.toString(16).padStart(4, "0")}`,
+      pc: `$${nes.cpu.pc.toString(16).padStart(4, "0")}`,
       ...boss,
       playerBefore,
       player: { x: memory[0x74], y: memory[0x71] },
@@ -199,8 +205,8 @@ for (let frame = 0; frame < frames; frame += 1) {
   }
   if (relativeFrame >= bossFramesLimit) break;
 }
-nes.buttonUp(1, Controller.BUTTON_A);
-nes.buttonUp(1, Controller.BUTTON_B);
+buttonUp(Button.A);
+buttonUp(Button.B);
 if (bossStart === undefined) throw new Error(`Boss slot was not observed in ${frames} frames`);
 
 const trace = {

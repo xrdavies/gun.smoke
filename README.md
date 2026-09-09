@@ -71,6 +71,7 @@ npm run trace:rom:entity -- --dispatch=0x57 --follow=0x59,0x5b,0x5e --trace-fram
 npm run trace:rom:scenes -- --frames=12000 --every=60
 npm run trace:rom:scenes -- --frames=600 --every=60 --pulse-fire
 npm run extract:rom-assets
+npm run extract:rom-screens -- "Gun.Smoke (USA).nes"
 npm run extract:rom-opening-script
 npm run extract:rom-round-maps
 ```

@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import crypto from "node:crypto";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 
@@ -35,5 +36,12 @@ describe("generated Gun.Smoke assets", () => {
     for (const frequency of [75, 95, 110, 120, 168, 170, 180, 186, 204, 222, 240, 258, 440, 620, 740, 980]) {
       expect(fs.existsSync(path.join(root, "sfx", `tone-${frequency}.wav`))).toBe(true);
     }
+  });
+
+  it("keeps ROM screens generated from the lib-jsnes USA baseline", () => {
+    const hash = (name: string) => crypto.createHash("sha256").update(fs.readFileSync(path.join(root, "screens", name))).digest("hex");
+    expect(hash("title.png")).toBe("8b60beae8602178e310d0a86581a487e172523bb7bc018ce70d30dce08a8770e");
+    expect(hash("intro.png")).toBe("e383c82aaea1f6b2da457c4441ff48afe2f94715f745e74b1b57054267aee1ef");
+    expect(hash("briefing.png")).toBe("103c50cf163bf7889cf094bb747ea75c16456d2720ee1e56741bb3c949089aff");
   });
 });

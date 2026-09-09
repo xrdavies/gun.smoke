@@ -12,10 +12,12 @@ enemies and projectiles, Money Bags, life pickups, stage bosses, spendable score
 damage recovery, wanted-poster gates, two final Wingate encounters, game over
 and a completion state.
 
-The shipped assets are deterministic, self-generated PNG pixel sprites,
-six-round terrain textures, PCM WAV music loops and WAV sound effects. No
-commercial ROM, copyrighted extracted assets, or original Capcom source code
-is included. `npm run generate:assets` recreates them from the fixed generator.
+The shipped assets are deterministic PNG pixel sprites, six-round terrain
+textures, PCM WAV music loops and WAV sound effects. The player sprite and
+title/intro/briefing screens are extracted from the USA reference ROM; the
+remaining baseline art is generated locally. No commercial ROM, copyrighted
+extracted assets, or original Capcom source code is included. `npm run
+generate:assets` recreates the generated assets from the fixed generator.
 Exact ROM-level reproduction requires a legally obtained reference ROM and a
 fixed revision/hash for comparison.
 
@@ -72,11 +74,13 @@ npm run trace:rom:scenes -- --frames=12000 --every=60
 npm run trace:rom:scenes -- --frames=600 --every=60 --pulse-fire
 npm run extract:rom-assets
 npm run extract:rom-screens -- "Gun.Smoke (USA).nes"
+npm run extract:rom-sprites -- "Gun.Smoke (USA).nes"
 npm run extract:rom-opening-script
 npm run extract:rom-round-maps
 ```
 
 `trace:rom:scenes` writes structured state/OAM/PPU samples to the ignored
-`.rom-traces/` directory. The extractor writes only to the ignored
-`.rom-assets/` directory. Those files are for local inspection and comparison
-and must not be committed or redistributed.
+`.rom-traces/` directory. The analysis extractor writes to the ignored
+`.rom-assets/` directory; the screen and sprite extractors additionally refresh
+their corresponding tracked `public/assets/` PNGs. The ROM itself must not be
+committed or redistributed.

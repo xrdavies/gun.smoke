@@ -17,7 +17,7 @@ describe("generated Gun.Smoke assets", () => {
       const png = fs.readFileSync(filename);
       return { width: png.readUInt32BE(16), height: png.readUInt32BE(20) };
     };
-    expect(pngSize(path.join(root, "sprites/player.png"))).toEqual({ width: 64, height: 32 });
+    expect(pngSize(path.join(root, "sprites/player.png"))).toEqual({ width: 64, height: 48 });
     expect(pngSize(path.join(root, "backgrounds/terrain-1.png"))).toEqual({ width: 96, height: 96 });
     for (const name of ["title", "intro", "briefing", "ending"]) {
       expect(pngSize(path.join(root, "screens", `${name}.png`))).toEqual({ width: 256, height: 240 });
@@ -38,10 +38,11 @@ describe("generated Gun.Smoke assets", () => {
     }
   });
 
-  it("keeps ROM screens generated from the lib-jsnes USA baseline", () => {
-    const hash = (name: string) => crypto.createHash("sha256").update(fs.readFileSync(path.join(root, "screens", name))).digest("hex");
-    expect(hash("title.png")).toBe("8b60beae8602178e310d0a86581a487e172523bb7bc018ce70d30dce08a8770e");
-    expect(hash("intro.png")).toBe("e383c82aaea1f6b2da457c4441ff48afe2f94715f745e74b1b57054267aee1ef");
-    expect(hash("briefing.png")).toBe("103c50cf163bf7889cf094bb747ea75c16456d2720ee1e56741bb3c949089aff");
+  it("keeps ROM-derived assets on the lib-jsnes USA baseline", () => {
+    const hash = (name: string) => crypto.createHash("sha256").update(fs.readFileSync(path.join(root, name))).digest("hex");
+    expect(hash("sprites/player.png")).toBe("c39e0a638386090a2ea022826d0e78af14c449d2127491f4768a70ebfd87c3bb");
+    expect(hash("screens/title.png")).toBe("8b60beae8602178e310d0a86581a487e172523bb7bc018ce70d30dce08a8770e");
+    expect(hash("screens/intro.png")).toBe("e383c82aaea1f6b2da457c4441ff48afe2f94715f745e74b1b57054267aee1ef");
+    expect(hash("screens/briefing.png")).toBe("103c50cf163bf7889cf094bb747ea75c16456d2720ee1e56741bb3c949089aff");
   });
 });

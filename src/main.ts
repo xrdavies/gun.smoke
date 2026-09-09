@@ -471,7 +471,7 @@ class GunSmokeGame {
     }
     this.player.entity = this.world.createEntity();
     this.horseSprite = new Sprite({ texture: this.textures.horse, sampler: this.sampler, position: { x: PLAYER_ENTRY_X, y: PLAYER_ENTRY_Y + 16 }, size: { x: 64, y: 54 }, anchor: { x: 0.5, y: 0.5 }, layer: 19, visible: false });
-    this.player.sprite = new Sprite({ texture: this.textures.player, sampler: this.sampler, frame: { x: 0, y: 0, width: 0.5, height: 1 }, position: { x: PLAYER_ENTRY_X, y: PLAYER_ENTRY_Y }, size: { x: 45, y: 54 }, anchor: { x: 0.5, y: 0.5 }, layer: 20 });
+    this.player.sprite = new Sprite({ texture: this.textures.player, sampler: this.sampler, frame: { x: 0, y: 0, width: 0.5, height: 1 }, position: { x: PLAYER_ENTRY_X, y: PLAYER_ENTRY_Y }, size: { x: 36, y: 54 }, anchor: { x: 0.5, y: 0.5 }, layer: 20 });
     this.playerAnimation = new SpriteAnimationBinding(this.player.sprite, new AnimationPlayer().play(new SpriteFrameClip([
       { x: 0, y: 0, width: 0.5, height: 1, duration: 0.12 },
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: 0.12 },

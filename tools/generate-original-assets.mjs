@@ -132,7 +132,7 @@ const bosses = [
   `....${accent}........${accent}....`,
 ]);
 
-writePng(path.join(spritesRoot, "player.png"), sheet(player), 2);
+writePng(path.join(spritesRoot, "player.png"), sheet([...player, ...Array.from({ length: 8 }, () => ".".repeat(16))]), 2);
 writePng(path.join(spritesRoot, "horse.png"), horse, 2);
 writePng(path.join(spritesRoot, "shopkeeper.png"), sheet(shopkeeper, shopkeeper.map((row, y) => y < 4 ? ".".repeat(row.length) : row)), 2);
 writePng(path.join(spritesRoot, "bullet.png"), [".y.", ".y.", ".w.", ".w.", ".y.", ".y."], 2);

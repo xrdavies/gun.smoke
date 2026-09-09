@@ -11,6 +11,7 @@
     "disassemble:rom": "node tools/disassemble-rom.mjs",
     "extract:rom-assets": "node tools/extract-rom-assets.mjs",
     "extract:rom-screens": "node tools/extract-rom-screens-lib.mjs",
+    "extract:rom-sprites": "node tools/extract-rom-sprites-lib.mjs",
     "extract:rom-opening-script": "node tools/extract-rom-opening-script.mjs",
     "extract:rom-round-maps": "node tools/extract-rom-round-maps.mjs",
     "extract:rom-round-events": "node tools/extract-rom-round-events.mjs",

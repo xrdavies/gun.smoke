@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
-import { Controller, NES } from "jsnes";
+import { Button, Nes } from "lib-jsnes";
 
 const timeline = process.argv.includes("--timeline");
 const filename = process.argv.slice(2).find((argument) => !argument.startsWith("--")) ?? "Gun.Smoke (USA).nes";
@@ -9,125 +9,76 @@ if (!fs.existsSync(filename)) {
   process.exit(0);
 }
 
-const rom = fs.readFileSync(filename).toString("binary");
-let lastFrame;
-const nes = new NES({ onFrame: (frame) => { lastFrame = frame; }, onAudioSample: () => {} });
-nes.loadROM(rom);
+const romBytes = fs.readFileSync(filename);
+const nes = new Nes(romBytes);
+nes.reset();
+let controllerMask = 0;
+const buttonDown = (button) => { controllerMask |= button; nes.setController(1, controllerMask); };
+const buttonUp = (button) => { controllerMask &= ~button; nes.setController(1, controllerMask); };
+const frame = () => nes.runFrame();
+const runFrames = (count) => { for (let index = 0; index < count; index += 1) frame(); };
+const read = (address) => nes.read(address);
+const readBytes = (address, length) => Uint8Array.from({ length }, (_, index) => read(address + index));
 let mapperBank = 0;
 let mapperWriteCount = 0;
 const mapperBanksSeen = new Set([mapperBank]);
-const mapperWrite = nes.mmap.write.bind(nes.mmap);
-nes.mmap.write = (address, value) => {
+const mapperWrite = nes.cartridge.writeCpu.bind(nes.cartridge);
+nes.cartridge.writeCpu = (address, value, consecutive) => {
   if (address >= 0x8000) {
-    mapperBank = value % nes.rom.romCount;
+    mapperBank = value % Math.max(1, nes.rom.prgRom.length / 0x4000);
     mapperBanksSeen.add(mapperBank);
     mapperWriteCount += 1;
   }
-  return mapperWrite(address, value);
+  return mapperWrite(address, value, consecutive);
 };
-
 const checkpoints = [];
 const activeSprites = () => {
   let count = 0;
-  for (let index = 0; index < nes.ppu.spriteMem.length; index += 4) {
-    const y = nes.ppu.spriteMem[index] ?? 0xff;
+  for (let index = 0; index < nes.ppu.oam.length; index += 4) {
+    const y = nes.ppu.oam[index] ?? 0xff;
     if (y !== 0xf8 && y !== 0xff) count += 1;
   }
   return count;
 };
 const hudScore = () => {
   const digits = [];
-  for (let index = 0; index < nes.ppu.spriteMem.length; index += 4) {
-    const y = nes.ppu.spriteMem[index] ?? 0xff;
-    const tile = nes.ppu.spriteMem[index + 1] ?? 0xff;
-    const x = nes.ppu.spriteMem[index + 3] ?? 0xff;
+  for (let index = 0; index < nes.ppu.oam.length; index += 4) {
+    const y = nes.ppu.oam[index] ?? 0xff; const tile = nes.ppu.oam[index + 1] ?? 0xff; const x = nes.ppu.oam[index + 3] ?? 0xff;
     if (y === 16 && x >= 104 && x <= 144 && (x - 104) % 8 === 0 && tile >= 88 && tile <= 97) digits[(x - 104) / 8] = tile - 88;
   }
   return digits.length === 6 && digits.filter(Number.isInteger).length === 6 ? Number(digits.join("")) : undefined;
 };
 const ppuUpdate = () => {
-  const control = nes.cpu.mem[0x36c] ?? 0;
-  const length = (control & 0x3f) || 64;
-  const repeat = Boolean(control & 0x40);
-  return {
-    address: ((nes.cpu.mem[0x36a] ?? 0) << 8) | (nes.cpu.mem[0x36b] ?? 0),
-    control,
-    length,
-    repeat,
-    vertical: Boolean(control & 0x80),
-    payload: Array.from(nes.cpu.mem.slice(0x36d, 0x36d + (repeat ? 1 : length))),
-  };
+  const control = read(0x36c); const length = (control & 0x3f) || 64; const repeat = Boolean(control & 0x40);
+  return { address: (read(0x36a) << 8) | read(0x36b), control, length, repeat, vertical: Boolean(control & 0x80), payload: Array.from(readBytes(0x36d, repeat ? 1 : length)) };
 };
-const roundState = () => ({
-  roundIndex: nes.cpu.mem[0x41],
-  roundNumber: (nes.cpu.mem[0x41] ?? 0) + 1,
-  mapPointer: (nes.cpu.mem[0x5a] ?? 0) | ((nes.cpu.mem[0x5b] ?? 0) << 8),
-  mapEnd: (nes.cpu.mem[0x5e] ?? 0) | ((nes.cpu.mem[0x5f] ?? 0) << 8),
-  mapPage: nes.cpu.mem[0x5c],
-  scrollOffset: nes.cpu.mem[0x5d],
-  player: { x: nes.cpu.mem[0x74], y: nes.cpu.mem[0x71] },
-});
+const roundState = () => ({ roundIndex: read(0x41), roundNumber: read(0x41) + 1, mapPointer: read(0x5a) | (read(0x5b) << 8), mapEnd: read(0x5e) | (read(0x5f) << 8), mapPage: read(0x5c), scrollOffset: read(0x5d), player: { x: read(0x74), y: read(0x71) } });
 const checkpoint = (label, gameFrame) => {
-  const frameHash = lastFrame
-    ? crypto.createHash("sha256").update(Buffer.from(lastFrame.buffer)).digest("hex").slice(0, 16)
-    : undefined;
+  const ppuAddress = nes.ppu.addr;
   checkpoints.push({
-    label,
-    gameFrame,
-    pc: `$${nes.cpu.REG_PC.toString(16).padStart(4, "0")}`,
-    ram: {
-      "0x4c": nes.cpu.mem[0x4c],
-      "0x4f": nes.cpu.mem[0x4f],
-      "0x62": nes.cpu.mem[0x62],
-      "0x68": nes.cpu.mem[0x68],
-      "0x69": nes.cpu.mem[0x69],
-      "0x7a": nes.cpu.mem[0x7a],
-    },
-    inputReplayCursor: { slot: nes.cpu.mem[0x6a], duration: nes.cpu.mem[0x6b], ramA3: nes.cpu.mem[0xa3] },
-    roundState: roundState(),
-    ppuUpdate: ppuUpdate(),
-    mapperBank,
-    mapperBanksSeen: [...mapperBanksSeen].sort((left, right) => left - right),
-    mapperWriteCount,
-    inputReplayPairs: Array.from(nes.cpu.mem.slice(0x780, 0x7c0)),
-    hudScore: hudScore(),
-    ppu: {
-      vramAddress: nes.ppu.vramAddress,
-      coarseX: nes.ppu.regHT,
-      coarseY: nes.ppu.regVT,
-      fineX: nes.ppu.regFH,
-      fineY: nes.ppu.regFV,
-      nametable: nes.ppu.curNt,
-    },
-    spriteOam: Array.from(nes.ppu.spriteMem.slice(0, 32)),
-    activeSprites: activeSprites(),
-    frameHash,
+    label, gameFrame, pc: `$${nes.cpu.pc.toString(16).padStart(4, "0")}`,
+    ram: { "0x4c": read(0x4c), "0x4f": read(0x4f), "0x62": read(0x62), "0x68": read(0x68), "0x69": read(0x69), "0x7a": read(0x7a) },
+    inputReplayCursor: { slot: read(0x6a), duration: read(0x6b), ramA3: read(0xa3) }, roundState: roundState(), ppuUpdate: ppuUpdate(),
+    mapperBank, mapperBanksSeen: [...mapperBanksSeen].sort((left, right) => left - right), mapperWriteCount, inputReplayPairs: Array.from(readBytes(0x780, 0x40)), hudScore: hudScore(),
+    ppu: { vramAddress: ppuAddress, coarseX: ppuAddress & 31, coarseY: (ppuAddress >>> 5) & 31, fineX: nes.ppu.scrollX & 7, fineY: (ppuAddress >>> 12) & 7, nametable: (ppuAddress >>> 10) & 3 },
+    spriteOam: Array.from(nes.ppu.oam.slice(0, 32)), activeSprites: activeSprites(), frameHash: crypto.createHash("sha256").update(Buffer.from(nes.frame.buffer)).digest("hex").slice(0, 16),
   });
-  mapperBanksSeen.clear();
-  mapperBanksSeen.add(mapperBank);
-  mapperWriteCount = 0;
+  mapperBanksSeen.clear(); mapperBanksSeen.add(mapperBank); mapperWriteCount = 0;
 };
 
 if (timeline) {
-  for (let frame = 0; frame < 2_880; frame += 1) {
-    if (frame === 180) nes.buttonDown(1, Controller.BUTTON_START);
-    if (frame === 185) nes.buttonUp(1, Controller.BUTTON_START);
-    nes.frame();
-    if (frame % 60 === 59) checkpoint(`timeline-${frame + 1}`, Math.max(0, frame + 1 - 825));
+  for (let current = 0; current < 2_880; current += 1) {
+    if (current === 180) buttonDown(Button.Start);
+    if (current === 185) buttonUp(Button.Start);
+    frame();
+    if (current % 60 === 59) checkpoint(`timeline-${current + 1}`, Math.max(0, current + 1 - 825));
   }
   console.log(JSON.stringify(checkpoints, null, 2));
   process.exit(0);
 }
 
-for (let frame = 0; frame < 180; frame += 1) nes.frame();
-checkpoint("title", 0);
-nes.buttonDown(1, Controller.BUTTON_START);
-for (let frame = 0; frame < 5; frame += 1) nes.frame();
-nes.buttonUp(1, Controller.BUTTON_START);
-for (let frame = 0; frame < 415; frame += 1) nes.frame();
-checkpoint("wanted-screen", 0);
-for (let frame = 0; frame < 240; frame += 1) nes.frame();
-checkpoint("round-1-entry", 15);
-for (let frame = 0; frame < 360; frame += 1) nes.frame();
-checkpoint("round-1-active", 375);
+runFrames(180); checkpoint("title", 0);
+buttonDown(Button.Start); runFrames(5); buttonUp(Button.Start); runFrames(415); checkpoint("wanted-screen", 0);
+runFrames(240); checkpoint("round-1-entry", 15);
+runFrames(360); checkpoint("round-1-active", 375);
 console.log(JSON.stringify(checkpoints, null, 2));

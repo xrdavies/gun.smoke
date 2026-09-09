@@ -141,7 +141,10 @@ writePng(path.join(spritesRoot, "ammo.png"), [".bbbb.", "bkkkbb", "bkyybb", "bkk
 writePng(path.join(spritesRoot, "barrel.png"), [".oooo.", "okkkko", "okyyko", "okkkko", ".oooo."], 2);
 for (const [name, rows] of Object.entries(itemRows)) writePng(path.join(spritesRoot, `${name}.png`), rows, 2);
 for (const [name, rows] of Object.entries(enemies)) if (name !== "gunman" || !fs.existsSync(path.join(spritesRoot, "gunman.png"))) writePng(path.join(spritesRoot, `${name}.png`), sheet(rows), 2);
-for (const [index, rows] of bosses.entries()) writePng(path.join(spritesRoot, `boss-${index + 1}.png`), sheet(rows), 2);
+for (const [index, rows] of bosses.entries()) {
+  const filename = path.join(spritesRoot, `boss-${index + 1}.png`);
+  if (!fs.existsSync(filename)) writePng(filename, sheet(rows), 2);
+}
 
 function backgroundRows(seed, road) {
   const width = 96;

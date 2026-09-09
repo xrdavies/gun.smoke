@@ -13,8 +13,8 @@ damage recovery, wanted-poster gates, two final Wingate encounters, game over
 and a completion state.
 
 The shipped assets are deterministic PNG pixel sprites, six-round terrain
-textures, PCM WAV music loops and WAV sound effects. The player sprite and
-title/intro/briefing screens are extracted from the USA reference ROM; the
+textures, PCM WAV music loops and WAV sound effects. The player, Gunman, Bandit
+Bill, and title/intro/briefing screens are extracted from the USA reference ROM;
 remaining baseline art is generated locally. No commercial ROM or original
 Capcom source code is included. `npm run generate:assets` recreates generated
 assets while preserving existing ROM-derived PNGs.
@@ -76,6 +76,7 @@ npm run extract:rom-assets
 npm run extract:rom-screens -- "Gun.Smoke (USA).nes"
 npm run extract:rom-sprites -- "Gun.Smoke (USA).nes"
 npm run extract:rom-gunman -- "Gun.Smoke (USA).nes"
+npm run extract:rom-boss -- "Gun.Smoke (USA).nes"
 npm run extract:rom-opening-script
 npm run extract:rom-round-maps
 ```

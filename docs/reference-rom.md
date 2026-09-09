@@ -1442,6 +1442,9 @@ OAM/CHR captures from the USA ROM. `npm run extract:rom-sprites`,
 `npm run extract:rom-gunman`, and `npm run extract:rom-boss` regenerate them
 through lib-jsnes without
 depending on the legacy JSNES PPU implementation.
+`npm run extract:rom-audio` likewise records the Round 1 APU stream at the
+emulator's native 44.1-kHz rate; the other tracked music loops remain marked
+as generated until their ROM tracks are captured.
 
 `npm run trace:rom:timeline` presses Start before the attract timer begins,
 starts a real game,

@@ -273,7 +273,8 @@ for (let index = 0; index < melodies.length; index += 1) {
     const low = tone(bass, step, "triangle", 3);
     for (let sample = 0; sample < lead.length; sample += 1) samples.push((lead[sample] ?? 0) * 0.55 + (low[sample] ?? 0) * 0.25 + (noteIndex % 2 === 0 ? noise(index * 100000 + noteIndex * lead.length + sample) * 0.0125 : 0));
   }
-  writeWav(path.join(musicRoot, index === melodies.length - 1 ? "ending.wav" : `round-${index + 1}.wav`), samples);
+  const filename = path.join(musicRoot, index === melodies.length - 1 ? "ending.wav" : `round-${index + 1}.wav`);
+  if (!fs.existsSync(filename)) writeWav(filename, samples);
 }
 
 fs.writeFileSync(path.join(root, "manifest.json"), JSON.stringify({

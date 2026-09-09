@@ -14,6 +14,7 @@
     "extract:rom-sprites": "node tools/extract-rom-sprites-lib.mjs",
     "extract:rom-gunman": "node tools/extract-rom-gunman-lib.mjs",
     "extract:rom-boss": "node tools/extract-rom-boss-sprites-lib.mjs --rounds=1",
+    "extract:rom-audio": "node tools/extract-rom-round1-audio-lib.mjs",
     "extract:rom-opening-script": "node tools/extract-rom-opening-script.mjs",
     "extract:rom-round-maps": "node tools/extract-rom-round-maps.mjs",
     "extract:rom-round-events": "node tools/extract-rom-round-events.mjs",

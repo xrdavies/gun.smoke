@@ -77,6 +77,7 @@ npm run extract:rom-screens -- "Gun.Smoke (USA).nes"
 npm run extract:rom-sprites -- "Gun.Smoke (USA).nes"
 npm run extract:rom-gunman -- "Gun.Smoke (USA).nes"
 npm run extract:rom-boss -- "Gun.Smoke (USA).nes"
+npm run extract:rom-audio -- "Gun.Smoke (USA).nes"
 npm run extract:rom-opening-script
 npm run extract:rom-round-maps
 ```

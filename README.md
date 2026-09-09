@@ -14,7 +14,7 @@ and a completion state.
 
 The shipped assets are deterministic PNG pixel sprites, six-round terrain
 textures, PCM WAV music loops and WAV sound effects. The player, Gunman, Bandit
-Bill, and title/intro/briefing screens are extracted from the USA reference ROM;
+Bill, Cutter, and title/intro/briefing screens are extracted from the USA reference ROM;
 remaining baseline art is generated locally. No commercial ROM or original
 Capcom source code is included. `npm run generate:assets` recreates generated
 assets while preserving existing ROM-derived PNGs.

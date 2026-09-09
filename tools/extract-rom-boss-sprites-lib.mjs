@@ -6,6 +6,7 @@ import { PNG } from "pngjs";
 const romPath = process.argv.slice(2).find((value) => !value.startsWith("--")) ?? "Gun.Smoke (USA).nes";
 const outputRoot = process.argv.find((value) => value.startsWith("--out="))?.split("=")[1] ?? "public/assets/sprites";
 const maxRounds = Number(process.argv.find((value) => value.startsWith("--rounds="))?.split("=")[1] ?? 6);
+const stateFile = process.argv.find((value) => value.startsWith("--state="))?.split("=")[1];
 if (!Number.isInteger(maxRounds) || maxRounds < 1 || maxRounds > 6) throw new Error("--rounds must be between 1 and 6");
 if (!fs.existsSync(romPath)) throw new Error(`Reference ROM not found: ${romPath}`);
 fs.mkdirSync(outputRoot, { recursive: true });
@@ -21,9 +22,17 @@ const setButton = (button, pressed) => {
 };
 const frame = () => nes.runFrame();
 const run = (count) => { for (let index = 0; index < count; index += 1) frame(); };
+if (stateFile) {
+  const saved = JSON.parse(fs.readFileSync(stateFile, "utf8"));
+  if (saved.format !== "lib-jsnes" || typeof saved.state !== "string") throw new Error("State file is not a lib-jsnes export");
+  nes.loadState(Buffer.from(saved.state, "base64"));
+  setButton(Button.A, true);
+  setButton(Button.B, true);
+}
+const captureLimit = stateFile ? 1 : maxRounds;
 
 function activeBoss() {
-  return (read(0x400 + 14) & 0x80) && read(0x420 + 14) === 0x88 && read(0x5c0 + 14) > 20
+  return (read(0x400 + 14) & 0x80) && read(0x420 + 14) >= 0x80 && read(0x5c0 + 14) > 20
     ? { x: read(0x5e0 + 14), y: read(0x5c0 + 14) }
     : undefined;
 }
@@ -108,18 +117,20 @@ function captureBoss(name, origin) {
   console.log(`Extracted ${name} ${width}x${height} OAM sprite to ${output}`);
 }
 
-run(180);
-setButton(Button.Start, true);
-run(5);
-setButton(Button.Start, false);
-run(650);
-setButton(Button.A, true);
-setButton(Button.B, true);
+if (!stateFile) {
+  run(180);
+  setButton(Button.Start, true);
+  run(5);
+  setButton(Button.Start, false);
+  run(650);
+  setButton(Button.A, true);
+  setButton(Button.B, true);
+}
 
 const seen = new Set();
 let lastRound = read(0x41);
 let startPulse = 0;
-for (let current = 0; current < 120_000 && seen.size < maxRounds; current += 1) {
+for (let current = 0; current < 120_000 && seen.size < captureLimit; current += 1) {
   const roundIndex = read(0x41);
   if (roundIndex !== lastRound) {
     lastRound = roundIndex;
@@ -157,4 +168,4 @@ for (let current = 0; current < 120_000 && seen.size < maxRounds; current += 1) 
 }
 setButton(Button.A, false);
 setButton(Button.B, false);
-if (seen.size !== maxRounds) throw new Error(`Captured ${seen.size}/${maxRounds} Boss sprites before the frame limit`);
+if (seen.size !== captureLimit) throw new Error(`Captured ${seen.size}/${captureLimit} Boss sprites before the frame limit`);

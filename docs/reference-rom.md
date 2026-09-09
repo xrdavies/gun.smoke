@@ -1437,7 +1437,7 @@ Pattern-table previews remain grayscale for bitplane inspection; nametable
 previews apply each tile's expanded attribute and the live NES background
 palette so terrain colors match the captured scene.
 
-The tracked `player.png`, `gunman.png`, and `boss-1.png` sprites are reproducible
+The tracked `player.png`, `gunman.png`, `boss-1.png`, and `boss-2.png` sprites are reproducible
 OAM/CHR captures from the USA ROM. `npm run extract:rom-sprites`,
 `npm run extract:rom-gunman`, and `npm run extract:rom-boss` regenerate them
 through lib-jsnes without

@@ -1484,7 +1484,7 @@ class GunSmokeGame {
     const texture = isBoss ? this.bossTextures[this.stage - 1] ?? this.bossTextures[0]! : kind === "enemy" && enemyType ? this.enemyTextures[enemyType] : kind === "item" && itemType ? this.itemTextures[itemType] : this.textures[textureName];
     const animated = kind === "enemy" || kind === "shopkeeper" || isBoss;
     const frameDuration = kind === "shopkeeper" ? 0.35 : 0.14;
-    const bossSize = isBoss && this.stage === 1 ? { x: 36, y: 72 } : { x: 110, y: 68 };
+    const bossSize = isBoss && this.stage === 1 ? { x: 60, y: 72 } : isBoss && this.stage === 2 ? { x: 120, y: 54 } : { x: 110, y: 68 };
     const sprite = new Sprite({ texture, sampler: this.sampler, frame: animated ? { x: 0, y: 0, width: 0.5, height: 1 } : undefined, position: { x, y }, size: { x: isBoss ? bossSize.x : sceneObject ? 52 : isPickup ? 28 : small ? 9 : enemyType === "gunman" ? 24 : 34, y: isBoss ? bossSize.y : sceneObject ? 52 : isPickup ? 28 : small ? 25 : enemyType === "gunman" ? 36 : kind === "shopkeeper" ? 54 : 34 }, anchor: { x: 0.5, y: 0.5 }, color, layer: isBoss ? 15 : small ? 12 : sceneObject ? 4 : isPickup ? 11 : 10 });
     const animation = animated ? new SpriteAnimationBinding(sprite, new AnimationPlayer().play(new SpriteFrameClip([
       { x: 0, y: 0, width: 0.5, height: 1, duration: frameDuration },

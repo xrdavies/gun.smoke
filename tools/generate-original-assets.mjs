@@ -132,7 +132,7 @@ const bosses = [
   `....${accent}........${accent}....`,
 ]);
 
-writePng(path.join(spritesRoot, "player.png"), sheet([...player, ...Array.from({ length: 8 }, () => ".".repeat(16))]), 2);
+if (!fs.existsSync(path.join(spritesRoot, "player.png"))) writePng(path.join(spritesRoot, "player.png"), sheet([...player, ...Array.from({ length: 8 }, () => ".".repeat(16))]), 2);
 writePng(path.join(spritesRoot, "horse.png"), horse, 2);
 writePng(path.join(spritesRoot, "shopkeeper.png"), sheet(shopkeeper, shopkeeper.map((row, y) => y < 4 ? ".".repeat(row.length) : row)), 2);
 writePng(path.join(spritesRoot, "bullet.png"), [".y.", ".y.", ".w.", ".w.", ".y.", ".y."], 2);
@@ -182,13 +182,15 @@ function scenePng(filename, draw) {
   fs.writeFileSync(filename, PNG.sync.write(png));
 }
 
+const scenePngIfMissing = (filename, draw) => { if (!fs.existsSync(filename)) scenePng(filename, draw); };
+
 const sky = [38, 73, 112, 255];
 const dusk = [112, 69, 113, 255];
 const sand = [188, 132, 72, 255];
 const road = [46, 56, 68, 255];
 const snow = [226, 216, 185, 255];
 const sunset = [238, 158, 70, 255];
-scenePng(path.join(screensRoot, "title.png"), ({ rect, line, set, width, height }) => {
+scenePngIfMissing(path.join(screensRoot, "title.png"), ({ rect, line, set, width, height }) => {
   for (let y = 0; y < height; y += 1) rect(0, y, width, 1, y < 125 ? [28 + Math.floor(y / 8), 34 + Math.floor(y / 5), 70 + Math.floor(y / 3), 255] : [18, 24, 30, 255]);
   rect(185, 28, 30, 30, sunset); rect(190, 33, 20, 20, dusk);
   line(0, 142, 72, 96, [32, 44, 60, 255]); line(72, 96, 125, 142, [32, 44, 60, 255]); line(108, 142, 162, 84, [32, 44, 60, 255]); line(162, 84, 256, 142, [32, 44, 60, 255]);
@@ -196,7 +198,7 @@ scenePng(path.join(screensRoot, "title.png"), ({ rect, line, set, width, height 
   for (const x of [18, 34, 218, 236]) { rect(x, 104, 14, 39, [94, 57, 46, 255]); rect(x + 2, 110, 10, 9, [238, 183, 88, 255]); }
   for (const x of [8, 248]) { rect(x, 136, 2, 20, snow); set(x - 1, 139, snow); }
 });
-scenePng(path.join(screensRoot, "intro.png"), ({ rect, line, set, width, height }) => {
+scenePngIfMissing(path.join(screensRoot, "intro.png"), ({ rect, line, set, width, height }) => {
   for (let y = 0; y < 120; y += 1) rect(0, y, width, 1, y < 65 ? dusk : [150, 73, 95, 255]);
   rect(178, 30, 28, 28, snow); rect(182, 34, 20, 20, [202, 174, 170, 255]);
   line(0, 142, 52, 96, [23, 38, 52, 255]); line(52, 96, 94, 142, [23, 38, 52, 255]); line(84, 142, 134, 84, [23, 38, 52, 255]); line(134, 84, 256, 142, [23, 38, 52, 255]);
@@ -204,7 +206,7 @@ scenePng(path.join(screensRoot, "intro.png"), ({ rect, line, set, width, height 
   rect(0, 112, 30, 31, [62, 49, 57, 255]); rect(6, 104, 18, 8, [88, 57, 50, 255]); rect(226, 111, 30, 32, [62, 49, 57, 255]); rect(232, 103, 18, 8, [88, 57, 50, 255]);
   for (const x of [41, 53, 204, 216]) { rect(x, 125, 3, 18, [14, 25, 30, 255]); set(x - 2, 125, [14, 25, 30, 255]); set(x + 2, 125, [14, 25, 30, 255]); }
 });
-scenePng(path.join(screensRoot, "briefing.png"), ({ rect, line }) => {
+scenePngIfMissing(path.join(screensRoot, "briefing.png"), ({ rect, line }) => {
   rect(22, 18, 212, 204, [35, 42, 53, 255]); rect(28, 24, 200, 192, [210, 169, 100, 255]); rect(36, 32, 184, 176, [243, 218, 160, 255]);
   rect(47, 45, 62, 82, [54, 95, 142, 255]); rect(53, 51, 50, 42, [68, 126, 172, 255]); rect(61, 100, 34, 20, [42, 68, 98, 255]);
   line(132, 56, 206, 56, [102, 64, 44, 255]); line(132, 72, 206, 72, [102, 64, 44, 255]); line(132, 88, 194, 88, [102, 64, 44, 255]); line(47, 147, 208, 147, [102, 64, 44, 255]); line(47, 164, 208, 164, [102, 64, 44, 255]);

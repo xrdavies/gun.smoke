@@ -15,9 +15,9 @@ and a completion state.
 The shipped assets are deterministic PNG pixel sprites, six-round terrain
 textures, PCM WAV music loops and WAV sound effects. The player sprite and
 title/intro/briefing screens are extracted from the USA reference ROM; the
-remaining baseline art is generated locally. No commercial ROM, copyrighted
-extracted assets, or original Capcom source code is included. `npm run
-generate:assets` recreates the generated assets from the fixed generator.
+remaining baseline art is generated locally. No commercial ROM or original
+Capcom source code is included. `npm run generate:assets` recreates generated
+assets while preserving existing ROM-derived PNGs.
 Exact ROM-level reproduction requires a legally obtained reference ROM and a
 fixed revision/hash for comparison.
 

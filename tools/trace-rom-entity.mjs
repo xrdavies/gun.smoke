@@ -1,7 +1,7 @@
 import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
-import { Controller, NES } from "jsnes";
+import { Button, Nes } from "lib-jsnes";
 
 const args = process.argv.slice(2);
 const listCandidates = args.includes("--list-candidates");
@@ -104,19 +104,30 @@ const matchingEventIndexes = (roundIndex, before, after, candidate) => {
   const matchingDispatch = nearest.filter((record) => record.dispatch === candidate.dispatch);
   return (matchingDispatch.length > 0 ? matchingDispatch : nearest).map((record) => record.index);
 };
-const nes = new NES({ onFrame: () => {}, onAudioSample: () => {} });
-nes.loadROM(romBytes.toString("binary"));
-if (stateFile) nes.fromJSON(JSON.parse(fs.readFileSync(stateFile, "utf8")));
+const nes = new Nes(romBytes);
+nes.reset();
+let controllerMask = 0;
+const buttonDown = (button) => { controllerMask |= button; nes.setController(1, controllerMask); };
+const buttonUp = (button) => { controllerMask &= ~button; nes.setController(1, controllerMask); };
+const frame = () => nes.runFrame();
+const memory = new Proxy({}, {
+  get: (_, property) => property === "slice" ? (start, end) => Uint8Array.from({ length: (end ?? 0x800) - start }, (_, index) => nes.read(start + index)) : nes.read(Number(property)),
+  set: (_, property, value) => { nes.write(Number(property), Number(value)); return true; },
+});
+if (stateFile) {
+  const saved = JSON.parse(fs.readFileSync(stateFile, "utf8"));
+  if (saved.format !== "lib-jsnes" || typeof saved.state !== "string") throw new Error("State file is not a lib-jsnes export; regenerate it with --save-state");
+  nes.loadState(Buffer.from(saved.state, "base64"));
+}
 else {
-  for (let frame = 0; frame < 180; frame += 1) nes.frame();
-  nes.buttonDown(1, Controller.BUTTON_START);
-  for (let frame = 0; frame < 5; frame += 1) nes.frame();
-  nes.buttonUp(1, Controller.BUTTON_START);
-  for (let frame = 0; frame < 640; frame += 1) nes.frame();
+  for (let tick = 0; tick < 180; tick += 1) frame();
+  buttonDown(Button.Start);
+  for (let tick = 0; tick < 5; tick += 1) frame();
+  buttonUp(Button.Start);
+  for (let tick = 0; tick < 640; tick += 1) frame();
 }
 
 const entity = (slot) => {
-  const memory = nes.cpu.mem;
   return {
     slot,
     state: memory[0x400 + slot],
@@ -137,19 +148,19 @@ const entity = (slot) => {
     x: memory[0x5e0 + slot],
   };
 };
-const active = (slot) => Boolean(nes.cpu.mem[0x400 + slot] & 0x80);
+const active = (slot) => Boolean(memory[0x400 + slot] & 0x80);
 const roundState = () => ({
-  roundIndex: nes.cpu.mem[0x41],
-  roundNumber: (nes.cpu.mem[0x41] ?? 0) + 1,
-  mapPointer: (nes.cpu.mem[0x5a] ?? 0) | ((nes.cpu.mem[0x5b] ?? 0) << 8),
-  mapPage: nes.cpu.mem[0x5c],
-  scrollOffset: nes.cpu.mem[0x5d],
-  scrollStep: nes.cpu.mem[0x62],
-  eventScriptPointer: (nes.cpu.mem[0x43] ?? 0) | ((nes.cpu.mem[0x44] ?? 0) << 8),
+  roundIndex: memory[0x41],
+  roundNumber: (memory[0x41] ?? 0) + 1,
+  mapPointer: (memory[0x5a] ?? 0) | ((memory[0x5b] ?? 0) << 8),
+  mapPage: memory[0x5c],
+  scrollOffset: memory[0x5d],
+  scrollStep: memory[0x62],
+  eventScriptPointer: (memory[0x43] ?? 0) | ((memory[0x44] ?? 0) << 8),
   eventScriptIndex: eventScriptIndex(),
 });
 const eventScriptIndex = () => {
-  const pointer = (nes.cpu.mem[0x43] ?? 0) | ((nes.cpu.mem[0x44] ?? 0) << 8);
+  const pointer = (memory[0x43] ?? 0) | ((memory[0x44] ?? 0) << 8);
   return pointer >= 0x8c00 ? Math.floor((pointer - 0x8c00) / 3) : undefined;
 };
 
@@ -163,8 +174,7 @@ const matchingSlots = new Set();
 const candidates = [];
 let matchesSeen = 0;
 let termination;
-for (let frame = 0; frame < frames; frame += 1) {
-  const memory = nes.cpu.mem;
+for (let current = 0; current < frames; current += 1) {
   memory[0x7c] = 255;
   if (horse && targetSlot === undefined) memory[0x77] = 3;
   const currentRound = (memory[0x41] ?? 0) + 1;
@@ -178,13 +188,13 @@ for (let frame = 0; frame < frames; frame += 1) {
       memory[0x74] = memory[0x5e0 + 14];
       memory[0x540 + 14] = 1;
     }
-    for (const button of [Controller.BUTTON_A, Controller.BUTTON_B]) {
-      if (bossActive && frame % 5 === 0) nes.buttonDown(1, button);
-      else nes.buttonUp(1, button);
+    for (const button of [Button.A, Button.B]) {
+      if (bossActive && current % 5 === 0) buttonDown(button);
+      else buttonUp(button);
     }
   } else if (round !== undefined) {
-    nes.buttonUp(1, Controller.BUTTON_A);
-    nes.buttonUp(1, Controller.BUTTON_B);
+    buttonUp(Button.A);
+    buttonUp(Button.B);
   }
   if (targetSlot !== undefined) {
     if (attack) {
@@ -192,10 +202,10 @@ for (let frame = 0; frame < frames; frame += 1) {
       memory[0x71] = Math.min(216, memory[0x5c0 + targetSlot] + 96);
       memory[0x88] = 4;
       memory[0x9c] = 255;
-      const pressed = targetStart !== undefined && (frame - targetStart) % 5 === 0;
-      for (const button of [Controller.BUTTON_A, Controller.BUTTON_B]) {
-        if (pressed) nes.buttonDown(1, button);
-        else nes.buttonUp(1, button);
+      const pressed = targetStart !== undefined && (current - targetStart) % 5 === 0;
+      for (const button of [Button.A, Button.B]) {
+        if (pressed) buttonDown(button);
+        else buttonUp(button);
       }
     } else {
       if (playerX !== undefined) memory[0x74] = playerX;
@@ -203,7 +213,7 @@ for (let frame = 0; frame < frames; frame += 1) {
     }
     for (let slot = slotStart; slot < slotEnd; slot += 1) if (slot !== targetSlot) memory[0x400 + slot] = 0;
   }
-  if (targetSlot === undefined && startFrame !== undefined && frame === startFrame) {
+  if (targetSlot === undefined && startFrame !== undefined && current === startFrame) {
     for (let slot = slotStart; slot < slotEnd; slot += 1) memory[0x400 + slot] = 0;
     matchingSlots.clear();
   }
@@ -211,9 +221,9 @@ for (let frame = 0; frame < frames; frame += 1) {
   const eventScriptPointerBefore = (memory[0x43] ?? 0) | ((memory[0x44] ?? 0) << 8);
   const eventScriptIndexBefore = eventScriptPointerBefore >= 0x8c00 ? Math.floor((eventScriptPointerBefore - 0x8c00) / 3) : undefined;
   const playerBefore = { x: memory[0x74], y: memory[0x71] };
-  nes.frame();
+  frame();
 
-  if (targetSlot === undefined && (startFrame === undefined || frame >= startFrame)) {
+  if (targetSlot === undefined && (startFrame === undefined || current >= startFrame)) {
     for (let slot = slotStart; slot < slotEnd; slot += 1) {
       if (!active(slot)) {
         matchingSlots.delete(slot);
@@ -226,7 +236,7 @@ for (let frame = 0; frame < frames; frame += 1) {
       const baseMatch = !advancing && candidate.dispatch === dispatch && (variant === undefined || candidate.variant === variant);
       if (!baseMatch || matchingSlots.has(slot)) continue;
       matchingSlots.add(slot);
-      candidates.push({ frame, ...candidate, playerBefore, player: { x: memory[0x74], y: memory[0x71] }, eventScriptPointerBefore, eventScriptIndexBefore, eventScriptIndex, eventScriptIndexes, roundState: candidateRoundState });
+      candidates.push({ frame: current, ...candidate, playerBefore, player: { x: memory[0x74], y: memory[0x71] }, eventScriptPointerBefore, eventScriptIndexBefore, eventScriptIndex, eventScriptIndexes, roundState: candidateRoundState });
       if (listCandidates) continue;
       const matches = (matchState === undefined || candidate.state === matchState)
         && (matchHeading === undefined || candidate.heading === matchHeading)
@@ -242,22 +252,22 @@ for (let frame = 0; frame < frames; frame += 1) {
       matchesSeen += 1;
       if (matchesSeen <= skip) continue;
       targetSlot = slot;
-      targetStart = frame;
+      targetStart = current;
       if (horse) memory[0x77] = 3;
       targetEventScriptIndexes = eventScriptIndexes;
       for (let other = slotStart; other < slotEnd; other += 1) if (other !== slot) memory[0x400 + other] = 0;
       for (let projectile = 24; projectile < 32; projectile += 1) memory[0x400 + projectile] = 0;
-      if (saveState) fs.writeFileSync(saveState, JSON.stringify(nes.toJSON()));
+      if (saveState) fs.writeFileSync(saveState, JSON.stringify({ format: "lib-jsnes", state: Buffer.from(nes.saveState()).toString("base64") }));
       break;
     }
   }
   if (targetSlot === undefined || targetStart === undefined) continue;
   if (!active(targetSlot) || !allowedDispatches.has(memory[0x420 + targetSlot])) {
-    termination = { frame: frame - targetStart, active: active(targetSlot), entity: entity(targetSlot) };
+    termination = { frame: current - targetStart, active: active(targetSlot), entity: entity(targetSlot) };
     break;
   }
 
-  const relativeFrame = frame - targetStart;
+  const relativeFrame = current - targetStart;
   entityFrames.push({
     frame: relativeFrame,
     ...entity(targetSlot),

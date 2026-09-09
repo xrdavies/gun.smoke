@@ -3080,9 +3080,11 @@ class ReferenceRomGame {
     if (bytes.length < 16 + trainerBytes + metadata.prgBytes + metadata.chrBytes) {
       throw new Error("Truncated iNES ROM data");
     }
+    const nes = new Nes(data);
+    metadata.sampleRate = nes.apu.sampleRate;
     let audio: AudioManager | undefined;
     try {
-      audio = new AudioManager();
+      audio = new AudioManager(new AudioContext({ sampleRate: metadata.sampleRate }));
     } catch {
       audio = undefined;
     }
@@ -3093,8 +3095,6 @@ class ReferenceRomGame {
       audio?.dispose();
       audio = undefined;
     }
-    const nes = new Nes(data);
-    metadata.sampleRate = nes.apu.sampleRate;
     try {
       nes.reset();
     } catch (error) {

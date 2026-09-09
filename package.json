@@ -25,12 +25,13 @@
   },
   "dependencies": {
     "@xrdavies/2d-engine": "github:xrdavies/2d-engine#v0.1.3",
-    "jsnes": "^2.1.0"
+    "lib-jsnes": "github:xrdavies/lib-jsnes#main"
   },
   "devDependencies": {
     "@playwright/test": "^1.62.1",
     "@types/node": "^24.0.0",
     "@webgpu/types": "^0.1.72",
+    "jsnes": "^2.1.0",
     "pngjs": "^7.0.0",
     "typescript": "^5.8.3",
     "vite": "^7.0.0",

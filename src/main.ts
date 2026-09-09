@@ -13,7 +13,6 @@ import {
 import type { NormalizedInputEvent, PcmStream } from "@xrdavies/2d-engine";
 import { advanceRomRandom, mixRomRandomDifference, mixRomRandomFirstSum, mixRomRandomSecondSum, mixRomRandomSecondThirdSum, mixRomRandomSpawn, mixRomRandomSum, mixRomRandomThirdFirstSum, ROM_RANDOM_SEED } from "./game-constants";
 import "./style.css";
-import type { ButtonKey } from "jsnes";
 import { AMMO_GAIN, backstabberAmbushY, banditBillOpeningY, BACKSTABBER_AMBUSH_LIFETIME, BANDIT_BILL_ENTRY_X_LANES, BANDIT_BILL_ENTRY_Y, bomberCanThrow, bomberMovementDecision, bomberMovementDuration, bomberMovementUsesRandom, bomberMovementVelocity, BOMBER_THROW_DURATION, BOSS_DEFEAT_ANIMATION_DURATION, bossReward, bossSpriteVisible, canSpawnPlayerBullet, clamp, CUTTER_ENTRY_X_LANES, CUTTER_ENTRY_Y, DEVIL_HAWK_ENTRY_X_LANES, DEVIL_HAWK_ENTRY_Y, DEVIL_HAWK_RANDOM_ROUTE_START_FRAME, distance, DYNAMITE_AIM_FACTOR, DYNAMITE_AIRBORNE_DURATION, contactSourceShouldClear, dynamiteContactIsDefusable, DYNAMITE_HORIZONTAL_DURATION, DYNAMITE_LIFETIME, dynamiteVerticalOffset, EMPTY_BARREL_EXPLOSION_LIFETIME, FATMAN_JOE_ENTRY_DURATION, FATMAN_JOE_ENTRY_X_LANES, FATMAN_JOE_ENTRY_Y, fallingRockOnScreen, fallingRockPosition, fatmanJoeOpeningY, HORSE_HIT_INVULNERABILITY, MAX_STAGE, NES_FRAME_RATE, NINJA_BOSS_ENTRY_LANES, NINJA_FIRST_SHOT_DELAY, ninjaBossEntryLaneIndex, PLAYER_DEATH_ANIMATION_DURATION, PLAYER_DEATH_RECOVERY_DURATION, playerDeathPhase, RIFLEMAN_FIRST_SHOT_DELAY, RIFLEMAN_SHOT_INTERVAL, RIFLEMAN_SHOTS_PER_VOLLEY, ROCK_IMPACT_DELAY, ROCK_IMPACT_LIFETIME, ROCK_LIFETIME, ROAD_WIDTHS, ROM_OBJECT_DROP_SPEED, romObjectScreenY, romPickupScreenY, ROM_SCREEN_RELEASE_Y_NES, romActorScreenYReleased, ROUND2_LOOP_HORSE_X, ROUND2_LOOP_HORSE_Y, ROUND_BOSS_TRIGGERS, ROUND_LENGTHS, ROUND_OBSTACLES, ROUND_SEGMENTS, SHOTGUNNER_FAN_NES, SHOTGUNNER_FIRST_VOLLEY_DELAY, SHOTGUNNER_LIFETIME, SHOTGUNNER_SIDE_LIFETIME, SHOTGUNNER_SIDE_SHOT_FRAME, SHOTGUNNER_VOLLEY_INTERVAL, shotgunnerPosition, shotgunnerSidePosition, shouldLoopStage, SHOP_COSTS, SHOP_TYPES, SMART_BOMB_CAPACITY, SNIPER_CODE2_SHOT_FRAMES, SNIPER_LIFETIME, SNIPER_SHOT_FRAMES, spendPoints, STAGES, unitMaxAge, WEAPONS, WANTED_COSTS, WINGATE_ENTRY_X_LANES, WINGATE_ENTRY_Y, WINGATE_SECOND_ENTRY_Y, WINGATE_SECOND_SPAWN_DELAY, WORLD_PLAYER_SPEED, WORLD_SCROLL_SPEED, type EnemyType, type ItemType, type ShopType, type WeaponName } from "./game-constants";
 import { advanceBackstabberRaid, createBackstabberRaidState, type BackstabberRaidState } from "./game-constants";
 import { advanceGunmanBottomContact, advanceGunmanFlankMovement, advanceSniperFiring, createGunmanBottomContactState, createGunmanBottomMovementState, createGunmanFlankMovementState, createGunmanTopMovementState, createSniperFiringState, GUNMAN_BOTTOM_DYNAMIC_HANDOFF_FRAME, gunmanBottomDynamicPosition, gunmanBottomFirstOpportunityFrame, gunmanBottomUsesDynamicState, gunmanCanFire, GUNMAN_FLANK_INITIAL_STATE_FRAMES, gunmanFlankEventShotFrames, gunmanFlankFirstOpportunityFrame, gunmanFlankLifetime, gunmanFlankMovementFacingHeading, gunmanFlankUsesDynamicState, GUNMAN_LIFETIME, GUNMAN_TOP_LIFETIMES_FRAMES, gunmanFirstOpportunityFrame, gunmanFlankPosition, gunmanTopBranch, gunmanTopHeading, gunmanTopPosition, gunmanTopUsesDynamicState, gunmanProjectileVelocity, GUNMAN_SHOT_OPPORTUNITY_INTERVAL, mediumProjectileHeadingVelocity, mediumProjectileVelocity, type GunmanBottomContactState, type GunmanFlankMovementState, type SniperFiringState } from "./game-constants";
@@ -212,25 +211,6 @@ canvas.tabIndex = 0;
 startButton.disabled = true;
 
 const transparent: Rgba = [0, 0, 0, 0];
-
-// libxnes' verified NTSC palette (ARGB constants with the alpha byte removed for jsnes).
-const LIBXNES_NTSC_PALETTE = [
-  0x666666, 0x002a88, 0x1412a7, 0x3b00a4, 0x5c007e, 0x6e0040, 0x6c0600, 0x561d00,
-  0x333500, 0x0b4800, 0x005200, 0x004f08, 0x00404d, 0, 0, 0, 0xadadad, 0x155fd9,
-  0x4240ff, 0x7527fe, 0xa01acc, 0xb71e7b, 0xb53120, 0x994e00, 0x6b6d00, 0x388700,
-  0x0c9300, 0x008f32, 0x007c8d, 0, 0, 0, 0xfffffe, 0x64b0ff, 0x9290ff, 0xc676ff,
-  0xf36aff, 0xfe6ecc, 0xfe8170, 0xea9e22, 0xbcbe00, 0x88d800, 0x5ce430, 0x45e082,
-  0x48cdde, 0x4f4f4f, 0, 0, 0xffffef, 0xc0dfff, 0xd3d2ff, 0xe8c8ff, 0xfbc2ff,
-  0xfec4ea, 0xfeccc5, 0xf7d8a5, 0xe4e594, 0xcfef96, 0xbdf4ab, 0xb3f3cc, 0xb5ebf2,
-  0xb8b8b8, 0, 0,
-] as const;
-
-function applyLibxnesPalette(nes: import("jsnes").NES): void {
-  const palette = (nes as unknown as { ppu: unknown }).ppu as { palTable: { curTable: Uint32Array; makeTables(): void; setEmphasis(value: number): void } };
-  palette.palTable.curTable = new Uint32Array(LIBXNES_NTSC_PALETTE);
-  palette.palTable.makeTables();
-  palette.palTable.setEmphasis(0);
-}
 
 function pixelTexture(engine: Engine, rows: readonly string[], palette: Record<string, Rgba>): GPUTexture {
   const width = Math.max(1, ...rows.map((row) => row.length));
@@ -3049,22 +3029,21 @@ class ReferenceRomGame {
   readonly texture: GPUTexture;
   readonly sampler: GPUSampler;
   readonly sprite: Sprite;
-  readonly nes: import("jsnes").NES;
-  readonly buttons: typeof import("jsnes").Controller;
+  readonly nes: import("lib-jsnes").Nes;
+  readonly buttons: typeof import("lib-jsnes").Button;
   readonly audio: AudioManager | undefined;
   readonly pcm: PcmStream | undefined;
   readonly metadata: { mapper: number; prgBytes: number; chrBytes: number; sampleRate: number };
-  private readonly frameRef: { value: Uint32Array | undefined };
   private readonly rgba = new Uint8Array(256 * 240 * 4);
   private accumulator = 0;
   private frameCount = 0;
   private readonly held = new Set<number>();
+  private controllerMask = 0;
 
-  private constructor(engine: Engine, nes: import("jsnes").NES, buttons: typeof import("jsnes").Controller, frameRef: { value: Uint32Array | undefined }, audio: AudioManager | undefined, pcm: PcmStream | undefined, metadata: { mapper: number; prgBytes: number; chrBytes: number; sampleRate: number }) {
+  private constructor(engine: Engine, nes: import("lib-jsnes").Nes, buttons: typeof import("lib-jsnes").Button, audio: AudioManager | undefined, pcm: PcmStream | undefined, metadata: { mapper: number; prgBytes: number; chrBytes: number; sampleRate: number }) {
     this.engine = engine;
     this.nes = nes;
     this.buttons = buttons;
-    this.frameRef = frameRef;
     this.audio = audio;
     this.pcm = pcm;
     this.metadata = metadata;
@@ -3084,7 +3063,7 @@ class ReferenceRomGame {
   }
 
   static async create(data: ArrayBuffer): Promise<ReferenceRomGame> {
-    const { Controller, NES } = await import("jsnes");
+    const { Button, Nes } = await import("lib-jsnes");
     const bytes = new Uint8Array(data);
     if (bytes.length < 16 || bytes[0] !== 0x4e || bytes[1] !== 0x45 || bytes[2] !== 0x53 || bytes[3] !== 0x1a) {
       throw new Error("Expected an iNES .NES file");
@@ -3101,11 +3080,6 @@ class ReferenceRomGame {
     if (bytes.length < 16 + trainerBytes + metadata.prgBytes + metadata.chrBytes) {
       throw new Error("Truncated iNES ROM data");
     }
-    let binary = "";
-    for (let offset = 0; offset < bytes.length; offset += 0x8000) {
-      binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
-    }
-    const frame: { value: Uint32Array | undefined } = { value: undefined };
     let audio: AudioManager | undefined;
     try {
       audio = new AudioManager();
@@ -3119,11 +3093,10 @@ class ReferenceRomGame {
       audio?.dispose();
       audio = undefined;
     }
-    metadata.sampleRate = audio?.context.sampleRate ?? 48_000;
-    const nes = new NES({ sampleRate: metadata.sampleRate, onFrame: (nextFrame) => { frame.value = nextFrame; }, onAudioSample: (left, right) => pcm?.push(left, right) });
-    applyLibxnesPalette(nes);
+    const nes = new Nes(data);
+    metadata.sampleRate = nes.apu.sampleRate;
     try {
-      nes.loadROM(binary);
+      nes.reset();
     } catch (error) {
       pcm?.stop();
       audio?.dispose();
@@ -3132,7 +3105,7 @@ class ReferenceRomGame {
     let engine: Engine | undefined;
     try {
       engine = await Engine.create({ canvas, autoStart: false, input: true, fixedDelta: 1 / NES_FRAME_RATE });
-      return new ReferenceRomGame(engine, nes, Controller, frame, audio, pcm, metadata);
+      return new ReferenceRomGame(engine, nes, Button, audio, pcm, metadata);
     } catch (error) {
       engine?.destroy();
       pcm?.stop();
@@ -3153,14 +3126,14 @@ class ReferenceRomGame {
 
   private update(delta: number): void {
     this.accumulator += Math.min(delta, 0.25);
+    let frame = this.nes.frame;
     while (this.accumulator >= 1 / NES_FRAME_RATE) {
       this.pollGamepad();
-      this.nes.frame();
+      frame = this.nes.runFrame().pixels;
+      for (const sample of this.nes.audioSamples()) this.pcm?.push(sample / 32768);
       this.frameCount += 1;
       this.accumulator -= 1 / NES_FRAME_RATE;
     }
-    const frame = this.frameRef.value;
-    if (!frame) return;
     for (let index = 0; index < frame.length; index += 1) {
       const value = frame[index] ?? 0;
       const offset = index * 4;
@@ -3196,48 +3169,52 @@ class ReferenceRomGame {
     if (pressed) {
       if (this.held.has(button)) return;
       this.held.add(button);
-      this.nes.buttonDown(1, button);
+      this.controllerMask |= button;
+      this.nes.setController(1, this.controllerMask);
     } else {
       this.held.delete(button);
-      this.nes.buttonUp(1, button);
+      this.controllerMask &= ~button;
+      this.nes.setController(1, this.controllerMask);
     }
   }
 
   private pollGamepad(): void {
     const pad = navigator.getGamepads?.()[0];
     if (!pad) return;
-    const pressed = (button: ButtonKey, active: boolean): void => {
+    const pressed = (button: number, active: boolean): void => {
       if (active && !this.held.has(button)) {
         this.held.add(button);
-        this.nes.buttonDown(1, button);
+        this.controllerMask |= button;
+        this.nes.setController(1, this.controllerMask);
       } else if (!active && this.held.has(button)) {
         this.held.delete(button);
-        this.nes.buttonUp(1, button);
+        this.controllerMask &= ~button;
+        this.nes.setController(1, this.controllerMask);
       }
     };
-    pressed(this.buttons.BUTTON_UP, (pad.axes[1] ?? 0) < -0.45 || Boolean(pad.buttons[this.buttons.BUTTON_UP]?.pressed));
-    pressed(this.buttons.BUTTON_DOWN, (pad.axes[1] ?? 0) > 0.45 || Boolean(pad.buttons[this.buttons.BUTTON_DOWN]?.pressed));
-    pressed(this.buttons.BUTTON_LEFT, (pad.axes[0] ?? 0) < -0.45 || Boolean(pad.buttons[this.buttons.BUTTON_LEFT]?.pressed));
-    pressed(this.buttons.BUTTON_RIGHT, (pad.axes[0] ?? 0) > 0.45 || Boolean(pad.buttons[this.buttons.BUTTON_RIGHT]?.pressed));
-    pressed(this.buttons.BUTTON_A, Boolean(pad.buttons[0]?.pressed));
-    pressed(this.buttons.BUTTON_B, Boolean(pad.buttons[1]?.pressed));
-    pressed(this.buttons.BUTTON_START, Boolean(pad.buttons[9]?.pressed));
-    pressed(this.buttons.BUTTON_SELECT, Boolean(pad.buttons[8]?.pressed));
+    pressed(this.buttons.Up, (pad.axes[1] ?? 0) < -0.45 || Boolean(pad.buttons[11]?.pressed));
+    pressed(this.buttons.Down, (pad.axes[1] ?? 0) > 0.45 || Boolean(pad.buttons[12]?.pressed));
+    pressed(this.buttons.Left, (pad.axes[0] ?? 0) < -0.45 || Boolean(pad.buttons[13]?.pressed));
+    pressed(this.buttons.Right, (pad.axes[0] ?? 0) > 0.45 || Boolean(pad.buttons[14]?.pressed));
+    pressed(this.buttons.A, Boolean(pad.buttons[0]?.pressed));
+    pressed(this.buttons.B, Boolean(pad.buttons[1]?.pressed));
+    pressed(this.buttons.Start, Boolean(pad.buttons[9]?.pressed));
+    pressed(this.buttons.Select, Boolean(pad.buttons[8]?.pressed));
   }
 
-  private keyButton(code: string): ButtonKey | undefined {
-    const map: Record<string, ButtonKey> = {
-      ArrowUp: this.buttons.BUTTON_UP,
-      ArrowDown: this.buttons.BUTTON_DOWN,
-      ArrowLeft: this.buttons.BUTTON_LEFT,
-      ArrowRight: this.buttons.BUTTON_RIGHT,
-      KeyZ: this.buttons.BUTTON_B,
-      KeyX: this.buttons.BUTTON_A,
-      Enter: this.buttons.BUTTON_START,
-      NumpadEnter: this.buttons.BUTTON_START,
-      Tab: this.buttons.BUTTON_SELECT,
-      ShiftLeft: this.buttons.BUTTON_SELECT,
-      ShiftRight: this.buttons.BUTTON_SELECT,
+  private keyButton(code: string): number | undefined {
+    const map: Record<string, number> = {
+      ArrowUp: this.buttons.Up,
+      ArrowDown: this.buttons.Down,
+      ArrowLeft: this.buttons.Left,
+      ArrowRight: this.buttons.Right,
+      KeyZ: this.buttons.B,
+      KeyX: this.buttons.A,
+      Enter: this.buttons.Start,
+      NumpadEnter: this.buttons.Start,
+      Tab: this.buttons.Select,
+      ShiftLeft: this.buttons.Select,
+      ShiftRight: this.buttons.Select,
     };
     return map[code];
   }

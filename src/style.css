@@ -51,6 +51,32 @@ body { margin: 0; min-width: 320px; min-height: 100vh; background: #080d18; }
 #briefing-screen { background-image: url("/assets/screens/briefing.png"); }
 #ending-screen { background-image: url("/assets/screens/ending.png"); }
 
+/* The captured ROM screens already contain their typography and composition. */
+#title-screen, #intro-screen, #briefing-screen { display: block; background-color: #000; }
+#title-screen > .eyebrow, #title-screen > h1, #title-screen > .subtitle,
+#title-screen > .note, #intro-screen > .eyebrow, #intro-screen > h2,
+#intro-screen > p:not(.eyebrow), #briefing-screen > .eyebrow,
+#briefing-screen > h2, #briefing-screen > p:not(.eyebrow) { display: none; }
+#title-screen #start-button, #intro-screen #continue-button, #briefing-screen #briefing-button {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: 128px;
+  height: 30px;
+  transform: translate(-50%, -50%);
+  padding: 0;
+  color: transparent;
+  background: transparent;
+  border: 0;
+}
+#title-screen #start-button:hover, #title-screen #start-button:focus-visible,
+#intro-screen #continue-button:hover, #intro-screen #continue-button:focus-visible,
+#briefing-screen #briefing-button:hover, #briefing-screen #briefing-button:focus-visible {
+  background: rgba(255, 255, 255, .04);
+  outline: 1px solid rgba(255, 255, 255, .18);
+}
+#title-screen .rom-loader { position: absolute; left: 50%; bottom: 5px; transform: translateX(-50%); }
+
 #intro-screen h2 { margin: 0; color: #efbd58; font-size: clamp(30px, 7vw, 64px); }
 #intro-screen p:not(.eyebrow) { margin: 0; color: #d4c9ab; }
 #briefing-screen h2 { margin: 0; color: #efbd58; font-size: clamp(30px, 7vw, 64px); }

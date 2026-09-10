@@ -1449,7 +1449,10 @@ available only for historical snapshot comparisons.
 native 44.1-kHz rate. Passing a verified `lib-jsnes` state and warmup, for
 example `--state=/tmp/round2-lib-state.json --warmup=650 --out=public/assets/music/round-2.wav`,
 records a later round with the same path. Round 1 through Round 6 are tracked;
-the ending track and SFX remain generated until their ROM tracks are captured.
+`npm run extract:rom-ending -- --state=STATE` defeats both Wingate encounters
+from a verified Round 6 state, then captures the ending story frame and APU
+stream. The ending track is tracked; SFX remain generated until their ROM cues
+are captured.
 
 `npm run trace:rom:timeline` presses Start before the attract timer begins,
 starts a real game,

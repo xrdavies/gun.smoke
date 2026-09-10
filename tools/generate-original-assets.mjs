@@ -216,7 +216,7 @@ scenePngIfMissing(path.join(screensRoot, "briefing.png"), ({ rect, line }) => {
   line(132, 56, 206, 56, [102, 64, 44, 255]); line(132, 72, 206, 72, [102, 64, 44, 255]); line(132, 88, 194, 88, [102, 64, 44, 255]); line(47, 147, 208, 147, [102, 64, 44, 255]); line(47, 164, 208, 164, [102, 64, 44, 255]);
   rect(92, 181, 72, 10, [190, 52, 52, 255]);
 });
-scenePng(path.join(screensRoot, "ending.png"), ({ rect, line, set, width, height }) => {
+scenePngIfMissing(path.join(screensRoot, "ending.png"), ({ rect, line, set, width, height }) => {
   for (let y = 0; y < height; y += 1) rect(0, y, width, 1, y < 125 ? [116 + Math.floor(y / 4), 65 + Math.floor(y / 8), 72, 255] : [17, 28, 37, 255]);
   rect(174, 39, 36, 36, sunset); rect(180, 45, 24, 24, [245, 191, 112, 255]);
   line(0, 144, 70, 92, [33, 45, 58, 255]); line(70, 92, 124, 144, [33, 45, 58, 255]); line(117, 144, 170, 78, [33, 45, 58, 255]); line(170, 78, 256, 144, [33, 45, 58, 255]);

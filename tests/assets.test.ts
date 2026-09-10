@@ -73,5 +73,7 @@ describe("generated Gun.Smoke assets", () => {
     expect(hash("screens/title.png")).toBe("8b60beae8602178e310d0a86581a487e172523bb7bc018ce70d30dce08a8770e");
     expect(hash("screens/intro.png")).toBe("e383c82aaea1f6b2da457c4441ff48afe2f94715f745e74b1b57054267aee1ef");
     expect(hash("screens/briefing.png")).toBe("103c50cf163bf7889cf094bb747ea75c16456d2720ee1e56741bb3c949089aff");
+    expect(hash("screens/ending.png")).toBe("ebcfb5b9e9992c459f7ac83b6ac6e6b62307f600b459eadde8a9583fed8faacd");
+    expect(hash("music/ending.wav")).toBe("f117e20b61e3cb00139d978dd4bf18deeb3a5f4353bc80991798acd250cf1a01");
   });
 });

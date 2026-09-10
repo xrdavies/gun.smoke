@@ -53,10 +53,12 @@ body { margin: 0; min-width: 320px; min-height: 100vh; background: #080d18; }
 
 /* The captured ROM screens already contain their typography and composition. */
 #title-screen, #intro-screen, #briefing-screen { display: block; background-color: #000; }
+#ending-screen { background-color: #000; }
 #title-screen > .eyebrow, #title-screen > h1, #title-screen > .subtitle,
 #title-screen > .note, #intro-screen > .eyebrow, #intro-screen > h2,
 #intro-screen > p:not(.eyebrow), #briefing-screen > .eyebrow,
-#briefing-screen > h2, #briefing-screen > p:not(.eyebrow) { display: none; }
+#briefing-screen > h2, #briefing-screen > p:not(.eyebrow),
+#ending-screen > .eyebrow, #ending-screen > h2, #ending-screen > p { display: none; }
 #title-screen #start-button, #intro-screen #continue-button, #briefing-screen #briefing-button {
   position: absolute;
   left: 50%;
@@ -76,6 +78,18 @@ body { margin: 0; min-width: 320px; min-height: 100vh; background: #080d18; }
   outline: 1px solid rgba(255, 255, 255, .18);
 }
 #title-screen .rom-loader { position: absolute; left: 50%; bottom: 5px; transform: translateX(-50%); }
+#ending-screen #ending-button {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 160px;
+  height: 120px;
+  transform: translate(-50%, -50%);
+  padding: 0;
+  color: transparent;
+  background: transparent;
+  border: 0;
+}
 
 #intro-screen h2 { margin: 0; color: #efbd58; font-size: clamp(30px, 7vw, 64px); }
 #intro-screen p:not(.eyebrow) { margin: 0; color: #d4c9ab; }

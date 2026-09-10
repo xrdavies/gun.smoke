@@ -1437,7 +1437,7 @@ Pattern-table previews remain grayscale for bitplane inspection; nametable
 previews apply each tile's expanded attribute and the live NES background
 palette so terrain colors match the captured scene.
 
-The tracked `player.png`, `gunman.png`, and `boss-1.png`/`boss-2.png` sprites are
+The tracked `player.png`, `gunman.png`, `sniper.png`, and `boss-1.png`/`boss-2.png` sprites are
 reproducible OAM/CHR captures from the USA ROM through lib-jsnes. The remaining
 Boss captures (`boss-3.png` through `boss-6.png`) use the existing local Boss
 entrance snapshots as OAM/CHR input and map their logical palette indices through

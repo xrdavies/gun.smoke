@@ -1475,17 +1475,16 @@ class GunSmokeGame {
     const small = kind === "bullet" || kind === "enemyBullet";
     const sceneObject = kind === "sceneObject";
     const colors: Record<EnemyType, [number, number, number, number]> = {
-      gunman: [1, 0.82, 0.82, 1], rifleman: [0.82, 0.9, 1, 1], bomber: [1, 0.9, 0.65, 1], sniper: [0.78, 1, 0.88, 1],
+      gunman: [1, 1, 1, 1], rifleman: [0.82, 0.9, 1, 1], bomber: [1, 0.9, 0.65, 1], sniper: [1, 1, 1, 1],
       backstabber: [1, 0.72, 0.88, 1], ninja: [0.82, 0.78, 1, 1], hatchet: [1, 0.82, 0.68, 1], spear: [0.7, 0.9, 0.72, 1], firebreather: [1, 0.62, 0.42, 1], shotgunner: [1, 0.48, 0.3, 1],
     };
-    const bossColors: readonly [number, number, number, number][] = [[1, 0.55, 0.42, 1], [0.55, 0.75, 1, 1], [1, 0.72, 0.34, 1], [0.78, 0.58, 1, 1], [1, 0.82, 0.42, 1], [1, 0.96, 0.72, 1]];
     const itemColors: Record<ItemType, [number, number, number, number]> = { boots: [0.45, 0.8, 1, 1], rifle: [0.7, 0.9, 0.5, 1], ammo: [0.5, 0.7, 1, 1], money: [1, 0.85, 0.35, 1], pow: [1, 0.35, 0.35, 1], skull: [0.75, 0.75, 0.75, 1], horse: [0.8, 0.55, 0.3, 1], blueYashichi: [0.35, 0.65, 1, 1], redYashichi: [1, 0.3, 0.35, 1] };
-    const color: [number, number, number, number] = isBoss ? bossColors[this.stage - 1] ?? bossColors[0]! : kind === "enemy" && enemyType ? colors[enemyType] : kind === "item" && itemType ? itemColors[itemType] : kind === "shopkeeper" ? [1, 0.9, 0.55, 1] : sceneObject ? [0.65, 0.72, 0.8, 1] : [1, 1, 1, 1];
+    const color: [number, number, number, number] = isBoss ? [1, 1, 1, 1] : kind === "enemy" && enemyType ? colors[enemyType] : kind === "item" && itemType ? itemColors[itemType] : kind === "shopkeeper" ? [1, 0.9, 0.55, 1] : sceneObject ? [0.65, 0.72, 0.8, 1] : [1, 1, 1, 1];
     const texture = isBoss ? this.bossTextures[this.stage - 1] ?? this.bossTextures[0]! : kind === "enemy" && enemyType ? this.enemyTextures[enemyType] : kind === "item" && itemType ? this.itemTextures[itemType] : this.textures[textureName];
     const animated = kind === "enemy" || kind === "shopkeeper" || isBoss;
     const frameDuration = kind === "shopkeeper" ? 0.35 : 0.14;
-    const bossSize = isBoss && this.stage === 1 ? { x: 60, y: 72 } : isBoss && this.stage === 2 ? { x: 120, y: 54 } : { x: 110, y: 68 };
-    const sprite = new Sprite({ texture, sampler: this.sampler, frame: animated ? { x: 0, y: 0, width: 0.5, height: 1 } : undefined, position: { x, y }, size: { x: isBoss ? bossSize.x : sceneObject ? 52 : isPickup ? 28 : small ? 9 : enemyType === "gunman" ? 24 : 34, y: isBoss ? bossSize.y : sceneObject ? 52 : isPickup ? 28 : small ? 25 : enemyType === "gunman" ? 36 : kind === "shopkeeper" ? 54 : 34 }, anchor: { x: 0.5, y: 0.5 }, color, layer: isBoss ? 15 : small ? 12 : sceneObject ? 4 : isPickup ? 11 : 10 });
+    const bossSize = [{ x: 60, y: 72 }, { x: 120, y: 54 }, { x: 60, y: 54 }, { x: 60, y: 72 }, { x: 90, y: 72 }, { x: 120, y: 72 }][this.stage - 1] ?? { x: 60, y: 72 };
+    const sprite = new Sprite({ texture, sampler: this.sampler, frame: animated ? { x: 0, y: 0, width: 0.5, height: 1 } : undefined, position: { x, y }, size: { x: isBoss ? bossSize.x : sceneObject ? 52 : isPickup ? 28 : small ? 9 : enemyType === "gunman" || enemyType === "sniper" ? 24 : 34, y: isBoss ? bossSize.y : sceneObject ? 52 : isPickup ? 28 : small ? 25 : enemyType === "gunman" || enemyType === "sniper" ? 36 : kind === "shopkeeper" ? 54 : 34 }, anchor: { x: 0.5, y: 0.5 }, color, layer: isBoss ? 15 : small ? 12 : sceneObject ? 4 : isPickup ? 11 : 10 });
     const animation = animated ? new SpriteAnimationBinding(sprite, new AnimationPlayer().play(new SpriteFrameClip([
       { x: 0, y: 0, width: 0.5, height: 1, duration: frameDuration },
       { x: 0.5, y: 0, width: 0.5, height: 1, duration: frameDuration },

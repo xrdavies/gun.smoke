@@ -25,7 +25,7 @@ input; ROM bytes, extracted artwork, and Capcom source are not distributed.
 | Resources and combat | Complete for modeled rules | Weapons, ammo, score, drops, shops, Smart Bomb, Horse, damage and death state |
 | Ordinary enemy routines | Complete for natural decoded paths | Every scripted behavior uses a measured route or decoded state machine; the sole generic candidate is not naturally allocated by the seven-slot pool |
 | Boss routines | Complete for decoded gameplay | All six entrances, attacks, health transitions, long tails, defeat controllers and Round exits are measured or state-driven |
-| Original visual/audio assets | Partial ROM-derived baseline | Player, Gunman, all six Boss sprites, title/opening/briefing PNGs, and all six Round APU loops are extracted from the USA ROM; remaining ordinary sprites, terrain, ending screen, and SFX are deterministic generated approximations |
+| Original visual/audio assets | Partial ROM-derived baseline | Player, Gunman, Sniper, all six Boss sprites, title/opening/briefing PNGs, and all six Round APU loops are extracted from the USA ROM; remaining ordinary sprites, terrain, ending screen, and SFX are deterministic generated approximations |
 
 Recent evidence-backed parity passes closed the full Round 4 Ninja script set,
 enemy/object slot attribution, discrete Backstabber and scripted-object descent,

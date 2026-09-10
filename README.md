@@ -13,7 +13,7 @@ damage recovery, wanted-poster gates, two final Wingate encounters, game over
 and a completion state.
 
 The shipped assets are deterministic PNG pixel sprites, six-round terrain
-textures, PCM WAV music loops and WAV sound effects. The player, Gunman, all six
+textures, PCM WAV music loops and WAV sound effects. The player, Gunman, Sniper, all six
 Boss sprites, and title/intro/briefing screens are extracted from the USA
 reference ROM; remaining ordinary sprites, terrain, and music are generated
 locally. No commercial ROM or original
@@ -78,6 +78,7 @@ npm run extract:rom-assets
 npm run extract:rom-screens -- "Gun.Smoke (USA).nes"
 npm run extract:rom-sprites -- "Gun.Smoke (USA).nes"
 npm run extract:rom-gunman -- "Gun.Smoke (USA).nes"
+npm run extract:rom-enemy -- "Gun.Smoke (USA).nes" --state=/tmp/sniper-state.json --slots=18,19,20,21 --out=public/assets/sprites/sniper.png
 npm run extract:rom-boss -- "Gun.Smoke (USA).nes"
 npm run extract:rom-legacy-boss -- "Gun.Smoke (USA).nes" --round=3 --frame=0
 npm run extract:rom-audio -- "Gun.Smoke (USA).nes"

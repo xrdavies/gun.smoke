@@ -17,6 +17,7 @@ const record = args.includes("--record");
 const clearField = args.includes("--clear-field");
 const forceGate = args.includes("--force-gate");
 const saveTransitionState = args.find((argument) => argument.startsWith("--save-transition-state="))?.split("=")[1];
+const saveBossState = args.find((argument) => argument.startsWith("--save-boss-state="))?.split("=")[1];
 if (!fs.existsSync(filename)) {
   console.log(`Reference ROM not found: ${filename}`);
   process.exit(0);
@@ -121,6 +122,10 @@ for (let current = 0; current < frames; current += 1) {
   if (bossStart === undefined && boss && boss.dispatch >= 0x80) {
     bossStart = current;
     bossRoundIndex = memory[0x41];
+    if (saveBossState) {
+      fs.mkdirSync(path.dirname(saveBossState), { recursive: true });
+      fs.writeFileSync(saveBossState, JSON.stringify({ format: "lib-jsnes", state: Buffer.from(nes.saveState()).toString("base64") }));
+    }
     if (clearField) {
       for (let slot = 2; slot < 14; slot += 1) memory[0x400 + slot] = 0;
       for (let slot = 24; slot < 32; slot += 1) memory[0x400 + slot] = 0;

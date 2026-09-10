@@ -49,6 +49,7 @@ describe("generated Gun.Smoke assets", () => {
     const hash = (name: string) => crypto.createHash("sha256").update(fs.readFileSync(path.join(root, name))).digest("hex");
     expect(hash("sprites/player.png")).toBe("c39e0a638386090a2ea022826d0e78af14c449d2127491f4768a70ebfd87c3bb");
     expect(hash("sprites/gunman.png")).toBe("242af688b0a10400cd342811f768d0016d816dd9cd9513459370f282cb9d7a9e");
+    expect(hash("sprites/sniper.png")).toBe("880f1f3ab7f11f08b43d229ddec9bf8b5259527ed7a9d0a04e9af60196d33007");
     expect(hash("sprites/boss-1.png")).toBe("1928bf03f9f15989345b3d4d714ff9b52386c58f45cda908902f466328ae696d");
     expect(hash("sprites/boss-2.png")).toBe("a58b0a6d2f1d3e5abee7a112c762a87455428a6db7dbb13bd851ca693496086a");
     expect(hash("sprites/boss-3.png")).toBe("356a58251f6803cb8d6238e038ac343e5a29a9e8893cd9d1a9919f841079ac1e");

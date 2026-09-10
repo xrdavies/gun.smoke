@@ -13,6 +13,7 @@
     "extract:rom-screens": "node tools/extract-rom-screens-lib.mjs",
     "extract:rom-sprites": "node tools/extract-rom-sprites-lib.mjs",
     "extract:rom-gunman": "node tools/extract-rom-gunman-lib.mjs",
+    "extract:rom-enemy": "node tools/extract-rom-enemy-sprite-lib.mjs",
     "extract:rom-boss": "node tools/extract-rom-boss-sprites-lib.mjs --rounds=1",
     "extract:rom-legacy-boss": "node tools/extract-rom-legacy-boss-sprites.mjs",
     "extract:rom-audio": "node tools/extract-rom-round1-audio-lib.mjs",

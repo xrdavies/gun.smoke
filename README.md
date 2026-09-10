@@ -80,7 +80,6 @@ npm run extract:rom-sprites -- "Gun.Smoke (USA).nes"
 npm run extract:rom-gunman -- "Gun.Smoke (USA).nes"
 npm run extract:rom-enemy -- "Gun.Smoke (USA).nes" --state=/tmp/sniper-state.json --slots=18,19,20,21 --out=public/assets/sprites/sniper.png
 npm run extract:rom-boss -- "Gun.Smoke (USA).nes"
-npm run extract:rom-legacy-boss -- "Gun.Smoke (USA).nes" --round=3 --frame=0
 npm run extract:rom-audio -- "Gun.Smoke (USA).nes"
 # A verified lib-jsnes state can be used for later-round audio:
 npm run extract:rom-audio -- "Gun.Smoke (USA).nes" --state=/tmp/round2-lib-state.json --warmup=650 --out=public/assets/music/round-2.wav

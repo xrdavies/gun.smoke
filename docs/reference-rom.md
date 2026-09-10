@@ -1437,15 +1437,14 @@ Pattern-table previews remain grayscale for bitplane inspection; nametable
 previews apply each tile's expanded attribute and the live NES background
 palette so terrain colors match the captured scene.
 
-The tracked `player.png`, `gunman.png`, `sniper.png`, and `boss-1.png`/`boss-2.png` sprites are
-reproducible OAM/CHR captures from the USA ROM through lib-jsnes. The remaining
-Boss captures (`boss-3.png` through `boss-6.png`) use the existing local Boss
-entrance snapshots as OAM/CHR input and map their logical palette indices through
-`lib-jsnes`'s `NES_PALETTE`; `npm run extract:rom-legacy-boss` regenerates one
-of those snapshots without using the legacy JSNES renderer for colors.
+The tracked `player.png`, `gunman.png`, `sniper.png`, and all six Boss sprites are
+reproducible OAM/CHR captures from the USA ROM through lib-jsnes. Boss captures
+from saved round states use the same live PPU palette and CHR data as runtime;
+the state-aware form is `npm run extract:rom-boss -- --state=STATE --warmup=50`.
 `npm run extract:rom-sprites`, `npm run extract:rom-gunman`, and
-`npm run extract:rom-boss` regenerate the direct lib-jsnes captures without
-depending on the legacy JSNES PPU implementation.
+`npm run extract:rom-boss` regenerates the direct Round 1 capture without
+depending on the legacy JSNES PPU implementation. The legacy extractor remains
+available only for historical snapshot comparisons.
 `npm run extract:rom-audio` records the Round 1 APU stream at the emulator's
 native 44.1-kHz rate. Passing a verified `lib-jsnes` state and warmup, for
 example `--state=/tmp/round2-lib-state.json --warmup=650 --out=public/assets/music/round-2.wav`,

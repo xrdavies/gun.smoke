@@ -7,7 +7,9 @@ const romPath = process.argv.slice(2).find((value) => !value.startsWith("--")) ?
 const outputRoot = process.argv.find((value) => value.startsWith("--out="))?.split("=")[1] ?? "public/assets/sprites";
 const maxRounds = Number(process.argv.find((value) => value.startsWith("--rounds="))?.split("=")[1] ?? 6);
 const stateFile = process.argv.find((value) => value.startsWith("--state="))?.split("=")[1];
+const warmup = Number(process.argv.find((value) => value.startsWith("--warmup="))?.split("=")[1] ?? 0);
 if (!Number.isInteger(maxRounds) || maxRounds < 1 || maxRounds > 6) throw new Error("--rounds must be between 1 and 6");
+if (!Number.isInteger(warmup) || warmup < 0) throw new Error("--warmup must be a non-negative integer");
 if (!fs.existsSync(romPath)) throw new Error(`Reference ROM not found: ${romPath}`);
 fs.mkdirSync(outputRoot, { recursive: true });
 
@@ -26,10 +28,12 @@ if (stateFile) {
   const saved = JSON.parse(fs.readFileSync(stateFile, "utf8"));
   if (saved.format !== "lib-jsnes" || typeof saved.state !== "string") throw new Error("State file is not a lib-jsnes export");
   nes.loadState(Buffer.from(saved.state, "base64"));
+  run(warmup);
   setButton(Button.A, true);
   setButton(Button.B, true);
 }
 const captureLimit = stateFile ? 1 : maxRounds;
+const stateCapture = Boolean(stateFile);
 
 function activeBoss() {
   return (read(0x400 + 14) & 0x80) && read(0x420 + 14) >= 0x80 && read(0x5c0 + 14) > 20
@@ -46,29 +50,31 @@ function captureBoss(name, origin) {
       const tile = nes.ppu.oam[offset + 1] ?? 0xff;
       const attr = nes.ppu.oam[offset + 2] ?? 0;
       const x = nes.ppu.oam[offset + 3] ?? 0xff;
-      if (slot >= 24 && x >= origin.x - 32 && x < origin.x + 32 && y >= origin.y - 40 && y < origin.y + 32 && y < 240 && tile !== 0xff) entries.push({ slot, x, y, tile, attr });
+      if (x >= origin.x - 32 && x < origin.x + 32 && (stateCapture || (y >= origin.y - 40 && y < origin.y + 32)) && y < 240 && tile !== 0xff && tile !== 88 && tile !== 116) entries.push({ slot, x, y, tile, attr });
     }
     if (!entries.length) throw new Error(`No OAM entries found for ${name}`);
-    const remaining = new Set(entries);
-    const components = [];
-    while (remaining.size) {
-      const component = [];
-      const queue = [remaining.values().next().value];
-      remaining.delete(queue[0]);
-      while (queue.length) {
-        const entry = queue.pop();
-        component.push(entry);
-        for (const candidate of remaining) {
-          if (Math.abs(candidate.x - entry.x) <= 8 && Math.abs(candidate.y - entry.y) <= 8) {
-            remaining.delete(candidate);
-            queue.push(candidate);
+    {
+      const remaining = new Set(entries);
+      const components = [];
+      while (remaining.size) {
+        const component = [];
+        const queue = [remaining.values().next().value];
+        remaining.delete(queue[0]);
+        while (queue.length) {
+          const entry = queue.pop();
+          component.push(entry);
+          for (const candidate of remaining) {
+            if (Math.abs(candidate.x - entry.x) <= 8 && Math.abs(candidate.y - entry.y) <= 8) {
+              remaining.delete(candidate);
+              queue.push(candidate);
+            }
           }
         }
+        components.push(component);
       }
-      components.push(component);
+      entries.length = 0;
+      entries.push(...components.sort((left, right) => right.length - left.length)[0]);
     }
-    entries.length = 0;
-    entries.push(...components.sort((left, right) => right.length - left.length)[0]);
     const left = Math.min(...entries.map(({ x }) => x));
     const top = Math.min(...entries.map(({ y }) => y));
     const right = Math.max(...entries.map(({ x }) => x + 8));

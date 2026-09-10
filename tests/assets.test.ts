@@ -20,10 +20,10 @@ describe("generated Gun.Smoke assets", () => {
     expect(pngSize(path.join(root, "sprites/player.png"))).toEqual({ width: 64, height: 48 });
     expect(pngSize(path.join(root, "sprites/boss-1.png"))).toEqual({ width: 64, height: 64 });
     expect(pngSize(path.join(root, "sprites/boss-2.png"))).toEqual({ width: 128, height: 48 });
-    expect(pngSize(path.join(root, "sprites/boss-3.png"))).toEqual({ width: 64, height: 48 });
-    expect(pngSize(path.join(root, "sprites/boss-4.png"))).toEqual({ width: 64, height: 64 });
+    expect(pngSize(path.join(root, "sprites/boss-3.png"))).toEqual({ width: 128, height: 64 });
+    expect(pngSize(path.join(root, "sprites/boss-4.png"))).toEqual({ width: 96, height: 64 });
     expect(pngSize(path.join(root, "sprites/boss-5.png"))).toEqual({ width: 96, height: 64 });
-    expect(pngSize(path.join(root, "sprites/boss-6.png"))).toEqual({ width: 128, height: 64 });
+    expect(pngSize(path.join(root, "sprites/boss-6.png"))).toEqual({ width: 128, height: 80 });
     expect(pngSize(path.join(root, "backgrounds/terrain-1.png"))).toEqual({ width: 96, height: 96 });
     for (const name of ["title", "intro", "briefing", "ending"]) {
       expect(pngSize(path.join(root, "screens", `${name}.png`))).toEqual({ width: 256, height: 240 });
@@ -51,11 +51,11 @@ describe("generated Gun.Smoke assets", () => {
     expect(hash("sprites/gunman.png")).toBe("242af688b0a10400cd342811f768d0016d816dd9cd9513459370f282cb9d7a9e");
     expect(hash("sprites/sniper.png")).toBe("880f1f3ab7f11f08b43d229ddec9bf8b5259527ed7a9d0a04e9af60196d33007");
     expect(hash("sprites/boss-1.png")).toBe("1928bf03f9f15989345b3d4d714ff9b52386c58f45cda908902f466328ae696d");
-    expect(hash("sprites/boss-2.png")).toBe("a58b0a6d2f1d3e5abee7a112c762a87455428a6db7dbb13bd851ca693496086a");
-    expect(hash("sprites/boss-3.png")).toBe("356a58251f6803cb8d6238e038ac343e5a29a9e8893cd9d1a9919f841079ac1e");
-    expect(hash("sprites/boss-4.png")).toBe("6d1e2255bff42046ddbb5c573e8c98a438af12a2ac64a244d666028032f464ee");
-    expect(hash("sprites/boss-5.png")).toBe("81a46740c1bb3a4b2c841f8b22af3f8d6ba919e48446ecc8cf27443d8ae7e9cf");
-    expect(hash("sprites/boss-6.png")).toBe("f1fdac0651f66e62e4d9254f65abcb4d1112e1e7248af5f301ba2a6603b9f027");
+    expect(hash("sprites/boss-2.png")).toBe("e4e0ee2dda86c13a6a324739b38cef5779f22d97706d0a9246f43a1d26b29936");
+    expect(hash("sprites/boss-3.png")).toBe("2503d584c09b2e897ecc589d3369a7f6323cbe912ff1a65b1cebf1ceb6ec9d32");
+    expect(hash("sprites/boss-4.png")).toBe("4e6bfa331740c4723393fa3b9ab3188c3a5f1dfa11c8ff4838de18996ec1e21b");
+    expect(hash("sprites/boss-5.png")).toBe("df288a8f0fce9bfebe4cb138240d9b67c07f8348128b27696d4733f5f3f0bf6d");
+    expect(hash("sprites/boss-6.png")).toBe("f8c0e7cedaf86f54df589e3c319a4e06026d006d2544c89eeb1bff59a39fbd94");
     expect(hash("music/round-1.wav")).toBe("b3c24fa423bf73d1ab94022ad2a0ff0c6660807e7cf1b39aaa900e2cf64b5bb2");
     expect(hash("music/round-2.wav")).toBe("ab2c64b5c1a127ebd56ca6ca6b4a06cbd1a01c7945e888a16f89c643de722aa6");
     expect(hash("music/round-3.wav")).toBe("4b95dd7a009b6f21b6320f8484e26d5769c8aa9a3e0c58fe07cc40ae6824b2ae");

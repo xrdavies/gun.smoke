@@ -1437,7 +1437,7 @@ Pattern-table previews remain grayscale for bitplane inspection; nametable
 previews apply each tile's expanded attribute and the live NES background
 palette so terrain colors match the captured scene.
 
-The tracked `player.png`, `gunman.png`, `sniper.png`, and all six Boss sprites are
+The tracked `player.png`, all ordinary enemy sprites, and all six Boss sprites are
 reproducible OAM/CHR captures from the USA ROM through lib-jsnes. Boss captures
 from saved round states use the same live PPU palette and CHR data as runtime;
 the state-aware form is `npm run extract:rom-boss -- --state=STATE --warmup=50`.

@@ -8,16 +8,19 @@ const option = (name, fallback) => args.find((value) => value.startsWith(`--${na
 const romPath = args.find((value) => !value.startsWith("--")) ?? "Gun.Smoke (USA).nes";
 const statePath = option("state");
 const slots = option("slots", "22,23").split(",").map((value) => Number(value));
+const warmup = Number(option("warmup", "0"));
 const output = option("out", "public/assets/sprites/sniper.png");
 if (!statePath || !fs.existsSync(statePath)) throw new Error("--state must point to a lib-jsnes state export");
 if (!fs.existsSync(romPath)) throw new Error(`Reference ROM not found: ${romPath}`);
 if (slots.length === 0 || slots.some((slot) => !Number.isInteger(slot) || slot < 0 || slot >= 64)) throw new Error("--slots must contain OAM slot numbers");
+if (!Number.isInteger(warmup) || warmup < 0) throw new Error("--warmup must be a non-negative integer");
 
 const nes = new Nes(fs.readFileSync(romPath));
 nes.reset();
 const saved = JSON.parse(fs.readFileSync(statePath, "utf8"));
 if (saved.format !== "lib-jsnes" || typeof saved.state !== "string") throw new Error("State file is not a lib-jsnes export");
 nes.loadState(Buffer.from(saved.state, "base64"));
+for (let frame = 0; frame < warmup; frame += 1) nes.runFrame();
 const entries = slots.map((slot) => {
   const offset = slot * 4;
   return { x: nes.ppu.oam[offset + 3] ?? 0xff, y: nes.ppu.oam[offset] ?? 0xff, tile: nes.ppu.oam[offset + 1] ?? 0xff, attr: nes.ppu.oam[offset + 2] ?? 0 };

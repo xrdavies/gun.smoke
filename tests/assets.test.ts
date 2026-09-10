@@ -48,8 +48,16 @@ describe("generated Gun.Smoke assets", () => {
   it("keeps ROM-derived assets on the lib-jsnes USA baseline", () => {
     const hash = (name: string) => crypto.createHash("sha256").update(fs.readFileSync(path.join(root, name))).digest("hex");
     expect(hash("sprites/player.png")).toBe("c39e0a638386090a2ea022826d0e78af14c449d2127491f4768a70ebfd87c3bb");
-    expect(hash("sprites/gunman.png")).toBe("242af688b0a10400cd342811f768d0016d816dd9cd9513459370f282cb9d7a9e");
+    expect(hash("sprites/gunman.png")).toBe("3301a2fb6ce86a015897a617e54fbc9a669af00ffce0d99c113f4940ff1bfd0d");
     expect(hash("sprites/sniper.png")).toBe("880f1f3ab7f11f08b43d229ddec9bf8b5259527ed7a9d0a04e9af60196d33007");
+    expect(hash("sprites/rifleman.png")).toBe("f2cfc194a48181058f9595e946e2504538742439330af7eb23779845463102de");
+    expect(hash("sprites/bomber.png")).toBe("f0c3b68967297e6750908e495382e089535aeccfb706917822031dcf8780aace");
+    expect(hash("sprites/backstabber.png")).toBe("8e8a8bc6e35885d45188f1a1a1ce1bc8d1838dfd195cc6e6429e76a202ee30a0");
+    expect(hash("sprites/ninja.png")).toBe("fab8d432278b7e2de32422ad1adfe5fd6e39294649526c680f0973fe757bf9c7");
+    expect(hash("sprites/hatchet.png")).toBe("5c67c3f00600bca6b66d8e8bfd287ebf313162b76bf71b9b2bb0aa1aea946923");
+    expect(hash("sprites/spear.png")).toBe("52f7b45cf8018a3c6cb0f9c15a11e0facbdd51564ef50562eccae9efa22bf7b8");
+    expect(hash("sprites/firebreather.png")).toBe("f15c2154fe6e448387d7e953bf2bbf9fa59c1f9f32f17f72a3a66d0b7b1d79bb");
+    expect(hash("sprites/shotgunner.png")).toBe("67f8e9e0f7b2b4db36e783617655bfaeabf787318b92badb8c47563e0760443d");
     expect(hash("sprites/boss-1.png")).toBe("1928bf03f9f15989345b3d4d714ff9b52386c58f45cda908902f466328ae696d");
     expect(hash("sprites/boss-2.png")).toBe("e4e0ee2dda86c13a6a324739b38cef5779f22d97706d0a9246f43a1d26b29936");
     expect(hash("sprites/boss-3.png")).toBe("2503d584c09b2e897ecc589d3369a7f6323cbe912ff1a65b1cebf1ceb6ec9d32");

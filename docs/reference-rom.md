@@ -1437,10 +1437,14 @@ Pattern-table previews remain grayscale for bitplane inspection; nametable
 previews apply each tile's expanded attribute and the live NES background
 palette so terrain colors match the captured scene.
 
-The tracked `player.png`, `gunman.png`, `boss-1.png`, and `boss-2.png` sprites are reproducible
-OAM/CHR captures from the USA ROM. `npm run extract:rom-sprites`,
-`npm run extract:rom-gunman`, and `npm run extract:rom-boss` regenerate them
-through lib-jsnes without
+The tracked `player.png`, `gunman.png`, and `boss-1.png`/`boss-2.png` sprites are
+reproducible OAM/CHR captures from the USA ROM through lib-jsnes. The remaining
+Boss captures (`boss-3.png` through `boss-6.png`) use the existing local Boss
+entrance snapshots as OAM/CHR input and map their logical palette indices through
+`lib-jsnes`'s `NES_PALETTE`; `npm run extract:rom-legacy-boss` regenerates one
+of those snapshots without using the legacy JSNES renderer for colors.
+`npm run extract:rom-sprites`, `npm run extract:rom-gunman`, and
+`npm run extract:rom-boss` regenerate the direct lib-jsnes captures without
 depending on the legacy JSNES PPU implementation.
 `npm run extract:rom-audio` likewise records the Round 1 APU stream at the
 emulator's native 44.1-kHz rate; the other tracked music loops remain marked

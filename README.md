@@ -62,6 +62,7 @@ npm run trace:rom:boss -- --state=.rom-traces/round6-boss-state.json --record --
 npm run trace:rom:boss -- --state=.rom-traces/round5-boss-state.json --attack --follow-y --clear-field --boss-frames=2400
 npm run trace:rom:boss -- --state=.rom-traces/round6-boss-state.json --attack --weapon=magnum --clear-field --boss-frames=1200
 npm run trace:rom:boss -- --attack --weapon=magnum --follow-y --clear-field --boss-frames=15000 --post-boss-frames=12000
+npm run trace:rom:boss -- --attack --weapon=magnum --follow-y --clear-field --boss-frames=15000 --post-boss-frames=3000 --save-transition-state=/tmp/round2-lib-state.json
 npm run trace:rom:entity -- --dispatch=0x57 --trace-frames=600
 npm run trace:rom:entity -- --round=3 --dispatch=0x65 --trace-frames=1200
 npm run trace:rom:entity -- --round=3 --dispatch=0x6b --skip=1 --trace-frames=900
@@ -80,6 +81,8 @@ npm run extract:rom-gunman -- "Gun.Smoke (USA).nes"
 npm run extract:rom-boss -- "Gun.Smoke (USA).nes"
 npm run extract:rom-legacy-boss -- "Gun.Smoke (USA).nes" --round=3 --frame=0
 npm run extract:rom-audio -- "Gun.Smoke (USA).nes"
+# A verified lib-jsnes state can be used for later-round audio:
+npm run extract:rom-audio -- "Gun.Smoke (USA).nes" --state=/tmp/round2-lib-state.json --warmup=650 --out=public/assets/music/round-2.wav
 npm run extract:rom-opening-script
 npm run extract:rom-round-maps
 ```

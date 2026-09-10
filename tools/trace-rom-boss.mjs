@@ -15,6 +15,7 @@ const followY = args.includes("--follow-y");
 const weapon = args.find((argument) => argument.startsWith("--weapon="))?.split("=")[1] ?? "pistol";
 const record = args.includes("--record");
 const clearField = args.includes("--clear-field");
+const saveTransitionState = args.find((argument) => argument.startsWith("--save-transition-state="))?.split("=")[1];
 if (!fs.existsSync(filename)) {
   console.log(`Reference ROM not found: ${filename}`);
   process.exit(0);
@@ -63,7 +64,7 @@ const bossFrames = [];
 const projectileEvents = [];
 const projectileFrames = [];
 const postBossFrames = [];
-let bossStart = stateFile ? 0 : undefined;
+let bossStart = stateFile && (memory[0x400 + 14] & 0x80) ? 0 : undefined;
 let bossReleaseFrame;
 let bossRoundIndex;
 let previousBoss;
@@ -145,7 +146,14 @@ for (let current = 0; current < frames; current += 1) {
       },
       boss: activeEntity(14),
     });
-    if (memory[0x41] !== bossRoundIndex || postFrame >= postBossFramesLimit) break;
+    if (memory[0x41] !== bossRoundIndex) {
+      if (saveTransitionState) {
+        fs.mkdirSync(path.dirname(saveTransitionState), { recursive: true });
+        fs.writeFileSync(saveTransitionState, JSON.stringify({ format: "lib-jsnes", state: Buffer.from(nes.saveState()).toString("base64") }));
+      }
+      break;
+    }
+    if (postFrame >= postBossFramesLimit) break;
     continue;
   }
   if (!boss) continue;

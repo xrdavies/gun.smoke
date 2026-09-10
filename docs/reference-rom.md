@@ -1446,9 +1446,11 @@ of those snapshots without using the legacy JSNES renderer for colors.
 `npm run extract:rom-sprites`, `npm run extract:rom-gunman`, and
 `npm run extract:rom-boss` regenerate the direct lib-jsnes captures without
 depending on the legacy JSNES PPU implementation.
-`npm run extract:rom-audio` likewise records the Round 1 APU stream at the
-emulator's native 44.1-kHz rate; the other tracked music loops remain marked
-as generated until their ROM tracks are captured.
+`npm run extract:rom-audio` records the Round 1 APU stream at the emulator's
+native 44.1-kHz rate. Passing a verified `lib-jsnes` state and warmup, for
+example `--state=/tmp/round2-lib-state.json --warmup=650 --out=public/assets/music/round-2.wav`,
+records a later round with the same path. Round 1 and Round 2 are tracked;
+the other music loops remain generated until their ROM tracks are captured.
 
 `npm run trace:rom:timeline` presses Start before the attract timer begins,
 starts a real game,
@@ -1471,6 +1473,9 @@ Adding `--post-boss-frames=N` continues sampling after the Boss slot is released
 until either the Round changes or the requested window expires. The output adds
 the release frame plus Round, game-state and player-state fields for transition
 timing comparisons.
+Adding `--save-transition-state=FILE` writes a `{format:"lib-jsnes",state}`
+export at the first subsequent Round boundary, allowing later-round captures to
+continue from a verified emulator state.
 Passing a lib-jsnes state export with `--state=.rom-traces/round3-boss-state.json`
 starts directly at that Boss entrance; older JSNES JSON saves are rejected and
 must be regenerated with `--save-state`. In snapshot mode the tracer also records

@@ -1449,8 +1449,9 @@ depending on the legacy JSNES PPU implementation.
 `npm run extract:rom-audio` records the Round 1 APU stream at the emulator's
 native 44.1-kHz rate. Passing a verified `lib-jsnes` state and warmup, for
 example `--state=/tmp/round2-lib-state.json --warmup=650 --out=public/assets/music/round-2.wav`,
-records a later round with the same path. Round 1 and Round 2 are tracked;
-the other music loops remain generated until their ROM tracks are captured.
+records a later round with the same path. Round 1, Round 2, and Round 3 are
+tracked; the other music loops remain generated until their ROM tracks are
+captured.
 
 `npm run trace:rom:timeline` presses Start before the attract timer begins,
 starts a real game,

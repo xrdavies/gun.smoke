@@ -57,6 +57,7 @@ describe("generated Gun.Smoke assets", () => {
     expect(hash("sprites/boss-6.png")).toBe("f1fdac0651f66e62e4d9254f65abcb4d1112e1e7248af5f301ba2a6603b9f027");
     expect(hash("music/round-1.wav")).toBe("b3c24fa423bf73d1ab94022ad2a0ff0c6660807e7cf1b39aaa900e2cf64b5bb2");
     expect(hash("music/round-2.wav")).toBe("ab2c64b5c1a127ebd56ca6ca6b4a06cbd1a01c7945e888a16f89c643de722aa6");
+    expect(hash("music/round-3.wav")).toBe("4b95dd7a009b6f21b6320f8484e26d5769c8aa9a3e0c58fe07cc40ae6824b2ae");
     expect(hash("screens/title.png")).toBe("8b60beae8602178e310d0a86581a487e172523bb7bc018ce70d30dce08a8770e");
     expect(hash("screens/intro.png")).toBe("e383c82aaea1f6b2da457c4441ff48afe2f94715f745e74b1b57054267aee1ef");
     expect(hash("screens/briefing.png")).toBe("103c50cf163bf7889cf094bb747ea75c16456d2720ee1e56741bb3c949089aff");

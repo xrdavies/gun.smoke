@@ -15,6 +15,7 @@ const followY = args.includes("--follow-y");
 const weapon = args.find((argument) => argument.startsWith("--weapon="))?.split("=")[1] ?? "pistol";
 const record = args.includes("--record");
 const clearField = args.includes("--clear-field");
+const forceGate = args.includes("--force-gate");
 const saveTransitionState = args.find((argument) => argument.startsWith("--save-transition-state="))?.split("=")[1];
 if (!fs.existsSync(filename)) {
   console.log(`Reference ROM not found: ${filename}`);
@@ -86,7 +87,7 @@ const activeEntity = (slot) => {
 for (let current = 0; current < frames; current += 1) {
   const mapPointer = (memory[0x5a] ?? 0) | ((memory[0x5b] ?? 0) << 8);
   const mapEnd = (memory[0x5e] ?? 0) | ((memory[0x5f] ?? 0) << 8);
-  if (memory[0x4b] === 0 && mapPointer >= mapEnd - 24) memory[0x49] = 1;
+  if (memory[0x4b] === 0 && (forceGate || mapPointer >= mapEnd - 24)) memory[0x49] = 1;
   memory[0x7c] = 255;
   if (attack && bossStart !== undefined && bossReleaseFrame === undefined) {
     if (weapon === "magnum") {
@@ -101,6 +102,10 @@ for (let current = 0; current < frames; current += 1) {
       else buttonUp(button);
     }
   }
+  if (attack && bossStart === undefined) {
+    buttonDown(Button.A);
+    buttonDown(Button.B);
+  }
   if (clearField && bossStart !== undefined && bossReleaseFrame === undefined) {
     for (let slot = 2; slot < 32; slot += 1) {
       const lowBossSlot = stateFile && slot < 8;
@@ -113,7 +118,7 @@ for (let current = 0; current < frames; current += 1) {
   frame();
 
   const boss = activeEntity(14);
-  if (bossStart === undefined && boss?.dispatch === 0x88) {
+  if (bossStart === undefined && boss && boss.dispatch >= 0x80) {
     bossStart = current;
     bossRoundIndex = memory[0x41];
     if (clearField) {

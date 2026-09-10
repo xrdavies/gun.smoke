@@ -1443,8 +1443,7 @@ from saved round states use the same live PPU palette and CHR data as runtime;
 the state-aware form is `npm run extract:rom-boss -- --state=STATE --warmup=50`.
 `npm run extract:rom-sprites`, `npm run extract:rom-gunman`, and
 `npm run extract:rom-boss` regenerates the direct Round 1 capture without
-depending on the legacy JSNES PPU implementation. The legacy extractor remains
-available only for historical snapshot comparisons.
+depending on the legacy JSNES PPU implementation.
 `npm run extract:rom-audio` records the Round 1 APU stream at the emulator's
 native 44.1-kHz rate. Passing a verified `lib-jsnes` state and warmup, for
 example `--state=/tmp/round2-lib-state.json --warmup=650 --out=public/assets/music/round-2.wav`,
